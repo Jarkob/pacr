@@ -8,10 +8,10 @@ package pacr.webapp_backend.dashboard_management;
  *
  * @author Benedikt Hahn
  */
-public abstract class DashboardModule {
+abstract class DashboardModule {
 
     //In range [0,14]
-    int position;
+    int position = -1;
 
     /**
      * Sets the position of this dashboard module on its dashboard,
@@ -19,11 +19,18 @@ public abstract class DashboardModule {
      *
      * @param position The new position
      */
-    public void setPosition(int position) {
+    void setPosition(int position) {
         if (position <= 14 && position >= 0) {
             this.position = position;
         } else {
             throw new IllegalArgumentException("The position " + position + " is not in the vaild range [0,14]");
         }
+    }
+
+    /**
+     * @return The position of this module on its dashboard.
+     */
+    int getPosition() {
+        return this.position;
     }
 }
