@@ -1,3 +1,4 @@
+import { GlobalService } from './services/global.service';
 import { SchedulerService } from './services/scheduler.service';
 import { RepositoryService } from './services/repository.service';
 import { ImportExportService } from './services/import-export.service';
@@ -43,7 +44,15 @@ import { HttpClientModule } from '@angular/common/http';
     ChartsModule,
     HttpClientModule
   ],
-  providers: [],
+  providers: [
+    BenchmarkingResultService,
+    BenchmarkService,
+    EventService,
+    ImportExportService,
+    RepositoryService,
+    SchedulerService,
+    GlobalService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
