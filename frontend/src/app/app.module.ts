@@ -1,7 +1,3 @@
-import { DetailViewComponent } from './detail-view/detail-view.component';
-import { LeaderboardEventsComponent } from './leaderboard-events/leaderboard-events.component';
-import { BenchmarkingEventsComponent } from './benchmarking-events/benchmarking-events.component';
-import { GlobalService } from './services/global.service';
 import { SchedulerService } from './services/scheduler.service';
 import { RepositoryService } from './services/repository.service';
 import { ImportExportService } from './services/import-export.service';
@@ -47,15 +43,7 @@ import { HttpClientModule } from '@angular/common/http';
     ChartsModule,
     HttpClientModule
   ],
-  providers: [
-    BenchmarkingResultService,
-    BenchmarkService,
-    EventService,
-    ImportExportService,
-    RepositoryService,
-    SchedulerService,
-    GlobalService
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
