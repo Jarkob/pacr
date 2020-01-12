@@ -24,6 +24,7 @@ class Benchmark {
         this.customName = benchmarkName;
         this.description = "";
         this.propertyList = new LinkedList<>();
+        this.group = null;
     }
 
     /**

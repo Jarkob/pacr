@@ -1,7 +1,7 @@
 package pacr.webapp_backend.result_management;
 
 
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,7 +11,7 @@ import java.util.List;
  * Represents the measured data of one property for one commit or an error message for a property or an entire commit.
  * Contains statistical analysis for the data.
  */
-class BenchmarkPropertyResult {
+class BenchmarkPropertyResult implements IOutputPropertyResult {
     private int id;
     private Double[] results;
     private double mean;
@@ -35,11 +35,8 @@ class BenchmarkPropertyResult {
      * @param property the property of a benchmark that was measured.
      */
     BenchmarkPropertyResult(String commitHash, Iterable<Double> results, BenchmarkProperty property) {
-        Iterator<Double> resultsIterator = results.iterator();
-        LinkedList<Double> resultsList = new LinkedList<>();
-        while (resultsIterator.hasNext()) {
-            resultsList.add(resultsIterator.next());
-        }
+        List<Double> resultsList = new LinkedList<>();
+        results.forEach(resultsList::add);
         this.results = resultsList.toArray(new Double[0]);
         if (this.results.length == 0) {
             throw new IllegalArgumentException();
@@ -52,7 +49,7 @@ class BenchmarkPropertyResult {
         this.commitHash = commitHash;
         this.hadLocalError = false;
         this.hadGlobalError = false;
-        this.errorMessage = "";
+        this.errorMessage = null;
         this.property = property;
     }
 
@@ -95,51 +92,33 @@ class BenchmarkPropertyResult {
         return id;
     }
 
-    /**
-     * Gets all saved results as an iterable.
-     * @return the iterable results.
-     */
-    Iterable<Double> getResults() {
+    @Override
+    public Collection<Double> getResults() {
         return Arrays.asList(results);
     }
 
-    /**
-     * Gets the mean of the saved results.
-     * @return the mean.
-     */
-    double getMean() {
+    @Override
+    public double getMean() {
         return mean;
     }
 
-    /**
-     * Gets the lower quartile of the saved results.
-     * @return the lower quartile.
-     */
-    double getLowerQuartile() {
+    @Override
+    public double getLowerQuartile() {
         return lowerQuartile;
     }
 
-    /**
-     * Gets the median of the saved results.
-     * @return the median.
-     */
-    double getMedian() {
+    @Override
+    public double getMedian() {
         return median;
     }
 
-    /**
-     * Gets the upper quartile of the saved results.
-     * @return the upper quartile.
-     */
-    double getUpperQuartile() {
+    @Override
+    public double getUpperQuartile() {
         return upperQuartile;
     }
 
-    /**
-     * Gets the standard deviation of the saved results.
-     * @return the standard Deviation.
-     */
-    double getStandardDeviation() {
+    @Override
+    public double getStandardDeviation() {
         return standardDeviation;
     }
 
@@ -151,29 +130,42 @@ class BenchmarkPropertyResult {
         return commitHash;
     }
 
-    /**
-     * Indicates whether an error occurred while the BenchmarkProperty of this BenchmarkPropertyResult was measured.
-     * @return true, if such an error occurred. otherwise false.
-     */
-    boolean hadLocalError() {
+    @Override
+    public boolean hadLocalError() {
         return hadLocalError;
     }
 
     /**
-     * Indicates whether a general error occured while benchmarking the commit of this BenchmarkPropertyResult.
+     * Indicates whether a general error occurred while benchmarking the commit of this BenchmarkPropertyResult.
      * @return true, if such an error occurred. otherwise false.
      */
     boolean hadGlobalError() {
         return hadGlobalError;
     }
 
-    /**
-     * Gets the error message if this BenchmarkPropertyResult had a local or global error. Otherwise an empty String is
-     * returned.
-     * @return the error message.
-     */
-    String getErrorMessage() {
+    @Override
+    public String getError() {
         return errorMessage;
+    }
+
+    @Override
+    public String getName() {
+        return property.getName();
+    }
+
+    @Override
+    public String getUnit() {
+        return property.getUnit();
+    }
+
+    @Override
+    public String getResultInterpretation() {
+        return property.getInterpretation();
+    }
+
+    @Override
+    public Benchmark getBenchmark() {
+        return property.getBenchmark();
     }
 
     /**
