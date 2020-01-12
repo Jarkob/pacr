@@ -1,6 +1,8 @@
 package pacr.webapp_backend.dashboard_management.services;
 
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Instances of this class model dashboards, which contain dashboard modules
  * and are displayed to the user in the frontend.
@@ -14,13 +16,13 @@ package pacr.webapp_backend.dashboard_management.services;
  */
 class Dashboard {
 
-    String editKey;
-    String viewKey;
+    private String editKey;
+    private String viewKey;
 
-    String title;
+    private String title;
 
     //Limited to 15 positions on the dashboard.
-    DashboardModule[] modules = new DashboardModule[15];
+    private DashboardModule[] modules = new DashboardModule[15];
 
 
     /**
@@ -32,10 +34,11 @@ class Dashboard {
 
     /**
      * Adds a module to the dashboard, if its position is valid and
+     * its position is not occupied.
      *
      * @param module    The module that will be added.
      */
-    void addModule(DashboardModule module) {
+    void addModule(@NotNull DashboardModule module) {
         int position = module.getPosition();
 
         if (position == -1) {
@@ -56,9 +59,21 @@ class Dashboard {
      * @param module The module to be removed.
      * @return {@code true} if the module could be removed and {@code false} else.
      */
-    boolean removeModule(DashboardModule module) {
-        int position = module.getPosition();
-        return removeModule(position);
+    boolean removeModule(@NotNull DashboardModule module) {
+        if (module == null) {
+            return false;
+        }
+
+        boolean moduleWasRemoved = false;
+
+        for (DashboardModule dm : modules) {
+            if (dm != null && dm.equals(module)) {
+                moduleWasRemoved = removeModule(dm.getPosition());
+                                //No two equal modules can be on the same dashboard,
+                break;          // since their position makes them different.
+            }
+        }
+        return moduleWasRemoved;
     }
 
     /**
@@ -68,6 +83,9 @@ class Dashboard {
      * @return {@code true} if the module at position could be removed and {@code false} else.
      */
     boolean removeModule(int position) {
+        if (position < 0 || position > 14) {
+            throw new IllegalArgumentException("Dashboards only allow positioning in the range [0,14].");
+        }
         if (modules[position] == null) {
             return false;
         }
