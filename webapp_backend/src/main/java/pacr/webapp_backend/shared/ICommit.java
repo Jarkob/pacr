@@ -1,62 +1,73 @@
 package pacr.webapp_backend.shared;
 
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 
+/**
+ * Represents a commit.
+ * Can return the commit hash, the commit message,
+ * the entry date, the commit date, the author date,
+ * the parents of the commit, the repository ID of the
+ * repository the commit is belonging to, the name
+ * of the branch the commit is belonging to and
+ * the labels of the commit.
+ *
+ * @author Pavel Zwerschke
+ */
 public interface ICommit {
 
     /**
      * Returns the commit hash for this commit.
      * @return commit hash
      */
-    public String getHash();
+    String getHash();
 
     /**
      * Returns the commit message for this commit.
      * @return commit message
      */
-    public String getMessage();
+    String getMessage();
 
     /**
      * Returns the date when the commit got entered into the system.
      * @return entry date
      */
-    public Date getEntryDate();
+    LocalDate getEntryDate();
 
     /**
      * Returns the commit date for this commit.
      * @return commit date
      */
-    public Date getCommitDate();
+    LocalDate getCommitDate();
 
     /**
      * Returns the author date for this commit.
      * @return author date
      */
-    public Date getAuthorDate();
+    LocalDate getAuthorDate();
 
     /**
      * Returns the parents for this commit. Is usually just one commit.
      * @return parents
      */
-    public Collection<ICommit> getParents();
+    Collection<? extends ICommit> getParents();
 
     /**
      * Returns the ID for the corresponding repository.
      * @return repository id
      */
-    public int getRepositoryID();
+    int getRepositoryID();
 
     /**
      * Returns the name of the branch this commit is belonging to.
      * @return branch name
      */
-    public String getBranchName();
+    String getBranchName();
 
     /**
      * Returns the labels of the commit. This includes Git-Tags and PACR-tags.
      * @return labels
      */
-    public Collection<String> getLabels();
+    Collection<String> getLabels();
 
 }

@@ -1,20 +1,28 @@
 package pacr.webapp_backend.git_tracking;
 
-import pacr.webapp_backend.shared.ICommit;
-
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
 
+/**
+ * This class represents a branch.
+ * It contains a name and commits belonging to the branch.
+ *
+ * @author Pavel Zwerschke
+ */
 public class Branch {
 
     private String name;
-    private Collection<ICommit> commits;
+    private Collection<Commit> commits;
 
     /**
      * Creates a new branch.
      * @param name is the name of the branch.
      */
-    Branch(String name) {
+    Branch(@NotNull String name) {
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null.");
+        }
         this.name = name;
         this.commits = new HashSet<>();
     }
@@ -31,7 +39,7 @@ public class Branch {
      * Returns all commits in this branch.
      * @return commits
      */
-    public Collection<ICommit> getCommits() {
+    public Collection<Commit> getCommits() {
         return commits;
     }
 
@@ -39,7 +47,14 @@ public class Branch {
      * Adds a commit to this branch.
      * @param commit is the commit being added.
      */
-    public void addCommit(ICommit commit) {
+    public void addCommit(@NotNull Commit commit) {
+        if (commit == null) {
+            throw new IllegalArgumentException("commit must not be null.");
+        }
+        if (commits.contains(commit)) {
+            return;
+        }
         this.commits.add(commit);
+        commit.setBranch(this);
     }
 }

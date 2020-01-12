@@ -1,11 +1,23 @@
 package pacr.webapp_backend.git_tracking;
 
-import java.awt.*;
+import javax.validation.constraints.NotNull;
+import java.awt.Color;
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * This class represents a repository.
+ * It contains a unique ID, an option whether all branches
+ * are being tracked or just the master branch.
+ * All selected branches that are being tracked/ignored,
+ * commit belonging to the repository, a Pull-URL,
+ * a name, an option whether a WebHook is set for this repository,
+ * a color and a date from which the repository is being observed.
+ *
+ * @author Pavel Zwerschke
+ */
 public class Repository {
 
     private int id;
@@ -16,7 +28,7 @@ public class Repository {
     private String name;
     private boolean isHookSet;
     private Color color;
-    private Date observeFromDate;
+    private LocalDate observeFromDate;
 
     /**
      * Creates a new repository.
@@ -28,16 +40,31 @@ public class Repository {
      * @param color is the color in which the repository is displayed
      * @param observeFromDate is the date from which on the repository is being observed.
      */
-    Repository(int id, boolean trackAllBranches, Collection<Branch> selectedBranches, String pullURL,
-                      String name, Color color, Date observeFromDate) {
+    Repository(int id, boolean trackAllBranches, @NotNull Collection<Branch> selectedBranches, @NotNull String pullURL,
+               @NotNull String name, @NotNull Color color, @NotNull LocalDate observeFromDate) {
         this.id = id;
         this.trackAllBranches = trackAllBranches;
+        if (selectedBranches == null) {
+            throw new IllegalArgumentException("selectedBranches must not be null.");
+        }
         this.selectedBranches = selectedBranches;
         this.commits = new HashMap<>();
+        if (pullURL == null) {
+            throw new IllegalArgumentException("pullURL must not be null.");
+        }
         this.pullURL = pullURL;
+        if (name == null) {
+            throw new IllegalArgumentException("name must not be null.");
+        }
         this.name = name;
         this.isHookSet = false;
+        if (color == null) {
+            throw new IllegalArgumentException("color must not be null.");
+        }
         this.color = color;
+        if (observeFromDate == null) {
+            throw new IllegalArgumentException("observeFromDate must not be null.");
+        }
         this.observeFromDate = observeFromDate;
     }
 
@@ -82,6 +109,10 @@ public class Repository {
         return name;
     }
 
+    /**
+     * Returns whether a WebHook is set for this repository or not.
+     * @return true if a WebHook is set, false if no WebHook is set.
+     */
     public boolean isHookSet() {
         return isHookSet;
     }
@@ -98,7 +129,7 @@ public class Repository {
      * Returns the date from which on the repository is being observed. All commits before that date are ignored.
      * @return date
      */
-    public Date getObserveFromDate() {
+    public LocalDate getObserveFromDate() {
         return observeFromDate;
     }
 
@@ -132,6 +163,10 @@ public class Repository {
         selectedBranches.remove(branch);
     }
 
+    /**
+     * Adds a new commit to this repository.
+     * @param commit is the commit being added.
+     */
     public void addNewCommit(Commit commit) {
         this.commits.put(commit.getHash(), commit);
     }
