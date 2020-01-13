@@ -15,7 +15,7 @@ public interface IBenchmarkProperty {
     /**
      * @return how the results should be interpreted.
      */
-    String getResultInterpretation();
+    ResultInterpretation getResultInterpretation();
 
     /**
      * @return the measurements unit of the results.

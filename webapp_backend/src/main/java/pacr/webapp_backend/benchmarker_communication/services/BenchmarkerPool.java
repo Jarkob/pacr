@@ -3,7 +3,11 @@ package pacr.webapp_backend.benchmarker_communication.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,20 +17,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
 
-    private Map<String, SystemEnvironment> freeBenchmarkers;
-    private Map<String, SystemEnvironment> occupiedBenchmarkers;
 
-    private IJobReceiver jobReceiver;
+    private Map<String, SystemEnvironment> allBenchmarkers;
+
+    private Set<String> occupiedBenchmarkers;
+    private Queue<String> freeBenchmarkers;
+
+    private Collection<INewRegistrationListener> newRegistrationListeners;
 
     /**
      * Creates a new BenchmarkerPool.
-     * @param jobReceiver the jobReceiver that gets called when a new Benchmarker is registered.
      */
-    public BenchmarkerPool(IJobReceiver jobReceiver) {
-        this.freeBenchmarkers = new HashMap<>();
-        this.occupiedBenchmarkers = new HashMap<>();
+    public BenchmarkerPool() {
+        this.allBenchmarkers = new HashMap<>();
+        this.occupiedBenchmarkers = new HashSet<>();
+        this.freeBenchmarkers = new LinkedList<>();
 
-        this.jobReceiver = jobReceiver;
+        this.newRegistrationListeners = new ArrayList<>();
     }
 
     @Override
@@ -41,9 +48,10 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
             return false;
         }
 
-        freeBenchmarkers.put(address, sysEnvironment);
+        freeBenchmarkers.add(address);
+        allBenchmarkers.put(address, sysEnvironment);
 
-        jobReceiver.executeJob();
+        notifyRegistrationListeners();
 
         return true;
     }
@@ -56,7 +64,9 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
             return false;
         }
 
-        if (freeBenchmarkers.containsKey(address)) {
+        allBenchmarkers.remove(address);
+
+        if (freeBenchmarkers.contains(address)) {
             freeBenchmarkers.remove(address);
         } else {
             occupiedBenchmarkers.remove(address);
@@ -66,15 +76,14 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     private boolean containsBenchmarker(String address) {
-        return freeBenchmarkers.containsKey(address) || occupiedBenchmarkers.containsKey(address);
+        return allBenchmarkers.containsKey(address);
     }
 
     @Override
     public Collection<SystemEnvironment> getBenchmarkerSystemEnvironment() {
         Collection<SystemEnvironment> systemEnvironments = new ArrayList<>();
 
-        systemEnvironments.addAll(freeBenchmarkers.values());
-        systemEnvironments.addAll(occupiedBenchmarkers.values());
+        systemEnvironments.addAll(allBenchmarkers.values());
 
         return systemEnvironments;
     }
@@ -87,7 +96,11 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     @Override
     public String getFreeBenchmarker() {
         if (hasFreeBenchmarkers()) {
-            return freeBenchmarkers.keySet().stream().findFirst().get();
+            // get free benchmarker and add it to the end of the queue again.
+            String address = freeBenchmarkers.poll();
+            freeBenchmarkers.add(address);
+
+            return address;
         }
 
         return null;
@@ -97,10 +110,10 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     public void freeBenchmarker(String address) {
         verifyAddress(address);
 
-        if (occupiedBenchmarkers.containsKey(address)) {
-            SystemEnvironment systemEnvironment = occupiedBenchmarkers.remove(address);
+        if (occupiedBenchmarkers.contains(address)) {
+            occupiedBenchmarkers.remove(address);
 
-            freeBenchmarkers.put(address, systemEnvironment);
+            freeBenchmarkers.add(address);
         }
     }
 
@@ -108,10 +121,23 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     public void occupyBenchmarker(String address) {
         verifyAddress(address);
 
-        if (freeBenchmarkers.containsKey(address)) {
-            SystemEnvironment systemEnvironment = freeBenchmarkers.remove(address);
+        if (freeBenchmarkers.contains(address)) {
+            freeBenchmarkers.remove(address);
 
-            occupiedBenchmarkers.put(address, systemEnvironment);
+            occupiedBenchmarkers.add(address);
+        }
+    }
+
+    @Override
+    public void addListener(INewRegistrationListener registrationListener) {
+        if (registrationListener != null) {
+            newRegistrationListeners.add(registrationListener);
+        }
+    }
+
+    private void notifyRegistrationListeners() {
+        for (INewRegistrationListener listener : newRegistrationListeners) {
+            listener.newRegistration();
         }
     }
 

@@ -25,7 +25,7 @@ public interface IBenchmarkingResult {
     /**
      * @return a list of benchmarks that were run associated with their name.
      */
-    Map<String, IBenchmark> getBenchmarks();
+    Map<String, ? extends IBenchmark> getBenchmarks();
 
     /**
      * @return an error message if there was a general error.

@@ -31,7 +31,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     /**
      * Creates a new scheduler and sets the used scheduling policy.
      */
-    Scheduler() {
+    public Scheduler() {
         this.jobs = new PriorityQueue<Job>(new AdvancedSchedulingAlgorithm());
         this.prioritized = new PriorityQueue<Job>(new FIFOSchedulingAlgorithm());
 

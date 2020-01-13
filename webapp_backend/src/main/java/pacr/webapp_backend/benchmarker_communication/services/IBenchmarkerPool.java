@@ -30,4 +30,10 @@ public interface IBenchmarkerPool {
      */
     void occupyBenchmarker(String address);
 
+    /**
+     * Adds a new listener that gets called when a new benchmarker is registered.
+     * @param registrationListener the listener to be added.
+     */
+    void addListener(INewRegistrationListener registrationListener);
+
 }

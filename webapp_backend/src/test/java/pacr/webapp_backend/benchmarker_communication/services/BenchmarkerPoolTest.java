@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -13,13 +15,19 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BenchmarkerPoolTest {
 
+    @Mock
+    private JobHandler jobHandler;
+
     private BenchmarkerPool benchmarkerPool;
 
     private final String ADDRESS = "benchmarkerAddress";
 
     @BeforeEach
     void setUp() {
-        this.benchmarkerPool = new BenchmarkerPool(new JobHandler());
+        MockitoAnnotations.initMocks(this);
+
+        this.benchmarkerPool = new BenchmarkerPool();
+        this.benchmarkerPool.addListener(jobHandler);
     }
 
     @Test
