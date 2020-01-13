@@ -8,8 +8,9 @@ import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IObserver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 
 public class SchedulerTest {
 
@@ -25,12 +26,13 @@ public class SchedulerTest {
 
     @Test
     void addJob_observersNotified() {
-        Observer observer = new Observer();
+        IObserver observer = mock(IObserver.class);
+
         scheduler.subscribe(observer);
 
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
-        assertTrue(observer.hasReceivedUpdate());
+        verify(observer).update();
     }
 
     @Test
@@ -272,40 +274,42 @@ public class SchedulerTest {
 
     @Test
     void subscribe_noError() {
-        Observer observer = new Observer();
+        IObserver observer = mock(IObserver.class);
+
         scheduler.subscribe(observer);
 
         scheduler.updateAll();
 
-        assertTrue(observer.hasReceivedUpdate());
+        verify(observer).update();
     }
 
     @Test
     void unsubscribe_noError() {
-        Observer observer = new Observer();
+        IObserver observer = mock(IObserver.class);
         scheduler.subscribe(observer);
 
         scheduler.unsubscribe(observer);
 
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        scheduler.updateAll();
 
-        assertFalse(observer.hasReceivedUpdate());
+        verify(observer, never()).update();
     }
 
     @Test
     void updateAll_noError() {
-        List<Observer> observers = new ArrayList<>();
+        List<IObserver> observers = new ArrayList<>();
 
         int amtObservers = 10;
         for (int i = 0; i < amtObservers; i++) {
-            Observer observer = new Observer();
+            IObserver observer = mock(IObserver.class);
+            observers.add(observer);
             scheduler.subscribe(observer);
         }
 
         scheduler.updateAll();
 
-        for (Observer observer : observers) {
-            assertTrue(observer.hasReceivedUpdate());
+        for (IObserver observer : observers) {
+            verify(observer).update();
         }
     }
 
@@ -321,30 +325,12 @@ public class SchedulerTest {
         for (int i = 0; i < amtPrioritizedJobs; i++) {
             scheduler.addJob(JOB_GROUP + i, JOB_ID + i);
             scheduler.givePriorityTo(JOB_GROUP + i, JOB_ID + i);
-            Thread.sleep(1100);
+            Thread.sleep(1);
         }
 
         for (int i = amtPrioritizedJobs; i < amtJobs + amtPrioritizedJobs; i++) {
             scheduler.addJob(JOB_GROUP + i, JOB_ID + i);
-            Thread.sleep(1100);
-        }
-    }
-
-    private class Observer implements IObserver {
-
-        private boolean receivedUpdate;
-
-        public Observer() {
-            this.receivedUpdate = false;
-        }
-
-        @Override
-        public void update() {
-            this.receivedUpdate = true;
-        }
-
-        public boolean hasReceivedUpdate() {
-            return receivedUpdate;
+            Thread.sleep(1);
         }
     }
 

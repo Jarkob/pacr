@@ -12,6 +12,13 @@ class AdvancedSchedulingAlgorithm implements Comparator<Job> {
 
     @Override
     public int compare(Job job1, Job job2) {
+        if (job1 == null) {
+            return 1;
+        }
+        if (job2 == null) {
+            return -1;
+        }
+
         LocalDateTime now = LocalDateTime.now();
 
         long job1Score = calcScore(job1, now);
@@ -21,7 +28,7 @@ class AdvancedSchedulingAlgorithm implements Comparator<Job> {
         if (job1Score < job2Score) {
             return -1;
         } else if (job1Score == job2Score) {
-            return 0;
+            return job2.getQueued().compareTo(job1.getQueued());
         }
 
         return 1;

@@ -7,7 +7,14 @@ import java.util.Comparator;
  */
 class FIFOSchedulingAlgorithm implements Comparator<Job> {
     @Override
-    public int compare(Job o1, Job o2) {
-        return o1.getQueued().compareTo(o2.getQueued());
+    public int compare(Job job1, Job job2) {
+        if (job1 == null) {
+            return 1;
+        }
+        if (job2 == null) {
+            return -1;
+        }
+
+        return job1.getQueued().compareTo(job2.getQueued());
     }
 }
