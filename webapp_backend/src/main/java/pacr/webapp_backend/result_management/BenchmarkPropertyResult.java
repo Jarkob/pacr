@@ -1,87 +1,52 @@
 package pacr.webapp_backend.result_management;
 
 
+import pacr.webapp_backend.shared.IBenchmarkProperty;
+
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents the measured data of one property for one commit or an error message for a property or an entire commit.
+ * Represents the measured data of one property or an error message for a property.
  * Contains statistical analysis for the data.
+ * This entity is saved in the database.
  */
-class BenchmarkPropertyResult implements IOutputPropertyResult {
+class BenchmarkPropertyResult implements IBenchmarkProperty {
     private int id;
-    private Double[] results;
+    private Double[] measurements;
     private double mean;
     private double lowerQuartile;
     private double median;
     private double upperQuartile;
     private double standardDeviation;
-    private String commitHash;
-    private boolean hadLocalError;
-    private boolean hadGlobalError;
+    private boolean error;
     private String errorMessage;
     private BenchmarkProperty property;
 
     /**
-     * Creates a BenchmarkPropertyResult for a set of results of a BenchmarkProperty without any errors.
-     * Calculates mean, quantiles and standard deviation for the given results.
-     * If the given results iterable is empty, the method throws an IllegalArgumentException.
+     * Creates a BenchmarkPropertyResult from an IBenchmarkProperty and its corresponding BenchmarkProperty object.
+     * Calculates mean, quantiles and standard deviation for the given measurements.
      *
-     * @param commitHash the hash of the commit that the results were measured on.
-     * @param results the measured results.
+     * @param measurement the measurements.
      * @param property the property of a benchmark that was measured.
      */
-    BenchmarkPropertyResult(String commitHash, Iterable<Double> results, BenchmarkProperty property) {
-        List<Double> resultsList = new LinkedList<>();
-        results.forEach(resultsList::add);
-        this.results = resultsList.toArray(new Double[0]);
-        if (this.results.length == 0) {
-            throw new IllegalArgumentException();
+    BenchmarkPropertyResult(IBenchmarkProperty measurement, BenchmarkProperty property) {
+        this.property = property;
+        if (measurement.getError() != null) {
+            this.error = true;
+            this.errorMessage = measurement.getError();
+        } else {
+            this.error = false;
+            this.errorMessage = null;
         }
+        this.measurements = measurement.getResults().toArray(new Double[0]);
         this.mean = this.getMeanFromResults();
         this.lowerQuartile = this.getQuantileFromResults(0.25);
         this.median = this.getQuantileFromResults(0.5);
         this.upperQuartile = this.getQuantileFromResults(0.75);
         this.standardDeviation = this.getStandardDeviationFromResults();
-        this.commitHash = commitHash;
-        this.hadLocalError = false;
-        this.hadGlobalError = false;
-        this.errorMessage = null;
-        this.property = property;
-    }
-
-    /**
-     * Creates a BenchmarkPropertyResult for a single BenchmarkProperty that could not be properly measured.
-     * No results or statistical values are saved.
-     *
-     * @param commitHash the hash of the commit whose benchmarking caused this error.
-     * @param errorMessage an error message.
-     * @param property the BenchmarkProperty where this error occurred.
-     */
-    BenchmarkPropertyResult(String commitHash, String errorMessage, BenchmarkProperty property) {
-        this.commitHash = commitHash;
-        this.hadLocalError = true;
-        this.hadGlobalError = false;
-        this.errorMessage = errorMessage;
-        this.property = property;
-    }
-
-    /**
-     * Creates a BenchmarkPropertyResult for a commit that could not be benchmarked in general.
-     * No results or statistical values are saved.
-     * No BenchmarkProperty is associated with this BenchmarkPropertyResult.
-     *
-     * @param commitHash the hash of the commit that could not be benchmarked.
-     * @param errorMessage an error message.
-     */
-    BenchmarkPropertyResult(String commitHash, String errorMessage) {
-        this.commitHash = commitHash;
-        this.hadLocalError = false;
-        this.hadGlobalError = true;
-        this.errorMessage = errorMessage;
     }
 
     /**
@@ -94,63 +59,12 @@ class BenchmarkPropertyResult implements IOutputPropertyResult {
 
     @Override
     public Collection<Double> getResults() {
-        return Arrays.asList(results);
-    }
-
-    @Override
-    public double getMean() {
-        return mean;
-    }
-
-    @Override
-    public double getLowerQuartile() {
-        return lowerQuartile;
-    }
-
-    @Override
-    public double getMedian() {
-        return median;
-    }
-
-    @Override
-    public double getUpperQuartile() {
-        return upperQuartile;
-    }
-
-    @Override
-    public double getStandardDeviation() {
-        return standardDeviation;
-    }
-
-    /**
-     * Gets the commit hash of the commit these results were measured on.
-     * @return the commit hash.
-     */
-    String getCommitHash() {
-        return commitHash;
-    }
-
-    @Override
-    public boolean hadLocalError() {
-        return hadLocalError;
-    }
-
-    /**
-     * Indicates whether a general error occurred while benchmarking the commit of this BenchmarkPropertyResult.
-     * @return true, if such an error occurred. otherwise false.
-     */
-    boolean hadGlobalError() {
-        return hadGlobalError;
+        return Arrays.asList(measurements);
     }
 
     @Override
     public String getError() {
         return errorMessage;
-    }
-
-    @Override
-    public String getName() {
-        return property.getName();
     }
 
     @Override
@@ -163,8 +77,64 @@ class BenchmarkPropertyResult implements IOutputPropertyResult {
         return property.getInterpretation();
     }
 
-    @Override
-    public Benchmark getBenchmark() {
+    /**
+     * Gets the mean of the measurements.
+     * @return the mean.
+     */
+    double getMean() {
+        return mean;
+    }
+
+    /**
+     * Gets the lower quartile of the measurements.
+     * @return the lower quartile.
+     */
+    double getLowerQuartile() {
+        return lowerQuartile;
+    }
+
+    /**
+     * Gets the median of the measurements.
+     * @return the median.
+     */
+    double getMedian() {
+        return median;
+    }
+
+    /**
+     * Gets the upper quartile of the measurements.
+     * @return the upper quartile.
+     */
+    double getUpperQuartile() {
+        return upperQuartile;
+    }
+
+    /**
+     * Gets the standard deviation of the measurements.
+     * @return the standard deviation.
+     */
+    double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    /**
+     * Indicates whether an error occurred while benchmarking the property.
+     * @return true if such an error occurred. otherwise false.
+     */
+    public boolean isError() {
+        return error;
+    }
+
+    /**
+     * Gets the name of the property.
+     * @return the name.
+     */
+    public String getName() {
+        return property.getName();
+    }
+
+    // todo remove?
+    Benchmark getBenchmark() {
         return property.getBenchmark();
     }
 
@@ -177,14 +147,14 @@ class BenchmarkPropertyResult implements IOutputPropertyResult {
     }
 
     private double getQuantileFromResults(double p) {
-        if (this.results.length == 0) {
+        if (this.measurements.length == 0) {
             return -1;
         }
 
-        List<Double> resultsList = Arrays.asList(results);
+        List<Double> resultsList = Arrays.asList(measurements);
         Collections.sort(resultsList);
 
-        double index = this.results.length * p;
+        double index = this.measurements.length * p;
 
         if (index == Math.ceil(index)) {
             return (resultsList.get((int) index - 1) + resultsList.get((int) index)) / 2;
@@ -194,25 +164,25 @@ class BenchmarkPropertyResult implements IOutputPropertyResult {
     }
 
     private double getMeanFromResults() {
-        if (this.results.length == 0) {
+        if (this.measurements.length == 0) {
             return -1;
         }
         double total = 0;
-        for (double result : this.results) {
+        for (double result : this.measurements) {
             total += result;
         }
-        return total / this.results.length;
+        return total / this.measurements.length;
     }
 
     private double getStandardDeviationFromResults() {
-        if (this.results.length == 0) {
+        if (this.measurements.length == 0) {
             return -1;
         }
         double mean = this.getMeanFromResults();
         double sumOfResultsMinusMeanSquared = 0;
-        for (double result : this.results) {
+        for (double result : this.measurements) {
             sumOfResultsMinusMeanSquared += Math.pow(result - mean, 2);
         }
-        return Math.sqrt(sumOfResultsMinusMeanSquared / this.results.length);
+        return Math.sqrt(sumOfResultsMinusMeanSquared / this.measurements.length);
     }
 }
