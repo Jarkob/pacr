@@ -10,6 +10,11 @@ package pacr.webapp_backend.dashboard_management.services;
  */
 abstract class DashboardModule {
 
+
+    static int MIN_POSITION = Dashboard.MIN_POSITION;
+    static int MAX_POSITION = Dashboard.MAX_POSITION;
+
+
     //In range [0,14]
     private int position;
 
@@ -23,15 +28,16 @@ abstract class DashboardModule {
 
     /**
      * Sets the position of this dashboard module on its dashboard,
-     * if the position is in the range [0,14]
+     * if the position is in the range [{@value #MIN_POSITION},{@value #MAX_POSITION}]
      *
      * @param position The new position
      */
     void setPosition(int position) {
-        if (position <= 14 && position >= 0) {
+        if (position <= MAX_POSITION && position >= MIN_POSITION) {
             this.position = position;
         } else {
-            throw new IllegalArgumentException("The position " + position + " is not in the vaild range [0,14]");
+            throw new IllegalArgumentException("The position " + position + " is not in the vaild range ["
+                    + MIN_POSITION + "," + MAX_POSITION + "]");
         }
     }
 
@@ -40,7 +46,7 @@ abstract class DashboardModule {
      */
     int getPosition() {
         int pos = this.position;
-        if (pos < 0) {
+        if (pos < MIN_POSITION) {
             throw new IllegalStateException("The position of this dashboard module has not been set yet.");
         }
         return this.position;

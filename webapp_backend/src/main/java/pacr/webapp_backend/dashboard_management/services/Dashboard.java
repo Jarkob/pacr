@@ -16,13 +16,17 @@ import javax.validation.constraints.NotNull;
  */
 class Dashboard {
 
+    static int MIN_POSITION = 0;
+    static int MAX_POSITION = 14;
+
+
     private String editKey;
     private String viewKey;
 
     private String title;
 
     //Limited to 15 positions on the dashboard.
-    private DashboardModule[] modules = new DashboardModule[15];
+    private DashboardModule[] modules = new DashboardModule[MAX_POSITION - MIN_POSITION  + 1];
 
 
     /**
@@ -39,12 +43,19 @@ class Dashboard {
      * @param module    The module that will be added.
      */
     void addModule(@NotNull DashboardModule module) {
-        int position = module.getPosition();
 
-        if (position == -1) {
-            throw new IllegalArgumentException("The position of the module must be set "
-                    + "to a value in the validRange [0,14].");
+        if (module == null) {
+            throw new IllegalArgumentException("Dashboard module must not be null.");
         }
+
+        int position = MIN_POSITION - 1;
+
+        try {
+            position = module.getPosition();
+        } catch (IllegalStateException e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
+
         if (modules[position] != null) {
             throw new IllegalArgumentException("The given dashboard module position "
                                                 + position + " is already occupied.");
@@ -83,8 +94,9 @@ class Dashboard {
      * @return {@code true} if the module at position could be removed and {@code false} else.
      */
     boolean removeModule(int position) {
-        if (position < 0 || position > 14) {
-            throw new IllegalArgumentException("Dashboards only allow positioning in the range [0,14].");
+        if (position < MIN_POSITION || position > MAX_POSITION) {
+            throw new IllegalArgumentException("Dashboards only allow positioning in the range "
+                    + "[" + MIN_POSITION + "," + MAX_POSITION + "].");
         }
         if (modules[position] == null) {
             return false;
