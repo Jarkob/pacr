@@ -1,5 +1,8 @@
 package pacr.webapp_backend.git_tracking;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -18,11 +21,18 @@ import java.util.Map;
  *
  * @author Pavel Zwerschke
  */
+@Entity
 public class Repository {
 
+    @Id
     private int id;
+
     private boolean trackAllBranches;
+
+    @OneToMany
     private Collection<Branch> selectedBranches;
+
+    @OneToMany
     private Map<String, Commit> commits;
     private String pullURL;
     private String name;
@@ -31,8 +41,13 @@ public class Repository {
     private LocalDate observeFromDate;
 
     /**
+     * Creates an empty repository. Necessary to be an Entity.
+     */
+    public Repository() {
+    }
+
+    /**
      * Creates a new repository.
-     * @param id is the repository id.
      * @param trackAllBranches is whether all branches are being tracked.
      * @param selectedBranches are the selected branches.
      * @param pullURL is the pull URL of the repository.
@@ -40,9 +55,8 @@ public class Repository {
      * @param color is the color in which the repository is displayed
      * @param observeFromDate is the date from which on the repository is being observed.
      */
-    Repository(int id, boolean trackAllBranches, @NotNull Collection<Branch> selectedBranches, @NotNull String pullURL,
+    public Repository(boolean trackAllBranches, @NotNull Collection<Branch> selectedBranches, @NotNull String pullURL,
                @NotNull String name, @NotNull Color color, @NotNull LocalDate observeFromDate) {
-        this.id = id;
         this.trackAllBranches = trackAllBranches;
         if (selectedBranches == null) {
             throw new IllegalArgumentException("selectedBranches must not be null.");
@@ -94,11 +108,27 @@ public class Repository {
     }
 
     /**
+     * Sets the pull URL for this repository.
+     * @param pullURL is the pull URL.
+     */
+    public void setPullURL(String pullURL) {
+        this.pullURL = pullURL;
+    }
+
+    /**
      * Returns the pull URL for the repository.
      * @return pull URL
      */
     public String getPullURL() {
         return pullURL;
+    }
+
+    /**
+     * Sets the name of the repository.
+     * @param name is the name of the repository.
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 
     /**
@@ -167,7 +197,14 @@ public class Repository {
      * Adds a new commit to this repository.
      * @param commit is the commit being added.
      */
-    public void addNewCommit(Commit commit) {
+    public void addNewCommit(@NotNull Commit commit) {
+        if (commit == null) {
+            throw new IllegalArgumentException("commit must not be null.");
+        }
+        if (this.commits.containsValue(commit)) {
+            return;
+        }
         this.commits.put(commit.getHash(), commit);
+        commit.setRepository(this);
     }
 }

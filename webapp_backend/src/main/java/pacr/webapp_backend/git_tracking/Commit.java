@@ -2,6 +2,11 @@ package pacr.webapp_backend.git_tracking;
 
 import pacr.webapp_backend.shared.ICommit;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.ElementCollection;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
@@ -17,16 +22,33 @@ import java.util.HashSet;
  *
  * @author Pavel Zwerschke
  */
+@Entity
 public class Commit implements ICommit {
 
+    /**
+     * Creates an empty commit. Necessary to be an Entity.
+     */
+    public Commit() {
+    }
+
+    @Id
     private String commitHash;
+
     private String commitMessage;
     private LocalDate entryDate;
     private LocalDate commitDate;
     private LocalDate authorDate;
+
+    @OneToMany
     private Collection<Commit> parents;
-    private int repositoryID;
+
+    @ManyToOne
+    private Repository repository;
+
+    @ElementCollection
     private Collection<String> labels;
+
+    @ManyToOne
     private Branch branch;
 
     /**
@@ -36,18 +58,18 @@ public class Commit implements ICommit {
      * @param commitDate is the commit date.
      * @param authorDate is the author date.
      * @param parents are the parents of the commit. Is usually just one commit.
-     * @param repositoryID is the ID of the corresponding repository.
+     * @param repository is the repository this commit belongs to.
      * @param branch is the corresponding branch.
      */
     Commit(String commitHash, String commitMessage, LocalDate commitDate, LocalDate authorDate,
-                  Collection<Commit> parents, int repositoryID, Branch branch) {
+                  Collection<Commit> parents, Repository repository, Branch branch) {
         this.commitHash = commitHash;
         this.commitMessage = commitMessage;
         this.entryDate = LocalDate.now();
         this.commitDate = commitDate;
         this.authorDate = authorDate;
         this.parents = parents;
-        this.repositoryID = repositoryID;
+        this.repository = repository;
         this.labels = new HashSet<String>();
         this.branch = branch;
     }
@@ -84,7 +106,7 @@ public class Commit implements ICommit {
 
     @Override
     public int getRepositoryID() {
-        return repositoryID;
+        return repository.getId();
     }
 
     /**
@@ -97,6 +119,29 @@ public class Commit implements ICommit {
         }
         this.branch = branch;
         branch.addCommit(this);
+    }
+
+    /**
+     * Returns the branch this commit belongs to.
+     * @return branch.
+     */
+    public Branch getBranch() {
+        return branch;
+    }
+
+    /**
+     * Sets the repository for this commit.
+     * @param repository is the repository being added.
+     */
+    public void setRepository(Repository repository) {
+        if (repository == null) {
+            throw new IllegalArgumentException("repository must not be null.");
+        }
+        if (repository == this.repository) {
+            return;
+        }
+        this.repository = repository;
+        repository.addNewCommit(this);
     }
 
     @Override
