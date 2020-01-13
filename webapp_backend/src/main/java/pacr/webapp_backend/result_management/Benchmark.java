@@ -5,6 +5,7 @@ import java.util.List;
 
 /**
  * Represents a benchmark that measures certain properties.
+ * This entity is saved in the database.
  */
 class Benchmark {
     private int id;

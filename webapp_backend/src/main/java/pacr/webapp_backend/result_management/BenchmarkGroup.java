@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management;
 
 /**
  * Represents a group of benchmarks.
+ * This entity is saved in the database.
  */
 class BenchmarkGroup {
     private int id;

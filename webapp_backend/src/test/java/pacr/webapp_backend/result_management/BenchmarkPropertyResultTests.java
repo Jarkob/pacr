@@ -33,8 +33,8 @@ public class BenchmarkPropertyResultTests {
     public static void setUp() {
         Benchmark benchmark = new Benchmark("stub");
         BenchmarkProperty property = new BenchmarkProperty("stub", "stub", "stub", benchmark);
-        propertyResultEven = new BenchmarkPropertyResult(commitHash, Arrays.asList(RESULTS_EVEN), property);
-        propertyResultOdd = new BenchmarkPropertyResult(commitHash, Arrays.asList(RESULTS_ODD), property);
+        propertyResultEven = new BenchmarkPropertyResult(RESULTS_EVEN, property);
+        propertyResultOdd = new BenchmarkPropertyResult(RESULTS_ODD, property);
     }
 
     @Test

@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class OutputBenchmark implements IBenchmark {
 
-    private IOutputPropertyResult[] results;
+    private OutputPropertyResult[] results;
     private Benchmark benchmark;
 
     /**
@@ -21,7 +21,7 @@ public class OutputBenchmark implements IBenchmark {
      * @param results the properties with results.
      * @param benchmark the benchmark that backs this output entity.
      */
-    OutputBenchmark(IOutputPropertyResult[] results, Benchmark benchmark) {
+    OutputBenchmark(OutputPropertyResult[] results, Benchmark benchmark) {
         this.results = results;
         this.benchmark = benchmark;
     }
@@ -29,7 +29,7 @@ public class OutputBenchmark implements IBenchmark {
     @Override
     public Map<String, IBenchmarkProperty> getBenchmarkProperties() {
         Map<String, IBenchmarkProperty> properties = new HashMap<>();
-        for (IOutputPropertyResult result : results) {
+        for (OutputPropertyResult result : results) {
             properties.put(result.getName(), result);
         }
         return properties;
@@ -39,7 +39,7 @@ public class OutputBenchmark implements IBenchmark {
      * Gets a list of all properties for output of this benchmark.
      * @return the properties.
      */
-    public List<IOutputPropertyResult> getPropertiesList() {
+    public List<OutputPropertyResult> getPropertiesList() {
         return Arrays.asList(results);
     }
 

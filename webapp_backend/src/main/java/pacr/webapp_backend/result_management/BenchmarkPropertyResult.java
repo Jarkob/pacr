@@ -50,6 +50,24 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     /**
+     * Creates a BenchmarkPropertyResult directly from measurements. In this case it is assumed there is no error or
+     * error message for this property.
+     * @param measurements the measurements.
+     * @param property the property of a benchmark that was measured.
+     */
+    BenchmarkPropertyResult(Double[] measurements, BenchmarkProperty property) {
+        this.property = property;
+        this.error = false;
+        this.errorMessage = null;
+        this.measurements = measurements;
+        this.mean = this.getMeanFromResults();
+        this.lowerQuartile = this.getQuantileFromResults(0.25);
+        this.median = this.getQuantileFromResults(0.5);
+        this.upperQuartile = this.getQuantileFromResults(0.75);
+        this.standardDeviation = this.getStandardDeviationFromResults();
+    }
+
+    /**
      * Gets the unique id of this BenchmarkPropertyResult.
      * @return the id.
      */

@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management;
 
 /**
  * Represents one property of a benchmark that is measured.
+ * This entity is saved in the database.
  */
 class BenchmarkProperty {
     private int id;

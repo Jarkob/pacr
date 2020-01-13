@@ -22,35 +22,26 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     private boolean hadGlobalError;
     private String errorMessage;
     private ICommit commit;
-    private SystemEnvironment systemEnvironment;
+    private ISystemEnvironment systemEnvironment;
     private OutputBenchmarkGroup[] groups;
 
     /**
-     * Creates a benchmarking result for a commit that was successfully benchmarked without a global error.
+     * Creates an OutputBenchmarkingResult for a commit. Copies system environment and error information from the
+     * CommitResult. Throws IllegalArgumentException if the CommitResult refers to a different commit hash than
+     * the ICommit.
      * @param commit the commit.
-     * @param systemEnvironment the system environment the commit was benchmarked on.
+     * @param result the result for the commit.
      * @param groups the benchmark groups with benchmarks, their properties and their corresponding measurements.
      */
-    OutputBenchmarkingResult(ICommit commit, SystemEnvironment systemEnvironment, OutputBenchmarkGroup[] groups) {
-        this.hadGlobalError = false;
-        this.errorMessage = null;
+    OutputBenchmarkingResult(ICommit commit, CommitResult result, OutputBenchmarkGroup[] groups) {
+        if (!commit.getHash().equals(result.getCommitHash())) {
+            throw new IllegalArgumentException();
+        }
+        this.hadGlobalError = result.isError();
+        this.errorMessage = result.getGlobalError();
         this.commit = commit;
-        this.systemEnvironment = systemEnvironment;
+        this.systemEnvironment = result.getSystemEnvironment();
         this.groups = groups;
-    }
-
-    /**
-     * Creates a benchmarking result for a commit with a global error. no benchmark groups with measurements are saved
-     * for this result.
-     * @param commit the commit.
-     * @param systemEnvironment the system environment the commit was (attempted to be) benchmarked on.
-     * @param errorMessage the global error message.
-     */
-    OutputBenchmarkingResult(ICommit commit, SystemEnvironment systemEnvironment, String errorMessage) {
-        this.hadGlobalError = true;
-        this.errorMessage = errorMessage;
-        this.commit = commit;
-        this.systemEnvironment = systemEnvironment;
     }
 
     @Override
