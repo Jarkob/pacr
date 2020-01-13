@@ -1,5 +1,7 @@
 package pacr.webapp_backend.result_management;
 
+import pacr.webapp_backend.shared.ResultInterpretation;
+
 /**
  * Represents one property of a benchmark that is measured.
  * This entity is saved in the database.
@@ -8,7 +10,7 @@ class BenchmarkProperty {
     private int id;
     private String name;
     private String unit;
-    private String interpretation;
+    private ResultInterpretation interpretation;
     private Benchmark benchmark;
 
     /**
@@ -20,7 +22,7 @@ class BenchmarkProperty {
      * @param interpretation the interpretation;
      * @param benchmark the corresponding benchmark;
      */
-    BenchmarkProperty(String name, String unit, String interpretation, Benchmark benchmark) {
+    BenchmarkProperty(String name, String unit, ResultInterpretation interpretation, Benchmark benchmark) {
         this.name = name;
         this.unit = unit;
         this.interpretation = interpretation;
@@ -55,7 +57,7 @@ class BenchmarkProperty {
      * Gets the interpretation (usually "MORE_IS_BETTER", "LESS_IS_BETTER" or "NEUTRAL") of this property.
      * @return the interpretation.
      */
-    String getInterpretation() {
+    ResultInterpretation getInterpretation() {
         return interpretation;
     }
 

@@ -25,11 +25,6 @@ public class JobResult implements IBenchmarkingResult {
     }
 
     @Override
-    public String getRepository() {
-        return repository;
-    }
-
-    @Override
     public String getCommitHash() {
         return commitHash;
     }

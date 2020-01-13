@@ -15,7 +15,6 @@ public class CommitResult implements IBenchmarkingResult {
 
     private int id;
     private String commitHash;
-    private String repository;
     private boolean error;
     private String errorMessage;
     private SystemEnvironment systemEnvironment;
@@ -36,14 +35,8 @@ public class CommitResult implements IBenchmarkingResult {
             this.errorMessage = null;
         }
         this.commitHash = result.getCommitHash();
-        this.repository = result.getRepository();
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
         this.benchmarkResults = benchmarkResults;
-    }
-
-    @Override
-    public String getRepository() {
-        return repository;
     }
 
     @Override

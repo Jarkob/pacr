@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management;
 
 
 import pacr.webapp_backend.shared.IBenchmarkProperty;
+import pacr.webapp_backend.shared.ResultInterpretation;
 
 import java.util.Collection;
 import java.util.Arrays;
@@ -91,7 +92,7 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     @Override
-    public String getResultInterpretation() {
+    public ResultInterpretation getResultInterpretation() {
         return property.getInterpretation();
     }
 

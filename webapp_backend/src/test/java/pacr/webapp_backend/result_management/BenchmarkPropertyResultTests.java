@@ -2,6 +2,8 @@ package pacr.webapp_backend.result_management;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import pacr.webapp_backend.shared.ResultInterpretation;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
@@ -32,7 +34,8 @@ public class BenchmarkPropertyResultTests {
     @BeforeAll
     public static void setUp() {
         Benchmark benchmark = new Benchmark("stub");
-        BenchmarkProperty property = new BenchmarkProperty("stub", "stub", "stub", benchmark);
+        ResultInterpretation lessIsBetter = ResultInterpretation.LESS_IS_BETTER;
+        BenchmarkProperty property = new BenchmarkProperty("stub", "stub", lessIsBetter, benchmark);
         propertyResultEven = new BenchmarkPropertyResult(RESULTS_EVEN, property);
         propertyResultOdd = new BenchmarkPropertyResult(RESULTS_ODD, property);
     }

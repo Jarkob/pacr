@@ -5,9 +5,9 @@ import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,11 +42,6 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.commit = commit;
         this.systemEnvironment = result.getSystemEnvironment();
         this.groups = groups;
-    }
-
-    @Override
-    public String getRepository() {
-        return commit.getRepositoryURL();
     }
 
     @Override
@@ -87,7 +82,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Gets the author date of the benchmarked commit.
      * @return the author date.
      */
-    public Date getAuthorDate() {
+    public LocalDate getAuthorDate() {
         return commit.getAuthorDate();
     }
 
@@ -95,7 +90,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Gets the commit date of the benchmarked commit.
      * @return the commit date.
      */
-    public Date getCommitDate() {
+    public LocalDate getCommitDate() {
         return commit.getCommitDate();
     }
 
@@ -103,7 +98,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Gets the entry date of the benchmarked commit (when it was entered into this system).
      * @return the entry date.
      */
-    public Date getEntryDate() {
+    public LocalDate getEntryDate() {
         return commit.getEntryDate();
     }
 
@@ -120,15 +115,15 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @return the branch name.
      */
     public String getBranch() {
-        return commit.getBranch();
+        return commit.getBranchName();
     }
 
     /**
      * Gets the label of the benchmarked commit.
      * @return the label.
      */
-    public String getLabel() {
-        return commit.getLabel();
+    public Collection<String> getLabels() {
+        return commit.getLabels();
     }
 
     /**
