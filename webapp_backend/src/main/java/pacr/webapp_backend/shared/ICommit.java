@@ -20,7 +20,7 @@ public interface ICommit {
      * Returns the commit hash for this commit.
      * @return commit hash
      */
-    String getHash();
+    String getCommitHash();
 
     /**
      * Returns the commit message for this commit.

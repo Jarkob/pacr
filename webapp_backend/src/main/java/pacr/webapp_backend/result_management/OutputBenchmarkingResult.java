@@ -34,7 +34,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @param groups the benchmark groups with benchmarks, their properties and their corresponding measurements.
      */
     OutputBenchmarkingResult(ICommit commit, CommitResult result, OutputBenchmarkGroup[] groups) {
-        if (!commit.getHash().equals(result.getCommitHash())) {
+        if (!commit.getCommitHash().equals(result.getCommitHash())) {
             throw new IllegalArgumentException();
         }
         this.hadGlobalError = result.isError();
@@ -46,7 +46,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
     @Override
     public String getCommitHash() {
-        return commit.getHash();
+        return commit.getCommitHash();
     }
 
     @Override
@@ -133,7 +133,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     public Collection<String> getParentHashes() {
         List<String> parentHashes = new LinkedList<>();
         for (ICommit commit : commit.getParents()) {
-            parentHashes.add(commit.getHash());
+            parentHashes.add(commit.getCommitHash());
         }
         return parentHashes;
     }

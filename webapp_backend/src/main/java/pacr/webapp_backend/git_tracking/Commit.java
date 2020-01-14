@@ -75,7 +75,7 @@ public class Commit implements ICommit {
     }
 
     @Override
-    public String getHash() {
+    public String getCommitHash() {
         return commitHash;
     }
 

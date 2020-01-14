@@ -204,7 +204,7 @@ public class Repository {
         if (this.commits.containsValue(commit)) {
             return;
         }
-        this.commits.put(commit.getHash(), commit);
+        this.commits.put(commit.getCommitHash(), commit);
         commit.setRepository(this);
     }
 }
