@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
-import pacr.webapp_backend.result_management.services.IBenchmarkAccess;
 
 import java.util.Collection;
 
@@ -15,16 +14,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class BenchmarkDBTest {
 
-    private IBenchmarkAccess benchmarkDB;
+    private BenchmarkDB benchmarkDB;
 
     @Autowired
-    public BenchmarkDBTest(IBenchmarkAccess benchmarkDB) {
+    public BenchmarkDBTest(BenchmarkDB benchmarkDB) {
         this.benchmarkDB = benchmarkDB;
     }
 
     @BeforeEach
     public void setUp() {
-        benchmarkDB.clear();
+        benchmarkDB.deleteAll();
     }
 
     /**
