@@ -67,9 +67,11 @@ export class DashboardComponent implements OnInit {
   public type = 'line';
   public legend = true;
   public datasets = [
-    {data: [], label: 'repository name', fill: 'false'}
+    {data: [{x: '04/01/2014', y: 1}, {x: '10/01/2014', y: 2}, {x: '04/01/2015', y: 1}], label: 'repo 1', fill: 'false'},
+    {data: [{x: '01/04/2014', y: 1}, {x: '01/10/2014', y: 2}, {x: '01/10/2015', y: 3}], label: 'repo 2', fill: false}
   ];
 
+  public lines = [];
 
   ngOnInit() {
   }
