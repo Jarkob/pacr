@@ -65,16 +65,28 @@ public class BenchmarkGroup {
         this.name = name;
     }
 
+    /**
+     * Gets all benchmarks of this group.
+     * @return the benchmarks.
+     */
     public List<Benchmark> getBenchmarks() {
         return benchmarkList;
     }
 
+    /**
+     * Adds a benchmark to this group if it wasn't already associated.
+     * @param benchmark the benchmark.
+     */
     public void addBenchmark(Benchmark benchmark) {
         if (!benchmarkList.contains(benchmark)) {
             benchmarkList.add(benchmark);
         }
     }
 
+    /**
+     * Removes a benchmark from this group. Nothing happens if the benchmark wasn't associated with this group.
+     * @param benchmark the benchmark.
+     */
     public void removeBenchmark(Benchmark benchmark) {
         benchmarkList.remove(benchmark);
     }

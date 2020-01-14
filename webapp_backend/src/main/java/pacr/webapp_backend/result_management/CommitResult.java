@@ -4,21 +4,41 @@ import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
-import java.util.Arrays;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Represents all measured benchmark data for one commit. This entity is saved in the database.
  */
+@Entity(name = "CommitResult")
+@Table(name = "commitResult")
 public class CommitResult implements IBenchmarkingResult {
 
-    private int id;
+    @Id
     private String commitHash;
+
     private boolean error;
     private String errorMessage;
+
+    @OneToOne(cascade = CascadeType.ALL)
     private SystemEnvironment systemEnvironment;
-    private BenchmarkResult[] benchmarkResults;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<BenchmarkResult> benchmarkResults;
+
+    /**
+     * Creates empty result. Needed for jpa.
+     */
+    CommitResult() {
+    }
 
     /**
      * Creates a CommitResult from an IBenchmarkingResult and measurements for benchmarks. Copies error message,
@@ -26,7 +46,7 @@ public class CommitResult implements IBenchmarkingResult {
      * @param result the IBenchmarkingResult
      * @param benchmarkResults the measured data for each benchmark.
      */
-    CommitResult(IBenchmarkingResult result, BenchmarkResult[] benchmarkResults) {
+    public CommitResult(IBenchmarkingResult result, List<BenchmarkResult> benchmarkResults) {
         if (result.getGlobalError() != null) {
             this.error = true;
             this.errorMessage = result.getGlobalError();
@@ -36,6 +56,20 @@ public class CommitResult implements IBenchmarkingResult {
         }
         this.commitHash = result.getCommitHash();
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
+        this.benchmarkResults = benchmarkResults;
+    }
+
+    /**
+     * Creates a CommitResult with no error.
+     * @param commitHash the hash of the measured commit-
+     * @param systemEnvironment the system environment of the benchmarks.
+     * @param benchmarkResults the measured data for each benchmark.
+     */
+    public CommitResult(String commitHash, SystemEnvironment systemEnvironment, List<BenchmarkResult> benchmarkResults) {
+        this.error = false;
+        this.errorMessage = null;
+        this.commitHash = commitHash;
+        this.systemEnvironment = systemEnvironment;
         this.benchmarkResults = benchmarkResults;
     }
 
@@ -67,8 +101,8 @@ public class CommitResult implements IBenchmarkingResult {
      * Gets an iterable of all the measurements for each benchmark.
      * @return the iterable BenchmarkResults.
      */
-    Iterable<BenchmarkResult> getBenchmarksIterable() {
-        return Arrays.asList(benchmarkResults);
+    public Iterable<BenchmarkResult> getBenchmarksIterable() {
+        return benchmarkResults;
     }
 
     /**

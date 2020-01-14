@@ -4,9 +4,14 @@ package pacr.webapp_backend.result_management;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import java.util.Collection;
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -14,9 +19,15 @@ import java.util.List;
  * Contains statistical analysis for the data.
  * This entity is saved in the database.
  */
-class BenchmarkPropertyResult implements IBenchmarkProperty {
+@Entity
+public class BenchmarkPropertyResult implements IBenchmarkProperty {
+    @Id
+    @GeneratedValue
     private int id;
-    private Double[] measurements;
+
+    @ElementCollection
+    private List<Double> measurements;
+
     private double mean;
     private double lowerQuartile;
     private double median;
@@ -24,7 +35,15 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
     private double standardDeviation;
     private boolean error;
     private String errorMessage;
+
+    @ManyToOne
     private BenchmarkProperty property;
+
+    /**
+     * Creates empty property result. Needed for jpa.
+     */
+    public BenchmarkPropertyResult() {
+    }
 
     /**
      * Creates a BenchmarkPropertyResult from an IBenchmarkProperty and its corresponding BenchmarkProperty object.
@@ -42,7 +61,7 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
             this.error = false;
             this.errorMessage = null;
         }
-        this.measurements = measurement.getResults().toArray(new Double[0]);
+        this.measurements = new LinkedList<>(measurement.getResults());
         this.mean = this.getMeanFromResults();
         this.lowerQuartile = this.getQuantileFromResults(0.25);
         this.median = this.getQuantileFromResults(0.5);
@@ -56,7 +75,7 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
      * @param measurements the measurements.
      * @param property the property of a benchmark that was measured.
      */
-    BenchmarkPropertyResult(Double[] measurements, BenchmarkProperty property) {
+    BenchmarkPropertyResult(List<Double> measurements, BenchmarkProperty property) {
         this.property = property;
         this.error = false;
         this.errorMessage = null;
@@ -78,7 +97,7 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
 
     @Override
     public Collection<Double> getResults() {
-        return Arrays.asList(measurements);
+        return measurements;
     }
 
     @Override
@@ -152,11 +171,6 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
         return property.getName();
     }
 
-    // todo remove?
-    Benchmark getBenchmark() {
-        return property.getBenchmark();
-    }
-
     /**
      * Gets the property that is associated with this BenchmarkPropertyResult.
      * @return the property.
@@ -166,14 +180,14 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     private double getQuantileFromResults(double p) {
-        if (this.measurements.length == 0) {
+        if (this.measurements.size() == 0) {
             return -1;
         }
 
-        List<Double> resultsList = Arrays.asList(measurements);
+        List<Double> resultsList = new LinkedList<>(measurements);
         Collections.sort(resultsList);
 
-        double index = this.measurements.length * p;
+        double index = this.measurements.size() * p;
 
         if (index == Math.ceil(index)) {
             return (resultsList.get((int) index - 1) + resultsList.get((int) index)) / 2;
@@ -183,18 +197,18 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     private double getMeanFromResults() {
-        if (this.measurements.length == 0) {
+        if (this.measurements.size() == 0) {
             return -1;
         }
         double total = 0;
         for (double result : this.measurements) {
             total += result;
         }
-        return total / this.measurements.length;
+        return total / this.measurements.size();
     }
 
     private double getStandardDeviationFromResults() {
-        if (this.measurements.length == 0) {
+        if (this.measurements.size() == 0) {
             return -1;
         }
         double mean = this.getMeanFromResults();
@@ -202,6 +216,6 @@ class BenchmarkPropertyResult implements IBenchmarkProperty {
         for (double result : this.measurements) {
             sumOfResultsMinusMeanSquared += Math.pow(result - mean, 2);
         }
-        return Math.sqrt(sumOfResultsMinusMeanSquared / this.measurements.length);
+        return Math.sqrt(sumOfResultsMinusMeanSquared / this.measurements.size());
     }
 }
