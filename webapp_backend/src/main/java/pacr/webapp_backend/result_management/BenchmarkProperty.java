@@ -2,16 +2,37 @@ package pacr.webapp_backend.result_management;
 
 import pacr.webapp_backend.shared.ResultInterpretation;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 /**
  * Represents one property of a benchmark that is measured.
  * This entity is saved in the database.
  */
+@Entity(name = "BenchmarkProperty")
+@Table(name = "benchmarkProperty")
 class BenchmarkProperty {
+
+    @Id
+    @GeneratedValue
     private int id;
+
     private String name;
     private String unit;
     private ResultInterpretation interpretation;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private Benchmark benchmark;
+
+    /**
+     * Creates empty property. Needed for jpa.
+     */
+    BenchmarkProperty() {
+    }
 
     /**
      * Creates a BenchmarkProperty with a name, a unit, an interpretation and the corresponding benchmark.

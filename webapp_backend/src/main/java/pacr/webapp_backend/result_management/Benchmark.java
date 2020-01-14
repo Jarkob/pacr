@@ -1,5 +1,12 @@
 package pacr.webapp_backend.result_management;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -7,20 +14,36 @@ import java.util.List;
  * Represents a benchmark that measures certain properties.
  * This entity is saved in the database.
  */
-class Benchmark {
+@Entity(name = "Benchmark")
+@Table(name = "benchmark")
+public class Benchmark {
+
+    @Id
+    @GeneratedValue
     private int id;
+
     private String benchmarkName;
     private String customName;
     private String description;
+
+    @OneToMany(cascade = CascadeType.ALL)
     private List<BenchmarkProperty> propertyList;
+
+    @ManyToOne(cascade = CascadeType.ALL)
     private BenchmarkGroup group;
+
+    /**
+     * Creates an empty benchmark. Necessary for jpa database entities.
+     */
+    Benchmark() {
+    }
 
     /**
      * Creates a benchmark with a name. This name is used both as the original name and the custom name.
      * The description and list of properties are empty, and this Benchmark is not associated with a BenchmarkGroup.
      * @param benchmarkName the original name of the benchmark.
      */
-    Benchmark(String benchmarkName) {
+    public Benchmark(String benchmarkName) {
         this.benchmarkName = benchmarkName;
         this.customName = benchmarkName;
         this.description = "";
@@ -32,7 +55,7 @@ class Benchmark {
      * Gets the unique id of the benchmark.
      * @return the id.
      */
-    int getId() {
+    public int getId() {
         return id;
     }
 
@@ -40,7 +63,7 @@ class Benchmark {
      * Gets the original name of the benchmark with which it was created.
      * @return the original name.
      */
-    String getBenchmarkName() {
+    public String getBenchmarkName() {
         return benchmarkName;
     }
 
@@ -48,7 +71,7 @@ class Benchmark {
      * Gets the custom name of the benchmark.
      * @return the custom name.
      */
-    String getCustomName() {
+    public String getCustomName() {
         return customName;
     }
 
@@ -56,7 +79,7 @@ class Benchmark {
      * Gets the description of the benchmark.
      * @return the description.
      */
-    String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -64,7 +87,7 @@ class Benchmark {
      * Gets the list of all properties that are part of this benchmark.
      * @return the list of properties.
      */
-    List<BenchmarkProperty> getPropertyList() {
+    public List<BenchmarkProperty> getPropertyList() {
         return propertyList;
     }
 
@@ -72,7 +95,7 @@ class Benchmark {
      * Gets the BenchmarkGroup of this benchmark.
      * @return the group.
      */
-    BenchmarkGroup getGroup() {
+    public BenchmarkGroup getGroup() {
         return group;
     }
 
@@ -80,7 +103,7 @@ class Benchmark {
      * Sets the custom name to a new name.
      * @param customName the new custom name.
      */
-    void setCustomName(String customName) {
+    public void setCustomName(String customName) {
         this.customName = customName;
     }
 
@@ -88,7 +111,7 @@ class Benchmark {
      * Sets the description to a new description.
      * @param description the new description.
      */
-    void setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
@@ -96,7 +119,7 @@ class Benchmark {
      * Sets the group that this benchmark belongs to to a new group.
      * @param group the new group.
      */
-    void setGroup(BenchmarkGroup group) {
+    public void setGroup(BenchmarkGroup group) {
         this.group = group;
     }
 
@@ -105,7 +128,7 @@ class Benchmark {
      * If the list already contains this property, no action is taken.
      * @param property the new property.
      */
-    void addProperty(BenchmarkProperty property) {
+    public void addProperty(BenchmarkProperty property) {
         if (!this.propertyList.contains(property)) {
             this.propertyList.add(property);
         }

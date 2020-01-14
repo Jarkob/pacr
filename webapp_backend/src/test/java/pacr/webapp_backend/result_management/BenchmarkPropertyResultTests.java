@@ -6,8 +6,6 @@ import pacr.webapp_backend.shared.ResultInterpretation;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.Arrays;
-
 public class BenchmarkPropertyResultTests {
 
     private static final String commitHash = "test123";

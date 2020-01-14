@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
-import pacr.webapp_backend.benchmarker_communication.services.Benchmark;
+import org.springframework.stereotype.Component;
+import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 
 import java.util.Collection;
@@ -53,4 +54,9 @@ public interface IBenchmarkAccess {
      * @param group the group.
      */
     void deleteGroup(BenchmarkGroup group);
+
+    /**
+     * Deletes all benchmarks and groups.
+     */
+    void clear();
 }
