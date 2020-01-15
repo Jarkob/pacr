@@ -7,8 +7,10 @@ import pacr.webapp_backend.shared.ISystemEnvironment;
  */
 public class SystemEnvironment implements ISystemEnvironment {
 
+    private String computerName;
     private String os;
     private String kernel;
+    private String processor;
     private int cores;
 
     // in Gigabytes
@@ -23,8 +25,18 @@ public class SystemEnvironment implements ISystemEnvironment {
     }
 
     @Override
+    public String getComputerName() {
+        return computerName;
+    }
+
+    @Override
     public String getOS() {
         return os;
+    }
+
+    @Override
+    public String getProcessor() {
+        return processor;
     }
 
     @Override
@@ -41,4 +53,5 @@ public class SystemEnvironment implements ISystemEnvironment {
     public long getRamMemory() {
         return ramMemory;
     }
+
 }

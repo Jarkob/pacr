@@ -10,7 +10,6 @@ import pacr.webapp_backend.shared.ISystemEnvironment;
  */
 public class JobResult implements IBenchmarkingResult {
 
-    private String repository;
     private String commitHash;
     private long executionTime;
     private SystemEnvironment systemEnvironment;
@@ -50,4 +49,5 @@ public class JobResult implements IBenchmarkingResult {
     public long getExecutionTime() {
         return executionTime;
     }
+
 }

@@ -40,6 +40,10 @@ public class BenchmarkProperty implements IBenchmarkProperty {
 
     @Override
     public String getError() {
+        if (error.isEmpty() || error.isBlank()) {
+            return null;
+        }
+        
         return error;
     }
 }

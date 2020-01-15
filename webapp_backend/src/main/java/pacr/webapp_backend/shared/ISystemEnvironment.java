@@ -6,9 +6,19 @@ package pacr.webapp_backend.shared;
 public interface ISystemEnvironment {
 
     /**
+     * @return the name of the computer.
+     */
+    String getComputerName();
+
+    /**
      * @return a description of the used operating system.
      */
     String getOS();
+
+    /**
+     * @return the name of the processor.
+     */
+    String getProcessor();
 
     /**
      * @return a description of the used kernel.

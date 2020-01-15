@@ -19,6 +19,8 @@ import pacr.webapp_backend.shared.IObserver;
 @Component
 public class Scheduler implements IJobProvider, IJobScheduler {
 
+    private static final String CRON_DAILY = "0 0 0 * * *";
+
     private PriorityQueue<Job> jobs;
 
     // holds manually prioritized jobs
@@ -159,7 +161,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     /**
      * Resets the groups field daily.
      */
-    @Scheduled(cron = "@daily")
+    @Scheduled(cron = CRON_DAILY)
     private void resetJobGroupTimeSheets() {
         groups.clear();
     }

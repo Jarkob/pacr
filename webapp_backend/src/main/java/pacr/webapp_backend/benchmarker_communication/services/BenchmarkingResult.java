@@ -27,9 +27,13 @@ public class BenchmarkingResult {
     }
 
     /**
-     * @return an error message if there was a general error.
+     * @return an error message if there was a general error. Null is returned if there was no error.
      */
     public String getGlobalError() {
+        if (globalError.isEmpty() || globalError.isBlank()) {
+            return null;
+        }
+
         return globalError;
     }
 }
