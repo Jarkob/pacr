@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management;
 
+import jdk.jshell.spi.ExecutionControl;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.persistence.Entity;
@@ -58,9 +59,27 @@ public class SystemEnvironment implements ISystemEnvironment {
         this.memory = memory;
     }
 
+    /**
+     * Added so the code compiles.
+     * TODO: @Martin
+     */
+    @Override
+    public String getComputerName() {
+        throw new UnsupportedOperationException("This has to be implemented in results management");
+    }
+
     @Override
     public String getOS() {
         return this.os;
+    }
+
+    /**
+     * Added so the code compiles.
+     * TODO: @Martin
+     */
+    @Override
+    public String getProcessor() {
+        throw new UnsupportedOperationException("This has to be implemented in results management");
     }
 
     @Override
