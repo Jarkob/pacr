@@ -27,19 +27,16 @@ public class GitTracking implements IRepositoryImporter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitTracking.class);
 
-    private IRepositoryAccess repositoryAccess;
-    private ICommitAccess commitAccess;
+    private IGitTrackingAccess gitTrackingAccess;
 
     private IResultDeleter resultDeleter;
 
     /**
      * Initiates an instance of GitTracking.
-     * @param repositoryAccess is the database access for repositories.
-     * @param commitAccess is the commit access for repositories.
+     * @param gitTrackingAccess is the database access for repositories and commits.
      */
-    public GitTracking(IRepositoryAccess repositoryAccess, ICommitAccess commitAccess) {
-        this.repositoryAccess = repositoryAccess;
-        this.commitAccess = commitAccess;
+    public GitTracking(IGitTrackingAccess gitTrackingAccess) {
+        this.gitTrackingAccess = gitTrackingAccess;
     }
 
     /**
@@ -53,7 +50,7 @@ public class GitTracking implements IRepositoryImporter {
     public int addRepository(String repositoryURL, LocalDate observeFromDate, String name) {
         Repository repository = new Repository(false, new HashSet<>(),
                 repositoryURL, name, getNextColor(), null);
-        return repositoryAccess.addRepository(repository);
+        return gitTrackingAccess.addRepository(repository);
     }
 
     /**
@@ -61,7 +58,7 @@ public class GitTracking implements IRepositoryImporter {
      * @return collection of repositories.
      */
     public Collection<Repository> getAllRepositories() {
-        return repositoryAccess.getAllRepositories();
+        return gitTrackingAccess.getAllRepositories();
     }
 
     /**
@@ -70,18 +67,11 @@ public class GitTracking implements IRepositoryImporter {
      * @throws NotFoundException if the repository was not found in the database.
      */
     public void removeRepository(int repositoryID) throws NotFoundException {
-        if (repositoryAccess.getRepository(repositoryID) == null) {
-            throw new NotFoundException("Repository with ID " + repositoryID + " was not found.");
-        }
+        gitTrackingAccess.removeRepository(repositoryID);
 
-        LOGGER.info("Deleting commits belonging to repository with ID {}.", repositoryID);
-        for (Commit commit : commitAccess.getAllCommits(repositoryID)) {
+        for (Commit commit : gitTrackingAccess.getAllCommits(repositoryID)) {
             resultDeleter.deleteBenchmarkingResults(commit.getCommitHash());
-            commitAccess.removeCommit(commit.getCommitHash());
         }
-
-        LOGGER.info("Deleting repository with ID {}.", repositoryID);
-        repositoryAccess.removeRepository(repositoryID);
     }
 
     /**
@@ -90,11 +80,7 @@ public class GitTracking implements IRepositoryImporter {
      * @throws NotFoundException if the repository was not found in the database.
      */
     public void updateRepository(Repository repository) throws NotFoundException {
-        if (repositoryAccess.getRepository(repository.getId()) == null) {
-            throw new NotFoundException("Repository with ID " + repository.getId() + " was not found.");
-        }
-
-        repositoryAccess.updateRepository(repository);
+        gitTrackingAccess.updateRepository(repository);
     }
 
     /**
@@ -109,7 +95,7 @@ public class GitTracking implements IRepositoryImporter {
      * Pulls from all repositories.
      */
     public void pullFromAllRepositories() {
-        for (Repository repository : repositoryAccess.getAllRepositories()) {
+        for (Repository repository : gitTrackingAccess.getAllRepositories()) {
             if (!repository.isHookSet()) {
                 pullFromRepository(repository.getId());
             }

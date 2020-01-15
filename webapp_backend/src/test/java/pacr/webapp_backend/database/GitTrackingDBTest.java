@@ -1,0 +1,195 @@
+package pacr.webapp_backend.database;
+
+import javassist.NotFoundException;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.git_tracking.Branch;
+import pacr.webapp_backend.git_tracking.Commit;
+import pacr.webapp_backend.git_tracking.Repository;
+
+import java.awt.*;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Test cases for RepositoryDB.
+ *
+ * @author Pavel Zwerschke
+ */
+@SpringBootTest
+public class GitTrackingDBTest {
+
+    private GitTrackingDB gitTrackingDB;
+
+    private Repository repository;
+    private String commitHash;
+    private Commit commit;
+
+    @Autowired
+    public GitTrackingDBTest(GitTrackingDB gitTrackingDB) {
+        this.gitTrackingDB = gitTrackingDB;
+    }
+
+    /**
+     * Creates a repository and a commit.
+     */
+    @BeforeEach
+    public void setUp() {
+        // repository
+        Set<Branch> selectedBranches = new HashSet<>();
+        selectedBranches.add(new Branch("branch1"));
+        selectedBranches.add(new Branch("branch2"));
+        repository = new Repository(true, selectedBranches, "pullURL", "RepositoryName",
+                new Color(0, 0, 0), LocalDate.now());
+
+        // commit
+        commitHash = "c4c5cc";
+        String message = "commit message";
+        LocalDate commitDate = LocalDate.now();
+        LocalDate authorDate = LocalDate.now();
+        Set<Commit> parents = new HashSet<>();
+        Repository repositoryForCommit = new Repository();
+        Branch branch = new Branch("test branch");
+
+        commit = new Commit(commitHash, message, commitDate, authorDate, parents, repositoryForCommit, branch);
+
+        commit.addLabel("Label1");
+        commit.addLabel("Label2");
+    }
+
+    /**
+     * Adds a repository and gets it again and asserts that the entries are stored.
+     */
+    @Test
+    public void addRepository() {
+        assertFalse(repository.isInDatabase());
+        int id = gitTrackingDB.addRepository(repository);
+        assertTrue(repository.isInDatabase());
+
+        assertEquals(id, repository.getId());
+        Repository fromDB = gitTrackingDB.getRepository(id);
+
+        assertEquals(repository.getId(), fromDB.getId());
+        assertEquals(repository.getColor(), fromDB.getColor());
+        assertEquals(repository.getName(), fromDB.getName());
+        assertEquals(repository.getObserveFromDate(), fromDB.getObserveFromDate());
+        assertEquals(repository.getPullURL(), fromDB.getPullURL());
+    }
+
+    /**
+     * Stores a repository and gets all repositories. Asserts that there is only one repository present.
+     */
+    @Test
+    public void getAllRepositories() {
+        int id = gitTrackingDB.addRepository(repository);
+        Collection<Repository> repositoriesFromDB = gitTrackingDB.getAllRepositories();
+        assertEquals(1, repositoriesFromDB.size());
+    }
+
+    /**
+     * Adds a repository and removes it again.
+     */
+    @Test
+    public void removeRepository() {
+        int id = gitTrackingDB.addRepository(repository);
+        Repository fromDB = gitTrackingDB.getRepository(id);
+
+        try {
+            gitTrackingDB.removeRepository(id);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        assertNull(gitTrackingDB.getRepository(id));
+    }
+
+    /**
+     * Updates a repository and asserts that the values are being updated.
+     */
+    @Test
+    public void updateRepository() {
+        int id = gitTrackingDB.addRepository(repository);
+
+        Repository fromDB = gitTrackingDB.getRepository(id);
+
+        assertEquals(repository.getName(), fromDB.getName());
+
+        String newName = "New name";
+        repository.setName(newName);
+
+        // old repository from DB not updated
+        assertNotEquals(newName, fromDB.getName());
+
+        // load repository from db again
+        fromDB = gitTrackingDB.getRepository(id);
+        assertNotEquals(newName, fromDB.getName());
+
+        // load updated repository
+        try {
+            gitTrackingDB.updateRepository(repository);
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+            fail();
+        }
+        fromDB = gitTrackingDB.getRepository(id);
+        assertEquals(newName, fromDB.getName());
+    }
+
+    /**
+     * Adds a commit to the database and asserts that the values are being stored in the database.
+     */
+    @Test
+    public void addCommit() {
+        // first add repository to DB
+        gitTrackingDB.addRepository(repository);
+
+        repository.addNewCommit(commit);
+        // then add commit to DB
+        gitTrackingDB.addCommit(commit);
+
+        // getting all commits with repository ID
+        Collection<Commit> commits = gitTrackingDB.getAllCommits(repository.getId());
+        assertEquals(1, commits.size());
+
+        // getting commit with commitHash
+        Commit fromDB = gitTrackingDB.getCommit(commitHash);
+
+        // checking all parameters
+        assertEquals(commit.getMessage(), fromDB.getMessage());
+        assertEquals(commit.getAuthorDate(), fromDB.getAuthorDate());
+        for (String label : commit.getLabels()) {
+            assertTrue(fromDB.getLabels().contains(label));
+        }
+        assertEquals(commit.getParents(), fromDB.getParents());
+    }
+
+    /**
+     * CommitDB is unable to add the commit to the database because the repository is not stored in the database yet.
+     */
+    @Test
+    public void unableToAddCommitToDatabase() {
+        commit.setRepository(new Repository());
+        assertThrows(RepositoryNotStoredException.class, () -> gitTrackingDB.addCommit(commit));
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        for (Repository repository : gitTrackingDB.getAllRepositories()) {
+            try {
+                gitTrackingDB.removeRepository(repository.getId());
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+                fail();
+            }
+        }
+    }
+
+}
