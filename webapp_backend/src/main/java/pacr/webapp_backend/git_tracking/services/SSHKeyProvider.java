@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IBenchmarkerConfigurator;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Objects;
 
 /**
  * This class represents the SSH-Key Provider.
@@ -33,12 +35,14 @@ public class SSHKeyProvider {
      * @throws FileNotFoundException when the SSH Public Key or
      *         the SSH Private Key was not found.
      */
-    public SSHKeyProvider(@Value("${privateKeyPath}") String privateKeyPath,
-                          @Value("${publicKeyPath}") String publicKeyPath,
-                          IBenchmarkerConfigurator configurator) throws FileNotFoundException {
+    public SSHKeyProvider(@NotNull @Value("${privateKeyPath}") String privateKeyPath,
+                          @NotNull @Value("${publicKeyPath}") String publicKeyPath,
+                          @NotNull IBenchmarkerConfigurator configurator) throws FileNotFoundException {
+        Objects.requireNonNull(privateKeyPath);
+        Objects.requireNonNull(publicKeyPath);
+        Objects.requireNonNull(configurator);
 
         this.configurator = configurator;
-
         this.privateKeyFile = new File(System.getProperty("user.dir") + privateKeyPath);
         this.publicKeyFile = new File(System.getProperty("user.dir") + publicKeyPath);
 
@@ -68,6 +72,8 @@ public class SSHKeyProvider {
     }
 
     private String readFile(File file) throws IOException {
+        assert file != null;
+
         BufferedReader br = new BufferedReader(new FileReader(file));
         StringBuilder sb = new StringBuilder();
 

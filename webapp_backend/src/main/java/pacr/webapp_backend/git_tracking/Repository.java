@@ -2,13 +2,19 @@ package pacr.webapp_backend.git_tracking;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.HashMap;
 
 /**
  * This class represents a repository.
@@ -25,14 +31,16 @@ import java.util.Map;
 public class Repository {
 
     @Id
+    // When a repository id is set, is is not 0 anymore, it is an integer greater than 0.
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     private boolean trackAllBranches;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Collection<Branch> selectedBranches;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Map<String, Commit> commits;
     private String pullURL;
     private String name;
@@ -44,6 +52,8 @@ public class Repository {
      * Creates an empty repository. Necessary to be an Entity.
      */
     public Repository() {
+        this.commits = new HashMap<>();
+        this.selectedBranches = new HashSet<>();
     }
 
     /**
@@ -54,9 +64,10 @@ public class Repository {
      * @param name is the name of the repository.
      * @param color is the color in which the repository is displayed
      * @param observeFromDate is the date from which on the repository is being observed.
+     *                        Is null if all commits are being observed.
      */
     public Repository(boolean trackAllBranches, @NotNull Collection<Branch> selectedBranches, @NotNull String pullURL,
-               @NotNull String name, @NotNull Color color, @NotNull LocalDate observeFromDate) {
+               @NotNull String name, @NotNull Color color, LocalDate observeFromDate) {
         this.trackAllBranches = trackAllBranches;
         if (selectedBranches == null) {
             throw new IllegalArgumentException("selectedBranches must not be null.");
@@ -76,9 +87,6 @@ public class Repository {
             throw new IllegalArgumentException("color must not be null.");
         }
         this.color = color;
-        if (observeFromDate == null) {
-            throw new IllegalArgumentException("observeFromDate must not be null.");
-        }
         this.observeFromDate = observeFromDate;
     }
 
@@ -88,6 +96,14 @@ public class Repository {
      */
     public int getId() {
         return id;
+    }
+
+    /**
+     * Sets the repository ID.
+     * @param id is the repository id.
+     */
+    public void setId(int id) {
+        this.id = id;
     }
 
     /**
@@ -206,5 +222,13 @@ public class Repository {
         }
         this.commits.put(commit.getCommitHash(), commit);
         commit.setRepository(this);
+    }
+
+    /**
+     * Checks if the repository is added to the database. In that case, the ID is not 0 anymore.
+     * @return true if it is in the database, false if it isn't.
+     */
+    public boolean isInDatabase() {
+        return id > 0;
     }
 }

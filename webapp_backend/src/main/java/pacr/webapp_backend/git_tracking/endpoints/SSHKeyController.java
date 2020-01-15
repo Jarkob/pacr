@@ -58,7 +58,7 @@ public class SSHKeyController {
         try {
             provider.sendPrivateKeyToBenchmarker();
         } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.ok().build();
     }

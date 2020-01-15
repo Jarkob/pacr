@@ -64,6 +64,10 @@ public interface ICommit {
      */
     String getBranchName();
 
+    void addLabel(String label);
+
+    void removeLabel(String label);
+
     /**
      * Returns the labels of the commit. This includes Git-Tags and PACR-tags.
      * @return labels

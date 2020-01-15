@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import pacr.webapp_backend.shared.IBenchmarkerConfigurator;
 
@@ -13,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.verify;
 
 /**
+ * Tests for SSH Key provider.
+ *
  * @author Pavel Zwerschke
  */
 public class SSHKeyProviderTest {
@@ -74,7 +77,8 @@ public class SSHKeyProviderTest {
     @Test
     void wrongInitialization() {
         assertThrows(FileNotFoundException.class, () -> {
-            keyProvider = new SSHKeyProvider("wrongpath", "wrongpath", null);
+            keyProvider = new SSHKeyProvider("wrongpath", "wrongpath",
+                    Mockito.mock(IBenchmarkerConfigurator.class));
         });
     }
 

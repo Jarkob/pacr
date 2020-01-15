@@ -4,12 +4,15 @@ import pacr.webapp_backend.shared.ICommit;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.ElementCollection;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * This class represents a commit.
@@ -39,16 +42,16 @@ public class Commit implements ICommit {
     private LocalDate commitDate;
     private LocalDate authorDate;
 
-    @OneToMany
-    private Collection<Commit> parents;
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Set<Commit> parents;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Repository repository;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> labels;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private Branch branch;
 
     /**
@@ -61,17 +64,20 @@ public class Commit implements ICommit {
      * @param repository is the repository this commit belongs to.
      * @param branch is the corresponding branch.
      */
-    Commit(String commitHash, String commitMessage, LocalDate commitDate, LocalDate authorDate,
-                  Collection<Commit> parents, Repository repository, Branch branch) {
+    public Commit(String commitHash, String commitMessage, LocalDate commitDate, LocalDate authorDate,
+                  Set<Commit> parents, Repository repository, Branch branch) {
         this.commitHash = commitHash;
         this.commitMessage = commitMessage;
         this.entryDate = LocalDate.now();
         this.commitDate = commitDate;
         this.authorDate = authorDate;
         this.parents = parents;
-        this.repository = repository;
         this.labels = new HashSet<String>();
+
+        this.repository = repository;
+        repository.addNewCommit(this);
         this.branch = branch;
+        branch.addCommit(this);
     }
 
     @Override
@@ -150,7 +156,26 @@ public class Commit implements ICommit {
     }
 
     @Override
+    public void addLabel(String label) {
+        labels.add(label);
+    }
+
+    @Override
+    public void removeLabel(String label) {
+        labels.remove(label);
+    }
+
+    @Override
     public Collection<String> getLabels() {
         return labels;
     }
+
+    /**
+     * Checks if the repository of this commit is stored in the database.
+     * @return true if the repository is stored in the database, false if it isn't.
+     */
+    public boolean repositoryIsInDatabase() {
+        return repository.isInDatabase();
+    }
+
 }
