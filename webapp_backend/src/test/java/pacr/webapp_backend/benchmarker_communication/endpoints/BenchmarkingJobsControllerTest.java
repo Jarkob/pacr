@@ -10,7 +10,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import pacr.webapp_backend.benchmarker_communication.services.BenchmarkerJob;
 import pacr.webapp_backend.benchmarker_communication.services.JobHandler;
 import pacr.webapp_backend.benchmarker_communication.services.JobResult;
-import pacr.webapp_backend.git_tracking.Repository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;

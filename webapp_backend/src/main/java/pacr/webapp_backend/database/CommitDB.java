@@ -2,7 +2,7 @@ package pacr.webapp_backend.database;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.Commit;
+import pacr.webapp_backend.git_tracking.GitCommit;
 
 import java.util.Collection;
 
@@ -12,8 +12,8 @@ import java.util.Collection;
  * @author Pavel Zwerschke
  */
 @Component
-public interface CommitDB extends CrudRepository<Commit, String> {
+public interface CommitDB extends CrudRepository<GitCommit, String> {
 
-    Collection<Commit> findCommitsByRepository_Id(int repositoryID);
+    Collection<GitCommit> findCommitsByRepository_Id(int repositoryID);
 
 }

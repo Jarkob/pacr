@@ -9,9 +9,11 @@ import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.ElementCollection;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -26,12 +28,12 @@ import java.util.Set;
  * @author Pavel Zwerschke
  */
 @Entity
-public class Commit implements ICommit {
+public class GitCommit implements ICommit {
 
     /**
      * Creates an empty commit. Necessary to be an Entity.
      */
-    public Commit() {
+    public GitCommit() {
     }
 
     @Id
@@ -43,16 +45,16 @@ public class Commit implements ICommit {
     private LocalDate authorDate;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<Commit> parents;
+    private Set<GitCommit> parents;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Repository repository;
+    private GitRepository repository;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Collection<String> labels;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    private Branch branch;
+    private GitBranch branch;
 
     /**
      * Creates a commit.
@@ -64,8 +66,17 @@ public class Commit implements ICommit {
      * @param repository is the repository this commit belongs to.
      * @param branch is the corresponding branch.
      */
-    public Commit(String commitHash, String commitMessage, LocalDate commitDate, LocalDate authorDate,
-                  Set<Commit> parents, Repository repository, Branch branch) {
+    public GitCommit(@NotNull String commitHash, @NotNull String commitMessage, @NotNull LocalDate commitDate,
+                     @NotNull LocalDate authorDate, @NotNull Set<GitCommit> parents,
+                     @NotNull GitRepository repository, @NotNull GitBranch branch) {
+        Objects.requireNonNull(commitHash);
+        Objects.requireNonNull(commitMessage);
+        Objects.requireNonNull(commitDate);
+        Objects.requireNonNull(authorDate);
+        Objects.requireNonNull(parents);
+        Objects.requireNonNull(repository);
+        Objects.requireNonNull(branch);
+
         this.commitHash = commitHash;
         this.commitMessage = commitMessage;
         this.entryDate = LocalDate.now();
@@ -119,7 +130,9 @@ public class Commit implements ICommit {
      * Sets the branch for this commit.
      * @param branch is the branch being set.
      */
-    public void setBranch(Branch branch) {
+    public void setBranch(@NotNull GitBranch branch) {
+        Objects.requireNonNull(branch);
+
         if (branch == this.branch) {
             return;
         }
@@ -131,7 +144,7 @@ public class Commit implements ICommit {
      * Returns the branch this commit belongs to.
      * @return branch.
      */
-    public Branch getBranch() {
+    public GitBranch getBranch() {
         return branch;
     }
 
@@ -139,10 +152,9 @@ public class Commit implements ICommit {
      * Sets the repository for this commit.
      * @param repository is the repository being added.
      */
-    public void setRepository(Repository repository) {
-        if (repository == null) {
-            throw new IllegalArgumentException("repository must not be null.");
-        }
+    public void setRepository(@NotNull GitRepository repository) {
+        Objects.requireNonNull(repository);
+
         if (repository == this.repository) {
             return;
         }
@@ -157,11 +169,14 @@ public class Commit implements ICommit {
 
     @Override
     public void addLabel(String label) {
+        Objects.requireNonNull(label);
         labels.add(label);
     }
 
     @Override
     public void removeLabel(String label) {
+        //Objects.requireNonNull(label);
+
         labels.remove(label);
     }
 

@@ -11,10 +11,7 @@ import javax.persistence.FetchType;
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.Map;
-import java.util.HashSet;
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * This class represents a repository.
@@ -28,7 +25,7 @@ import java.util.HashMap;
  * @author Pavel Zwerschke
  */
 @Entity
-public class Repository {
+public class GitRepository {
 
     @Id
     // When a repository id is set, is is not 0 anymore, it is an integer greater than 0.
@@ -38,10 +35,10 @@ public class Repository {
     private boolean trackAllBranches;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<Branch> selectedBranches;
+    private Collection<GitBranch> selectedBranches;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Map<String, Commit> commits;
+    private Map<String, GitCommit> commits;
     private String pullURL;
     private String name;
     private boolean isHookSet;
@@ -51,7 +48,7 @@ public class Repository {
     /**
      * Creates an empty repository. Necessary to be an Entity.
      */
-    public Repository() {
+    public GitRepository() {
         this.commits = new HashMap<>();
         this.selectedBranches = new HashSet<>();
     }
@@ -66,26 +63,20 @@ public class Repository {
      * @param observeFromDate is the date from which on the repository is being observed.
      *                        Is null if all commits are being observed.
      */
-    public Repository(boolean trackAllBranches, @NotNull Collection<Branch> selectedBranches, @NotNull String pullURL,
-               @NotNull String name, @NotNull Color color, LocalDate observeFromDate) {
+    public GitRepository(boolean trackAllBranches, @NotNull Collection<GitBranch> selectedBranches,
+                         @NotNull String pullURL, @NotNull String name,
+                         @NotNull Color color, LocalDate observeFromDate) {
+        Objects.requireNonNull(selectedBranches);
+        Objects.requireNonNull(pullURL);
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(color);
+
         this.trackAllBranches = trackAllBranches;
-        if (selectedBranches == null) {
-            throw new IllegalArgumentException("selectedBranches must not be null.");
-        }
         this.selectedBranches = selectedBranches;
         this.commits = new HashMap<>();
-        if (pullURL == null) {
-            throw new IllegalArgumentException("pullURL must not be null.");
-        }
         this.pullURL = pullURL;
-        if (name == null) {
-            throw new IllegalArgumentException("name must not be null.");
-        }
         this.name = name;
         this.isHookSet = false;
-        if (color == null) {
-            throw new IllegalArgumentException("color must not be null.");
-        }
         this.color = color;
         this.observeFromDate = observeFromDate;
     }
@@ -119,7 +110,7 @@ public class Repository {
      * all ignored branches if isTrackAllBranches returns false.
      * @return selected Branches
      */
-    public Collection<Branch> getSelectedBranches() {
+    public Collection<GitBranch> getSelectedBranches() {
         return selectedBranches;
     }
 
@@ -127,7 +118,9 @@ public class Repository {
      * Sets the pull URL for this repository.
      * @param pullURL is the pull URL.
      */
-    public void setPullURL(String pullURL) {
+    public void setPullURL(@NotNull String pullURL) {
+        Objects.requireNonNull(pullURL);
+
         this.pullURL = pullURL;
     }
 
@@ -143,7 +136,8 @@ public class Repository {
      * Sets the name of the repository.
      * @param name is the name of the repository.
      */
-    public void setName(String name) {
+    public void setName(@NotNull String name) {
+        Objects.requireNonNull(name);
         this.name = name;
     }
 
@@ -197,7 +191,8 @@ public class Repository {
      * Adds a branch to the selected branches.
      * @param branch is the branch being added.
      */
-    public void addBranchToSelection(Branch branch) {
+    public void addBranchToSelection(@NotNull GitBranch branch) {
+        Objects.requireNonNull(branch);
         selectedBranches.add(branch);
     }
 
@@ -205,7 +200,8 @@ public class Repository {
      * Removes a branch from the selected branches.
      * @param branch is the branch being removed.
      */
-    public void removeBranchFromSelection(Branch branch) {
+    public void removeBranchFromSelection(@NotNull GitBranch branch) {
+        Objects.requireNonNull(selectedBranches);
         selectedBranches.remove(branch);
     }
 
@@ -213,10 +209,9 @@ public class Repository {
      * Adds a new commit to this repository.
      * @param commit is the commit being added.
      */
-    public void addNewCommit(@NotNull Commit commit) {
-        if (commit == null) {
-            throw new IllegalArgumentException("commit must not be null.");
-        }
+    public void addNewCommit(@NotNull GitCommit commit) {
+        Objects.requireNonNull(commit);
+
         if (this.commits.containsValue(commit)) {
             return;
         }

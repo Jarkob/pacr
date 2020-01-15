@@ -4,8 +4,8 @@ import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.Commit;
-import pacr.webapp_backend.git_tracking.Repository;
+import pacr.webapp_backend.git_tracking.GitCommit;
+import pacr.webapp_backend.git_tracking.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
 import javax.validation.constraints.NotNull;
@@ -31,13 +31,18 @@ public class GitTrackingDB implements IGitTrackingAccess {
      * @param commitDB is the JPA commit access interface.
      * @param repositoryDB is the JPA repository access interface.
      */
-    public GitTrackingDB(CommitDB commitDB, RepositoryDB repositoryDB) {
+    public GitTrackingDB(@NotNull CommitDB commitDB, @NotNull RepositoryDB repositoryDB) {
+        Objects.requireNonNull(commitDB);
+        Objects.requireNonNull(repositoryDB);
+
         this.commitDB = commitDB;
         this.repositoryDB = repositoryDB;
     }
 
     @Override
-    public void addCommit(GitCommit commit) {
+    public void addCommit(@NotNull GitCommit commit) {
+        Objects.requireNonNull(commit);
+
         if (!commit.repositoryIsInDatabase()) {
             throw new RepositoryNotStoredException("The repository of the commit must be stored in the database "
                     + "before this commit is being stored in the database.");
@@ -51,12 +56,15 @@ public class GitTrackingDB implements IGitTrackingAccess {
     }
 
     @Override
-    public GitCommit getCommit(String commitHash) {
+    public GitCommit getCommit(@NotNull String commitHash) {
+        Objects.requireNonNull(commitHash);
+
         return commitDB.findById(commitHash).orElse(null);
     }
 
     @Override
-    public void removeCommit(String commitHash) {
+    public void removeCommit(@NotNull String commitHash) {
+        Objects.requireNonNull(commitHash);
         commitDB.deleteById(commitHash);
     }
 
@@ -64,7 +72,7 @@ public class GitTrackingDB implements IGitTrackingAccess {
     public Collection<GitRepository> getAllRepositories() {
         Collection<GitRepository> repositories = new HashSet<>();
 
-        Iterable<Repository> iterable = repositoryDB.findAll();
+        Iterable<GitRepository> iterable = repositoryDB.findAll();
         iterable.forEach(repositories::add);
 
         return repositories;
@@ -84,14 +92,14 @@ public class GitTrackingDB implements IGitTrackingAccess {
 
     @Override
     public void removeRepository(int repositoryID) throws NotFoundException {
-        Repository repository = getRepository(repositoryID);
+        GitRepository repository = getRepository(repositoryID);
         if (repository == null) {
             throw new NotFoundException("Repository with ID " + repositoryID + " was not found.");
         }
 
         LOGGER.info("Deleting commits belonging to repository with ID {}.", repositoryID);
 
-        for (Commit commit : getAllCommits(repositoryID)) {
+        for (GitCommit commit : getAllCommits(repositoryID)) {
             removeCommit(commit.getCommitHash());
         }
 

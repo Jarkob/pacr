@@ -4,8 +4,8 @@ import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.Commit;
-import pacr.webapp_backend.git_tracking.Repository;
+import pacr.webapp_backend.git_tracking.GitCommit;
+import pacr.webapp_backend.git_tracking.GitRepository;
 import pacr.webapp_backend.shared.IRepositoryImporter;
 import pacr.webapp_backend.shared.IResultDeleter;
 
@@ -35,7 +35,9 @@ public class GitTracking implements IRepositoryImporter {
      * Initiates an instance of GitTracking.
      * @param gitTrackingAccess is the database access for repositories and commits.
      */
-    public GitTracking(IGitTrackingAccess gitTrackingAccess) {
+    public GitTracking(@NotNull IGitTrackingAccess gitTrackingAccess) {
+        Objects.requireNonNull(gitTrackingAccess);
+
         this.gitTrackingAccess = gitTrackingAccess;
     }
 
@@ -47,8 +49,11 @@ public class GitTracking implements IRepositoryImporter {
      * @return the ID of the repository.
      */
     @Override
-    public int addRepository(String repositoryURL, LocalDate observeFromDate, String name) {
-        Repository repository = new Repository(false, new HashSet<>(),
+    public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name) {
+        Objects.requireNonNull(repositoryURL);
+        Objects.requireNonNull(name);
+
+        GitRepository repository = new GitRepository(false, new HashSet<>(),
                 repositoryURL, name, getNextColor(), null);
         return gitTrackingAccess.addRepository(repository);
     }
@@ -57,7 +62,7 @@ public class GitTracking implements IRepositoryImporter {
      * Returns all repositories.
      * @return collection of repositories.
      */
-    public Collection<Repository> getAllRepositories() {
+    public Collection<GitRepository> getAllRepositories() {
         return gitTrackingAccess.getAllRepositories();
     }
 
@@ -69,7 +74,7 @@ public class GitTracking implements IRepositoryImporter {
     public void removeRepository(int repositoryID) throws NotFoundException {
         gitTrackingAccess.removeRepository(repositoryID);
 
-        for (Commit commit : gitTrackingAccess.getAllCommits(repositoryID)) {
+        for (GitCommit commit : gitTrackingAccess.getAllCommits(repositoryID)) {
             resultDeleter.deleteBenchmarkingResults(commit.getCommitHash());
         }
     }
@@ -79,7 +84,9 @@ public class GitTracking implements IRepositoryImporter {
      * @param repository is the repository being updated.
      * @throws NotFoundException if the repository was not found in the database.
      */
-    public void updateRepository(Repository repository) throws NotFoundException {
+    public void updateRepository(@NotNull GitRepository repository) throws NotFoundException {
+        Objects.requireNonNull(repository);
+
         gitTrackingAccess.updateRepository(repository);
     }
 
@@ -95,7 +102,7 @@ public class GitTracking implements IRepositoryImporter {
      * Pulls from all repositories.
      */
     public void pullFromAllRepositories() {
-        for (Repository repository : gitTrackingAccess.getAllRepositories()) {
+        for (GitRepository repository : gitTrackingAccess.getAllRepositories()) {
             if (!repository.isHookSet()) {
                 pullFromRepository(repository.getId());
             }

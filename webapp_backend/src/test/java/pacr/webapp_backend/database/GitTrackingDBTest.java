@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pacr.webapp_backend.git_tracking.Branch;
-import pacr.webapp_backend.git_tracking.Commit;
-import pacr.webapp_backend.git_tracking.Repository;
+import pacr.webapp_backend.git_tracking.GitBranch;
+import pacr.webapp_backend.git_tracking.GitCommit;
+import pacr.webapp_backend.git_tracking.GitRepository;
 
 import java.awt.*;
 import java.time.LocalDate;
@@ -28,9 +28,9 @@ public class GitTrackingDBTest {
 
     private GitTrackingDB gitTrackingDB;
 
-    private Repository repository;
+    private GitRepository repository;
     private String commitHash;
-    private Commit commit;
+    private GitCommit commit;
 
     @Autowired
     public GitTrackingDBTest(GitTrackingDB gitTrackingDB) {
@@ -43,10 +43,10 @@ public class GitTrackingDBTest {
     @BeforeEach
     public void setUp() {
         // repository
-        Set<Branch> selectedBranches = new HashSet<>();
-        selectedBranches.add(new Branch("branch1"));
-        selectedBranches.add(new Branch("branch2"));
-        repository = new Repository(true, selectedBranches, "pullURL", "RepositoryName",
+        Set<GitBranch> selectedBranches = new HashSet<>();
+        selectedBranches.add(new GitBranch("branch1"));
+        selectedBranches.add(new GitBranch("branch2"));
+        repository = new GitRepository(true, selectedBranches, "pullURL", "RepositoryName",
                 new Color(0, 0, 0), LocalDate.now());
 
         // commit
@@ -54,11 +54,11 @@ public class GitTrackingDBTest {
         String message = "commit message";
         LocalDate commitDate = LocalDate.now();
         LocalDate authorDate = LocalDate.now();
-        Set<Commit> parents = new HashSet<>();
-        Repository repositoryForCommit = new Repository();
-        Branch branch = new Branch("test branch");
+        Set<GitCommit> parents = new HashSet<>();
+        GitRepository repositoryForCommit = new GitRepository();
+        GitBranch branch = new GitBranch("test branch");
 
-        commit = new Commit(commitHash, message, commitDate, authorDate, parents, repositoryForCommit, branch);
+        commit = new GitCommit(commitHash, message, commitDate, authorDate, parents, repositoryForCommit, branch);
 
         commit.addLabel("Label1");
         commit.addLabel("Label2");
@@ -74,7 +74,7 @@ public class GitTrackingDBTest {
         assertTrue(repository.isInDatabase());
 
         assertEquals(id, repository.getId());
-        Repository fromDB = gitTrackingDB.getRepository(id);
+        GitRepository fromDB = gitTrackingDB.getRepository(id);
 
         assertEquals(repository.getId(), fromDB.getId());
         assertEquals(repository.getColor(), fromDB.getColor());
@@ -89,7 +89,7 @@ public class GitTrackingDBTest {
     @Test
     public void getAllRepositories() {
         int id = gitTrackingDB.addRepository(repository);
-        Collection<Repository> repositoriesFromDB = gitTrackingDB.getAllRepositories();
+        Collection<GitRepository> repositoriesFromDB = gitTrackingDB.getAllRepositories();
         assertEquals(1, repositoriesFromDB.size());
     }
 
@@ -99,7 +99,7 @@ public class GitTrackingDBTest {
     @Test
     public void removeRepository() {
         int id = gitTrackingDB.addRepository(repository);
-        Repository fromDB = gitTrackingDB.getRepository(id);
+        GitRepository fromDB = gitTrackingDB.getRepository(id);
 
         try {
             gitTrackingDB.removeRepository(id);
@@ -118,7 +118,7 @@ public class GitTrackingDBTest {
     public void updateRepository() {
         int id = gitTrackingDB.addRepository(repository);
 
-        Repository fromDB = gitTrackingDB.getRepository(id);
+        GitRepository fromDB = gitTrackingDB.getRepository(id);
 
         assertEquals(repository.getName(), fromDB.getName());
 
@@ -156,11 +156,11 @@ public class GitTrackingDBTest {
         gitTrackingDB.addCommit(commit);
 
         // getting all commits with repository ID
-        Collection<Commit> commits = gitTrackingDB.getAllCommits(repository.getId());
+        Collection<GitCommit> commits = gitTrackingDB.getAllCommits(repository.getId());
         assertEquals(1, commits.size());
 
         // getting commit with commitHash
-        Commit fromDB = gitTrackingDB.getCommit(commitHash);
+        GitCommit fromDB = gitTrackingDB.getCommit(commitHash);
 
         // checking all parameters
         assertEquals(commit.getMessage(), fromDB.getMessage());
@@ -176,13 +176,13 @@ public class GitTrackingDBTest {
      */
     @Test
     public void unableToAddCommitToDatabase() {
-        commit.setRepository(new Repository());
+        commit.setRepository(new GitRepository());
         assertThrows(RepositoryNotStoredException.class, () -> gitTrackingDB.addCommit(commit));
     }
 
     @AfterEach
     public void cleanUp() {
-        for (Repository repository : gitTrackingDB.getAllRepositories()) {
+        for (GitRepository repository : gitTrackingDB.getAllRepositories()) {
             try {
                 gitTrackingDB.removeRepository(repository.getId());
             } catch (NotFoundException e) {

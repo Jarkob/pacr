@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 
 /**
  * This class represents a branch.
@@ -16,7 +17,7 @@ import java.util.HashSet;
  * @author Pavel Zwerschke
  */
 @Entity
-public class Branch {
+public class GitBranch {
 
     @Id
     @GeneratedValue
@@ -25,22 +26,21 @@ public class Branch {
     private String name;
 
     @OneToMany(fetch = FetchType.EAGER)
-    private Collection<Commit> commits;
+    private Collection<GitCommit> commits;
 
     /**
      * Creates an empty branch. Necessary to be an Entity.
      */
-    public Branch() {
+    public GitBranch() {
     }
 
     /**
      * Creates a new branch.
      * @param name is the name of the branch.
      */
-    public Branch(@NotNull String name) {
-        if (name == null) {
-            throw new IllegalArgumentException("name must not be null.");
-        }
+    public GitBranch(@NotNull String name) {
+        Objects.requireNonNull(name);
+
         this.name = name;
         this.commits = new HashSet<>();
     }
@@ -57,7 +57,7 @@ public class Branch {
      * Returns all commits in this branch.
      * @return commits
      */
-    public Collection<Commit> getCommits() {
+    public Collection<GitCommit> getCommits() {
         return commits;
     }
 
@@ -65,10 +65,9 @@ public class Branch {
      * Adds a commit to this branch.
      * @param commit is the commit being added.
      */
-    public void addCommit(@NotNull Commit commit) {
-        if (commit == null) {
-            throw new IllegalArgumentException("commit must not be null.");
-        }
+    public void addCommit(@NotNull GitCommit commit) {
+        Objects.requireNonNull(commit);
+
         if (commits.contains(commit)) {
             return;
         }
