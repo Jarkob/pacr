@@ -37,6 +37,7 @@ class BenchmarkProperty {
     /**
      * Creates a BenchmarkProperty with a name, a unit, an interpretation and the corresponding benchmark.
      * This constructor does not add this property to the benchmark.
+     * Throws IllegalArgumentException if one of the parameters is null or the name is empty or blank.
      *
      * @param name the name;
      * @param unit the unit;
@@ -44,6 +45,12 @@ class BenchmarkProperty {
      * @param benchmark the corresponding benchmark;
      */
     BenchmarkProperty(String name, String unit, ResultInterpretation interpretation, Benchmark benchmark) {
+        if (name == null || name.isEmpty() || name.isBlank()) {
+            throw new IllegalArgumentException("name cannot be null, empty or blank");
+        }
+        if (unit == null || interpretation == null || benchmark == null) {
+            throw new IllegalArgumentException("input cannot be null");
+        }
         this.name = name;
         this.unit = unit;
         this.interpretation = interpretation;

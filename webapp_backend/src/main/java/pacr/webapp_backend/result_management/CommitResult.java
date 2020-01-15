@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +44,14 @@ public class CommitResult implements IBenchmarkingResult {
     /**
      * Creates a CommitResult from an IBenchmarkingResult and measurements for benchmarks. Copies error message,
      * commitHash, system environment and the repository from the IBenchmarkingResult.
-     * @param result the IBenchmarkingResult
-     * @param benchmarkResults the measured data for each benchmark.
+     * Throws IllegalArgumentException if any parameter is null.
+     * @param result the IBenchmarkingResult.
+     * @param benchmarkResults the measured data for each benchmark. May be empty.
      */
-    public CommitResult(IBenchmarkingResult result, List<BenchmarkResult> benchmarkResults) {
+    public CommitResult(@NotNull IBenchmarkingResult result, @NotNull List<BenchmarkResult> benchmarkResults) {
+        if (result == null || benchmarkResults == null) {
+            throw new IllegalArgumentException("input cannot be null");
+        }
         if (result.getGlobalError() != null) {
             this.error = true;
             this.errorMessage = result.getGlobalError();
@@ -60,12 +65,19 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     /**
-     * Creates a CommitResult with no error.
-     * @param commitHash the hash of the measured commit-
+     * Creates a CommitResult with no error. Throws IllegalArgumentException if any input parameter is null.
+     * @param commitHash the hash of the measured commit. Throws IllegalArgumentException if it is empty.
      * @param systemEnvironment the system environment of the benchmarks.
      * @param benchmarkResults the measured data for each benchmark.
      */
-    public CommitResult(String commitHash, SystemEnvironment systemEnvironment, List<BenchmarkResult> benchmarkResults) {
+    public CommitResult(@NotNull String commitHash, @NotNull SystemEnvironment systemEnvironment,
+                        @NotNull List<BenchmarkResult> benchmarkResults) {
+        if (commitHash == null || commitHash.isEmpty()) {
+            throw new IllegalArgumentException("commit hash cannot be null or empty");
+        }
+        if (systemEnvironment == null || benchmarkResults == null) {
+            throw new IllegalArgumentException("input cannot be null");
+        }
         this.error = false;
         this.errorMessage = null;
         this.commitHash = commitHash;
@@ -86,15 +98,20 @@ public class CommitResult implements IBenchmarkingResult {
     @Override
     public Map<String, IBenchmark> getBenchmarks() {
         Map<String, IBenchmark> benchmarks = new HashMap<>();
+
         for (BenchmarkResult benchmarkResult : benchmarkResults) {
             benchmarks.put(benchmarkResult.getName(), benchmarkResult);
         }
+
         return benchmarks;
     }
 
     @Override
     public String getGlobalError() {
-        return errorMessage;
+        if (hasGlobalError()) {
+            return errorMessage;
+        }
+        return null;
     }
 
     /**
@@ -109,7 +126,7 @@ public class CommitResult implements IBenchmarkingResult {
      * Indicates whether a global error occurred while benchmarking the commit.
      * @return true if an error occurred, otherwise false.
      */
-    boolean isError() {
+    boolean hasGlobalError() {
         return error;
     }
 }

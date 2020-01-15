@@ -23,7 +23,7 @@ public interface IBenchmarkProperty {
     String getUnit();
 
     /**
-     * @return an error message if an error occurred.
+     * @return an error message if an error occurred. otherwise returns null.
      */
     String getError();
 

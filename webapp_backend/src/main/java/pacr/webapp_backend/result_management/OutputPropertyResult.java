@@ -3,6 +3,7 @@ package pacr.webapp_backend.result_management;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -23,9 +24,13 @@ public class OutputPropertyResult implements IBenchmarkProperty {
     /**
      * Creates a OutputPropertyResult from a BenchmarkPropertyResult. Copies all statistical data and the associated
      * property.
-     * @param result the BenchmarkPropertyResult that this OutputPropertyResult is cloned from.
+     * @param result the BenchmarkPropertyResult that this OutputPropertyResult is cloned from. Throws
+     *               IllegalArgumentException if result is null.
      */
-    OutputPropertyResult(BenchmarkPropertyResult result) {
+    OutputPropertyResult(@NotNull BenchmarkPropertyResult result) {
+        if (result == null) {
+            throw new IllegalArgumentException("result cannot be null");
+        }
         this.property = result.getProperty();
         this.mean = result.getMean();
         this.lowerQuartile = result.getLowerQuartile();
@@ -58,7 +63,10 @@ public class OutputPropertyResult implements IBenchmarkProperty {
 
     @Override
     public String getError() {
-        return errorMessage;
+        if (hadLocalError) {
+            return errorMessage;
+        }
+        return null;
     }
 
     /**
@@ -71,7 +79,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
 
     /**
      * Indicates whether there was an error while measuring this property.
-     * @return true if there was an error. otherwise false.
+     * @return {@code true} if there was an error, otherwise {@code false}.
      */
     public boolean hadLocalError() {
         return hadLocalError;

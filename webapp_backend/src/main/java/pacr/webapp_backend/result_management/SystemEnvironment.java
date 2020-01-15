@@ -5,6 +5,7 @@ import pacr.webapp_backend.shared.ISystemEnvironment;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
 
 /**
  * Represents the specification of a computer system that was used to benchmark a certain commit.
@@ -28,9 +29,12 @@ public class SystemEnvironment implements ISystemEnvironment {
 
     /**
      * Creates a system environment. Copies all data from the given system environment.
-     * @param sysEnv the system environment.
+     * @param sysEnv the system environment. Throws IllegalArgumentException if it is null.
      */
-    SystemEnvironment(ISystemEnvironment sysEnv) {
+    SystemEnvironment(@NotNull ISystemEnvironment sysEnv) {
+        if (sysEnv == null) {
+            throw new IllegalArgumentException("system environment cannot be null");
+        }
         this.os = sysEnv.getOS();
         this.kernel = sysEnv.getKernel();
         this.cores = sysEnv.getCores();
@@ -38,13 +42,16 @@ public class SystemEnvironment implements ISystemEnvironment {
     }
 
     /**
-     * Creates a system environment.
-     * @param os the os
-     * @param kernel the processor
-     * @param cores the number of cores
-     * @param memory the amount of memory in GB
+     * Creates a system environment. Throws IllegalArgumentException if strings are null, empty or blank.
+     * @param os the os. Cannot be empty or blank.
+     * @param kernel the kernel. Cannot be empty or blank.
+     * @param cores the number of cores.
+     * @param memory the amount of memory in GB.
      */
-    public SystemEnvironment(String os, String kernel, int cores, long memory) {
+    public SystemEnvironment(@NotNull String os, @NotNull String kernel, int cores, long memory) {
+        if (!isInputStringValid(os) || !isInputStringValid(kernel)) {
+            throw new IllegalArgumentException("input cannot be null, empty or blank");
+        }
         this.os = os;
         this.kernel = kernel;
         this.cores = cores;
@@ -69,5 +76,12 @@ public class SystemEnvironment implements ISystemEnvironment {
     @Override
     public long getRamMemory() {
         return this.memory;
+    }
+
+    private boolean isInputStringValid(String string) {
+        if (string == null || string.isEmpty() || string.isBlank()) {
+            return false;
+        }
+        return true;
     }
 }

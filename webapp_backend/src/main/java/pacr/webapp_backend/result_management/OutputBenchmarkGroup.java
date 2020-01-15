@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management;
 
+import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,10 +13,14 @@ public class OutputBenchmarkGroup {
 
     /**
      * Creates a new OutputBenchmarkGroup with a number of benchmarks that is backed by a BenchmarkGroup.
+     * Throws IllegalArgumentException if a parameter is null.
      * @param benchmarks the benchmarks.
      * @param group the BenchmarkGroup that backs this output entity.
      */
-    OutputBenchmarkGroup(OutputBenchmark[] benchmarks, BenchmarkGroup group) {
+    OutputBenchmarkGroup(@NotNull OutputBenchmark[] benchmarks, @NotNull BenchmarkGroup group) {
+        if (benchmarks == null || group == null) {
+            throw new IllegalArgumentException("benchmarks or group cannot be null");
+        }
         this.benchmarks = benchmarks;
         this.group = group;
     }

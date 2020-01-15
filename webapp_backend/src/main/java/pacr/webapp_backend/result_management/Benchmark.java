@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,8 +23,16 @@ public class Benchmark {
     @GeneratedValue
     private int id;
 
-    private String benchmarkName;
+    /**
+     * The name this benchmark object was created with. Cannot be changed after creating the benchmark.
+     */
+    private String originalName;
+
+    /**
+     * The custom name of this benchmark object that can be changed.
+     */
     private String customName;
+
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL)
@@ -41,11 +50,15 @@ public class Benchmark {
     /**
      * Creates a benchmark with a name. This name is used both as the original name and the custom name.
      * The description and list of properties are empty, and this Benchmark is not associated with a BenchmarkGroup.
-     * @param benchmarkName the original name of the benchmark.
+     * @param originalName the original name of the benchmark. Throws IllegalArgumentException if it is null, empty or
+     *                     blank.
      */
-    public Benchmark(String benchmarkName) {
-        this.benchmarkName = benchmarkName;
-        this.customName = benchmarkName;
+    public Benchmark(@NotNull String originalName) {
+        if (originalName == null || originalName.isEmpty() || originalName.isBlank()) {
+            throw new IllegalArgumentException("originalName cannot be null, empty or blank");
+        }
+        this.originalName = originalName;
+        this.customName = originalName;
         this.description = "";
         this.propertyList = new LinkedList<>();
         this.group = null;
@@ -63,8 +76,8 @@ public class Benchmark {
      * Gets the original name of the benchmark with which it was created.
      * @return the original name.
      */
-    public String getBenchmarkName() {
-        return benchmarkName;
+    public String getOriginalName() {
+        return originalName;
     }
 
     /**
@@ -100,23 +113,29 @@ public class Benchmark {
     }
 
     /**
-     * Sets the custom name to a new name.
+     * Sets the custom name to a new name as long as its not null, empty or blank. Otherwise the custom name remains the
+     * same.
      * @param customName the new custom name.
      */
     public void setCustomName(String customName) {
-        this.customName = customName;
+        if (customName != null && !customName.isEmpty() && !customName.isBlank()) {
+            this.customName = customName;
+        }
     }
 
     /**
-     * Sets the description to a new description.
+     * Sets the description to a new description as long as its not null.
      * @param description the new description.
      */
     public void setDescription(String description) {
-        this.description = description;
+        if (description != null) {
+            this.description = description;
+        }
     }
 
     /**
-     * Sets the group that this benchmark belongs to to a new group.
+     * Sets the group that this benchmark belongs to to a new group. The new group may be null if this benchmark
+     * belongs to no group.
      * @param group the new group.
      */
     public void setGroup(BenchmarkGroup group) {
@@ -125,11 +144,11 @@ public class Benchmark {
 
     /**
      * Adds a new property to the list of properties of this benchmark.
-     * If the list already contains this property, no action is taken.
+     * If the list already contains this property or the property is null, no action is taken.
      * @param property the new property.
      */
     public void addProperty(BenchmarkProperty property) {
-        if (!this.propertyList.contains(property)) {
+        if (property != null && !this.propertyList.contains(property)) {
             this.propertyList.add(property);
         }
     }

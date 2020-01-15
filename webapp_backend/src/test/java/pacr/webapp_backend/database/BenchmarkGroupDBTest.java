@@ -12,6 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @SpringBootTest
 public class BenchmarkGroupDBTest {
 
+    private static final String GROUP_NAME = "group";
+    private static final String BENCHMARK_NAME = "benchmark";
+
     private BenchmarkGroupDB groupDB;
     private BenchmarkDB benchmarkDB;
 
@@ -32,11 +35,13 @@ public class BenchmarkGroupDBTest {
      */
     @Test
     public void saveGroup_saveInDatabase_getGroupShouldReturnGroup() {
-        BenchmarkGroup group = new BenchmarkGroup("group");
+        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         groupDB.saveBenchmarkGroup(group);
         int id = group.getId();
+
         BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(id);
-        assertEquals("group", savedGroup.getName());
+
+        assertEquals(GROUP_NAME, savedGroup.getName());
     }
 
     /**
@@ -44,8 +49,8 @@ public class BenchmarkGroupDBTest {
      */
     @Test
     public void getGroup_saveFromBenchmarkDB_shouldReturnSameGroup() {
-        Benchmark benchmark = new Benchmark("benchmark");
-        BenchmarkGroup group = new BenchmarkGroup("group1325");
+        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         benchmark.setGroup(group);
         group.addBenchmark(benchmark);
 
@@ -53,6 +58,7 @@ public class BenchmarkGroupDBTest {
         int groupId = group.getId();
 
         BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(groupId);
-        assertEquals("group1325", savedGroup.getName());
+
+        assertEquals(GROUP_NAME, savedGroup.getName());
     }
 }

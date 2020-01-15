@@ -5,6 +5,7 @@ import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
-    private boolean hadGlobalError;
+    private boolean globalError;
     private String errorMessage;
     private ICommit commit;
     private ISystemEnvironment systemEnvironment;
@@ -28,16 +29,20 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     /**
      * Creates an OutputBenchmarkingResult for a commit. Copies system environment and error information from the
      * CommitResult. Throws IllegalArgumentException if the CommitResult refers to a different commit hash than
-     * the ICommit.
+     * the ICommit or if one of the parameters is null.
      * @param commit the commit.
      * @param result the result for the commit.
      * @param groups the benchmark groups with benchmarks, their properties and their corresponding measurements.
      */
-    OutputBenchmarkingResult(ICommit commit, CommitResult result, OutputBenchmarkGroup[] groups) {
-        if (!commit.getCommitHash().equals(result.getCommitHash())) {
-            throw new IllegalArgumentException();
+    OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
+                             @NotNull OutputBenchmarkGroup[] groups) {
+        if (commit == null || result == null || groups == null) {
+            throw new IllegalArgumentException("input cannot be null");
         }
-        this.hadGlobalError = result.isError();
+        if (!belongToSameCommit(commit, result)) {
+            throw new IllegalArgumentException("commit and result must belong to same commit hash");
+        }
+        this.globalError = result.hasGlobalError();
         this.errorMessage = result.getGlobalError();
         this.commit = commit;
         this.systemEnvironment = result.getSystemEnvironment();
@@ -57,17 +62,22 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     @Override
     public Map<String, IBenchmark> getBenchmarks() {
         Map<String, IBenchmark> benchmarks = new HashMap<>();
+
         for (OutputBenchmarkGroup group : groups) {
             for (OutputBenchmark benchmark : group.getBenchmarks()) {
                 benchmarks.put(benchmark.getOriginalName(), benchmark);
             }
         }
+
         return benchmarks;
     }
 
     @Override
     public String getGlobalError() {
-        return errorMessage;
+        if (hasGlobalError()) {
+            return errorMessage;
+        }
+        return null;
     }
 
     /**
@@ -150,7 +160,14 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Indicates whether there was global error while benchmarking the commit.
      * @return true if there was a global error. Otherwise false.
      */
-    public boolean hadGlobalError() {
-        return hadGlobalError;
+    public boolean hasGlobalError() {
+        return globalError;
+    }
+
+    private boolean belongToSameCommit(ICommit commit, CommitResult result) {
+        if (commit != null && result != null) {
+            return commit.getCommitHash().equals(result.getCommitHash());
+        }
+        return false;
     }
 }

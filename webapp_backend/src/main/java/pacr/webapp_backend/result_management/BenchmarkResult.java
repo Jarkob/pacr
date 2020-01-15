@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,10 +39,16 @@ public class BenchmarkResult implements IBenchmark {
 
     /**
      * Creates a BenchmarkResult from an array of property results with the measured data and a benchmark.
-     * @param propertyResults the measured data for properties.
-     * @param benchmark the benchmark.
+     * @param propertyResults the measured data for properties. Throws IllegalArgumentException if it is null or empty.
+     * @param benchmark the benchmark. Throws IllegalArgumentException if it is null.
      */
-    public BenchmarkResult(List<BenchmarkPropertyResult> propertyResults, Benchmark benchmark) {
+    public BenchmarkResult(@NotNull List<BenchmarkPropertyResult> propertyResults, @NotNull Benchmark benchmark) {
+        if (propertyResults == null || propertyResults.isEmpty()) {
+            throw new IllegalArgumentException("propertyResults cannot be null or empty");
+        }
+        if (benchmark == null) {
+            throw new IllegalArgumentException("benchmark cannot be null");
+        }
         this.propertyResults = propertyResults;
         this.benchmark = benchmark;
     }
@@ -49,9 +56,11 @@ public class BenchmarkResult implements IBenchmark {
     @Override
     public Map<String, IBenchmarkProperty> getBenchmarkProperties() {
         Map<String, IBenchmarkProperty> properties = new HashMap<>();
+
         for (BenchmarkPropertyResult propertyResult : propertyResults) {
             properties.put(propertyResult.getName(), propertyResult);
         }
+
         return properties;
     }
 
@@ -68,7 +77,7 @@ public class BenchmarkResult implements IBenchmark {
      * @return the name.
      */
     public String getName() {
-        return benchmark.getBenchmarkName();
+        return benchmark.getOriginalName();
     }
 
     /**

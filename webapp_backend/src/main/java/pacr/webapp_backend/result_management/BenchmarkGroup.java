@@ -6,6 +6,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,9 +35,12 @@ public class BenchmarkGroup {
 
     /**
      * Creates a new BenchmarkGroup with a name.
-     * @param name the name.
+     * @param name the name. Cannot be null, empty or blank (throws IllegalArgumentException).
      */
-    public BenchmarkGroup(String name) {
+    public BenchmarkGroup(@NotNull String name) {
+        if (name == null || name.isEmpty() || name.isBlank()) {
+            throw new IllegalArgumentException("name cannot be null, empty or blank.");
+        }
         this.name = name;
         this.benchmarkList = new LinkedList<>();
     }
@@ -58,11 +62,14 @@ public class BenchmarkGroup {
     }
 
     /**
-     * Sets the name of this group to a new name.
+     * Sets the name of this group to a new name as long as its not null, empty or blank. Otherwise the name remains
+     * the same.
      * @param name the new name.
      */
     public void setName(String name) {
-        this.name = name;
+        if (name != null && !name.isEmpty() && !name.isBlank()) {
+            this.name = name;
+        }
     }
 
     /**
@@ -74,11 +81,12 @@ public class BenchmarkGroup {
     }
 
     /**
-     * Adds a benchmark to this group if it wasn't already associated.
+     * Adds a benchmark to this group if it wasn't already associated. No action is taken if the given benchmark is
+     * null.
      * @param benchmark the benchmark.
      */
     public void addBenchmark(Benchmark benchmark) {
-        if (!benchmarkList.contains(benchmark)) {
+        if (benchmark != null && !benchmarkList.contains(benchmark)) {
             benchmarkList.add(benchmark);
         }
     }

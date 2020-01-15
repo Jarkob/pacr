@@ -23,7 +23,7 @@ public interface IBenchmarkingResult {
     Map<String, ? extends IBenchmark> getBenchmarks();
 
     /**
-     * @return an error message if there was a general error.
+     * @return an error message if there was a general error. otherwise returns null.
      */
     String getGlobalError();
 

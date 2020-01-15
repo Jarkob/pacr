@@ -2,7 +2,7 @@ package pacr.webapp_backend.result_management;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import pacr.webapp_backend.shared.ResultInterpretation;
+import org.mockito.Mock;
 
 import java.util.Arrays;
 
@@ -10,10 +10,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BenchmarkPropertyResultTest {
 
-    private static final String commitHash = "test123";
-
     private static BenchmarkPropertyResult propertyResultEven;
     private static BenchmarkPropertyResult propertyResultOdd;
+
+    @Mock
+    private static BenchmarkProperty propertyMock;
 
     private static final double DELTA = 0.01;
     private static final Double[] RESULTS_EVEN = { 3d, 4d, 5d, 9d };
@@ -30,17 +31,16 @@ public class BenchmarkPropertyResultTest {
     private static final double UPPER_QUARTILE_ODD = 9;
     private static final double STANDARD_DEVIATION_ODD = 2.62;
 
+    private static final String NAME = "stub";
+
     /**
      * Sets up two property results. One with an odd and one with an even number of measurements. This distinction is
      * important because the method to calculate the median, etc. differs slightly in these two cases.
      */
     @BeforeAll
     public static void setUp() {
-        Benchmark benchmark = new Benchmark("stub");
-        ResultInterpretation lessIsBetter = ResultInterpretation.LESS_IS_BETTER;
-        BenchmarkProperty property = new BenchmarkProperty("stub", "stub", lessIsBetter, benchmark);
-        propertyResultEven = new BenchmarkPropertyResult(Arrays.asList(RESULTS_EVEN), property);
-        propertyResultOdd = new BenchmarkPropertyResult(Arrays.asList(RESULTS_ODD), property);
+        propertyResultEven = new BenchmarkPropertyResult(Arrays.asList(RESULTS_EVEN), propertyMock);
+        propertyResultOdd = new BenchmarkPropertyResult(Arrays.asList(RESULTS_ODD), propertyMock);
     }
 
     /**

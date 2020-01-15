@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management;
 
 
+import pacr.webapp_backend.result_management.services.StatisticalCalculator;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
@@ -62,11 +63,11 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
             this.errorMessage = null;
         }
         this.measurements = new LinkedList<>(measurement.getResults());
-        this.mean = this.getMeanFromResults();
-        this.lowerQuartile = this.getQuantileFromResults(0.25);
-        this.median = this.getQuantileFromResults(0.5);
-        this.upperQuartile = this.getQuantileFromResults(0.75);
-        this.standardDeviation = this.getStandardDeviationFromResults();
+        this.mean = StatisticalCalculator.getMean(this.measurements);
+        this.lowerQuartile = StatisticalCalculator.getQuantile(0.25, this.measurements);
+        this.median = StatisticalCalculator.getQuantile(0.5, this.measurements);
+        this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
+        this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
     }
 
     /**
@@ -80,11 +81,11 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         this.error = false;
         this.errorMessage = null;
         this.measurements = measurements;
-        this.mean = this.getMeanFromResults();
-        this.lowerQuartile = this.getQuantileFromResults(0.25);
-        this.median = this.getQuantileFromResults(0.5);
-        this.upperQuartile = this.getQuantileFromResults(0.75);
-        this.standardDeviation = this.getStandardDeviationFromResults();
+        this.mean = StatisticalCalculator.getMean(this.measurements);
+        this.lowerQuartile = StatisticalCalculator.getQuantile(0.25, this.measurements);
+        this.median = StatisticalCalculator.getQuantile(0.5, this.measurements);
+        this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
+        this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
     }
 
     /**
@@ -102,7 +103,10 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
 
     @Override
     public String getError() {
-        return errorMessage;
+        if (isError()) {
+            return errorMessage;
+        }
+        return null;
     }
 
     @Override
@@ -177,45 +181,5 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      */
     BenchmarkProperty getProperty() {
         return property;
-    }
-
-    private double getQuantileFromResults(double p) {
-        if (this.measurements.size() == 0) {
-            return -1;
-        }
-
-        List<Double> resultsList = new LinkedList<>(measurements);
-        Collections.sort(resultsList);
-
-        double index = this.measurements.size() * p;
-
-        if (index == Math.ceil(index)) {
-            return (resultsList.get((int) index - 1) + resultsList.get((int) index)) / 2;
-        } else {
-            return resultsList.get((int) Math.floor(index));
-        }
-    }
-
-    private double getMeanFromResults() {
-        if (this.measurements.size() == 0) {
-            return -1;
-        }
-        double total = 0;
-        for (double result : this.measurements) {
-            total += result;
-        }
-        return total / this.measurements.size();
-    }
-
-    private double getStandardDeviationFromResults() {
-        if (this.measurements.size() == 0) {
-            return -1;
-        }
-        double mean = this.getMeanFromResults();
-        double sumOfResultsMinusMeanSquared = 0;
-        for (double result : this.measurements) {
-            sumOfResultsMinusMeanSquared += Math.pow(result - mean, 2);
-        }
-        return Math.sqrt(sumOfResultsMinusMeanSquared / this.measurements.size());
     }
 }
