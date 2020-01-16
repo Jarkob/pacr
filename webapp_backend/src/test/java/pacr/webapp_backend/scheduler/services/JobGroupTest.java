@@ -3,6 +3,7 @@ package pacr.webapp_backend.scheduler.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -17,45 +18,57 @@ public class JobGroupTest {
     }
 
     @Test
-    void createJobGroup_correctTitle() {
+    void JobGroup_noError() {
+        assertDoesNotThrow(() -> {
+            JobGroup jobGroup = new JobGroup(GROUP_TITLE);
+        });
+    }
+
+    @Test
+    void JobGroup_invalidTitle() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            JobGroup jobGroup = new JobGroup(null);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            JobGroup jobGroup = new JobGroup("");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            JobGroup jobGroup = new JobGroup(" ");
+        });
+    }
+
+    @Test
+    void JobGroup_correctTitle() {
+        JobGroup jobGroup = new JobGroup(GROUP_TITLE);
+
         assertEquals(GROUP_TITLE, jobGroup.getTitle());
     }
 
     @Test
-    void createJobGroup_benchmarkingTime() {
-        assertEquals(0, jobGroup.getBenchmarkingTime());
-    }
+    void JobGroup_timeSheetIsZero() {
+        JobGroup jobGroup = new JobGroup(GROUP_TITLE);
 
-    @Test
-    void createJobGroup_nullTitle() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            JobGroup group = new JobGroup(null);
-        });
-    }
-
-    @Test
-    void createJobGroup_emptyTitle() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            JobGroup group = new JobGroup("");
-        });
+        assertEquals(0, jobGroup.getTimeSheet());
     }
 
     @Test
     void updateTimeSheet_noError() {
         final long TIME = 13;
 
-        jobGroup.updateTimeSheet(TIME);
+        jobGroup.addToTimeSheet(TIME);
 
-        assertEquals(TIME, jobGroup.getBenchmarkingTime());
+        assertEquals(TIME, jobGroup.getTimeSheet());
     }
 
     @Test
     void updateTimeSheet_addZero_noError() {
         final long TIME = 0;
 
-        jobGroup.updateTimeSheet(TIME);
+        jobGroup.addToTimeSheet(TIME);
 
-        assertEquals(TIME, jobGroup.getBenchmarkingTime());
+        assertEquals(TIME, jobGroup.getTimeSheet());
     }
 
     @Test
@@ -65,10 +78,10 @@ public class JobGroupTest {
         final long expected = ITERATIONS * TIME;
 
         for (int i = 0; i < ITERATIONS; i++) {
-            jobGroup.updateTimeSheet(TIME);
+            jobGroup.addToTimeSheet(TIME);
         }
 
-        assertEquals(expected, jobGroup.getBenchmarkingTime());
+        assertEquals(expected, jobGroup.getTimeSheet());
     }
 
     @Test
@@ -76,8 +89,18 @@ public class JobGroupTest {
         final long TIME = -13;
 
         assertThrows(IllegalArgumentException.class, () -> {
-            jobGroup.updateTimeSheet(TIME);
+            jobGroup.addToTimeSheet(TIME);
         });
     }
 
+    @Test
+    void resetBenchmarkingTime_noError() {
+        final long TIME = 20;
+
+        jobGroup.addToTimeSheet(TIME);
+
+        jobGroup.resetTimeSheet();
+
+        assertEquals(0, jobGroup.getTimeSheet());
+    }
 }

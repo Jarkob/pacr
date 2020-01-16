@@ -339,6 +339,35 @@ public class SchedulerTest {
         }
     }
 
+    @Test
+    void resetJobGroupTimeSheets_noError() {
+        final String secondGroupTitle = JOB_GROUP + 1;
+        final String secondJobID = JOB_ID + 1;
+
+        scheduler.addJob(JOB_GROUP, JOB_ID);
+        scheduler.addJob(secondGroupTitle, secondJobID);
+
+        scheduler.givePriorityTo(secondGroupTitle, secondJobID);
+
+        final long time = 20;
+        scheduler.addToGroupTimeSheet(JOB_GROUP, time);
+        scheduler.addToGroupTimeSheet(secondGroupTitle, time);
+
+        scheduler.resetJobGroupTimeSheets();
+
+        List<Job> jobs = scheduler.getJobsQueue();
+        assertEquals(1, jobs.size());
+        for (Job job : jobs) {
+            assertEquals(0, job.getGroupTimeSheet());
+        }
+
+        List<Job> prioritized = scheduler.getPrioritizedQueue();
+        assertEquals(1, prioritized.size());
+        for (Job job : prioritized) {
+            assertEquals(0, job.getGroupTimeSheet());
+        }
+    }
+
     private void checkSchedulerQueue(int amtJobs, int amtPrioritizedJobs) {
         List<Job> jobs = scheduler.getJobsQueue();
         List<Job> prioritized = scheduler.getPrioritizedQueue();
