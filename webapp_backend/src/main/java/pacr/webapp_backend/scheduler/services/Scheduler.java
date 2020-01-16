@@ -25,10 +25,10 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     private static final String CRON_DAILY = "0 0 0 * * *";
 
-    private PriorityQueue<Job> jobs;
+    private DynamicPriorityQueue<Job> jobs;
 
     // holds manually prioritized jobs
-    private PriorityQueue<Job> prioritized;
+    private DynamicPriorityQueue<Job> prioritized;
 
     private Map<String, JobGroup> groups;
 
@@ -38,8 +38,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * Creates a new scheduler and sets the used scheduling policy.
      */
     public Scheduler() {
-        this.jobs = new PriorityQueue<Job>(new AdvancedSchedulingAlgorithm());
-        this.prioritized = new PriorityQueue<Job>(new FIFOSchedulingAlgorithm());
+        this.jobs = new DynamicPriorityQueue<>(new AdvancedSchedulingAlgorithm());
+        this.prioritized = new DynamicPriorityQueue<Job>(new FIFOSchedulingAlgorithm());
 
         this.groups = new HashMap<>();
 
@@ -120,7 +120,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @return a list of jobs.
      */
     public List<Job> getJobsQueue() {
-        return getSortedListFrom(jobs);
+        return jobs.getSortedList();
     }
 
     /**
@@ -128,23 +128,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @return a list of jobs.
      */
     public List<Job> getPrioritizedQueue() {
-        return getSortedListFrom(prioritized);
-    }
-
-    private List<Job> getSortedListFrom(PriorityQueue<Job> priorityQueue) {
-        PriorityQueue<Job> queue = new PriorityQueue<>(priorityQueue.comparator());
-        queue.addAll(priorityQueue);
-
-        List<Job> sortedList = new ArrayList<>();
-
-        // PriorityQueue is not necessarily sorted
-        while (!queue.isEmpty()) {
-            Job job = queue.poll();
-
-            sortedList.add(job);
-        }
-
-        return sortedList;
+        return prioritized.getSortedList();
     }
 
     @Override

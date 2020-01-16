@@ -131,6 +131,22 @@ public class SchedulerTest {
     }
 
     @Test
+    void popJob_changedPriority() throws InterruptedException {
+        scheduler.addJob(JOB_GROUP, JOB_ID);
+        Thread.sleep(1000);
+        scheduler.addJob(JOB_GROUP + 1, JOB_ID + 1);
+
+        // jobs belonging to JOB_GROUP1 should be scheduled last.
+        final long time = 10;
+        scheduler.addToGroupTimeSheet(JOB_GROUP + 1, time);
+
+        IJob job = scheduler.popJob();
+
+        assertEquals(JOB_GROUP, job.getJobGroupTitle());
+        assertEquals(JOB_ID, job.getJobID());
+    }
+
+    @Test
     void returnJob_noError() {
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
