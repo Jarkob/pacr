@@ -39,7 +39,7 @@ class JobGroup {
      * Adds the given time to the group's time sheet.
      * @param time the time in seconds. (>= 0)
      */
-    void updateTimeSheet(long time) {
+    void addToTimeSheet(long time) {
         if (time < 0) {
             throw new IllegalArgumentException("Time cannot be less than zero.");
         }

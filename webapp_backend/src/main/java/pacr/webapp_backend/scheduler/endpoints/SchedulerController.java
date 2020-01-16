@@ -22,6 +22,13 @@ public class SchedulerController {
      * @param authenticator the authenticator which provides authentication services for secure methods.
      */
     public SchedulerController(Scheduler scheduler, IAuthenticator authenticator) {
+        if (scheduler == null) {
+            throw new IllegalArgumentException("The scheduler cannot be null.");
+        }
+        if (authenticator == null) {
+            throw new IllegalArgumentException("The authenticator cannot be null.");
+        }
+
         this.scheduler = scheduler;
         this.authenticator = authenticator;
     }

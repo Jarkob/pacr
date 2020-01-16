@@ -51,6 +51,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             groups.put(groupTitle, new JobGroup(groupTitle));
         }
     }
+
     private boolean containsGroup(String groupTitle) {
         return groups.containsKey(groupTitle);
     }
@@ -78,7 +79,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         if (containsGroup(groupTitle)) {
             JobGroup group = getGroup(groupTitle);
 
-            group.updateTimeSheet(time);
+            group.addToTimeSheet(time);
         }
     }
 
