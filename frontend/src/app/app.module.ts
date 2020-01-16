@@ -1,3 +1,5 @@
+import { LeaderboardEventsComponent } from './leaderboard-events/leaderboard-events.component';
+import { BenchmarkingEventsComponent } from './benchmarking-events/benchmarking-events.component';
 import { GlobalService } from './services/global.service';
 import { SchedulerService } from './services/scheduler.service';
 import { RepositoryService } from './services/repository.service';
