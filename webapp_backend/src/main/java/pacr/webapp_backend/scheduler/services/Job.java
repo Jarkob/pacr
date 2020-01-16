@@ -29,7 +29,7 @@ public class Job implements IJob {
      * @return the current time sheet of the job's job group in seconds.
      */
     long getGroupTimeSheet() {
-        return group.getBenchmarkingTime();
+        return group.getTimeSheet();
     }
 
     /**

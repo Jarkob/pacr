@@ -3,9 +3,9 @@ package pacr.webapp_backend.scheduler.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -156,7 +156,25 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * Resets the groups field daily.
      */
     @Scheduled(cron = CRON_DAILY)
-    private void resetJobGroupTimeSheets() {
-        groups.clear();
+    void resetJobGroupTimeSheets() {
+        removeUnusedGroups();
+
+        for (JobGroup group : groups.values()) {
+            group.resetTimeSheet();
+        }
+    }
+
+    private void removeUnusedGroups() {
+        Set<String> toRemove = new HashSet<>(groups.keySet());
+
+        Collection<Job> allJobs = new ArrayList<>();
+        allJobs.addAll(jobs);
+        allJobs.addAll(prioritized);
+
+        for (Job job : allJobs) {
+            final String groupTitle = job.getJobGroupTitle();
+
+            toRemove.remove(groupTitle);
+        }
     }
 }
