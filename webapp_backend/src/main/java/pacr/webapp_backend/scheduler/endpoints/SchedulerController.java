@@ -46,8 +46,7 @@ public class SchedulerController {
             @PathVariable String groupTitle, @PathVariable String jobID, @RequestHeader(name = "jwt") String token) {
 
         if (authenticator.authenticate(token)) {
-            scheduler.givePriorityTo(groupTitle, jobID);
-            return true;
+            return scheduler.givePriorityTo(groupTitle, jobID);
         }
 
         return false;

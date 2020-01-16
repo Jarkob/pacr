@@ -8,6 +8,8 @@ import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IObserver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -54,9 +56,10 @@ public class SchedulerTest {
 
         checkSchedulerQueue(1, 0);
 
-        scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
+        boolean result = scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
 
         checkSchedulerQueue(0, 1);
+        assertTrue(result);
     }
 
     @Test
@@ -65,9 +68,16 @@ public class SchedulerTest {
 
         checkSchedulerQueue(1, 0);
 
-        scheduler.givePriorityTo(JOB_GROUP + "aWrongGroupTitle", JOB_ID);
-        scheduler.givePriorityTo(JOB_GROUP, JOB_ID + "aWrongJobID");
-        scheduler.givePriorityTo(JOB_GROUP + "aWrongGroupTitle", JOB_ID + "aWrongJobID");
+        boolean result;
+
+        result = scheduler.givePriorityTo(JOB_GROUP + "aWrongGroupTitle", JOB_ID);
+        assertFalse(result);
+
+        result = scheduler.givePriorityTo(JOB_GROUP, JOB_ID + "aWrongJobID");
+        assertFalse(result);
+
+        result = scheduler.givePriorityTo(JOB_GROUP + "aWrongGroupTitle", JOB_ID + "aWrongJobID");
+        assertFalse(result);
 
         checkSchedulerQueue(1, 0);
     }

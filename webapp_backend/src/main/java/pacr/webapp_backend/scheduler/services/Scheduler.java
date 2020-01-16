@@ -100,14 +100,19 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * Moves a job to the manually prioritized jobs queue.
      * @param groupTitle the title of the job.
      * @param jobID the id of the job.
+     * @return if the job was successfully prioritized.
      */
-    public void givePriorityTo(String groupTitle, String jobID) {
-        for (Job job : jobs) {
-            if (job.getJobGroupTitle().equals(groupTitle) && job.getJobID().equals(jobID)) {
-                jobs.remove(job);
-                prioritized.add(job);
-            }
+    public boolean givePriorityTo(String groupTitle, String jobID) {
+        Job job = new Job(jobID, groups.get(groupTitle));
+
+        if (jobs.contains(job)) {
+            jobs.remove(job);
+            prioritized.add(job);
+
+            return true;
         }
+
+        return false;
     }
 
     /**
