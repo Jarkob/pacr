@@ -1,6 +1,11 @@
-import { BenchmarkProperty } from './benchmark-property';
+import { BenchmarkGroup } from './benchmark-group';
+import { Commit } from './commit';
+import { SystemEnvironment } from './system-environment';
 
 export interface BenchmarkingResult {
-    name: string;
-    properties: BenchmarkProperty[];
+    hadGlobalError: boolean;
+    errorMessage: string;
+    commit: Commit;
+    systemEnvironment: SystemEnvironment;
+    groups: BenchmarkGroup[];
 }
