@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management;
 
-import jdk.jshell.spi.ExecutionControl;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.persistence.Entity;
@@ -17,7 +16,9 @@ public class SystemEnvironment implements ISystemEnvironment {
     @GeneratedValue
     private int id;
 
+    private String name;
     private String os;
+    private String processor;
     private String kernel;
     private int cores;
     private long memory;
@@ -36,7 +37,9 @@ public class SystemEnvironment implements ISystemEnvironment {
         if (sysEnv == null) {
             throw new IllegalArgumentException("system environment cannot be null");
         }
+        this.name = sysEnv.getComputerName();
         this.os = sysEnv.getOS();
+        this.processor = sysEnv.getProcessor();
         this.kernel = sysEnv.getKernel();
         this.cores = sysEnv.getCores();
         this.memory = sysEnv.getRamMemory();
@@ -44,28 +47,30 @@ public class SystemEnvironment implements ISystemEnvironment {
 
     /**
      * Creates a system environment. Throws IllegalArgumentException if strings are null, empty or blank.
+     * @param name the computers name. Cannot be empty or blank.
      * @param os the os. Cannot be empty or blank.
+     * @param processor the processor model. Cannot be empty or blank.
      * @param kernel the kernel. Cannot be empty or blank.
      * @param cores the number of cores.
      * @param memory the amount of memory in GB.
      */
-    public SystemEnvironment(@NotNull String os, @NotNull String kernel, int cores, long memory) {
-        if (!isInputStringValid(os) || !isInputStringValid(kernel)) {
+    public SystemEnvironment(@NotNull String name, @NotNull String os, @NotNull String processor,
+                             @NotNull String kernel, int cores, long memory) {
+        if (!isInputStringValid(name) || !isInputStringValid(os) || !isInputStringValid(processor)
+                || !isInputStringValid(kernel)) {
             throw new IllegalArgumentException("input cannot be null, empty or blank");
         }
+        this.name = name;
         this.os = os;
+        this.processor = processor;
         this.kernel = kernel;
         this.cores = cores;
         this.memory = memory;
     }
 
-    /**
-     * Added so the code compiles.
-     * TODO: @Martin
-     */
     @Override
     public String getComputerName() {
-        throw new UnsupportedOperationException("This has to be implemented in results management");
+        return name;
     }
 
     @Override
@@ -73,13 +78,9 @@ public class SystemEnvironment implements ISystemEnvironment {
         return this.os;
     }
 
-    /**
-     * Added so the code compiles.
-     * TODO: @Martin
-     */
     @Override
     public String getProcessor() {
-        throw new UnsupportedOperationException("This has to be implemented in results management");
+        return processor;
     }
 
     @Override
