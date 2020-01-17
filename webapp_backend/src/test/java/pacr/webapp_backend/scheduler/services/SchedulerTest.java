@@ -159,6 +159,12 @@ public class SchedulerTest {
         scheduler.returnJob(job);
 
         checkSchedulerQueue(1, 0);
+
+        List<Job> jobs = scheduler.getJobsQueue();
+        Job job1 = jobs.get(0);
+
+        assertEquals(JOB_GROUP, job.getJobGroupTitle());
+        assertEquals(JOB_ID, job.getJobID());
     }
 
     @Test
@@ -175,6 +181,12 @@ public class SchedulerTest {
         scheduler.returnJob(job);
 
         checkSchedulerQueue(1, 0);
+
+        List<Job> jobs = scheduler.getJobsQueue();
+        Job job1 = jobs.get(0);
+
+        assertEquals(JOB_GROUP, job.getJobGroupTitle());
+        assertEquals(JOB_ID, job.getJobID());
     }
 
     @Test

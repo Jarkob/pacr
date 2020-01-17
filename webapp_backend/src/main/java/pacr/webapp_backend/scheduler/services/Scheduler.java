@@ -71,7 +71,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     @Override
     public void returnJob(IJob job) {
-        addJob(job.getJobID(), job.getJobGroupTitle());
+        addJob(job.getJobGroupTitle(), job.getJobID());
     }
 
     @Override
