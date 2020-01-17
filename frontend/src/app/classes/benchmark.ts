@@ -1,9 +1,10 @@
 import { BenchmarkProperty } from './benchmark-property';
+import { Result } from './result';
 
 export interface Benchmark {
     id: number;
-    benchmarkName: string;
+    originalName: string;
     customName: string;
     description: string;
-    propertyList: BenchmarkProperty[];
+    results: Result[];
 }

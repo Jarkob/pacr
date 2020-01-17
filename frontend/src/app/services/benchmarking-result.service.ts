@@ -35,8 +35,8 @@ export class BenchmarkingResultService {
    * get all benchmarking results for one commit
    * @param sha the commit hash
    */
-  public getBenchmarkingResultsForCommit(sha: string): Observable<BenchmarkingResult[]> {
-    return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/commit/' + sha);
+  public getBenchmarkingResultsForCommit(sha: string): Observable<BenchmarkingResult> {
+    return this.http.get<BenchmarkingResult>(this.globalService.url + '/results/commit/' + sha);
   }
 
   /**

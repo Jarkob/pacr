@@ -1,11 +1,17 @@
 import { BenchmarkGroup } from './benchmark-group';
-import { Commit } from './commit';
 import { SystemEnvironment } from './system-environment';
 
 export interface BenchmarkingResult {
-    hadGlobalError: boolean;
-    errorMessage: string;
-    commit: Commit;
+    globalError: boolean;
+    commitHash: string;
+    commitMessage: string;
+    commitEntryDate: Date;
+    commitCommitDate: Date;
+    commitAuthorDate: Date;
+    commitRepositoryid: string;
+    commitBranchName: string;
+    commitParentHashes: string[];
+    commitLabels: string[];
     systemEnvironment: SystemEnvironment;
     groups: BenchmarkGroup[];
 }

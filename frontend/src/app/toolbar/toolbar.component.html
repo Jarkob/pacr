@@ -1,13 +1,15 @@
 <mat-toolbar color="primary">
-    <img width="80" src="assets/logo.png">
-    <a mat-icon-button (click)="navigateBack()" matTooltip="back">
+    <a mat-icon-button (click)="navigateBack()" matTooltip="back" fxShow.sm="true" fxShow="false">
         <mat-icon>arrow_back_ios</mat-icon>
     </a>
-    <a mat-icon-button (click)="navigateForward()" matTooltip="forward">
+    <a mat-icon-button (click)="navigateForward()" matTooltip="forward" fxShow.lt-md="true" fxShow="false">
         <mat-icon>arrow_forward_ios</mat-icon>
     </a>
-    <a mat-button [routerLink]="['']">Diagram 1</a>
-    <a mat-button [routerLink]="['/diagram']">Diagram 2</a>
-    <a mat-button [routerLink]="['/events/benchmarking']">Benchmarkingevents</a>
-    <a mat-button [routerLink]="['/events/leaderboard']">Leaderboardevents</a>
+    <a mat-button [routerLink]="['']">Dashboard</a>
+    <span fxFlex></span>
+    <img class="center" width="80" src="assets/logo.png">
+    <span fxFlex></span>
+    <a mat-icon-button [routerLink]="['/admin']">
+        <mat-icon>build</mat-icon>
+    </a>
 </mat-toolbar>
