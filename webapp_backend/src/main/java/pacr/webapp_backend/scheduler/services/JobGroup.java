@@ -47,4 +47,8 @@ class JobGroup {
         this.benchmarkingTime += time;
     }
 
+    @Override
+    public String toString() {
+        return "JobGroup{ " + "title='" + title + "'" + ", benchmarkingTime=" + benchmarkingTime + " }";
+    }
 }

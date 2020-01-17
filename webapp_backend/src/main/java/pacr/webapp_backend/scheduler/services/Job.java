@@ -67,4 +67,9 @@ public class Job implements IJob {
     public int hashCode() {
         return Objects.hash(jobID, group);
     }
+
+    @Override
+    public String toString() {
+        return "Job{ jobID='" + jobID + "'" + ", group=" + group + " }";
+    }
 }

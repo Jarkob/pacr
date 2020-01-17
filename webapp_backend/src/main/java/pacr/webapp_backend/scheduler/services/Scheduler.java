@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IJob;
@@ -18,6 +20,8 @@ import pacr.webapp_backend.shared.IObserver;
  */
 @Component
 public class Scheduler implements IJobProvider, IJobScheduler {
+
+    private static final Logger LOGGER = LogManager.getLogger(Scheduler.class);
 
     private static final String CRON_DAILY = "0 0 0 * * *";
 
@@ -87,6 +91,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         Job job = new Job(jobID, getGroup(groupTitle));
 
         jobs.add(job);
+        LOGGER.info("Added new job to the queue: " + job.toString());
 
         updateAll();
     }
