@@ -3,11 +3,19 @@ package pacr.webapp_backend.result_management.services;
 import pacr.webapp_backend.result_management.CommitResult;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Saves result related objects in the database and retrieves them.
  */
 public interface IResultAccess {
+    /**
+     * Gets the newest commit results (up to 100) that are saved in the database. The entry date is taken for
+     * comparison.
+     * @return a list of results that is sorted by entry date in descending order.
+     */
+    List<CommitResult> getNewestResults();
+
     /**
      * Gets all saved results for the given commit hashes.
      * @param commitHashes the hashes of the commits.

@@ -4,13 +4,18 @@ import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import pacr.webapp_backend.git_tracking.GitBranch;
 import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.git_tracking.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
+import pacr.webapp_backend.result_management.services.IGetCommitAccess;
+import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -19,7 +24,7 @@ import java.util.Objects;
  * @author Pavel Zwerschke
  */
 @Component
-public class GitTrackingDB implements IGitTrackingAccess {
+public class GitTrackingDB implements IGitTrackingAccess, IGetCommitAccess {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitTrackingDB.class);
 
@@ -119,4 +124,45 @@ public class GitTrackingDB implements IGitTrackingAccess {
         addRepository(repository);
     }
 
+    @Override
+    public Collection<? extends ICommit> getCommitsFromRepository(int id) {
+        return this.getAllCommits(id);
+    }
+
+    @Override
+    public Collection<? extends ICommit> getCommitsFromBranch(int id, String branchName) {
+        if (branchName == null) {
+            throw new IllegalArgumentException("branch name cannot be null");
+        }
+
+        GitRepository repository = repositoryDB.findById(id).orElse(null);
+
+        if (repository == null) {
+            return null;
+        }
+
+        Collection<GitBranch> branches = repository.getSelectedBranches();
+
+        GitBranch match = null;
+
+        for (GitBranch branch : branches) {
+            if (branch.getName().equals(branchName)) {
+                match = branch;
+                break;
+            }
+        }
+
+        if (match == null) {
+            return null;
+        }
+
+        return commitDB.findCommitsByRepository_IdAndBranch(id, match);
+    }
+
+    @Override
+    public Collection<? extends ICommit> getAllCommits() {
+        List<GitCommit> commits = new LinkedList<>();
+        commitDB.findAll().forEach(commits::add);
+        return commits;
+    }
 }

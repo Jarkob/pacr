@@ -27,7 +27,6 @@ public interface BenchmarkDB extends CrudRepository<Benchmark, Integer>, IBenchm
         return this.findById(id).orElse(null);
     }
 
-
     @Override
     default void saveBenchmark(Benchmark benchmark) {
         this.save(benchmark);

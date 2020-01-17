@@ -15,6 +15,11 @@ import java.util.List;
 @Component
 public interface ResultDB extends CrudRepository<CommitResult, String>, IResultAccess {
     @Override
+    default List<CommitResult> getNewestResults() {
+        return this.findFirst100ByOrderByEntryDateDesc();
+    }
+
+    @Override
     default Collection<CommitResult> getResultsFromCommits(Collection<String> commitHashes) {
         List<CommitResult> commitResults = new LinkedList<>();
         this.findAllById(commitHashes).forEach(commitResults::add);
@@ -35,4 +40,10 @@ public interface ResultDB extends CrudRepository<CommitResult, String>, IResultA
     default void deleteResult(CommitResult result) {
         this.delete(result);
     }
+
+    /**
+     * This is a method that is automatically created by jpa based on its method name.
+     * @return the latest 100 commit results in descending order by entry date.
+     */
+    List<CommitResult> findFirst100ByOrderByEntryDateDesc();
 }

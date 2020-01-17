@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,8 @@ public class CommitResult implements IBenchmarkingResult {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<BenchmarkResult> benchmarkResults;
+
+    private LocalDateTime entryDate;
 
     /**
      * Creates empty result. Needed for jpa.
@@ -62,6 +65,7 @@ public class CommitResult implements IBenchmarkingResult {
         this.commitHash = result.getCommitHash();
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
         this.benchmarkResults = benchmarkResults;
+        this.entryDate = LocalDateTime.now();
     }
 
     /**
@@ -83,6 +87,7 @@ public class CommitResult implements IBenchmarkingResult {
         this.commitHash = commitHash;
         this.systemEnvironment = systemEnvironment;
         this.benchmarkResults = benchmarkResults;
+        this.entryDate = LocalDateTime.now();
     }
 
     @Override
@@ -112,6 +117,13 @@ public class CommitResult implements IBenchmarkingResult {
             return errorMessage;
         }
         return null;
+    }
+
+    /**
+     * @return the entry date into the system of the result.
+     */
+    public LocalDateTime getEntryDate() {
+        return entryDate;
     }
 
     /**

@@ -26,6 +26,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class GitTrackingDBTest {
 
+    private static final int EXPECTED_NUM_OF_COMMITS_IN_REPOSITORY = 1;
+    private static final int EXPECTED_NUM_OF_COMMITS_ON_BRANCH = 1;
+    private static final int EXPECTED_NUM_OF_ALL_COMMITS = 1;
+    private static final String BRANCH_NAME = "branch";
+
     private GitTrackingDB gitTrackingDB;
 
     private GitRepository repository;
@@ -178,6 +183,57 @@ public class GitTrackingDBTest {
     public void unableToAddCommitToDatabase() {
         commit.setRepository(new GitRepository());
         assertThrows(RepositoryNotStoredException.class, () -> gitTrackingDB.addCommit(commit));
+    }
+
+    /**
+     * Tests whether getCommitsFromRepository returns the correct amount of commits.
+     */
+    @Test
+    public void getCommitsFromRepository_repositoryWithCommits_shouldReturnAllCommitsInRepository() {
+        gitTrackingDB.addRepository(repository);
+
+        commit.setRepository(repository);
+
+        repository.addNewCommit(commit);
+        gitTrackingDB.addCommit(commit);
+
+        assertEquals(EXPECTED_NUM_OF_COMMITS_IN_REPOSITORY,
+                gitTrackingDB.getCommitsFromRepository(repository.getId()).size());
+    }
+
+    /**
+     * Tests whether getCommitsFromBranch returns the correct amount of commits.
+     */
+    @Test
+    public void getCommitsFromBranch_branchWithCommits_shouldReturnAllCommitsOnBranch() {
+        GitBranch branch = new GitBranch(BRANCH_NAME);
+        repository.addBranchToSelection(branch);
+
+        gitTrackingDB.addRepository(repository);
+
+        commit.setRepository(repository);
+        commit.setBranch(branch);
+
+        repository.addNewCommit(commit);
+        gitTrackingDB.addCommit(commit);
+
+        assertEquals(EXPECTED_NUM_OF_COMMITS_ON_BRANCH,
+                gitTrackingDB.getCommitsFromBranch(repository.getId(), BRANCH_NAME).size());
+    }
+
+    /**
+     * Tests whether getAllCommit returns the correct amount of commits.
+     */
+    @Test
+    public void getAllCommits_savedCommits_shouldReturnAllCommits() {
+        gitTrackingDB.addRepository(repository);
+
+        commit.setRepository(repository);
+
+        repository.addNewCommit(commit);
+        gitTrackingDB.addCommit(commit);
+
+        assertEquals(EXPECTED_NUM_OF_ALL_COMMITS, gitTrackingDB.getAllCommits().size());
     }
 
     @AfterEach

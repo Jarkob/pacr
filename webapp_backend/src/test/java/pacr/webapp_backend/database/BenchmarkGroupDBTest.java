@@ -7,13 +7,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @SpringBootTest
 public class BenchmarkGroupDBTest {
 
     private static final String GROUP_NAME = "group";
+    private static final String GROUP_NAME_TWO = "group2";
     private static final String BENCHMARK_NAME = "benchmark";
+    private static final int EXPECTED_NUM_OF_GROUPS = 2;
 
     private BenchmarkGroupDB groupDB;
     private BenchmarkDB benchmarkDB;
@@ -60,5 +65,36 @@ public class BenchmarkGroupDBTest {
         BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(groupId);
 
         assertEquals(GROUP_NAME, savedGroup.getName());
+    }
+
+    /**
+     * Tests whether all groups are returned by getAllGroups.
+     */
+    @Test
+    public void getAllGroups_multipleGroupsSaved_shouldReturnAllGroups() {
+        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        groupDB.saveBenchmarkGroup(group);
+        BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+        groupDB.saveBenchmarkGroup(groupTwo);
+
+        Collection<BenchmarkGroup> groups = groupDB.getAllGroups();
+
+        assertEquals(EXPECTED_NUM_OF_GROUPS, groups.size());
+    }
+
+    /**
+     * Tests whether a group can be properly deleted.
+     */
+    @Test
+    public void  deleteGroup_groupSaved_shouldRemoveGroup() {
+        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        groupDB.saveBenchmarkGroup(group);
+        int id = group.getId();
+
+        groupDB.deleteGroup(group);
+
+        BenchmarkGroup deletedGroup = groupDB.getBenchmarkGroup(id);
+
+        assertNull(deletedGroup);
     }
 }
