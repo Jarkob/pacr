@@ -1,0 +1,16 @@
+<mat-sidenav-container>
+    <mat-sidenav mode="side" opened>sidenav</mat-sidenav>
+    <mat-sidenav-content>
+        <h2>Benchmarkingevents</h2>
+        <ul>
+            <li *ngFor="let event of events">
+                <mat-card matTooltip={{event.description}}>
+                    <p>
+                        <span>{{ event.title }} </span>
+                        <span class="right">{{ event.created | date:'medium' }}</span>
+                    </p>
+                </mat-card>
+            </li>
+        </ul>
+    </mat-sidenav-content>
+</mat-sidenav-container>

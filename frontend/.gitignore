@@ -43,3 +43,7 @@ yarn-error.log
 
 .notes.md
 baseline.json
+
+# custom
+/src/assets/compprak.json
+/src/assets/lean.json

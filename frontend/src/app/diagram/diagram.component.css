@@ -1,0 +1,15 @@
+html, body, .mat-sidenav-container {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+.mat-sidenav, mat-sidenav-content {
+    padding: 2em;
+}
+
+:host {
+    flex: 1 1 100%;
+    display: flex;
+    flex-flow: column;
+}

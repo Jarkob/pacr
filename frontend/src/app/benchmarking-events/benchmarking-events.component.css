@@ -13,3 +13,17 @@ html, body, .mat-sidenav-container {
     display: flex;
     flex-flow: column;
 }
+
+ul {
+    list-style-type: none;
+    padding: 1em;
+}
+
+mat-card {
+    cursor: pointer;
+    margin: 0.5em;
+}
+
+.right {
+    float: right;
+}

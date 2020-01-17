@@ -1,4 +1,6 @@
+import { RepositoryService } from './../services/repository.service';
 import { Component, OnInit } from '@angular/core';
+import { Commit } from '../classes/commit';
 
 @Component({
   selector: 'app-commit-history',
@@ -7,9 +9,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CommitHistoryComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+  ) { }
+
+  private commits: Commit[];
 
   ngOnInit() {
+
   }
 
 }
