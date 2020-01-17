@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.git_tracking.GitRepository;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 /**
@@ -73,4 +74,11 @@ public interface IGitTrackingAccess {
      */
     void removeCommit(String commitHash);
 
+    boolean containsCommit(String commitHash);
+
+    GitCommit getHead();
+
+    GitCommit getHead(String branch);
+
+    Collection<String> getAllCommitHashes(int repositoryID);
 }

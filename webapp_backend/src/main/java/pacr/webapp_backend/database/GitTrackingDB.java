@@ -60,6 +60,8 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     @Override
     public void removeCommit(@NotNull String commitHash) {
         Objects.requireNonNull(commitHash);
+
+        //todo delete results
         commitDB.deleteById(commitHash);
     }
 
@@ -114,5 +116,34 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
         addRepository(repository);
     }
 
+    @Override
+    public boolean containsCommit(@NotNull String commitHash) {
+        Objects.requireNonNull(commitHash);
+
+        return commitDB.existsById(commitHash);
+    }
+
+    @Override
+    public GitCommit getHead() { // todo implement
+        return null;
+    }
+
+    @Override
+    public GitCommit getHead(String branch) { // todo implement
+        return null;
+    }
+
+    // todo works better with an sql query
+    @Override
+    public Collection<String> getAllCommitHashes(int repositoryID) {
+        Collection<GitCommit> gitCommits = getAllCommits(repositoryID);
+
+        Collection<String> commitHashes = new HashSet<>();
+
+        for (GitCommit commit : gitCommits) {
+            commitHashes.add(commit.getCommitHash());
+        }
+        return commitHashes;
+    }
 
 }
