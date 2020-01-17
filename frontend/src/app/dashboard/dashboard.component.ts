@@ -80,19 +80,12 @@ export class DashboardComponent implements OnInit {
     this.benchmarkingResultService.getBenchmarkingResultsFromRepository('test').subscribe(
       data => {
         this.lines.push(data);
-        // for (let i = data.length - 1; i > data.length - 20 && i > -1; i--) {
-        //   this.datasets[0].data.push(data[i].properties[0].results[0]);
-        //   this.labels.push('' + i);
-        // }
       }
     );
   }
 
   private getDataByBenchmark(data: any, benchmark: string) {
     const result = {data: [], label: '', fill: false, borderColor: 'rgba(0,0,0,0)'};
-    // data.commits.forEach(commit => {
-    //   result.data.push({y: commit.benchmark.time.results[0]});
-    // });
     for (const key of Object.keys(data.commits)) {
       if (data.commits[key].hasOwnProperty(benchmark)) {
         if (data.commits[key][benchmark].time.hasOwnProperty('results')) {
