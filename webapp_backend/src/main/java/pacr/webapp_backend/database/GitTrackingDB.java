@@ -3,33 +3,27 @@ package pacr.webapp_backend.database;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.GitBranch;
 import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.git_tracking.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
-import pacr.webapp_backend.result_management.services.IGetCommitAccess;
-import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
 /**
- * Implementation for IGitTrackingAccess.
+ * Implementation for IGitTrackingAccess. Primary bean for dependency injection of this class type.
  *
  * @author Pavel Zwerschke
  */
+@Primary
 @Component
-public class GitTrackingDB implements IGitTrackingAccess, IGetCommitAccess {
+public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAccess {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GitTrackingDB.class);
-
-    private CommitDB commitDB;
-    private RepositoryDB repositoryDB;
 
     /**
      * Creates a new instance of GitTrackingDB.
@@ -37,11 +31,7 @@ public class GitTrackingDB implements IGitTrackingAccess, IGetCommitAccess {
      * @param repositoryDB is the JPA repository access interface.
      */
     public GitTrackingDB(@NotNull CommitDB commitDB, @NotNull RepositoryDB repositoryDB) {
-        Objects.requireNonNull(commitDB);
-        Objects.requireNonNull(repositoryDB);
-
-        this.commitDB = commitDB;
-        this.repositoryDB = repositoryDB;
+        super(commitDB, repositoryDB);
     }
 
     @Override
@@ -124,45 +114,5 @@ public class GitTrackingDB implements IGitTrackingAccess, IGetCommitAccess {
         addRepository(repository);
     }
 
-    @Override
-    public Collection<? extends ICommit> getCommitsFromRepository(int id) {
-        return this.getAllCommits(id);
-    }
 
-    @Override
-    public Collection<? extends ICommit> getCommitsFromBranch(int id, String branchName) {
-        if (branchName == null) {
-            throw new IllegalArgumentException("branch name cannot be null");
-        }
-
-        GitRepository repository = repositoryDB.findById(id).orElse(null);
-
-        if (repository == null) {
-            return null;
-        }
-
-        Collection<GitBranch> branches = repository.getSelectedBranches();
-
-        GitBranch match = null;
-
-        for (GitBranch branch : branches) {
-            if (branch.getName().equals(branchName)) {
-                match = branch;
-                break;
-            }
-        }
-
-        if (match == null) {
-            return null;
-        }
-
-        return commitDB.findCommitsByRepository_IdAndBranch(id, match);
-    }
-
-    @Override
-    public Collection<? extends ICommit> getAllCommits() {
-        List<GitCommit> commits = new LinkedList<>();
-        commitDB.findAll().forEach(commits::add);
-        return commits;
-    }
 }
