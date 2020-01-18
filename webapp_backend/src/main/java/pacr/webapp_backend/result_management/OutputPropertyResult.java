@@ -12,7 +12,10 @@ import java.util.Collection;
  * of the original BenchmarkPropertyResult, not all measured data.
  */
 public class OutputPropertyResult implements IBenchmarkProperty {
-    private BenchmarkProperty property;
+    private String name;
+    private String unit;
+    private ResultInterpretation interpretation;
+
     private double mean;
     private double lowerQuartile;
     private double median;
@@ -31,7 +34,11 @@ public class OutputPropertyResult implements IBenchmarkProperty {
         if (result == null) {
             throw new IllegalArgumentException("result cannot be null");
         }
-        this.property = result.getProperty();
+
+        this.name = result.getName();
+        this.unit = result.getUnit();
+        this.interpretation = result.getResultInterpretation();
+
         this.mean = result.getMean();
         this.lowerQuartile = result.getLowerQuartile();
         this.median = result.getMedian();
@@ -53,12 +60,12 @@ public class OutputPropertyResult implements IBenchmarkProperty {
 
     @Override
     public ResultInterpretation getResultInterpretation() {
-        return property.getInterpretation();
+        return interpretation;
     }
 
     @Override
     public String getUnit() {
-        return property.getUnit();
+        return unit;
     }
 
     @Override
@@ -74,7 +81,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
      * @return the name
      */
     public String getName() {
-        return property.getName();
+        return name;
     }
 
     /**
@@ -83,14 +90,6 @@ public class OutputPropertyResult implements IBenchmarkProperty {
      */
     public boolean hadLocalError() {
         return hadLocalError;
-    }
-
-    /**
-     * Gets the benchmark of the property.
-     * @return the benchmark.
-     */
-    public Benchmark getBenchmark() {
-        return property.getBenchmark();
     }
 
     /**
@@ -132,6 +131,4 @@ public class OutputPropertyResult implements IBenchmarkProperty {
     public double getStandardDeviation() {
         return standardDeviation;
     }
-
-
 }

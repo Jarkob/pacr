@@ -1,6 +1,6 @@
 package pacr.webapp_backend.shared;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -32,19 +32,19 @@ public interface ICommit {
      * Returns the date when the commit got entered into the system.
      * @return entry date
      */
-    LocalDate getEntryDate();
+    LocalDateTime getEntryDate();
 
     /**
      * Returns the commit date for this commit.
      * @return commit date
      */
-    LocalDate getCommitDate();
+    LocalDateTime getCommitDate();
 
     /**
      * Returns the author date for this commit.
      * @return author date
      */
-    LocalDate getAuthorDate();
+    LocalDateTime getAuthorDate();
 
     /**
      * Returns the parents for this commit. Is usually just one commit.

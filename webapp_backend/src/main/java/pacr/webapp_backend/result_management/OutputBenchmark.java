@@ -15,20 +15,29 @@ import java.util.Map;
 public class OutputBenchmark implements IBenchmark {
 
     private OutputPropertyResult[] results;
-    private Benchmark benchmark;
+
+    private int id;
+    private String originalName;
+    private String customName;
+    private String description;
 
     /**
-     * Creates a new OutputBenchmark with properties (including results) that is backed by a Benchmark.
-     * Throws IllegalArgumentException if one of the parameters is null
+     * Creates a new OutputBenchmark with properties (including results) and metadata of the benchmark.
+     * Throws IllegalArgumentException if one of the parameters is null.
      * @param results the properties with results.
-     * @param benchmark the benchmark that backs this output entity.
+     * @param benchmark the benchmark that metadata is copied from.
      */
     OutputBenchmark(@NotNull OutputPropertyResult[] results, @NotNull Benchmark benchmark) {
         if (results == null || benchmark == null) {
             throw new IllegalArgumentException("input cannot be null");
         }
+
         this.results = results;
-        this.benchmark = benchmark;
+
+        this.id = benchmark.getId();
+        this.originalName = benchmark.getOriginalName();
+        this.customName = benchmark.getCustomName();
+        this.description = benchmark.getDescription();
     }
 
     @Override
@@ -55,7 +64,7 @@ public class OutputBenchmark implements IBenchmark {
      * @return the id.
      */
     public int getId() {
-        return benchmark.getId();
+        return id;
     }
 
     /**
@@ -63,7 +72,7 @@ public class OutputBenchmark implements IBenchmark {
      * @return the original name.
      */
     public String getOriginalName() {
-        return benchmark.getOriginalName();
+        return originalName;
     }
 
     /**
@@ -71,7 +80,7 @@ public class OutputBenchmark implements IBenchmark {
      * @return the custom name.
      */
     public String getCustomName() {
-        return benchmark.getCustomName();
+        return customName;
     }
 
     /**
@@ -79,14 +88,6 @@ public class OutputBenchmark implements IBenchmark {
      * @return the description.
      */
     public String getDescription() {
-        return benchmark.getDescription();
-    }
-
-    /**
-     * Gets the group of the benchmark.
-     * @return the group.
-     */
-    public BenchmarkGroup getBenchmarkGroup() {
-        return benchmark.getGroup();
+        return description;
     }
 }

@@ -6,7 +6,6 @@ import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -22,14 +21,29 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
     private boolean globalError;
     private String errorMessage;
-    private ICommit commit;
+
+    private String commitHash;
+    private String commitMessage;
+
+    /**
+     * The dates are saved as strings in order to be readable in the json that is sent to the front end.
+     */
+    private String commitEntryDate;
+    private String commitCommitDate;
+    private String commitAuthorDate;
+
+    private int commitRepositoryId;
+    private String commitBranchName;
+    private Collection<String> commitParentHashes;
+    private Collection<String> commitLabels;
+
     private ISystemEnvironment systemEnvironment;
     private OutputBenchmarkGroup[] groups;
 
     /**
      * Creates an OutputBenchmarkingResult for a commit. Copies system environment and error information from the
-     * CommitResult. Throws IllegalArgumentException if the CommitResult refers to a different commit hash than
-     * the ICommit or if one of the parameters is null.
+     * CommitResult and copies commit meta data from the ICommit. Throws IllegalArgumentException if the CommitResult
+     * refers to a different commit hash than the ICommit or if one of the parameters is null.
      * @param commit the commit.
      * @param result the result for the commit.
      * @param groups the benchmark groups with benchmarks, their properties and their corresponding measurements.
@@ -44,14 +58,31 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         }
         this.globalError = result.hasGlobalError();
         this.errorMessage = result.getGlobalError();
-        this.commit = commit;
+        this.commitHash = commit.getCommitHash();
+        this.commitMessage = commit.getMessage();
+
+        this.commitEntryDate = commit.getEntryDate().toString();
+        this.commitCommitDate = commit.getCommitDate().toString();
+        this.commitAuthorDate = commit.getAuthorDate().toString();
+
+        this.commitRepositoryId = commit.getRepositoryID();
+        this.commitBranchName = commit.getBranchName();
+
+        List<String> parentHashes = new LinkedList<>();
+        for (ICommit parent : commit.getParents()) {
+            parentHashes.add(parent.getCommitHash());
+        }
+        this.commitParentHashes = parentHashes;
+
+        this.commitLabels = commit.getLabels();
+
         this.systemEnvironment = result.getSystemEnvironment();
         this.groups = groups;
     }
 
     @Override
     public String getCommitHash() {
-        return commit.getCommitHash();
+        return commitHash;
     }
 
     @Override
@@ -85,31 +116,31 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @return the commit message.
      */
     public String getMessage() {
-        return commit.getMessage();
+        return commitMessage;
     }
 
     /**
      * Gets the author date of the benchmarked commit.
      * @return the author date.
      */
-    public LocalDate getAuthorDate() {
-        return commit.getAuthorDate();
+    public String getAuthorDate() {
+        return commitAuthorDate;
     }
 
     /**
      * Gets the commit date of the benchmarked commit.
      * @return the commit date.
      */
-    public LocalDate getCommitDate() {
-        return commit.getCommitDate();
+    public String getCommitDate() {
+        return commitCommitDate;
     }
 
     /**
      * Gets the entry date of the benchmarked commit (when it was entered into this system).
      * @return the entry date.
      */
-    public LocalDate getEntryDate() {
-        return commit.getEntryDate();
+    public String getEntryDate() {
+        return commitEntryDate;
     }
 
     /**
@@ -117,7 +148,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @return the repository id.
      */
     public int getRepositoryID() {
-        return commit.getRepositoryID();
+        return commitRepositoryId;
     }
 
     /**
@@ -125,7 +156,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @return the branch name.
      */
     public String getBranch() {
-        return commit.getBranchName();
+        return commitBranchName;
     }
 
     /**
@@ -133,7 +164,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @return the label.
      */
     public Collection<String> getLabels() {
-        return commit.getLabels();
+        return commitLabels;
     }
 
     /**
@@ -141,11 +172,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @return the commit hashes.
      */
     public Collection<String> getParentHashes() {
-        List<String> parentHashes = new LinkedList<>();
-        for (ICommit commit : commit.getParents()) {
-            parentHashes.add(commit.getCommitHash());
-        }
-        return parentHashes;
+        return commitParentHashes;
     }
 
     /**
