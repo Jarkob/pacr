@@ -1,5 +1,6 @@
 package pacr.webapp_backend.database;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,15 +22,18 @@ public class BenchmarkDBTest {
     private static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
 
     private BenchmarkDB benchmarkDB;
+    private BenchmarkGroupDB groupDB;
 
     @Autowired
-    public BenchmarkDBTest(BenchmarkDB benchmarkDB) {
+    public BenchmarkDBTest(BenchmarkDB benchmarkDB, BenchmarkGroupDB groupDB) {
         this.benchmarkDB = benchmarkDB;
+        this.groupDB = groupDB;
     }
 
-    @BeforeEach
+    @AfterEach
     public void setUp() {
         benchmarkDB.deleteAll();
+        groupDB.deleteAll();
     }
 
     /**
@@ -84,8 +88,11 @@ public class BenchmarkDBTest {
      */
     @Test
     public void getBenchmark_retrieveGroup_ShouldReturnSameGroup() {
-        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
         BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        groupDB.saveBenchmarkGroup(group);
+
+        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+
         benchmark.setGroup(group);
 
         benchmarkDB.saveBenchmark(benchmark);
@@ -98,30 +105,25 @@ public class BenchmarkDBTest {
     }
 
     /**
-     * Tests whether a group changes for all saved benchmarks if one of them is changed.
+     * Tests whether a group changes for saved benchmarks if it is changed.
      */
     @Test
     public void saveBenchmark_updateGroup_getBenchmarkShouldReturnUpdate() {
-        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
         BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
-        benchmark.setGroup(group);
-        group.addBenchmark(benchmark);
+        groupDB.saveBenchmarkGroup(group);
 
-        Benchmark benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
-        benchmarkTwo.setGroup(group);
-        group.addBenchmark(benchmarkTwo);
+        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+
+        benchmark.setGroup(group);
 
         benchmarkDB.saveBenchmark(benchmark);
         int benchmarkId = benchmark.getId();
-        benchmarkDB.saveBenchmark(benchmarkTwo);
-        int benchmarkIdTwo = benchmarkTwo.getId();
+
+        group.setName(GROUP_NAME_TWO);
+        groupDB.saveBenchmarkGroup(group);
 
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmarkId);
-        savedBenchmark.getGroup().setName(GROUP_NAME_TWO);
-        benchmarkDB.saveBenchmark(savedBenchmark);
 
-        Benchmark savedBenchmarkTwo = benchmarkDB.getBenchmark(benchmarkIdTwo);
-
-        assertEquals(GROUP_NAME_TWO, savedBenchmarkTwo.getGroup().getName());
+        assertEquals(GROUP_NAME_TWO, savedBenchmark.getGroup().getName());
     }
 }

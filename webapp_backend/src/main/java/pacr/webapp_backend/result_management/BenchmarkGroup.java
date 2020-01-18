@@ -1,14 +1,10 @@
 package pacr.webapp_backend.result_management;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Represents a group of benchmarks.
@@ -24,13 +20,10 @@ public class BenchmarkGroup {
 
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Benchmark> benchmarkList;
-
     /**
      * Creates empty group. Needed for jpa.
      */
-    BenchmarkGroup() {
+    public BenchmarkGroup() {
     }
 
     /**
@@ -42,7 +35,6 @@ public class BenchmarkGroup {
             throw new IllegalArgumentException("name cannot be null, empty or blank.");
         }
         this.name = name;
-        this.benchmarkList = new LinkedList<>();
     }
 
     /**
@@ -72,30 +64,17 @@ public class BenchmarkGroup {
         }
     }
 
-    /**
-     * Gets all benchmarks of this group.
-     * @return the benchmarks.
-     */
-    public List<Benchmark> getBenchmarks() {
-        return benchmarkList;
-    }
-
-    /**
-     * Adds a benchmark to this group if it wasn't already associated. No action is taken if the given benchmark is
-     * null.
-     * @param benchmark the benchmark.
-     */
-    public void addBenchmark(Benchmark benchmark) {
-        if (benchmark != null && !benchmarkList.contains(benchmark)) {
-            benchmarkList.add(benchmark);
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
         }
+        BenchmarkGroup group = (BenchmarkGroup) obj;
+        return id == group.getId();
     }
 
-    /**
-     * Removes a benchmark from this group. Nothing happens if the benchmark wasn't associated with this group.
-     * @param benchmark the benchmark.
-     */
-    public void removeBenchmark(Benchmark benchmark) {
-        benchmarkList.remove(benchmark);
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

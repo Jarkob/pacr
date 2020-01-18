@@ -14,8 +14,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents all measured benchmark data for one commit. This entity is saved in the database.
@@ -33,15 +33,15 @@ public class CommitResult implements IBenchmarkingResult {
     @OneToOne(cascade = CascadeType.ALL)
     private SystemEnvironment systemEnvironment;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<BenchmarkResult> benchmarkResults;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BenchmarkResult> benchmarkResults;
 
     private LocalDateTime entryDate;
 
     /**
      * Creates empty result. Needed for jpa.
      */
-    CommitResult() {
+    public CommitResult() {
     }
 
     /**
@@ -51,7 +51,7 @@ public class CommitResult implements IBenchmarkingResult {
      * @param result the IBenchmarkingResult.
      * @param benchmarkResults the measured data for each benchmark. May be empty.
      */
-    public CommitResult(@NotNull IBenchmarkingResult result, @NotNull List<BenchmarkResult> benchmarkResults) {
+    public CommitResult(@NotNull IBenchmarkingResult result, @NotNull Set<BenchmarkResult> benchmarkResults) {
         if (result == null || benchmarkResults == null) {
             throw new IllegalArgumentException("input cannot be null");
         }
@@ -75,7 +75,7 @@ public class CommitResult implements IBenchmarkingResult {
      * @param benchmarkResults the measured data for each benchmark.
      */
     public CommitResult(@NotNull String commitHash, @NotNull SystemEnvironment systemEnvironment,
-                        @NotNull List<BenchmarkResult> benchmarkResults) {
+                        @NotNull Set<BenchmarkResult> benchmarkResults) {
         if (commitHash == null || commitHash.isEmpty()) {
             throw new IllegalArgumentException("commit hash cannot be null or empty");
         }

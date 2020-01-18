@@ -1,5 +1,6 @@
 package pacr.webapp_backend.database;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -13,8 +14,10 @@ import pacr.webapp_backend.result_management.CommitResult;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -28,6 +31,7 @@ public class ResultDBTest {
 
     private static final String BENCHMARK_NAME = "benchmark";
     private static final String BENCHMARK_NAME_TWO = "benchmark2";
+    private static final String GROUP_NAME = "group";
     private static final String COMMIT_HASH = "1234";
     private static final String COMMIT_HASH_TWO = "5678";
     private static final String COMMIT_HASH_THREE = "9101";
@@ -43,14 +47,18 @@ public class ResultDBTest {
         this.benchmarkDB = benchmarkDB;
         this.benchmark = new Benchmark(BENCHMARK_NAME);
         this.benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
-
-        this.benchmarkDB.saveBenchmark(benchmark);
-        this.benchmarkDB.saveBenchmark(benchmarkTwo);
     }
 
     @BeforeEach
     public void setUp() {
+        this.benchmarkDB.saveBenchmark(benchmark);
+        this.benchmarkDB.saveBenchmark(benchmarkTwo);
+    }
+
+    @AfterEach
+    public void cleanUp() {
         resultDB.deleteAll();
+        benchmarkDB.deleteAll();
     }
 
     /**
@@ -146,11 +154,11 @@ public class ResultDBTest {
     private CommitResult createNewCommitResult(String commitHash, Benchmark benchmark) {
         BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult();
 
-        List<BenchmarkPropertyResult> propertyResults = new LinkedList<>();
+        Set<BenchmarkPropertyResult> propertyResults = new HashSet<>();
         propertyResults.add(propertyResult);
         BenchmarkResult benchmarkResult = new BenchmarkResult(propertyResults, benchmark);
 
-        List<BenchmarkResult> benchmarkResults = new LinkedList<>();
+        Set<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResult);
 
         return new CommitResult(commitHash, systemEnvironmentMock, benchmarkResults);

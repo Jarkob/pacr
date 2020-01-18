@@ -9,6 +9,7 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -37,6 +38,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private String errorMessage;
 
     @ManyToOne
+    @JoinColumn
     private BenchmarkProperty property;
 
     /**

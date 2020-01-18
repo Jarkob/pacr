@@ -2,7 +2,6 @@ package pacr.webapp_backend.result_management;
 
 import pacr.webapp_backend.shared.ResultInterpretation;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,7 +14,7 @@ import javax.persistence.Table;
  */
 @Entity(name = "BenchmarkProperty")
 @Table(name = "benchmarkProperty")
-class BenchmarkProperty {
+public class BenchmarkProperty {
 
     @Id
     @GeneratedValue
@@ -25,13 +24,13 @@ class BenchmarkProperty {
     private String unit;
     private ResultInterpretation interpretation;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private Benchmark benchmark;
 
     /**
      * Creates empty property. Needed for jpa.
      */
-    BenchmarkProperty() {
+    public BenchmarkProperty() {
     }
 
     /**
@@ -44,7 +43,7 @@ class BenchmarkProperty {
      * @param interpretation the interpretation;
      * @param benchmark the corresponding benchmark;
      */
-    BenchmarkProperty(String name, String unit, ResultInterpretation interpretation, Benchmark benchmark) {
+    public BenchmarkProperty(String name, String unit, ResultInterpretation interpretation, Benchmark benchmark) {
         if (name == null || name.isEmpty() || name.isBlank()) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
@@ -96,5 +95,19 @@ class BenchmarkProperty {
      */
     Benchmark getBenchmark() {
         return benchmark;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        BenchmarkProperty property = (BenchmarkProperty) obj;
+        return id == property.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }

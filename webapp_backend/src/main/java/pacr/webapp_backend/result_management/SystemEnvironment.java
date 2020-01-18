@@ -56,8 +56,8 @@ public class SystemEnvironment implements ISystemEnvironment {
      */
     public SystemEnvironment(@NotNull String name, @NotNull String os, @NotNull String processor,
                              @NotNull String kernel, int cores, long memory) {
-        if (!isInputStringValid(name) || !isInputStringValid(os) || !isInputStringValid(processor)
-                || !isInputStringValid(kernel)) {
+        if (isInputStringInvalid(name) || isInputStringInvalid(os) || isInputStringInvalid(processor)
+                || isInputStringInvalid(kernel)) {
             throw new IllegalArgumentException("input cannot be null, empty or blank");
         }
         this.name = name;
@@ -98,10 +98,7 @@ public class SystemEnvironment implements ISystemEnvironment {
         return this.memory;
     }
 
-    private boolean isInputStringValid(String string) {
-        if (string == null || string.isEmpty() || string.isBlank()) {
-            return false;
-        }
-        return true;
+    private boolean isInputStringInvalid(String string) {
+        return string == null || string.isEmpty() || string.isBlank();
     }
 }

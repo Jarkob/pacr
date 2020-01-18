@@ -8,12 +8,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Represents all measured data of properties for a benchmark. This entity is saved in the database.
@@ -25,10 +26,11 @@ public class BenchmarkResult implements IBenchmark {
     @GeneratedValue
     private int id;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private List<BenchmarkPropertyResult> propertyResults;
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<BenchmarkPropertyResult> propertyResults;
 
     @ManyToOne
+    @JoinColumn(name = "benchmark_id")
     private Benchmark benchmark;
 
     /**
@@ -42,7 +44,7 @@ public class BenchmarkResult implements IBenchmark {
      * @param propertyResults the measured data for properties. Throws IllegalArgumentException if it is null or empty.
      * @param benchmark the benchmark. Throws IllegalArgumentException if it is null.
      */
-    public BenchmarkResult(@NotNull List<BenchmarkPropertyResult> propertyResults, @NotNull Benchmark benchmark) {
+    public BenchmarkResult(@NotNull Set<BenchmarkPropertyResult> propertyResults, @NotNull Benchmark benchmark) {
         if (propertyResults == null || propertyResults.isEmpty()) {
             throw new IllegalArgumentException("propertyResults cannot be null or empty");
         }

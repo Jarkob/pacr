@@ -1,5 +1,8 @@
 package pacr.webapp_backend.result_management;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,8 +11,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Represents a benchmark that measures certain properties.
@@ -35,16 +38,17 @@ public class Benchmark {
 
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<BenchmarkProperty> propertyList;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private Set<BenchmarkProperty> properties;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private BenchmarkGroup group;
 
     /**
      * Creates an empty benchmark. Necessary for jpa database entities.
      */
-    Benchmark() {
+    public Benchmark() {
     }
 
     /**
@@ -60,7 +64,7 @@ public class Benchmark {
         this.originalName = originalName;
         this.customName = originalName;
         this.description = "";
-        this.propertyList = new LinkedList<>();
+        this.properties = new HashSet<>();
         this.group = null;
     }
 
@@ -100,8 +104,8 @@ public class Benchmark {
      * Gets the list of all properties that are part of this benchmark.
      * @return the list of properties.
      */
-    public List<BenchmarkProperty> getPropertyList() {
-        return propertyList;
+    public Set<BenchmarkProperty> getProperties() {
+        return properties;
     }
 
     /**
@@ -148,8 +152,22 @@ public class Benchmark {
      * @param property the new property.
      */
     public void addProperty(BenchmarkProperty property) {
-        if (property != null && !this.propertyList.contains(property)) {
-            this.propertyList.add(property);
+        if (property != null) {
+            this.properties.add(property);
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Benchmark benchmark = (Benchmark) obj;
+        return id == benchmark.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
     }
 }
