@@ -5,7 +5,9 @@
     <a mat-icon-button (click)="navigateForward()" matTooltip="forward" fxShow.lt-md="true" fxShow="false">
         <mat-icon>arrow_forward_ios</mat-icon>
     </a>
-    <a mat-button [routerLink]="['']">Dashboard</a>
+    <a mat-icon-button [routerLink]="['']" matTooltip="Dashboard">
+        <mat-icon>home</mat-icon>
+    </a>
     <span fxFlex></span>
     <img class="center" width="80" src="assets/logo.png">
     <span fxFlex></span>

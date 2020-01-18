@@ -1,3 +1,4 @@
+import { EventService } from './../services/event.service';
 import { RepositoryService } from './../services/repository.service';
 import { Component, OnInit } from '@angular/core';
 import { Commit } from '../classes/commit';
@@ -10,12 +11,17 @@ import { Commit } from '../classes/commit';
 export class CommitHistoryComponent implements OnInit {
 
   constructor(
+    private eventService: EventService
   ) { }
 
-  private commits: Commit[];
+  commits: Commit[];
 
   ngOnInit() {
-
+    this.eventService.getCommitHistory().subscribe(
+      data => {
+        this.commits = data;
+      }
+    );
   }
 
 }

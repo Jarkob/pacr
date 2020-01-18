@@ -5,6 +5,7 @@ import { BenchmarkService } from './../services/benchmark.service';
 import { Component, OnInit } from '@angular/core';
 import { SchedulerService } from '../services/scheduler.service';
 import { Repository } from '../classes/repository';
+import { Job } from '../classes/job';
 
 @Component({
   selector: 'app-admin',
@@ -24,10 +25,11 @@ export class AdminComponent implements OnInit {
   deletionInterval: number;
   repositories: Repository;
   systemEnvironment: SystemEnvironment;
+  jobs: Job[];
 
   ngOnInit() {
   }
 
-  public editIntervals(): void {
+  public updateIntervals(): void {
   }
 }

@@ -5,4 +5,6 @@ export interface Commit {
     commitMessage: string;
     entryDate: Date;
     gitTags: string[];
+    repository: string;
+    branch: string;
 }

@@ -1,4 +1,12 @@
 <mat-card>
+    <mat-form-field>
+        <mat-label>Benchmark</mat-label>
+        <mat-select [(value)]="selectedBenchmark" (selectionChange)="selectBenchmark(selectedBenchmark)">
+            <mat-option required *ngFor="let benchmark of benchmarks" [value]="benchmark.originalName">
+                {{ benchmark.customName }}
+            </mat-option>
+        </mat-select>
+    </mat-form-field>
     <canvas
         baseChart
         [datasets]="datasets"
