@@ -33,7 +33,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     private String commitAuthorDate;
 
     private int commitRepositoryId;
-    private String commitBranchName;
+    private Collection<String> commitBranchNames;
     private Collection<String> commitParentHashes;
     private Collection<String> commitLabels;
 
@@ -66,7 +66,9 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.commitAuthorDate = commit.getAuthorDate().toString();
 
         this.commitRepositoryId = commit.getRepositoryID();
-        this.commitBranchName = commit.getBranchName();
+
+        // TODO change this as soon as ICommit interface is up to date
+        this.commitBranchNames = new LinkedList<>();
 
         List<String> parentHashes = new LinkedList<>();
         for (ICommit parent : commit.getParents()) {
@@ -155,8 +157,8 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Gets the branch name of the benchmarked commit.
      * @return the branch name.
      */
-    public String getBranch() {
-        return commitBranchName;
+    public Collection<String> getBranchNames() {
+        return commitBranchNames;
     }
 
     /**
