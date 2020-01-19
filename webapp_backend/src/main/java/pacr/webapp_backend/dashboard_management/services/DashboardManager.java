@@ -7,6 +7,9 @@ import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.LeaderboardDashboardModule;
 import pacr.webapp_backend.shared.ILeaderboardGetter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,7 +23,16 @@ import java.util.List;
 @Component
 public class DashboardManager {
 
+    private static final String CRON_DAILY = "0 0 0 * * *";
+
     ILeaderboardGetter leaderboardGetter;
+
+    /**
+     * Creates a new dashboard manager.
+     */
+    public DashboardManager() {
+
+    }
 
     /**
      * @param key the key of the dashboard which gets requested.
@@ -29,6 +41,7 @@ public class DashboardManager {
      */
     public Dashboard getDashboard(String key) throws NotFoundException {
         Dashboard dashboard = DatabaseTalker.getDashboard(key);
+        dashboard.updateLastAccess();
 
         //Store the leaderboards in leaderboard modules.
         for (LeaderboardDashboardModule ldm : dashboard.getLeaderboardModules()) {
@@ -62,13 +75,13 @@ public class DashboardManager {
      */
     public void updateDashboard(Dashboard dashboard) {
         dashboard.getLeaderboardModules().forEach(LeaderboardDashboardModule::deleteLeaderboard);
-
+        dashboard.updateLastAccess();
         DatabaseTalker.updateDashboard(dashboard);
     }
 
-    /**@param interval the new deletion interval
+    /**@param interval the new deletion interval in days.
      */
-    public void setDeletionInterval(int interval) {
+    public void setDeletionInterval(long interval) {
         DatabaseTalker.setDeletionInterval(interval);
     }
 
@@ -76,7 +89,7 @@ public class DashboardManager {
     /**
      * @return the deletion interval stored in the database.
      */
-    public int getDeletionInterval() {
+    public long getDeletionInterval() {
         return DatabaseTalker.getDeletionInterval();
     }
 
@@ -90,9 +103,29 @@ public class DashboardManager {
         DatabaseTalker.deleteDashboard(key);
     }
 
-    //TODO
-    @Scheduled(fixedRate = 1000)
+    /**
+     * Deletes all dashboards, which are older than the deletion interval.
+     */
+    @Scheduled(cron = CRON_DAILY)
     private void deleteOldDashboards() {
+
+        List<Dashboard> dashboards = DatabaseTalker.getAllDashboards();
+        long deletionInterval = getDeletionInterval();
+
+        for (Dashboard dashboard : dashboards) {
+            LocalDate now = LocalDate.now();
+            LocalDate lastRetrieved = dashboard.getLastAccess();
+
+            Period interval = Period.between(lastRetrieved, now);
+
+            if (deletionInterval > interval.getDays()) {
+                try {
+                    deleteDashboard(dashboard.getEditKey());
+                } catch (NotFoundException | IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
     }
 

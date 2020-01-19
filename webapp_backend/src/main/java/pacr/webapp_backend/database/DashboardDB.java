@@ -8,6 +8,8 @@ import pacr.webapp_backend.dashboard_management.services.IDashboardAccess;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 
 //TODO
@@ -17,6 +19,11 @@ public interface DashboardDB extends CrudRepository<BenchmarkGroup, Integer>, ID
     @Override
     default Dashboard getDashboard(@NotNull String key) throws NotFoundException {
         return null;
+    }
+
+    @Override
+    default List<Dashboard> getAllDashboards() {
+        return new ArrayList<Dashboard>();
     }
 
     @Override
@@ -40,12 +47,12 @@ public interface DashboardDB extends CrudRepository<BenchmarkGroup, Integer>, ID
     }
 
     @Override
-    default void setDeletionInterval(int deletionInterval) {
+    default void setDeletionInterval(long deletionInterval) {
 
     }
 
     @Override
-    default int getDeletionInterval() {
+    default long getDeletionInterval() {
         return 0;
     }
 }

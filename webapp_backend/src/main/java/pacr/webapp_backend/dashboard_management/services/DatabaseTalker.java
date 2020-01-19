@@ -3,6 +3,8 @@ package pacr.webapp_backend.dashboard_management.services;
 import javassist.NotFoundException;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
+import java.util.List;
+
 /**
  * Communicates with the database and has methods for tasks,
  * where database access is required.
@@ -64,14 +66,14 @@ public class DatabaseTalker {
      * Stores the given deletion interval as the new deletion interval.
      * @param deletionInterval the new deletion interval.
      */
-    static void setDeletionInterval(int deletionInterval) {
+    static void setDeletionInterval(long deletionInterval) {
         dashboardAccess.setDeletionInterval(deletionInterval);
     }
 
     /**
      * @return the deletion interval from the database.
      */
-    static int getDeletionInterval() {
+    static long getDeletionInterval() {
         return dashboardAccess.getDeletionInterval();
     }
 
@@ -87,5 +89,12 @@ public class DatabaseTalker {
         } else {
             return dashboardAccess.getDashboard(key);
         }
+    }
+
+    /**
+     * @return a list of all dashboards.
+     */
+    static List<Dashboard> getAllDashboards() {
+        return dashboardAccess.getAllDashboards();
     }
 }

@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,6 +35,8 @@ public class Dashboard {
 
     static int MIN_POSITION = 0;
     static int MAX_POSITION = 14;
+
+    private LocalDate lastAccess = LocalDate.now();
 
     /**
      * Default constructor used by jpa.
@@ -183,6 +186,20 @@ public class Dashboard {
         }
 
         return leaderboardModuleList;
+    }
+
+    /**
+     * Sets the last access to now.
+     */
+    public void updateLastAccess() {
+        this.lastAccess = LocalDate.now();
+    }
+
+    /**
+     * @return the last time this dashboard was accessed.
+     */
+    public LocalDate getLastAccess() {
+        return lastAccess;
     }
 
     /**

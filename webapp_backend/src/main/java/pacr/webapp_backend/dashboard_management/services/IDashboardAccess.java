@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * This interface is used for storing and accessing
@@ -48,11 +49,16 @@ public interface IDashboardAccess {
      * Stores the given deletion interval as the new deletion interval.
      * @param deletionInterval the new deletion interval.
      */
-    void setDeletionInterval(int deletionInterval);
+    void setDeletionInterval(long deletionInterval);
 
     /**
      * Receives the deletion interval from the database.
      * @return the deletion interval.
      */
-    int getDeletionInterval();
+    long getDeletionInterval();
+
+    /**
+     * @return a list of all currently existing dashboards in the database.
+     */
+    List<Dashboard> getAllDashboards();
 }
