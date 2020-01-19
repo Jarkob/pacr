@@ -5,8 +5,10 @@ import pacr.webapp_backend.shared.ResultInterpretation;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * Represents one property of a benchmark that is measured.
@@ -25,6 +27,7 @@ public class BenchmarkProperty {
     private ResultInterpretation interpretation;
 
     @ManyToOne
+    @JoinColumn(name = "benchmark_id")
     private Benchmark benchmark;
 
     /**
@@ -60,15 +63,22 @@ public class BenchmarkProperty {
      * Gets the unique id of this property.
      * @return the id.
      */
-    int getId() {
+    public int getId() {
         return id;
     }
+
+    /**
+     * Sets the id of this property. Sometimes jpa doesn't set this itself for some reason. Only use this if the given
+     * id maps to an object in the database.
+     * @param id the unique id from the database.
+     */
+    public void setId(int id) { this.id = id; }
 
     /**
      * Gets the name of this property.
      * @return the name.
      */
-    String getName() {
+    public String getName() {
         return name;
     }
 
@@ -76,7 +86,7 @@ public class BenchmarkProperty {
      * Gets the measured unit of this property.
      * @return the unit.
      */
-    String getUnit() {
+    public String getUnit() {
         return unit;
     }
 
@@ -84,7 +94,7 @@ public class BenchmarkProperty {
      * Gets the interpretation (usually "MORE_IS_BETTER", "LESS_IS_BETTER" or "NEUTRAL") of this property.
      * @return the interpretation.
      */
-    ResultInterpretation getInterpretation() {
+    public ResultInterpretation getInterpretation() {
         return interpretation;
     }
 
@@ -93,21 +103,28 @@ public class BenchmarkProperty {
      * associated with this property.
      * @return the benchmark.
      */
-    Benchmark getBenchmark() {
+    public Benchmark getBenchmark() {
         return benchmark;
     }
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         BenchmarkProperty property = (BenchmarkProperty) obj;
-        return id == property.getId();
+        return id == property.getId()
+                && Objects.equals(name, property.getName())
+                && Objects.equals(unit, property.getUnit())
+                && interpretation == property.getInterpretation()
+                && Objects.equals(benchmark, property.getBenchmark());
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return Objects.hash(id, name, unit, interpretation, benchmark);
     }
 }

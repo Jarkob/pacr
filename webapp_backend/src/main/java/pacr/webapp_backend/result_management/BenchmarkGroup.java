@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Represents a group of benchmarks.
@@ -66,15 +67,19 @@ public class BenchmarkGroup {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         BenchmarkGroup group = (BenchmarkGroup) obj;
-        return id == group.getId();
+        return id == group.getId()
+                && Objects.equals(name, group.getName());
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return Objects.hash(id, name);
     }
 }

@@ -13,6 +13,7 @@ import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.shared.ResultInterpretation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -57,7 +58,6 @@ public class BenchmarkManagerTest {
         benchmark.setGroup(group);
 
         groupDB.saveBenchmarkGroup(group);
-        benchmarkDB.saveBenchmark(benchmark);
     }
 
     @AfterEach
@@ -78,7 +78,7 @@ public class BenchmarkManagerTest {
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(BENCHMARK_NAME_TWO, savedBenchmark.getOriginalName());
-        assertEquals(benchmark, savedBenchmark);
+        assertEquals(benchmark.getId(), savedBenchmark.getId());
     }
 
     /**
@@ -86,6 +86,8 @@ public class BenchmarkManagerTest {
      */
     @Test
     public void createOrUpdateBenchmark_addedProperty_shouldAlsoReturnAddedProperty() {
+        benchmarkDB.saveBenchmark(benchmark);
+
         BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
                 ResultInterpretation.LESS_IS_BETTER, benchmark);
 
@@ -99,11 +101,33 @@ public class BenchmarkManagerTest {
     }
 
     /**
+     * Tests whether createOrUpdateBenchmark can create a benchmark and then add a property to it
+     */
+    @Test
+    public void createOrUpdateBenchmark_createAndAddProperty_shouldAlsoReturnAddedProperty() {
+        benchmarkManager.createOrUpdateBenchmark(benchmark);
+
+        BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
+                ResultInterpretation.LESS_IS_BETTER, benchmark);
+
+        benchmark.addProperty(newProperty);
+
+        benchmarkManager.createOrUpdateBenchmark(benchmark);
+
+        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+
+        assertEquals(EXPECTED_NUM_OF_PROPERTIES, savedBenchmark.getProperties().size());
+        assertNotEquals(0, newProperty.getId());
+    }
+
+    /**
      * Tests whether updateBenchmark changes the custom name of a benchmark in the database (and nothing else).
      * @throws NotFoundException if the benchmark wasn't found in the database. This is a critical test failure.
      */
     @Test
     public void updateBenchmark_newName_shouldOnlyChangeName() throws NotFoundException {
+        benchmarkDB.saveBenchmark(benchmark);
+
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME_TWO, BENCHMARK_DESCRIPTION, group.getId());
 
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
@@ -120,6 +144,8 @@ public class BenchmarkManagerTest {
      */
     @Test
     public void updateBenchmark_newGroup_shouldOnlyChangeGroup() throws NotFoundException {
+        benchmarkDB.saveBenchmark(benchmark);
+
         BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
         groupDB.saveBenchmarkGroup(groupTwo);
 
@@ -140,6 +166,8 @@ public class BenchmarkManagerTest {
      */
     @Test
     public void updateBenchmark_groupIdNoGroup_shouldMakeGroupNull() throws NotFoundException {
+        benchmarkDB.saveBenchmark(benchmark);
+
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME, BENCHMARK_DESCRIPTION,
                 BenchmarkManager.GROUP_ID_NO_GROUP);
 
@@ -188,6 +216,8 @@ public class BenchmarkManagerTest {
      */
     @Test
     public void deleteGroup_benchmarkHasGroup_shouldRemoveGroupFromBenchmark() throws NotFoundException {
+        benchmarkDB.saveBenchmark(benchmark);
+
         benchmarkManager.deleteGroup(group.getId());
 
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());

@@ -7,6 +7,7 @@ import pacr.webapp_backend.shared.ResultInterpretation;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -26,7 +27,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     @GeneratedValue
     private int id;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<Double> measurements;
 
     private double mean;
@@ -54,7 +55,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      * @param measurement the measurements.
      * @param property the property of a benchmark that was measured.
      */
-    BenchmarkPropertyResult(IBenchmarkProperty measurement, BenchmarkProperty property) {
+    public BenchmarkPropertyResult(IBenchmarkProperty measurement, BenchmarkProperty property) {
         this.property = property;
         if (measurement.getError() != null) {
             this.error = true;

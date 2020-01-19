@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
+import pacr.webapp_backend.result_management.BenchmarkProperty;
+import pacr.webapp_backend.shared.ResultInterpretation;
 
 import java.util.Collection;
 
@@ -19,7 +21,10 @@ public class BenchmarkDBTest {
     private static final String BENCHMARK_NAME_TWO = "benchmark2";
     private static final String GROUP_NAME = "group";
     private static final String GROUP_NAME_TWO = "group2";
+    private static final String PROPERTY_NAME = "property";
+    private static final String UNIT = "unit";
     private static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
+    private static final int EXPECTED_NUM_OF_PROPERTIES = 1;
 
     private BenchmarkDB benchmarkDB;
     private BenchmarkGroupDB groupDB;
@@ -125,5 +130,25 @@ public class BenchmarkDBTest {
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmarkId);
 
         assertEquals(GROUP_NAME_TWO, savedBenchmark.getGroup().getName());
+    }
+
+    /**
+     * Tests whether saveBenchmark also saves the associated properties if new ones were added.
+     */
+    @Test
+    public void saveBenchmark_newProperty_getBenchmarkShouldReturnNewProperty() {
+        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        benchmarkDB.saveBenchmark(benchmark);
+
+        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER,
+                benchmark);
+        benchmark.addProperty(property);
+
+        benchmarkDB.saveBenchmark(benchmark);
+
+        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+
+        assertEquals(EXPECTED_NUM_OF_PROPERTIES, savedBenchmark.getProperties().size());
+        assertEquals(PROPERTY_NAME, savedBenchmark.getProperties().iterator().next().getName());
     }
 }

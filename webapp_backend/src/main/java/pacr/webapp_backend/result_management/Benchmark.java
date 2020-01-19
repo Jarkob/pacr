@@ -12,6 +12,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -38,7 +39,7 @@ public class Benchmark {
 
     private String description;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "benchmark", cascade = CascadeType.ALL, orphanRemoval = true)
     @LazyCollection(LazyCollectionOption.FALSE)
     private Set<BenchmarkProperty> properties;
 
@@ -140,7 +141,7 @@ public class Benchmark {
     /**
      * Sets the group that this benchmark belongs to to a new group. The new group may be null if this benchmark
      * belongs to no group.
-     * @param group the new group.
+     * @param group the new group
      */
     public void setGroup(BenchmarkGroup group) {
         this.group = group;
@@ -159,15 +160,22 @@ public class Benchmark {
 
     @Override
     public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
         if (obj == null || obj.getClass() != this.getClass()) {
             return false;
         }
         Benchmark benchmark = (Benchmark) obj;
-        return id == benchmark.getId();
+        return id == benchmark.getId()
+                && Objects.equals(originalName, benchmark.getOriginalName())
+                && Objects.equals(customName, benchmark.getCustomName())
+                && Objects.equals(description, benchmark.getDescription())
+                && Objects.equals(group, benchmark.getGroup());
     }
 
     @Override
     public int hashCode() {
-        return id;
+        return Objects.hash(id, originalName, customName, description, group);
     }
 }

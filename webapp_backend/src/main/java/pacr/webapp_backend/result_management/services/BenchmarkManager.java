@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
+import pacr.webapp_backend.result_management.BenchmarkProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
@@ -55,6 +56,18 @@ public class BenchmarkManager {
             throw new IllegalArgumentException("benchmark cannot be null");
         }
         this.benchmarkAccess.saveBenchmark(benchmark);
+
+        // TODO figure out if the bug that caused this workaround can be fixed. Because I have given up for now.
+        // for some reason jpa sometimes won't set the ids of the properties (even though they have been created in the
+        // database). This is a workaround to fix this.
+        Benchmark savedBenchmark = benchmarkAccess.getBenchmark(benchmark.getId());
+        for (BenchmarkProperty savedProperty : savedBenchmark.getProperties()) {
+            for (BenchmarkProperty property : benchmark.getProperties()) {
+                if (property.getName().equals(savedProperty.getName())) {
+                    property.setId(savedProperty.getId());
+                }
+            }
+        }
     }
 
     /**
