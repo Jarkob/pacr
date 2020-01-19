@@ -102,6 +102,15 @@ public class CommitResult implements IBenchmarkingResult {
         this.comparisonCommitHash = null;
     }
 
+    /**
+     * TODO: @Martin
+     * @return
+     */
+    @Override
+    public int getRepositoryID() {
+        return -1;
+    }
+
     @Override
     public String getCommitHash() {
         return commitHash;

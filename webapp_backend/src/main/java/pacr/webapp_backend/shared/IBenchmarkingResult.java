@@ -8,6 +8,11 @@ import java.util.Map;
 public interface IBenchmarkingResult {
 
     /**
+     * @return the id of the repository the commit belongs to. -1 if not set.
+     */
+    int getRepositoryID();
+
+    /**
      * @return the commit hash of the commit that was benchmarked.
      */
     String getCommitHash();
