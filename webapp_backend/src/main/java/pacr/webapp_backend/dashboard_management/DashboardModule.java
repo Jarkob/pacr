@@ -1,4 +1,4 @@
-package pacr.webapp_backend.dashboard_management.services;
+package pacr.webapp_backend.dashboard_management;
 
 /**
  * This abstract class defines the basic structure of any type of dashboard module.
@@ -32,7 +32,7 @@ abstract class DashboardModule {
      *
      * @param position The new position
      */
-    void setPosition(int position) {
+    public void setPosition(int position) {
         if (position <= MAX_POSITION && position >= MIN_POSITION) {
             this.position = position;
         } else {
@@ -44,7 +44,7 @@ abstract class DashboardModule {
     /**
      * @return The position of this module on its dashboard.
      */
-    int getPosition() {
+    public int getPosition() {
         int pos = this.position;
         if (pos < MIN_POSITION) {
             throw new IllegalStateException("The position of this dashboard module has not been set yet.");

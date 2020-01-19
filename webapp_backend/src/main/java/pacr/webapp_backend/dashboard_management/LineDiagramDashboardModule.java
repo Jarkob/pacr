@@ -1,4 +1,4 @@
-package pacr.webapp_backend.dashboard_management.services;
+package pacr.webapp_backend.dashboard_management;
 
 import java.util.List;
 
@@ -40,7 +40,10 @@ public class LineDiagramDashboardModule extends DashboardModule {
 
         LineDiagramDashboardModule otherModule = (LineDiagramDashboardModule) o;
 
-        //TODO
+        if (this.trackedRepositories.equals(otherModule.trackedRepositories)
+            && this.trackedBenchmarks.equals(otherModule.trackedBenchmarks)) {
+            return true;
+        }
         return false;
     }
 }

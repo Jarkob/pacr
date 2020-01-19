@@ -1,5 +1,7 @@
-package pacr.webapp_backend.dashboard_management.services;
+package pacr.webapp_backend.dashboard_management;
 
+
+import pacr.webapp_backend.shared.ILeaderboard;
 
 /**
  * Instances of this class represent leaderboard modules on a dashboard.
@@ -10,14 +12,41 @@ package pacr.webapp_backend.dashboard_management.services;
 public class LeaderboardDashboardModule extends DashboardModule {
     private String benchmarkName;
 
+    private ILeaderboard leaderboard;
+
+
+    /**
+     * @return the name of the benchmark tracked in this leaderboard.
+     */
+    public String getBenchmarkName() {
+        return this.benchmarkName;
+    }
+
+    /**
+     * Sets the leaderboard of this benchmark to the given leaderboard.
+     * @param leaderboard the leaderboard of this module.
+     */
+    public void setLeaderboard(ILeaderboard leaderboard) {
+        this.leaderboard = leaderboard;
+    }
+
+    /**
+     * Deletes the leaderboard of this module to avoid duplicate data in the database,
+     * when storing this leaderboard.
+     */
+    public void deleteLeaderboard() {
+        this.leaderboard = null;
+    }
 
     /**
      * Sets the benchmark, this leaderboard is assigned to.
      * @param benchmarkName The name of the new benchmark.
      */
-    void setBenchmarkOfLeaderboard(String benchmarkName) {
+    public void setBenchmarkOfLeaderboard(String benchmarkName) {
         this.benchmarkName = benchmarkName;
     }
+
+
     @Override
     public boolean equals(Object o) {
         boolean superEquals = super.equals(o);

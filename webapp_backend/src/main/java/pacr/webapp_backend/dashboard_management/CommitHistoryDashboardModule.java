@@ -1,4 +1,4 @@
-package pacr.webapp_backend.dashboard_management.services;
+package pacr.webapp_backend.dashboard_management;
 
 import java.util.List;
 
@@ -29,7 +29,9 @@ public class CommitHistoryDashboardModule extends DashboardModule {
 
         LineDiagramDashboardModule otherModule = (LineDiagramDashboardModule) o;
 
-        //TODO
+        if (this.trackedRepositories.equals(otherModule.trackedRepositories)) {
+            return true;
+        }
         return false;
     }
 

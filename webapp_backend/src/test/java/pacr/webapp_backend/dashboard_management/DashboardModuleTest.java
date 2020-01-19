@@ -1,4 +1,4 @@
-package pacr.webapp_backend.dashboard_management.services;
+package pacr.webapp_backend.dashboard_management;
 
 import static org.junit.jupiter.api.Assertions.*;
 
