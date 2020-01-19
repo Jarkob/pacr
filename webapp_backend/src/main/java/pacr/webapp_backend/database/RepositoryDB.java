@@ -8,5 +8,6 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
  *
  * @author Pavel Zwerschke
  */
-public interface RepositoryDB extends CrudRepository<GitRepository, Integer> {
+public interface RepositoryDB extends CrudRepository<GitRepository, Integer>, IExportRepositoryAccess {
+
 }
