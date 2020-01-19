@@ -6,10 +6,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IJobProvider;
 import pacr.webapp_backend.shared.IJobScheduler;
@@ -46,17 +50,17 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         this.observers = new ArrayList<>();
     }
 
-    private void addGroup(String groupTitle) {
+    private void addGroup(@NotNull String groupTitle) {
         if (!containsGroup(groupTitle)) {
             groups.put(groupTitle, new JobGroup(groupTitle));
         }
     }
 
-    private boolean containsGroup(String groupTitle) {
+    private boolean containsGroup(@NotNull String groupTitle) {
         return groups.containsKey(groupTitle);
     }
 
-    private JobGroup getGroup(String groupTitle) {
+    private JobGroup getGroup(@NotNull String groupTitle) {
         return groups.get(groupTitle);
     }
 
@@ -70,12 +74,14 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     }
 
     @Override
-    public void returnJob(IJob job) {
+    public void returnJob(@NotNull IJob job) {
+        Objects.requireNonNull(job, "The returned job cannot be null.");
+
         addJob(job.getJobGroupTitle(), job.getJobID());
     }
 
     @Override
-    public void addToGroupTimeSheet(String groupTitle, long time) {
+    public void addToGroupTimeSheet(@NotNull String groupTitle, long time) {
         if (containsGroup(groupTitle)) {
             JobGroup group = getGroup(groupTitle);
 
@@ -84,9 +90,14 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     }
 
     @Override
-    public void addJob(String groupTitle, String jobID) {
-        assert (groupTitle != null && !groupTitle.isEmpty());
-        assert (jobID != null && !jobID.isEmpty());
+    public void addJob(@NotNull String groupTitle, @NotNull String jobID) {
+        if (!StringUtils.hasText(groupTitle)) {
+            throw new IllegalArgumentException("The groupTitle cannot be null.");
+        }
+
+        if (!StringUtils.hasText(jobID)) {
+            throw new IllegalArgumentException("The jobID cannot be null.");
+        }
 
         addGroup(groupTitle);
         Job job = new Job(jobID, getGroup(groupTitle));
@@ -103,7 +114,19 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @param jobID the id of the job.
      * @return if the job was successfully prioritized.
      */
-    public boolean givePriorityTo(String groupTitle, String jobID) {
+    public boolean givePriorityTo(@NotNull String groupTitle, @NotNull String jobID) {
+        if (!StringUtils.hasText(groupTitle)) {
+            throw new IllegalArgumentException("The groupTitle cannot be null.");
+        }
+
+        if (!StringUtils.hasText(jobID)) {
+            throw new IllegalArgumentException("The jobID cannot be null.");
+        }
+
+        if (!containsGroup(groupTitle)) {
+            return false;
+        }
+
         Job job = new Job(jobID, groups.get(groupTitle));
 
         if (jobs.contains(job)) {
@@ -133,15 +156,15 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     }
 
     @Override
-    public void subscribe(IObserver observer) {
-        assert (observer != null);
+    public void subscribe(@NotNull IObserver observer) {
+        Objects.requireNonNull(observer);
 
         observers.add(observer);
     }
 
     @Override
-    public void unsubscribe(IObserver observer) {
-        assert (observer != null);
+    public void unsubscribe(@NotNull IObserver observer) {
+        Objects.requireNonNull(observer);
 
         observers.remove(observer);
     }
@@ -176,6 +199,10 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             final String groupTitle = job.getJobGroupTitle();
 
             toRemove.remove(groupTitle);
+        }
+
+        for (String group : toRemove) {
+            groups.remove(group);
         }
     }
 }

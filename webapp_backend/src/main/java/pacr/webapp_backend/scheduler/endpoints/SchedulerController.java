@@ -1,5 +1,8 @@
 package pacr.webapp_backend.scheduler.endpoints;
 
+import java.util.Objects;
+import javax.validation.constraints.NotNull;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,13 +24,9 @@ public class SchedulerController {
      * @param scheduler the scheduler which is used to handle the requests.
      * @param authenticator the authenticator which provides authentication services for secure methods.
      */
-    public SchedulerController(Scheduler scheduler, IAuthenticator authenticator) {
-        if (scheduler == null) {
-            throw new IllegalArgumentException("The scheduler cannot be null.");
-        }
-        if (authenticator == null) {
-            throw new IllegalArgumentException("The authenticator cannot be null.");
-        }
+    public SchedulerController(@NotNull Scheduler scheduler, @NotNull IAuthenticator authenticator) {
+        Objects.requireNonNull(scheduler, "The scheduler cannot be null.");
+        Objects.requireNonNull(authenticator, "The authenticator cannot be null.");
 
         this.scheduler = scheduler;
         this.authenticator = authenticator;
@@ -50,7 +49,18 @@ public class SchedulerController {
      */
     @RequestMapping("/prioritize/{groupTitle}/{jobID}")
     public boolean givePriorityTo(
-            @PathVariable String groupTitle, @PathVariable String jobID, @RequestHeader(name = "jwt") String token) {
+            @NotNull @PathVariable String groupTitle, @NotNull @PathVariable String jobID,
+            @NotNull @RequestHeader(name = "jwt") String token) {
+
+        Objects.requireNonNull(token, "The token cannot be null.");
+
+        if (!StringUtils.hasText(groupTitle)) {
+            throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
+        }
+
+        if (!StringUtils.hasText(jobID)) {
+            throw new IllegalArgumentException("The jobID cannot be null or empty.");
+        }
 
         if (authenticator.authenticate(token)) {
             return scheduler.givePriorityTo(groupTitle, jobID);

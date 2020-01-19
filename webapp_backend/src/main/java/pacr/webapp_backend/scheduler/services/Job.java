@@ -2,6 +2,8 @@ package pacr.webapp_backend.scheduler.services;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.validation.constraints.NotNull;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IJob;
 
 /**
@@ -19,7 +21,12 @@ public class Job implements IJob {
      * @param jobID the id of the job.
      * @param group the group of the job.
      */
-    Job(String jobID, JobGroup group) {
+    Job(@NotNull String jobID, @NotNull JobGroup group) {
+        if (!StringUtils.hasText(jobID)) {
+            throw new IllegalArgumentException("The jobID cannot be null.");
+        }
+        Objects.requireNonNull(group);
+
         this.jobID = jobID;
         this.group = group;
         this.queued = LocalDateTime.now();

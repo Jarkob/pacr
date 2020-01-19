@@ -1,5 +1,7 @@
 package pacr.webapp_backend.shared;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Allows the scheduling of jobs.
  */
@@ -10,6 +12,6 @@ public interface IJobScheduler {
      * @param groupTitle the job group of the job.
      * @param jobID the id of the job.
      */
-    void addJob(String groupTitle, String jobID);
+    void addJob(@NotNull String groupTitle, @NotNull String jobID);
 
 }

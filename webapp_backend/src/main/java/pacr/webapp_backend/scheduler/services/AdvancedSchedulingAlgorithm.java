@@ -45,9 +45,9 @@ class AdvancedSchedulingAlgorithm implements Comparator<Job> {
      *
      * A lower score is better. This way the most recent job is always preferred.
      *
-     * @param job
-     * @param now
-     * @return
+     * @param job the job the score is calculated for.
+     * @param now the time that the score is calculated for.
+     * @return the score of the given job.
      */
     private long calcScore(Job job, LocalDateTime now) {
         long nowSeconds = now.toEpochSecond(ZoneOffset.UTC);

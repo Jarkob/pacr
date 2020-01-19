@@ -1,5 +1,8 @@
 package pacr.webapp_backend.scheduler.services;
 
+import javax.validation.constraints.NotNull;
+import org.springframework.util.StringUtils;
+
 /**
  * A job group is used to track the benchmarking time of a repository.
  */
@@ -12,8 +15,8 @@ class JobGroup {
      * Creates a new job group.
      * @param title the title of the job group (cannot be null or empty).
      */
-    JobGroup(String title) {
-        if (title == null || title.isEmpty() || title.isBlank()) {
+    JobGroup(@NotNull String title) {
+        if (!StringUtils.hasText(title)) {
             throw new IllegalArgumentException("Title cannot be null or empty.");
         }
 
@@ -56,6 +59,6 @@ class JobGroup {
 
     @Override
     public String toString() {
-        return "JobGroup{ " + "title='" + title + "'" + ", benchmarkingTime=" + benchmarkingTime + " }";
+        return "JobGroup{ " + "title='" + title + "'" + ", benchmarkingTime=" + timeSheet + " }";
     }
 }

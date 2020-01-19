@@ -2,6 +2,8 @@ package pacr.webapp_backend.scheduler.endpoints;
 
 
 import java.util.List;
+import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import pacr.webapp_backend.scheduler.services.Job;
 
 /**
@@ -18,7 +20,10 @@ public class FullJobQueue {
      * @param prioritizedJobs a list of prioritized jobs.
      * @param jobs a list of normal jobs.
      */
-    public FullJobQueue(List<Job> prioritizedJobs, List<Job> jobs) {
+    public FullJobQueue(@NotNull List<Job> prioritizedJobs, @NotNull List<Job> jobs) {
+        Objects.requireNonNull(prioritizedJobs, "The prioritizedJobs cannot be null.");
+        Objects.requireNonNull(jobs, "The jobs cannot be null.");
+
         this.prioritizedJobs = prioritizedJobs;
         this.jobs = jobs;
     }

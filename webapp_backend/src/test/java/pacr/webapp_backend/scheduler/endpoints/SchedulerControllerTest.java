@@ -50,14 +50,14 @@ public class SchedulerControllerTest {
 
     @Test
     void SchedulerController_nullScheduler() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             SchedulerController schedulerController = new SchedulerController(null, authenticator);
         });
     }
 
     @Test
     void SchedulerController_nullIAuthenticator() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             SchedulerController schedulerController = new SchedulerController(scheduler, null);
         });
     }

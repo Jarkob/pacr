@@ -1,5 +1,7 @@
 package pacr.webapp_backend.shared;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Provides methods to get and return jobs. It also allows to update
  * the time sheet of a job group.
@@ -18,13 +20,13 @@ public interface IJobProvider extends ISubject {
      * Returns the given job and adds it to the job list again.
      * @param job the job to be returned.
      */
-    void returnJob(IJob job);
+    void returnJob(@NotNull IJob job);
 
     /**
      * Adds the given time to the time sheet of the given group.
      * @param groupTitle the groupTitle of the group.
      * @param time the time that is added in seconds.
      */
-    void addToGroupTimeSheet(String groupTitle, long time);
+    void addToGroupTimeSheet(@NotNull String groupTitle, long time);
 
 }
