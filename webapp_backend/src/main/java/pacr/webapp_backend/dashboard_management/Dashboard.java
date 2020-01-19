@@ -175,7 +175,7 @@ public class Dashboard {
     public Collection<LeaderboardDashboardModule> getLeaderboardModules() {
 
         //Get a collection of dashboard modules containing only leaderboard modules.
-        ArrayList<DashboardModule> moduleList = new ArrayList<DashboardModule>(this.modules);
+        ArrayList<DashboardModule> moduleList = new ArrayList<>(this.modules);
         moduleList.removeIf(
                 (DashboardModule dm) -> dm == null || (dm.getClass() != LeaderboardDashboardModule.class));
 

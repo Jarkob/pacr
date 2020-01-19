@@ -43,6 +43,9 @@ public class DashboardManager {
         Dashboard dashboard = DatabaseTalker.getDashboard(key);
         dashboard.updateLastAccess();
 
+        //To prevent access from unauthorized users
+        dashboard.setEditKey(null);
+
         //Store the leaderboards in leaderboard modules.
         for (LeaderboardDashboardModule ldm : dashboard.getLeaderboardModules()) {
             String benchmarkName = ldm.getBenchmarkName();

@@ -2,6 +2,7 @@ package pacr.webapp_backend.dashboard_management.services;
 
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 /**
@@ -16,7 +17,10 @@ public class KeyManager {
      * Generates and sets a unique edit key for a given dashboard.
      * @param dashboard The dashboard for which the edit key should be generated.
      */
-    static void generateEditKey(Dashboard dashboard) {
+    static void generateEditKey(@NotNull Dashboard dashboard) {
+        if(dashboard == null) {
+            throw new IllegalArgumentException("The dashboard must not be null!");
+        }
         String editKey = UUID.randomUUID().toString();
         dashboard.setEditKey(editKey);
     }
@@ -25,7 +29,10 @@ public class KeyManager {
      * Generates and sets a unique view key for a given dashboard.
      * @param dashboard The dashboard for which the view key should be generated.
      */
-    static void generateViewKey(Dashboard dashboard) {
+    static void generateViewKey(@NotNull Dashboard dashboard) {
+        if(dashboard == null) {
+            throw new IllegalArgumentException("The dashboard must not be null!");
+        }
         String viewKey = UUID.randomUUID().toString();
         dashboard.setViewKey(viewKey);
     }

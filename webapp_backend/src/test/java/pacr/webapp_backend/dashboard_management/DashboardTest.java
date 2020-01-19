@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
+
 public class DashboardTest {
 
 
@@ -106,5 +108,12 @@ public class DashboardTest {
         DashboardModuleDummy dashboardModule = null;
 
         assertFalse(dashboard.removeModule(dashboardModule));
+    }
+
+    @Test
+    void updateLastAccess_ShouldUpdateLastAccess() {
+        LocalDate now = LocalDate.now();
+        dashboard.updateLastAccess();
+        assertEquals(now, dashboard.getLastAccess());
     }
 }
