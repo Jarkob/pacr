@@ -1,6 +1,8 @@
 package pacr.webapp_backend.event_management.endpoints;
 
 import java.util.List;
+import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.View;
@@ -24,10 +26,8 @@ public class EventManagementController {
      *
      * @param eventHandler the eventHandler used to retrieve events.
      */
-    public EventManagementController(EventHandler eventHandler) {
-        if (eventHandler == null) {
-            throw new IllegalArgumentException("The eventHandler cannot be null.");
-        }
+    public EventManagementController(@NotNull EventHandler eventHandler) {
+        Objects.requireNonNull(eventHandler, "The eventHandler cannot be null.");
 
         this.eventHandler = eventHandler;
 

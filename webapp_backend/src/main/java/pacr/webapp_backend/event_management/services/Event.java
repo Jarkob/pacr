@@ -9,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
 
 /**
@@ -43,7 +45,17 @@ public class Event implements Comparable<Event> {
      * @param title the title of the event.
      * @param description a description of the event.
      */
-    public Event(EventCategory category, String title, String description) {
+    public Event(@NotNull EventCategory category, @NotNull String title, @NotNull String description) {
+        Objects.requireNonNull(category, "The category cannot be null.");
+
+        if (!StringUtils.hasText(title)) {
+            throw new IllegalArgumentException("The title cannot be null or empty.");
+        }
+
+        if (!StringUtils.hasText(description)) {
+            throw new IllegalArgumentException("The description cannot be null or empty.");
+        }
+
         this.category = category;
         this.title = title;
         this.description = description;

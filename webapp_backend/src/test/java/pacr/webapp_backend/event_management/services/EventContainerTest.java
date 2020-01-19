@@ -49,14 +49,14 @@ public class EventContainerTest {
 
     @Test
     void EventContainer_nullCategory() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             EventContainer container = new EventContainer(null, eventAccess);
         });
     }
 
     @Test
     void EventContainer_nullIEventAccess() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             EventContainer container = new EventContainer(category, null);
         });
     }

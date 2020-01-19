@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.IEventHandler;
 
@@ -22,17 +25,15 @@ public class EventHandler implements IEventHandler {
      *
      * @param eventAccess the eventAccess used to save events.
      */
-    public EventHandler(IEventAccess eventAccess) {
-        if (eventAccess == null) {
-            throw new IllegalArgumentException("The eventAccess cannot be null.");
-        }
+    public EventHandler(@NotNull IEventAccess eventAccess) {
+        Objects.requireNonNull(eventAccess, "The eventAccess cannot be null.");
 
         this.eventAccess = eventAccess;
         this.eventContainers = new HashMap<>();
     }
 
     @Override
-    public void addEvent(EventCategory category, String title, String description) {
+    public void addEvent(@NotNull EventCategory category, @NotNull String title, @NotNull String description) {
         verifyEventParameters(category, title, description);
 
         if (!eventContainers.containsKey(category)) {
@@ -44,21 +45,15 @@ public class EventHandler implements IEventHandler {
     }
 
     private void verifyEventParameters(EventCategory category, String title, String description) {
-        if (category == null) {
-            throw new IllegalArgumentException("category cannot be null.");
+        Objects.requireNonNull(category, "The category cannot be null.");
+
+        if (!StringUtils.hasText(title)) {
+            throw new IllegalArgumentException("The title cannot be null or empty.");
         }
 
-        if (stringIsNotValid(title)) {
-            throw new IllegalArgumentException("title cannot be null or empty.");
+        if (!StringUtils.hasText(description)) {
+            throw new IllegalArgumentException("The description cannot be null or empty.");
         }
-
-        if (stringIsNotValid(description)) {
-            throw new IllegalArgumentException("description cannot be null or empty.");
-        }
-    }
-
-    private boolean stringIsNotValid(String str) {
-        return str == null || str.isEmpty() || str.isBlank();
     }
 
     /**

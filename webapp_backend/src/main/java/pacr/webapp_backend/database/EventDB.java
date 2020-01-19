@@ -1,11 +1,13 @@
 package pacr.webapp_backend.database;
 
-import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.event_management.services.IEventAccess;
 
+/**
+ * Provides the database access for events.
+ */
 @Component
 public interface EventDB extends JpaRepository<Event, Integer>, IEventAccess {
 

@@ -3,6 +3,9 @@ package pacr.webapp_backend.event_management.services;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import javax.validation.constraints.NotNull;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
 
 /**
@@ -21,14 +24,9 @@ public class EventContainer {
      * @param category the category of events handles by this event manager.
      * @param eventAccess the event access used to store the events.
      */
-    EventContainer(EventCategory category, IEventAccess eventAccess) {
-        if (category == null) {
-            throw new IllegalArgumentException("category cannot be null.");
-        }
-
-        if (eventAccess == null) {
-            throw new IllegalArgumentException("eventAccess cannot be null.");
-        }
+    EventContainer(@NotNull EventCategory category, @NotNull IEventAccess eventAccess) {
+        Objects.requireNonNull(category, "The category cannot be null.");
+        Objects.requireNonNull(eventAccess, "The eventAccess cannot be null.");
 
         this.category = category;
         this.eventAccess = eventAccess;
@@ -43,12 +41,12 @@ public class EventContainer {
      * @param title the title of the event.
      * @param description a description of the event.
      */
-    void addEvent(String title, String description) {
-        if (stringIsNotValid(title)) {
+    void addEvent(@NotNull String title, @NotNull String description) {
+        if (!StringUtils.hasText(title)) {
             throw new IllegalArgumentException("title cannot be null or empty.");
         }
 
-        if (stringIsNotValid(description)) {
+        if (!StringUtils.hasText(description)) {
             throw new IllegalArgumentException("description cannot be null or empty.");
         }
 
@@ -56,10 +54,6 @@ public class EventContainer {
 
         eventAccess.saveEvent(event);
         events.add(event);
-    }
-
-    private boolean stringIsNotValid(String str) {
-        return str == null || str.isEmpty() || str.isBlank();
     }
 
     /**

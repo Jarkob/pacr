@@ -8,8 +8,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.event_management.services.EventHandler;
@@ -29,14 +31,9 @@ public class EventRSSFeedView extends AbstractRssFeedView {
      * @param category the category the displayed events belong to.
      * @param eventHandler the eventHandler used to retrieve the displayed events.
      */
-    public EventRSSFeedView(EventCategory category, EventHandler eventHandler) {
-        if (category == null) {
-            throw new IllegalArgumentException("The category cannot be null.");
-        }
-
-        if (eventHandler == null) {
-            throw new IllegalArgumentException("The eventHandler cannot be null.");
-        }
+    public EventRSSFeedView(@NotNull EventCategory category, @NotNull EventHandler eventHandler) {
+        Objects.requireNonNull(category, "The category cannot be null.");
+        Objects.requireNonNull(eventHandler, "The eventHandler cannot be null.");
 
         this.category = category;
         this.eventHandler = eventHandler;
@@ -44,9 +41,13 @@ public class EventRSSFeedView extends AbstractRssFeedView {
 
     @Override
     protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest request) {
-        feed.setTitle("PACR RSS Feed");
-        feed.setDescription("Here you can find all events that occurred in the system.");
-        feed.setLink("http://localhost:8080/rss");
+        final String title = "PACR RSS Feed";
+        final String description = "Here you can find all events that occurred in the system.";
+        final String link = "http://localhost:8080/rss";
+
+        feed.setTitle(title);
+        feed.setDescription(description);
+        feed.setLink(link);
     }
 
     @Override

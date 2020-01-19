@@ -1,6 +1,5 @@
 package pacr.webapp_backend.event_management.services;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -46,7 +45,7 @@ public class EventHandlerTest {
 
     @Test
     void EventHandler_nullIEventAccess() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             EventHandler eventHandler = new EventHandler(null);
         });
     }
@@ -84,7 +83,7 @@ public class EventHandlerTest {
 
     @Test
     void addEvent_invalidCategory() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             eventHandler.addEvent(null, EVENT_TITLE, EVENT_DESCRIPTION);
         });
     }
