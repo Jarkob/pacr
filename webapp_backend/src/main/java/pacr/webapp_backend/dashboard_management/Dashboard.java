@@ -1,12 +1,17 @@
 package pacr.webapp_backend.dashboard_management;
 
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Instances of this class model dashboards, which contain dashboard modules
@@ -19,6 +24,8 @@ import java.util.Collection;
  *
  * @author Benedikt Hahn
  */
+@Entity(name = "Dashboard")
+@Table(name = "dashboard")
 public class Dashboard {
 
     @Id
@@ -28,6 +35,12 @@ public class Dashboard {
     static int MIN_POSITION = 0;
     static int MAX_POSITION = 14;
 
+    /**
+     * Default constructor used by jpa.
+     */
+    public Dashboard() {
+
+    }
 
     private String editKey;
     private String viewKey;
@@ -35,7 +48,8 @@ public class Dashboard {
     private String title;
 
     //Limited to 15 positions on the dashboard.
-    private DashboardModule[] modules = new DashboardModule[MAX_POSITION - MIN_POSITION  + 1];
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<DashboardModule> modules = Arrays.asList(new DashboardModule[MAX_POSITION - MIN_POSITION  + 1]);
 
 
     /**
@@ -69,12 +83,12 @@ public class Dashboard {
             throw new IllegalArgumentException(e.getMessage());
         }
 
-        if (modules[position] != null) {
+        if (modules.get(position) != null) {
             throw new IllegalArgumentException("The given dashboard module position "
                                                 + position + " is already occupied.");
         }
 
-        modules[position] = module;
+        modules.set(position, module);
     }
 
     /**
@@ -111,10 +125,10 @@ public class Dashboard {
             throw new IllegalArgumentException("Dashboards only allow positioning in the range "
                     + "[" + MIN_POSITION + "," + MAX_POSITION + "].");
         }
-        if (modules[position] == null) {
+        if (modules.get(position) == null) {
             return false;
         }
-        modules[position] = null;
+        modules.set(position, null);
         return true;
     }
 
@@ -158,7 +172,7 @@ public class Dashboard {
     public Collection<LeaderboardDashboardModule> getLeaderboardModules() {
 
         //Get a collection of dashboard modules containing only leaderboard modules.
-        ArrayList<DashboardModule> moduleList = (ArrayList<DashboardModule>) Arrays.asList(this.modules);
+        ArrayList<DashboardModule> moduleList = new ArrayList<DashboardModule>(this.modules);
         moduleList.removeIf(
                 (DashboardModule dm) -> dm == null || (dm.getClass() != LeaderboardDashboardModule.class));
 

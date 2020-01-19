@@ -1,5 +1,11 @@
 package pacr.webapp_backend.dashboard_management;
 
+import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
 /**
  * This abstract class defines the basic structure of any type of dashboard module.
  * An instance of any subclass this class has, models a dashboard module with a
@@ -8,8 +14,13 @@ package pacr.webapp_backend.dashboard_management;
  *
  * @author Benedikt Hahn
  */
+@Entity
+@Configurable
 abstract class DashboardModule {
 
+    @Id
+    @GeneratedValue
+    private int id;
 
     static int MIN_POSITION = Dashboard.MIN_POSITION;
     static int MAX_POSITION = Dashboard.MAX_POSITION;
@@ -18,7 +29,7 @@ abstract class DashboardModule {
     //In range [0,14]
     private int position;
 
-    DashboardModule() {
+    public DashboardModule() {
         position = -1;
     }
 

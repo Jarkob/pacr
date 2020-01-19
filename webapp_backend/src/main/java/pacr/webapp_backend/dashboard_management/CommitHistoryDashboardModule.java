@@ -1,5 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
 import java.util.List;
 
 /**
@@ -8,8 +10,10 @@ import java.util.List;
  *
  * @author Benedikt Hahn
  */
+@Entity
 public class CommitHistoryDashboardModule extends DashboardModule {
 
+    @ElementCollection
     List<String> trackedRepositories;
 
     /**

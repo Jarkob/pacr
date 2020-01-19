@@ -3,16 +3,19 @@ package pacr.webapp_backend.dashboard_management;
 
 import pacr.webapp_backend.shared.ILeaderboard;
 
+import javax.persistence.Entity;
+
 /**
  * Instances of this class represent leaderboard modules on a dashboard.
  * One of these leaderboard modules shows a leaderboard for a specific benchmark.
  *
  * @author Benedikt Hahn
  */
+@Entity
 public class LeaderboardDashboardModule extends DashboardModule {
     private String benchmarkName;
 
-    private ILeaderboard leaderboard;
+    private transient ILeaderboard leaderboard;
 
 
     /**
