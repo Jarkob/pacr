@@ -1,6 +1,8 @@
 package pacr.webapp_backend.event_management.services;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -41,7 +43,7 @@ public class Event implements Comparable<Event> {
      * @param title the title of the event.
      * @param description a description of the event.
      */
-    Event(EventCategory category, String title, String description) {
+    public Event(EventCategory category, String title, String description) {
         this.category = category;
         this.title = title;
         this.description = description;
@@ -74,5 +76,22 @@ public class Event implements Comparable<Event> {
         assert (created != null);
 
         return created.compareTo(event.created);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Event event = (Event) o;
+
+        return category == event.category
+                && Objects.equals(title, event.title)
+                && Objects.equals(description, event.description)
+                && Objects.equals(created.truncatedTo(ChronoUnit.SECONDS), event.created.truncatedTo(ChronoUnit.SECONDS));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(category, title, description, created.truncatedTo(ChronoUnit.SECONDS));
     }
 }

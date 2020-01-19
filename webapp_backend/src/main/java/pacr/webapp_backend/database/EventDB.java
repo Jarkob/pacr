@@ -1,5 +1,6 @@
 package pacr.webapp_backend.database;
 
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.event_management.services.Event;

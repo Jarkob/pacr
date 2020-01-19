@@ -9,7 +9,7 @@ import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.IEventHandler;
 
 /**
- * Handles events from multiple categories.
+ * Handles events belonging to multiple categories.
  */
 @Component
 public class EventHandler implements IEventHandler {
@@ -23,6 +23,10 @@ public class EventHandler implements IEventHandler {
      * @param eventAccess the eventAccess used to save events.
      */
     public EventHandler(IEventAccess eventAccess) {
+        if (eventAccess == null) {
+            throw new IllegalArgumentException("The eventAccess cannot be null.");
+        }
+
         this.eventAccess = eventAccess;
         this.eventContainers = new HashMap<>();
     }
@@ -57,6 +61,12 @@ public class EventHandler implements IEventHandler {
         return str == null || str.isEmpty() || str.isBlank();
     }
 
+    /**
+     * Returns all stored events that belong to the given category.
+     *
+     * @param category category of the returned events.
+     * @return a list of events.
+     */
     public List<Event> getEvents(EventCategory category) {
         if (eventContainers.containsKey(category)) {
             EventContainer eventContainer = eventContainers.get(category);

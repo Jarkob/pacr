@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pacr.webapp_backend.shared.EventCategory;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,6 +38,27 @@ public class EventContainerTest {
         this.category = EventCategory.BENCHMARKING;
 
         this.eventContainer = new EventContainer(category, eventAccess);
+    }
+
+    @Test
+    void EventContainer_noError() {
+        assertDoesNotThrow(() -> {
+            EventContainer container = new EventContainer(category, eventAccess);
+        });
+    }
+
+    @Test
+    void EventContainer_nullCategory() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            EventContainer container = new EventContainer(null, eventAccess);
+        });
+    }
+
+    @Test
+    void EventContainer_nullIEventAccess() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            EventContainer container = new EventContainer(category, null);
+        });
     }
 
     @Test
