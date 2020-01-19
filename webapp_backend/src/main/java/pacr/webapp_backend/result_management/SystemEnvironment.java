@@ -46,7 +46,8 @@ public class SystemEnvironment implements ISystemEnvironment {
     }
 
     /**
-     * Creates a system environment. Throws IllegalArgumentException if strings are null, empty or blank.
+     * Creates a system environment. Throws IllegalArgumentException if strings are empty or blank. Input may be null
+     * (this implies a detection error for the given input).
      * @param name the computers name. Cannot be empty or blank.
      * @param os the os. Cannot be empty or blank.
      * @param processor the processor model. Cannot be empty or blank.
@@ -54,8 +55,7 @@ public class SystemEnvironment implements ISystemEnvironment {
      * @param cores the number of cores.
      * @param memory the amount of memory in GB.
      */
-    public SystemEnvironment(@NotNull String name, @NotNull String os, @NotNull String processor,
-                             @NotNull String kernel, int cores, long memory) {
+    public SystemEnvironment(String name, String os, String processor, String kernel, int cores, long memory) {
         if (isInputStringInvalid(name) || isInputStringInvalid(os) || isInputStringInvalid(processor)
                 || isInputStringInvalid(kernel)) {
             throw new IllegalArgumentException("input cannot be null, empty or blank");
@@ -99,6 +99,6 @@ public class SystemEnvironment implements ISystemEnvironment {
     }
 
     private boolean isInputStringInvalid(String string) {
-        return string == null || string.isEmpty() || string.isBlank();
+        return string.isEmpty() || string.isBlank();
     }
 }
