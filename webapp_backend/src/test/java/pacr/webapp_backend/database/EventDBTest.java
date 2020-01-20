@@ -1,5 +1,6 @@
 package pacr.webapp_backend.database;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
@@ -13,6 +14,7 @@ import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.shared.EventCategory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @SpringBootTest
@@ -54,7 +56,9 @@ public class EventDBTest {
 
         assertEquals(EVENT_TITLE, event.getTitle());
         assertEquals(EVENT_DESCRIPTION, event.getDescription());
-        assertEquals(expectedCreated, event.getCreated().truncatedTo(ChronoUnit.SECONDS));
+
+        Duration delta = Duration.between(expectedCreated, event.getCreated());
+        assertTrue(delta.toMillis() < 1500);
     }
 
     @Test
@@ -77,6 +81,8 @@ public class EventDBTest {
 
         assertEquals(EVENT_TITLE, event.getTitle());
         assertEquals(EVENT_DESCRIPTION, event.getDescription());
-        assertEquals(expectedCreated, event.getCreated().truncatedTo(ChronoUnit.SECONDS));
+
+        Duration delta = Duration.between(expectedCreated, event.getCreated());
+        assertTrue(delta.toMillis() < 1500);
     }
 }

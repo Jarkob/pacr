@@ -1,5 +1,6 @@
 package pacr.webapp_backend.git_tracking;
 
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -26,7 +27,7 @@ public class GitBranch {
     private String name;
 
     @OneToMany(fetch = FetchType.EAGER)
-    private Collection<GitCommit> commits;
+    private Set<GitCommit> commits;
 
     /**
      * Creates an empty branch. Necessary to be an Entity.

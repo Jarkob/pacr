@@ -1,5 +1,6 @@
 package pacr.webapp_backend.database;
 
+import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -215,7 +216,7 @@ public class ResultDBTest {
 
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE));
 
-        LocalDateTime previousTime = LocalDateTime.now();
+        LocalDateTime previousTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
         List<CommitResult> orderedResults = this.resultDB.getNewestResults();
 

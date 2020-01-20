@@ -51,7 +51,7 @@ public class GitCommit implements ICommit {
     private GitRepository repository;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private Collection<String> labels;
+    private Set<String> labels;
 
     @ManyToOne(cascade = CascadeType.ALL)
     private GitBranch branch;
