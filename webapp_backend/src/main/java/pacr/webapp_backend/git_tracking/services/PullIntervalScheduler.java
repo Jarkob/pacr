@@ -1,7 +1,7 @@
 package pacr.webapp_backend.git_tracking.services;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
@@ -20,7 +20,7 @@ import java.util.Objects;
 @Service
 public class PullIntervalScheduler implements SchedulingConfigurer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PullIntervalScheduler.class);
+    private static final Logger LOGGER = LogManager.getLogger(PullIntervalScheduler.class);
 
     private GitTracking gitTracking;
     private TaskScheduler poolScheduler;

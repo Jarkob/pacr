@@ -1,8 +1,8 @@
 package pacr.webapp_backend.database;
 
 import javassist.NotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.GitCommit;
@@ -23,7 +23,7 @@ import java.util.Objects;
 @Component
 public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAccess {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitTrackingDB.class);
+    private static final Logger LOGGER = LogManager.getLogger(GitTrackingDB.class);
 
     /**
      * Creates a new instance of GitTrackingDB.

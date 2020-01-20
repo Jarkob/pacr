@@ -8,8 +8,8 @@ import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
@@ -30,7 +30,7 @@ import java.util.HashSet;
 @Component
 public class CleanUpCommits implements ICleanUpCommits {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CleanUpCommits.class);
+    private static final Logger LOGGER = LogManager.getLogger(CleanUpCommits.class);
 
     private IGitTrackingAccess gitTrackingAccess;
 

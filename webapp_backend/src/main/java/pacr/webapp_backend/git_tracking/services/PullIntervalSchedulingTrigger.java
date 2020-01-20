@@ -1,7 +1,7 @@
 package pacr.webapp_backend.git_tracking.services;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.Trigger;
 import org.springframework.scheduling.TriggerContext;
@@ -24,7 +24,7 @@ import java.util.Objects;
 @Component
 public class PullIntervalSchedulingTrigger implements Trigger {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(PullIntervalSchedulingTrigger.class);
+    private static final Logger LOGGER = LogManager.getLogger(PullIntervalSchedulingTrigger.class);
 
     private IPullIntervalAccess pullIntervalAccess;
 

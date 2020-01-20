@@ -1,12 +1,7 @@
 package pacr.webapp_backend.git_tracking.services;
 
 import javassist.NotFoundException;
-import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.git_tracking.GitRepository;
@@ -21,6 +16,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Represents the Git Tracking component of the system.
@@ -31,7 +28,7 @@ import java.util.Objects;
 @Component
 public class GitTracking implements IRepositoryImporter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitTracking.class);
+    private static final Logger LOGGER = LogManager.getLogger(GitTracking.class);
 
     private IGitTrackingAccess gitTrackingAccess;
 

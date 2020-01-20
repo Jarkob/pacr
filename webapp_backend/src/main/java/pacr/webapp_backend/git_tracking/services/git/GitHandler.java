@@ -10,9 +10,9 @@ import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.*;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.slf4j.LoggerFactory;
-import org.slf4j.Logger;
 import org.eclipse.jgit.treewalk.TreeWalk;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.GitBranch;
@@ -38,8 +38,8 @@ import java.util.*;
 @Component
 public class GitHandler {
 
+    private static final Logger LOGGER = LogManager.getLogger(GitHandler.class);
     private static final String MASTER = "master";
-    private static final Logger LOGGER = LoggerFactory.getLogger(GitHandler.class);
 
     private String pathToWorkingDir;
     private File repositoryWorkingDir;
