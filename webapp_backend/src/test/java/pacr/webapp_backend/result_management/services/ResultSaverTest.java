@@ -8,13 +8,8 @@ import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.ResultDB;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.CommitResult;
-import pacr.webapp_backend.result_management.SystemEnvironment;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
-import pacr.webapp_backend.shared.ResultInterpretation;
-
-import java.util.HashMap;
-import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

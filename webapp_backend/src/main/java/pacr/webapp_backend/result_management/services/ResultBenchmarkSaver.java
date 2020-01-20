@@ -35,7 +35,6 @@ public class ResultBenchmarkSaver extends ResultSaver {
     private ResultGetter subjectForObservers;
     private IEventHandler eventHandler;
     private IGetCommitAccess commitAccess;
-    private IResultAccess resultAccess;
 
     /**
      * Creates a ResultBenchmarkSaver with access to results and a benchmark manager.
@@ -66,8 +65,11 @@ public class ResultBenchmarkSaver extends ResultSaver {
         }
 
         ICommit commit = commitAccess.getCommit(result.getCommitHash());
+        CommitResult comparisonResult = null;
 
-        CommitResult comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
+        if (comparisonCommitHash != null) {
+            comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
+        }
 
         eventHandler.addEvent(EventCategory.BENCHMARKING, generateTitle(commit, result),
                 generateDescription(commit, result, comparisonResult));

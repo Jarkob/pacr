@@ -65,6 +65,7 @@ public class BenchmarkManager {
             for (BenchmarkProperty property : benchmark.getProperties()) {
                 if (property.getName().equals(savedProperty.getName())) {
                     property.setId(savedProperty.getId());
+                    break;
                 }
             }
         }

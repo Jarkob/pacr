@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management;
 
-import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 

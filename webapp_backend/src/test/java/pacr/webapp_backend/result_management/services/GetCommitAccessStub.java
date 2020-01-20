@@ -6,7 +6,7 @@ import pacr.webapp_backend.git_tracking.GitRepository;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
-import java.awt.*;
+import java.awt.Color;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;

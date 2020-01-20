@@ -25,7 +25,7 @@ public interface IResultAccess {
 
     /**
      * Gets the saved result of a commit. Returns null if no result is saved for the commit.
-     * @param commitHash the hash of the commit.
+     * @param commitHash the hash of the commit. Cannot be null.
      * @return the result of the commit.
      */
     CommitResult getResultFromCommit(String commitHash);
