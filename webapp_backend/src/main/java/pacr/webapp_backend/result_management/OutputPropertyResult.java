@@ -30,7 +30,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
      * @param result the BenchmarkPropertyResult that this OutputPropertyResult is cloned from. Throws
      *               IllegalArgumentException if result is null.
      */
-    OutputPropertyResult(@NotNull BenchmarkPropertyResult result) {
+    public OutputPropertyResult(@NotNull BenchmarkPropertyResult result) {
         if (result == null) {
             throw new IllegalArgumentException("result cannot be null");
         }

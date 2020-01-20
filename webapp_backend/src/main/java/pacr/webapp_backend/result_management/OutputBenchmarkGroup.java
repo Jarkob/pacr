@@ -19,7 +19,7 @@ public class OutputBenchmarkGroup {
      * @param benchmarks the benchmarks.
      * @param group the BenchmarkGroup that metadata is copied from.
      */
-    OutputBenchmarkGroup(@NotNull OutputBenchmark[] benchmarks, @NotNull BenchmarkGroup group) {
+    public OutputBenchmarkGroup(@NotNull OutputBenchmark[] benchmarks, @NotNull BenchmarkGroup group) {
         if (benchmarks == null || group == null) {
             throw new IllegalArgumentException("benchmarks or group cannot be null");
         }
@@ -33,7 +33,7 @@ public class OutputBenchmarkGroup {
      * OutputBenchmarkGroup will be empty to represent this.
      * @param benchmarks the benchmarks. Throws IllegalArgumentException if this is null.
      */
-    OutputBenchmarkGroup(@NotNull OutputBenchmark[] benchmarks) {
+    public OutputBenchmarkGroup(@NotNull OutputBenchmark[] benchmarks) {
         if (benchmarks == null) {
             throw new IllegalArgumentException("benchmarks cannot be null");
         }

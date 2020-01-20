@@ -27,7 +27,7 @@ public class OutputBenchmark implements IBenchmark {
      * @param results the properties with results.
      * @param benchmark the benchmark that metadata is copied from.
      */
-    OutputBenchmark(@NotNull OutputPropertyResult[] results, @NotNull Benchmark benchmark) {
+    public OutputBenchmark(@NotNull OutputPropertyResult[] results, @NotNull Benchmark benchmark) {
         if (results == null || benchmark == null) {
             throw new IllegalArgumentException("input cannot be null");
         }

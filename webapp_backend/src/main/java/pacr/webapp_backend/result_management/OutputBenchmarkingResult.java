@@ -48,7 +48,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @param result the result for the commit.
      * @param groups the benchmark groups with benchmarks, their properties and their corresponding measurements.
      */
-    OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
+    public OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
                              @NotNull OutputBenchmarkGroup[] groups) {
         if (commit == null || result == null || groups == null) {
             throw new IllegalArgumentException("input cannot be null");
