@@ -1,6 +1,5 @@
+import { EventsComponent } from './events/events.component';
 import { DetailViewComponent } from './detail-view/detail-view.component';
-import { LeaderboardEventsComponent } from './leaderboard-events/leaderboard-events.component';
-import { BenchmarkingEventsComponent } from './benchmarking-events/benchmarking-events.component';
 import { GlobalService } from './services/global.service';
 import { SchedulerService } from './services/scheduler.service';
 import { RepositoryService } from './services/repository.service';
@@ -12,6 +11,7 @@ import { MaterialModule } from './material.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { ChartsModule } from 'ng2-charts';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -35,9 +35,8 @@ import { HttpClientModule } from '@angular/common/http';
     DashboardComponent,
     LoginComponent,
     ToolbarComponent,
-    BenchmarkingEventsComponent,
-    LeaderboardEventsComponent,
-    DetailViewComponent
+    DetailViewComponent,
+    EventsComponent
   ],
   imports: [
     BrowserModule,
@@ -45,7 +44,8 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     MaterialModule,
     ChartsModule,
-    HttpClientModule
+    HttpClientModule,
+    FlexLayoutModule
   ],
   providers: [
     BenchmarkingResultService,

@@ -1,0 +1,26 @@
+<mat-card>
+    <mat-tab-group>
+        <mat-tab label="Benchmarkingevents">
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let event of benchmarkingEvents">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>{{ event.title }}</mat-panel-title>
+                        <mat-panel-description>{{ event.created | date }}</mat-panel-description>
+                    </mat-expansion-panel-header>
+                    {{ event.description }}
+                </mat-expansion-panel>
+            </mat-accordion>
+        </mat-tab>
+        <mat-tab label="Leaderboardevents">
+            <mat-accordion>
+                <mat-expansion-panel *ngFor="let event of leaderboardEvents">
+                    <mat-expansion-panel-header>
+                        <mat-panel-title>{{ event.title }}</mat-panel-title>
+                        <mat-panel-description>{{ event.created | date }}</mat-panel-description>
+                    </mat-expansion-panel-header>
+                    {{ event.description }}
+                </mat-expansion-panel>
+            </mat-accordion>
+        </mat-tab>
+    </mat-tab-group>
+</mat-card>

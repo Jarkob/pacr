@@ -1,8 +1,9 @@
-<mat-sidenav-container>
-    <mat-sidenav mode="side" opened>sidenav</mat-sidenav>
-    <mat-sidenav-content>
-        <div style="display: block">
-            <canvas baseChart [datasets]="datasets" [labels]="labels" [options]="options" [legend]="legend" [chartType]="type"></canvas>
-        </div>
-    </mat-sidenav-content>
-</mat-sidenav-container>
+<div class="top" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
+  <app-diagram fxFlex="70%"></app-diagram>
+  <app-events fxFlex="30%"></app-events>
+</div>
+
+<div class="bottom" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
+  <app-detail-view fxFlex="70%"></app-detail-view>
+  <app-commit-history fxFlex="30%"></app-commit-history>
+</div>

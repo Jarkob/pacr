@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BenchmarkingResultService } from '../services/benchmarking-result.service';
 import { MockService } from '../services/mock.service';
+import 'chartjs-plugin-zoom';
 
 @Component({
   selector: 'app-diagram',
@@ -17,7 +18,8 @@ export class DiagramComponent implements OnInit {
   public timeFormat = 'DD/MM/YYYY';
 
   public options = {
-    scales:     {
+    maintainAspectRatio: false,
+    scales: {
       xAxes: [{
           type: 'time',
           time: {
@@ -33,6 +35,9 @@ export class DiagramComponent implements OnInit {
           scaleLabel: {
               display: true,
               labelString: 'value'
+          },
+          ticks: {
+            beginAtZero: true
           }
       }]
     },
@@ -62,15 +67,6 @@ export class DiagramComponent implements OnInit {
   public lines = [];
 
   ngOnInit() {
-    // this.benchmarkingResultService.getBenchmarkingResultsFromRepository('test').subscribe(
-    //   data => {
-    //     this.lines.push(data);
-    //     for (let i = data.length - 1; i > data.length - 20 && i > -1; i--) {
-    //       this.datasets[0].data.push(data[i].properties[0].results[0]);
-    //       this.labels.push('' + i);
-    //     }
-    //   }
-    // );
   }
 
 }
