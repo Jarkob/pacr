@@ -12,4 +12,20 @@ import javax.persistence.Entity;
  */
 @Entity
 public class EventDashboardModule extends DashboardModule {
+
+    /**
+     * Public no argument constructor for jpa.
+     */
+    public EventDashboardModule() {
+
+    }
+
+    /**
+     * Creates a new module, with an initial position.
+     * @param position the initial position.
+     */
+    EventDashboardModule(int position) {
+        super(position);
+    }
+
 }

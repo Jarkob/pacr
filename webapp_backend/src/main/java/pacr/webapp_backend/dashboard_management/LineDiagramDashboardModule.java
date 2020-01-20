@@ -2,6 +2,7 @@ package pacr.webapp_backend.dashboard_management;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,10 +15,27 @@ import java.util.List;
 public class LineDiagramDashboardModule extends DashboardModule {
 
     @ElementCollection
-    List<String> trackedRepositories;
+    List<String> trackedRepositories = new ArrayList<>();
 
     @ElementCollection
-    List<String> trackedBenchmarks;
+    List<String> trackedBenchmarks = new ArrayList<>();
+
+
+    /**
+     * Public no argument constructor for jpa.
+     */
+    public LineDiagramDashboardModule() {
+
+    }
+
+    /**
+     * Creates a new module, with an initial position.
+     * @param position the initial position.
+     */
+    LineDiagramDashboardModule(int position) {
+        super(position);
+    }
+
 
     /**
      * Sets the tracked repositories to the given list of repository names.

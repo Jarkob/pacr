@@ -2,6 +2,7 @@ package pacr.webapp_backend.dashboard_management;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,22 @@ import java.util.List;
 public class CommitHistoryDashboardModule extends DashboardModule {
 
     @ElementCollection
-    List<String> trackedRepositories;
+    List<String> trackedRepositories = new ArrayList<>();
+
+    /**
+     * Public no argument constructor for jpa.
+     */
+    public CommitHistoryDashboardModule() {
+
+    }
+
+    /**
+     * Creates a new module, with an initial position.
+     * @param position the initial position.
+     */
+    CommitHistoryDashboardModule(int position) {
+        super(position);
+    }
 
     /**
      * Sets the tracked repositories to the given list of repository names.
@@ -26,17 +42,13 @@ public class CommitHistoryDashboardModule extends DashboardModule {
 
     @Override
     public boolean equals(Object o) {
-        boolean superEquals = super.equals(o);
-        if (!superEquals) {
+        if (!super.equals(o)) {
             return false;
         }
 
-        LineDiagramDashboardModule otherModule = (LineDiagramDashboardModule) o;
+        CommitHistoryDashboardModule otherModule = (CommitHistoryDashboardModule) o;
 
-        if (this.trackedRepositories.equals(otherModule.trackedRepositories)) {
-            return true;
-        }
-        return false;
+        return this.trackedRepositories.equals(otherModule.trackedRepositories);
     }
 
 }

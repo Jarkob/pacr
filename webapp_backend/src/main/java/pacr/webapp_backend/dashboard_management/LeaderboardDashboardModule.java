@@ -17,6 +17,20 @@ public class LeaderboardDashboardModule extends DashboardModule {
 
     private transient ILeaderboard leaderboard;
 
+    /**
+     * Public no argument constructor for jpa.
+     */
+    public LeaderboardDashboardModule() {
+
+    }
+
+    /**
+     * Creates a new module, with an initial position.
+     * @param position the initial position.
+     */
+    LeaderboardDashboardModule(int position) {
+        super(position);
+    }
 
     /**
      * @return the name of the benchmark tracked in this leaderboard.
@@ -31,6 +45,14 @@ public class LeaderboardDashboardModule extends DashboardModule {
      */
     public void setLeaderboard(ILeaderboard leaderboard) {
         this.leaderboard = leaderboard;
+    }
+
+    /**
+     * The leaderboard of this benchmark
+     * @return
+     */
+    ILeaderboard getLeaderboard() {
+        return this.leaderboard;
     }
 
     /**
@@ -52,8 +74,7 @@ public class LeaderboardDashboardModule extends DashboardModule {
 
     @Override
     public boolean equals(Object o) {
-        boolean superEquals = super.equals(o);
-        if (!superEquals) {
+        if (!super.equals(o)) {
             return false;
         }
 
