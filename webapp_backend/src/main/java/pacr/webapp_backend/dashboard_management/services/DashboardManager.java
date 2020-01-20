@@ -8,7 +8,6 @@ import pacr.webapp_backend.dashboard_management.LeaderboardDashboardModule;
 import pacr.webapp_backend.shared.ILeaderboardGetter;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
