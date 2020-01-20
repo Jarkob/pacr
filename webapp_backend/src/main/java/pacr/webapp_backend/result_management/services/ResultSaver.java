@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 abstract class ResultSaver {
 
-    private IResultAccess resultAccess;
+    protected IResultAccess resultAccess;
     private BenchmarkManager benchmarkManager;
 
     /**

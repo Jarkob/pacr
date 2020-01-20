@@ -22,17 +22,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest
 public class ResultSaverTest {
 
-    private static final String UNIT = "unit";
-    private static final String ERROR = "error";
-    private static final String PROPERTY_NAME = "property";
+    private static final String PROPERTY_NAME = SimpleBenchmark.PROPERTY_NAME;
     private static final String PROPERTY_NAME_TWO = "property2";
-    private static final String BENCHMARK_NAME = "benchmark";
+    private static final String BENCHMARK_NAME = SimpleBenchmarkingResult.BENCHMARK_NAME;
     private static final String BENCHMARK_NAME_TWO = "benchmark2";
-    private static final String COMMIT_HASH = "hash";
+    private static final String COMMIT_HASH = SimpleBenchmarkingResult.COMMIT_HASH;
     private static final String COMMIT_HASH_TWO = "hash2";
     private static final String NO_COMPARISON_COMMIT_HASH = null;
-    private static final String NO_GLOBAL_ERROR = null;
-    private static final double MEASUREMENT = 124d;
+    private static final double MEASUREMENT = SimpleBenchmarkProperty.MEASUREMENT;
     private static final int EXPECTED_NUM_OF_PROPERTIES = 1;
     private static final int EXPECTED_NUM_OF_PROPERTIES_AFTER_ADDING = 2;
     private static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
@@ -60,7 +57,7 @@ public class ResultSaverTest {
      */
     @Test
     public void saveResult_shouldBeInDatabaseWithBenchmark() {
-        resultSaver.saveResult(createSimpleResult(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), NO_COMPARISON_COMMIT_HASH);
 
         CommitResult savedResult = resultDB.getResultFromCommit(COMMIT_HASH);
 
@@ -85,12 +82,12 @@ public class ResultSaverTest {
      */
     @Test
     public void saveResult_withNewAndOldBenchmark_shouldOnlySaveNewBenchmark() {
-        resultSaver.saveResult(createSimpleResult(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), NO_COMPARISON_COMMIT_HASH);
 
-        SimpleBenchmarkingResult resultWithAddedBenchmark = createSimpleResult();
+        SimpleBenchmarkingResult resultWithAddedBenchmark = new SimpleBenchmarkingResult();
         resultWithAddedBenchmark.setCommitHash(COMMIT_HASH_TWO);
 
-        SimpleBenchmark newBenchmark = createSimpleBenchmark();
+        SimpleBenchmark newBenchmark = new SimpleBenchmark();
 
         resultWithAddedBenchmark.addBenchmark(BENCHMARK_NAME_TWO, newBenchmark);
 
@@ -104,12 +101,12 @@ public class ResultSaverTest {
      */
     @Test
     public void saveResult_withNewAndOldProperty_shouldOnlySaveNewProperty() {
-        resultSaver.saveResult(createSimpleResult(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), NO_COMPARISON_COMMIT_HASH);
 
-        SimpleBenchmarkingResult resultWithAddedProperty = createSimpleResult();
+        SimpleBenchmarkingResult resultWithAddedProperty = new SimpleBenchmarkingResult();
         resultWithAddedProperty.setCommitHash(COMMIT_HASH_TWO);
 
-        SimpleBenchmarkProperty newProperty = createSimpleProperty();
+        SimpleBenchmarkProperty newProperty = new SimpleBenchmarkProperty();
         resultWithAddedProperty.getBenchmark(BENCHMARK_NAME).addProperty(PROPERTY_NAME_TWO, newProperty);
 
         resultSaver.saveResult(resultWithAddedProperty, NO_COMPARISON_COMMIT_HASH);
@@ -129,25 +126,4 @@ public class ResultSaverTest {
     /**
      * Tests what happens when two results have same commit hash.
      */
-
-    private SimpleBenchmarkingResult createSimpleResult() {
-        HashMap<String, SimpleBenchmark> benchmarks = new HashMap<>();
-        benchmarks.put(BENCHMARK_NAME, createSimpleBenchmark());
-
-        SystemEnvironment systemEnvironment = new SystemEnvironment();
-
-        return new SimpleBenchmarkingResult(COMMIT_HASH, systemEnvironment, benchmarks, NO_GLOBAL_ERROR);
-    }
-
-    private SimpleBenchmark createSimpleBenchmark() {
-        HashMap<String, IBenchmarkProperty> properties = new HashMap<>();
-        properties.put(PROPERTY_NAME, createSimpleProperty());
-        return new SimpleBenchmark(properties);
-    }
-
-    private SimpleBenchmarkProperty createSimpleProperty() {
-        LinkedList<Double> results = new LinkedList<>();
-        results.add(MEASUREMENT);
-        return new SimpleBenchmarkProperty(results, ResultInterpretation.MORE_IS_BETTER, UNIT, ERROR);
-    }
 }

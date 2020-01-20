@@ -101,8 +101,8 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     @Override
-    public Map<String, IBenchmark> getBenchmarks() {
-        Map<String, IBenchmark> benchmarks = new HashMap<>();
+    public Map<String, BenchmarkResult> getBenchmarks() {
+        Map<String, BenchmarkResult> benchmarks = new HashMap<>();
 
         for (BenchmarkResult benchmarkResult : benchmarkResults) {
             benchmarks.put(benchmarkResult.getName(), benchmarkResult);
@@ -138,7 +138,7 @@ public class CommitResult implements IBenchmarkingResult {
      * Indicates whether a global error occurred while benchmarking the commit.
      * @return true if an error occurred, otherwise false.
      */
-    boolean hasGlobalError() {
+    public boolean hasGlobalError() {
         return error;
     }
 }

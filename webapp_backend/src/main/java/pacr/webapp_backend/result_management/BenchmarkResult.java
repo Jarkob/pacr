@@ -56,8 +56,8 @@ public class BenchmarkResult implements IBenchmark {
     }
 
     @Override
-    public Map<String, IBenchmarkProperty> getBenchmarkProperties() {
-        Map<String, IBenchmarkProperty> properties = new HashMap<>();
+    public Map<String, BenchmarkPropertyResult> getBenchmarkProperties() {
+        Map<String, BenchmarkPropertyResult> properties = new HashMap<>();
 
         for (BenchmarkPropertyResult propertyResult : propertyResults) {
             properties.put(propertyResult.getName(), propertyResult);
@@ -70,7 +70,7 @@ public class BenchmarkResult implements IBenchmark {
      * Gets all measured data for the properties in an iterable.
      * @return the iterable property results.
      */
-    Iterable<BenchmarkPropertyResult> getPropertiesIterable() {
+    public Iterable<BenchmarkPropertyResult> getPropertiesIterable() {
         return propertyResults;
     }
 

@@ -125,7 +125,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      * Gets the mean of the measurements.
      * @return the mean.
      */
-    double getMean() {
+    public double getMean() {
         return mean;
     }
 

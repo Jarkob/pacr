@@ -1,12 +1,18 @@
 package pacr.webapp_backend.result_management.services;
 
+import pacr.webapp_backend.result_management.SystemEnvironment;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SimpleBenchmarkingResult implements IBenchmarkingResult {
+
+    public static final String BENCHMARK_NAME = "benchmark";
+    public static final String COMMIT_HASH = "1325";
+    public static final String NO_GLOBAL_ERROR = null;
 
     private String commitHash;
     private ISystemEnvironment systemEnvironment;
@@ -19,6 +25,16 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
         this.systemEnvironment = systemEnvironment;
         this.benchmarks = benchmarks;
         this.globalError = globalError;
+    }
+
+    public SimpleBenchmarkingResult() {
+        HashMap<String, SimpleBenchmark> benchmarks = new HashMap<>();
+        benchmarks.put(BENCHMARK_NAME, new SimpleBenchmark());
+
+        this.commitHash = COMMIT_HASH;
+        this.systemEnvironment = new SystemEnvironment();
+        this.benchmarks = benchmarks;
+        this.globalError = NO_GLOBAL_ERROR;
     }
 
     @Override
