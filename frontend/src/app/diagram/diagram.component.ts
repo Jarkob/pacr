@@ -2,7 +2,6 @@ import { BenchmarkingResult } from './../classes/benchmarking-result';
 import { Benchmark } from './../classes/benchmark';
 import { Component, OnInit } from '@angular/core';
 import { BenchmarkingResultService } from '../services/benchmarking-result.service';
-import { MockService } from '../services/mock.service';
 import 'chartjs-plugin-zoom';
 import { RepositoryService } from '../services/repository.service';
 import { Repository } from '../classes/repository';
@@ -28,9 +27,9 @@ export class DiagramComponent implements OnInit {
 
   selectedBenchmark: Benchmark;
 
-  public timeFormat = 'DD/MM/YYYY';
+  timeFormat = 'DD/MM/YYYY';
 
-  public options = {
+  options = {
     maintainAspectRatio: false,
     scales: {
       xAxes: [{
@@ -68,14 +67,11 @@ export class DiagramComponent implements OnInit {
     }
   };
 
-  public labels = [];
-  public type = 'line';
-  public legend = true;
-  public datasets = [
+  labels = [];
+  type = 'line';
+  legend = true;
+  datasets = [
     {data: [], label: 'no data', fill: false},
-    // {data: [{x: '04/01/2014', y: 5}, {x: '30/03/2014', y: 3}, {x: '04/01/2015', y: 1}], label: 'repo 1', fill: false},
-    // {data: [{x: '01/04/2014', y: 2}, {x: '01/10/2014', y: 2}, {x: '01/10/2015', y: 3}], label: 'repo 2', fill: false},
-    // {data: [{x: '01/01/2014', y: 3}, {x: '02/02/2015', y: 2}], label: 'repo 3', fill: false}
   ];
 
   ngOnInit() {
@@ -85,15 +81,15 @@ export class DiagramComponent implements OnInit {
   public selectBenchmark(benchmark: string): void {
     this.datasets = [];
     // create datasets for benchmark
-    for (let [repository, benchmarkingResults] of this.repositoryResults) {
+    for (const [repository, benchmarkingResults] of this.repositoryResults) {
       const dataset = {data: [], label: repository, fill: false};
       benchmarkingResults.forEach(benchmarkingResult => {
         benchmarkingResult.groups.forEach(group => {
           group.benchmarks.forEach(element => {
-            if (element.originalName == benchmark) {
+            if (element.originalName === benchmark) {
               dataset.data.push({x: benchmarkingResult.commitCommitDate, y: element.results[0].mean});
             }
-          })
+          });
         });
       });
       this.datasets.push(dataset);
@@ -122,12 +118,12 @@ export class DiagramComponent implements OnInit {
 
     // for mocking purposes
     this.benchmarks = [];
-    for (let [repository, benchmarkingResults] of this.repositoryResults) {
+    for (const [repository, benchmarkingResults] of this.repositoryResults) {
       benchmarkingResults.forEach(benchmarkingResult => {
         benchmarkingResult.groups.forEach(group => {
           group.benchmarks.forEach(element => {
             this.benchmarks.push(element);
-          })
+          });
         });
       });
     }

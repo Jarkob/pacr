@@ -15,14 +15,23 @@ export class EventService {
     private http: HttpClient
   ) { }
 
+  /**
+   * get the events for leaderboards
+   */
   public getLeaderboardEvents(): Observable<Event[]> {
     return this.http.get<Event[]>(this.globalService.url + '/events/leaderboard');
   }
 
+  /**
+   * get the events for benchmarking
+   */
   public getBenchmarkingEvents(): Observable<Event[]> {
     return this.http.get<Event[]>(this.globalService.url + '/events/benchmarking');
   }
 
+  /**
+   * get the commit history
+   */
   public getCommitHistory(): Observable<Commit[]> {
     return this.http.get<Commit[]>(this.globalService.url + '/commit-history');
   }
