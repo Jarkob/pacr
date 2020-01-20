@@ -9,11 +9,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import pacr.webapp_backend.shared.EventCategory;
+import pacr.webapp_backend.shared.EventTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class EventHandlerTest {
 
@@ -23,6 +26,8 @@ public class EventHandlerTest {
     private EventCategory category;
 
     private EventHandler eventHandler;
+
+    private EventTemplate eventTemplate;
 
     @Mock
     private IEventAccess eventAccess;
@@ -34,6 +39,8 @@ public class EventHandlerTest {
         category = EventCategory.BENCHMARKING;
 
         eventHandler = new EventHandler(eventAccess);
+
+        eventTemplate = createEventTemplate(category, EVENT_TITLE, EVENT_DESCRIPTION);
     }
 
     @Test
@@ -53,7 +60,7 @@ public class EventHandlerTest {
     @Test
     void addEvent_noError() {
         LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        eventHandler.addEvent(category, EVENT_TITLE, EVENT_DESCRIPTION);
+        eventHandler.addEvent(eventTemplate);
 
         List<Event> events = eventHandler.getEvents(category);
 
@@ -71,51 +78,16 @@ public class EventHandlerTest {
         EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.LEADERBOARD;
 
-        eventHandler.addEvent(category, EVENT_TITLE, EVENT_DESCRIPTION);
-        eventHandler.addEvent(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
+        EventTemplate otherTemplate = createEventTemplate(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
+
+        eventHandler.addEvent(eventTemplate);
+        eventHandler.addEvent(otherTemplate);
 
         List<Event> categoryEvents = eventHandler.getEvents(category);
         assertEquals(1, categoryEvents.size());
 
         List<Event> otherCategoryEvents = eventHandler.getEvents(otherCategory);
         assertEquals(1, otherCategoryEvents.size());
-    }
-
-    @Test
-    void addEvent_invalidCategory() {
-        assertThrows(NullPointerException.class, () -> {
-            eventHandler.addEvent(null, EVENT_TITLE, EVENT_DESCRIPTION);
-        });
-    }
-
-    @Test
-    void addEvent_invalidEventTitle() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            eventHandler.addEvent(category, null, EVENT_DESCRIPTION);
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            eventHandler.addEvent(category, "", EVENT_DESCRIPTION);
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            eventHandler.addEvent(category, " ", EVENT_DESCRIPTION);
-        });
-    }
-
-    @Test
-    void addEvent_invalidEventDescription() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            eventHandler.addEvent(category, EVENT_TITLE, null);
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            eventHandler.addEvent(category, EVENT_TITLE, "");
-        });
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            eventHandler.addEvent(category, EVENT_TITLE, " ");
-        });
     }
 
     @Test
@@ -144,7 +116,9 @@ public class EventHandlerTest {
             final String description = EVENT_DESCRIPTION + i;
 
             expectedEvents.add(new Event(category, title, description));
-            eventHandler.addEvent(category, title, description);
+
+            EventTemplate template = createEventTemplate(category, title, description);
+            eventHandler.addEvent(template);
         }
 
         List<Event> events = eventHandler.getEvents(category);
@@ -163,7 +137,8 @@ public class EventHandlerTest {
             final String title = EVENT_TITLE + i;
             final String description = EVENT_DESCRIPTION + i;
 
-            eventHandler.addEvent(category, title, description);
+            EventTemplate template = createEventTemplate(category, title, description);
+            eventHandler.addEvent(template);
         }
 
         List<Event> events = eventHandler.getEvents(otherCategory);
@@ -183,7 +158,9 @@ public class EventHandlerTest {
             final String description = EVENT_DESCRIPTION + i;
 
             expectedEvents.add(new Event(category, title, description));
-            eventHandler.addEvent(category, title, description);
+
+            EventTemplate template = createEventTemplate(category, title, description);
+            eventHandler.addEvent(template);
         }
 
         int amtOtherEvents = 10;
@@ -191,10 +168,22 @@ public class EventHandlerTest {
             final String title = EVENT_TITLE + i;
             final String description = EVENT_DESCRIPTION + i;
 
-            eventHandler.addEvent(otherCategory, title, description);
+            EventTemplate template = createEventTemplate(otherCategory, title, description);
+            eventHandler.addEvent(template);
         }
 
         List<Event> events = eventHandler.getEvents(category);
         assertEquals(amtEvents, events.size());
+        assertEquals(expectedEvents, events);
+    }
+
+    private EventTemplate createEventTemplate(EventCategory category, String title, String description) {
+        EventTemplate template = mock(EventTemplate.class);
+
+        when(template.getCategory()).thenReturn(category);
+        when(template.getTitle()).thenReturn(title);
+        when(template.getDescription()).thenReturn(description);
+
+        return template;
     }
 }

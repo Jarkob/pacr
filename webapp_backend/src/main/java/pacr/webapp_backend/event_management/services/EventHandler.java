@@ -7,12 +7,13 @@ import java.util.Map;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
+import pacr.webapp_backend.shared.EventTemplate;
 import pacr.webapp_backend.shared.IEventHandler;
 
 /**
  * Handles events belonging to multiple categories.
+ * Events with a title and a description are supported.
  */
 @Component
 public class EventHandler implements IEventHandler {
@@ -33,27 +34,18 @@ public class EventHandler implements IEventHandler {
     }
 
     @Override
-    public void addEvent(@NotNull EventCategory category, @NotNull String title, @NotNull String description) {
-        verifyEventParameters(category, title, description);
+    public void addEvent(@NotNull EventTemplate eventTemplate) {
+        Objects.requireNonNull(eventTemplate, "The eventTemplate cannot be null.");
+
+        EventCategory category = eventTemplate.getCategory();
 
         if (!eventContainers.containsKey(category)) {
-            eventContainers.put(category, new EventContainer(category, eventAccess));
+            EventContainer eventContainer = new EventContainer(category, eventAccess);
+            eventContainers.put(category, eventContainer);
         }
 
         EventContainer eventContainer = eventContainers.get(category);
-        eventContainer.addEvent(title, description);
-    }
-
-    private void verifyEventParameters(EventCategory category, String title, String description) {
-        Objects.requireNonNull(category, "The category cannot be null.");
-
-        if (!StringUtils.hasText(title)) {
-            throw new IllegalArgumentException("The title cannot be null or empty.");
-        }
-
-        if (!StringUtils.hasText(description)) {
-            throw new IllegalArgumentException("The description cannot be null or empty.");
-        }
+        eventContainer.addEvent(eventTemplate.getTitle(), eventTemplate.getDescription());
     }
 
     /**
