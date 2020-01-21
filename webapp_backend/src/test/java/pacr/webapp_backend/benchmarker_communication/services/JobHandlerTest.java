@@ -56,10 +56,21 @@ public class JobHandlerTest {
     }
 
     @Test
-    void update_callsPopJob() {
+    void update_callsPopJob_benchmarkersAvailable() {
+        when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
+
         jobHandler.update();
 
         verify(jobProvider).popJob();
+    }
+
+    @Test
+    void update_doesntCallsPopJob_benchmarkersNotAvailable() {
+        when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(false);
+
+        jobHandler.update();
+
+        verify(jobProvider, never()).popJob();
     }
 
     @Test

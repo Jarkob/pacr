@@ -131,7 +131,9 @@ public class JobHandler implements INewRegistrationListener, IObserver {
 
     @Override
     public void update() {
-        executeJob();
+        if (benchmarkerPool.hasFreeBenchmarkers()) {
+            executeJob();
+        }
     }
 
     @Override
