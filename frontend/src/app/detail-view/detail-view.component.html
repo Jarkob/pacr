@@ -11,5 +11,5 @@
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
         <tr mat-row *matRowDef="let row; columns: columns;"></tr>
     </table>
-    <p>Select a commit!</p>
+    <p *ngIf="selectedCommitSha === ''">Select a commit!</p>
 </mat-card>

@@ -12,6 +12,7 @@ export class ToolbarComponent implements OnInit {
     private location: Location,
   ) { }
 
+
   ngOnInit() {
   }
 

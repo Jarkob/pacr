@@ -1,3 +1,7 @@
+import { BenchmarkerListComponent } from './benchmarker-list/benchmarker-list.component';
+import { JobQueueComponent } from './job-queue/job-queue.component';
+import { CompetitiveDashboardComponent } from './competitive-dashboard/competitive-dashboard.component';
+import { AcademicDashboardComponent } from './academic-dashboard/academic-dashboard.component';
 import { EventsComponent } from './events/events.component';
 import { DetailViewComponent } from './detail-view/detail-view.component';
 import { GlobalService } from './services/global.service';
@@ -36,7 +40,11 @@ import { HttpClientModule } from '@angular/common/http';
     LoginComponent,
     ToolbarComponent,
     DetailViewComponent,
-    EventsComponent
+    EventsComponent,
+    AcademicDashboardComponent,
+    CompetitiveDashboardComponent,
+    JobQueueComponent,
+    BenchmarkerListComponent
   ],
   imports: [
     BrowserModule,

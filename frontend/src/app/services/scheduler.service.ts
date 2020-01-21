@@ -1,3 +1,4 @@
+import { FullJobQueue } from './../classes/full-job-queue';
 import { Observable } from 'rxjs';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
@@ -21,15 +22,15 @@ export class SchedulerService {
   /**
    * get the current job queue
    */
-  public getQueue(): Observable<Job[]> {
-    return this.http.get<Job[]>(this.globalService.url + '/queue');
+  public getQueue(): Observable<FullJobQueue> {
+    return this.http.get<FullJobQueue>(this.globalService.url + '/queue');
   }
 
   /**
-   * priorize a specific job
-   * @param job the job to be priorized
+   * prioritize a specific job
+   * @param job the job to be prioritized
    */
-  public priorize(job: Job): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/queue', {}, httpOptions);
+  public prioritize(job: Job): Observable<{}> {
+    return this.http.post<{}>(this.globalService.url + '/queue', job, httpOptions);
   }
 }

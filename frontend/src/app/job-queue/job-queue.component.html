@@ -1,0 +1,22 @@
+<mat-card>
+    <mat-list *ngIf="this.fullJobQueue">
+        <h3 mat-subheader>Prioritized Jobs</h3>
+        <mat-list-item *ngFor="let job of this.fullJobQueue.prioritizedJobs">
+            <h4 matLine>{{ job.id }}</h4>
+            <p matLine>
+                {{ job.queued | date }}
+            </p>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <h3 mat-subheader>Non-Prioritized Jobs</h3>
+        <mat-list-item *ngFor="let job of this.fullJobQueue.jobs">
+            <button mat-icon-button (click)="prioritize(job)" matTooltip="Prioritize">
+                <mat-icon matListIcon>arrow_upward</mat-icon>
+            </button>
+            <h4 matLine>{{ job.id }}</h4>
+            <p matLine>
+                {{ job.queued | date }}
+            </p>
+        </mat-list-item>
+    </mat-list>
+</mat-card>

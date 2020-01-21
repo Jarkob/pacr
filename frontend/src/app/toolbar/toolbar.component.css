@@ -1,3 +1,7 @@
 .center {
     align-self: center;
 }
+
+.active {
+    background-color: rgb(231, 121, 147);
+}
