@@ -8,6 +8,9 @@ import pacr.webapp_backend.shared.ISystemEnvironment;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Simple IBenchmarkingResult implementation for testing purposes.
+ */
 public class SimpleBenchmarkingResult implements IBenchmarkingResult {
 
     public static final String BENCHMARK_NAME = "benchmark";

@@ -20,7 +20,7 @@ public class ResultBenchmarkSaverTest {
 
     @Autowired
     public ResultBenchmarkSaverTest(IResultAccess resultAccess) {
-        this.resultBenchmarkSaver = new ResultBenchmarkSaver(resultAccess, benchmarkManager, resultGetter, eventHandler,
-                new GetCommitAccessStub());
+        this.resultBenchmarkSaver = new ResultBenchmarkSaver(resultAccess, benchmarkManager, resultGetter,
+                eventHandler);
     }
 }

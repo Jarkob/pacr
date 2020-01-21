@@ -16,9 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Creates a structured OutputBenchmarkingResult.
@@ -27,29 +25,24 @@ import java.util.Set;
 public class OutputBuilder {
 
     /**
-     * Creates OutputBenchmarkingResults based on commits and each commit's result.
-     * @param commitsWithResults the commits with each commit's result. Cannot be null.
-     * @return a list of OutputBenchmarkingResults (ordered the same as the iterator of the key set of the map).
+     * Creates OutputBenchmarkingResult based on a commit and its result. The result must belong to the commit (which
+     * means they must refer to the same commit hash).
+     * @param commit the commit. Cannot be null.
+     * @param result the result. Cannot be null.
+     * @return an OutputBenchmarkingResult copied from the commit and result.
      */
-    List<OutputBenchmarkingResult> buildOutput(@NotNull Map<ICommit, CommitResult> commitsWithResults) {
-        Objects.requireNonNull(commitsWithResults);
+    OutputBenchmarkingResult buildOutput(@NotNull ICommit commit, @NotNull CommitResult result) {
+        Objects.requireNonNull(commit);
+        Objects.requireNonNull(result);
 
-        List<OutputBenchmarkingResult> outputResults = new LinkedList<>();
-
-        Set<ICommit> commits = commitsWithResults.keySet();
-
-        for (ICommit commit : commits) {
-            CommitResult result = commitsWithResults.get(commit);
-
-            List<OutputBenchmarkGroup> outputGroups = buildOutputGroups(result);
-
-            OutputBenchmarkingResult outputResult = new OutputBenchmarkingResult(commit, result,
-                    outputGroups.toArray(new OutputBenchmarkGroup[0]));
-
-            outputResults.add(outputResult);
+        if (!commit.getCommitHash().equals(result.getCommitHash())) {
+            throw new IllegalArgumentException("commit and result must have same commit hash");
         }
 
-        return outputResults;
+        List<OutputBenchmarkGroup> outputGroups = buildOutputGroups(result);
+
+        return new OutputBenchmarkingResult(commit, result,
+                outputGroups.toArray(new OutputBenchmarkGroup[0]));
     }
 
     private List<OutputBenchmarkGroup> buildOutputGroups(CommitResult result) {

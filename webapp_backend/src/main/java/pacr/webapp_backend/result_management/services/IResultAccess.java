@@ -17,6 +17,13 @@ public interface IResultAccess {
     List<CommitResult> getNewestResults();
 
     /**
+     * Gets the newest saved commit result for a repository.
+     * @param repositoryId the id of the repository.
+     * @return the newest saved commit.
+     */
+    CommitResult getNewestResult(int repositoryId);
+
+    /**
      * Gets all saved results for the given commit hashes.
      * @param commitHashes the hashes of the commits.
      * @return the results.
@@ -29,6 +36,11 @@ public interface IResultAccess {
      * @return the result of the commit.
      */
     CommitResult getResultFromCommit(String commitHash);
+
+    /**
+     * @return All saved results.
+     */
+    List<CommitResult> getAllResults();
 
     /**
      * Saves the given result for a commit.

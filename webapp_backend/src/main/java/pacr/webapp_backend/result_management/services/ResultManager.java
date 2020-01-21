@@ -11,7 +11,9 @@ import pacr.webapp_backend.shared.IResultSaver;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -70,17 +72,20 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     public void importBenchmarkingResults(Collection<IBenchmarkingResult> results) {
         Objects.requireNonNull(results);
 
+        Map<IBenchmarkingResult, ICommit> resultsWithCommits = new HashMap<>();
+
         for (IBenchmarkingResult result : results) {
-            // TODO find a way to only call this once while saving a result
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
 
             if (commit == null) {
                 throw new IllegalArgumentException("could not find commit with hash " + result.getCommitHash());
             }
+
+            resultsWithCommits.put(result, commit);
         }
 
         for (IBenchmarkingResult result : results) {
-            resultImportSaver.saveResult(result, null);
+            resultImportSaver.saveResult(result, resultsWithCommits.get(result), null);
         }
     }
 
@@ -88,7 +93,6 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     public void saveBenchmarkingResults(IBenchmarkingResult benchmarkingResult) {
         Objects.requireNonNull(benchmarkingResult);
 
-        // TODO find a way to only call this once while saving a result
         ICommit commit = commitAccess.getCommit(benchmarkingResult.getCommitHash());
 
         if (commit == null) {
@@ -103,7 +107,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             comparisonCommitHash = comparisonCommit.getCommitHash();
         }
 
-        resultBenchmarkSaver.saveResult(benchmarkingResult, comparisonCommitHash);
+        resultBenchmarkSaver.saveResult(benchmarkingResult, commit, comparisonCommitHash);
     }
 
     private ICommit getComparisonCommit(ICommit commit) {

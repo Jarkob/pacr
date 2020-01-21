@@ -1,13 +1,14 @@
 package pacr.webapp_backend.result_management.services;
 
-import pacr.webapp_backend.result_management.SystemEnvironment;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * Simple IBenchmarkProperty implementation for testing purposes.
+ */
 public class SimpleBenchmarkProperty implements IBenchmarkProperty {
 
     public static final Double MEASUREMENT = 12d;

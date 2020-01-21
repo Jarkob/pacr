@@ -20,6 +20,11 @@ public interface ResultDB extends CrudRepository<CommitResult, String>, IResultA
     }
 
     @Override
+    default CommitResult getNewestResult(int repositoryId) {
+        return this.findFirstByRepositoryIdOrderByEntryDateDesc(repositoryId);
+    }
+
+    @Override
     default Collection<CommitResult> getResultsFromCommits(Collection<String> commitHashes) {
         List<CommitResult> commitResults = new LinkedList<>();
         this.findAllById(commitHashes).forEach(commitResults::add);
@@ -41,9 +46,27 @@ public interface ResultDB extends CrudRepository<CommitResult, String>, IResultA
         this.delete(result);
     }
 
+    @Override
+    default List<CommitResult> getAllResults() {
+        List<CommitResult> results = new LinkedList<>();
+
+        for (CommitResult result : this.findAll()) {
+            results.add(result);
+        }
+
+        return results;
+    }
+
     /**
      * This is a method that is automatically created by jpa based on its method name.
      * @return the latest 100 commit results in descending order by entry date.
      */
     List<CommitResult> findFirst100ByOrderByEntryDateDesc();
+
+    /**
+     * This is a method that is automatically created by jpa based on its method name.
+     * @param repositoryId the id of the repository.
+     * @return the newest saved result for the repository.
+     */
+    CommitResult findFirstByRepositoryIdOrderByEntryDateDesc(int repositoryId);
 }

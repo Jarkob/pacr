@@ -3,8 +3,10 @@ package pacr.webapp_backend.result_management.services;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.result_management.CommitResult;
+import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Saves benchmarking results that are imported into the pacr system. Does not update other components
@@ -26,9 +28,9 @@ public class ResultImportSaver extends ResultSaver {
      * No components get updated for results that are being imported.
      */
     @Override
-    void updateOtherComponents(@NotNull CommitResult result, @Nullable String comparisonCommitHash) {
-        if (result == null) {
-            throw new IllegalArgumentException("result cannot be null");
-        }
+    void updateOtherComponents(@NotNull CommitResult result, @NotNull ICommit commit,
+                               @Nullable String comparisonCommitHash) {
+        Objects.requireNonNull(result);
+        Objects.requireNonNull(commit);
     }
 }

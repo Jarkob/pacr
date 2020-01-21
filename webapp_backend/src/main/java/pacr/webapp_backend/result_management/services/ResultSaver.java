@@ -10,12 +10,14 @@ import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
+import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -42,14 +44,14 @@ abstract class ResultSaver {
      * This is a template method.
      * Saves a benchmarking result and saves associated benchmark metadata that is new to the system. Updates other
      * components depending on the implementation of updateOtherComponents.
-     * @param result the benchmarking result that is saved. Throws IllegalArgumentException if this is null.
+     * @param result the benchmarking result that is saved. Cannot be null.
+     * @param commit the commit of the benchmarking result. Cannot be null.
      * @param comparisonCommitHash the hash of the commit that is used for comparison when updating other components.
      *                             May be null. In that case no comparison will be executed.
      */
-    void saveResult(IBenchmarkingResult result, String comparisonCommitHash) {
-        if (result == null) {
-            throw new IllegalArgumentException("result cannot be null");
-        }
+    void saveResult(IBenchmarkingResult result, ICommit commit, String comparisonCommitHash) {
+        Objects.requireNonNull(result);
+        Objects.requireNonNull(commit);
 
         Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
 
@@ -88,21 +90,23 @@ abstract class ResultSaver {
 
         updateSavedBenchmarks(benchmarksFromResult);
 
-        CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave);
+        CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID());
 
         resultAccess.saveResult(resultToSave);
 
-        updateOtherComponents(resultToSave, comparisonCommitHash);
+        updateOtherComponents(resultToSave, commit, comparisonCommitHash);
     }
 
     /**
      * This is the primitive method that is implemented by the subclasses.
      * Updates other components based on the result and a commit to compare it to.
-     * @param result the result. Throws IllegalArgumentException if this is null.
+     * @param result the result. Cannot be null.
+     * @param commit the commit of the result. Cannot be null.
      * @param comparisonCommitHash the hash of the commit for comparison. May be null. (in this case no comparison is
      *                             done).
      */
-    abstract void updateOtherComponents(@NotNull CommitResult result, @Nullable String comparisonCommitHash);
+    abstract void updateOtherComponents(@NotNull CommitResult result, @NotNull ICommit commit,
+                                        @Nullable String comparisonCommitHash);
 
     private BenchmarkPropertyResult getPropertyResultAndUpdateBenchmark(String propertyName,
                                                                         IBenchmarkProperty propertyResult,

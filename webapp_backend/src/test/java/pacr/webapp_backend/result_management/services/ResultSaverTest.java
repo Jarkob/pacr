@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.ResultDB;
+import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.IBenchmark;
@@ -52,7 +53,7 @@ public class ResultSaverTest {
      */
     @Test
     public void saveResult_shouldBeInDatabaseWithBenchmark() {
-        resultSaver.saveResult(new SimpleBenchmarkingResult(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
 
         CommitResult savedResult = resultDB.getResultFromCommit(COMMIT_HASH);
 
@@ -77,7 +78,7 @@ public class ResultSaverTest {
      */
     @Test
     public void saveResult_withNewAndOldBenchmark_shouldOnlySaveNewBenchmark() {
-        resultSaver.saveResult(new SimpleBenchmarkingResult(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
 
         SimpleBenchmarkingResult resultWithAddedBenchmark = new SimpleBenchmarkingResult();
         resultWithAddedBenchmark.setCommitHash(COMMIT_HASH_TWO);
@@ -86,7 +87,7 @@ public class ResultSaverTest {
 
         resultWithAddedBenchmark.addBenchmark(BENCHMARK_NAME_TWO, newBenchmark);
 
-        resultSaver.saveResult(resultWithAddedBenchmark, NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(resultWithAddedBenchmark, new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
 
         assertEquals(EXPECTED_NUM_OF_BENCHMARKS, benchmarkDB.count());
     }
@@ -96,7 +97,7 @@ public class ResultSaverTest {
      */
     @Test
     public void saveResult_withNewAndOldProperty_shouldOnlySaveNewProperty() {
-        resultSaver.saveResult(new SimpleBenchmarkingResult(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
 
         SimpleBenchmarkingResult resultWithAddedProperty = new SimpleBenchmarkingResult();
         resultWithAddedProperty.setCommitHash(COMMIT_HASH_TWO);
@@ -104,7 +105,7 @@ public class ResultSaverTest {
         SimpleBenchmarkProperty newProperty = new SimpleBenchmarkProperty();
         resultWithAddedProperty.getBenchmark(BENCHMARK_NAME).addProperty(PROPERTY_NAME_TWO, newProperty);
 
-        resultSaver.saveResult(resultWithAddedProperty, NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(resultWithAddedProperty, new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
 
         Benchmark benchmark = null;
         for (Benchmark savedBenchmark : benchmarkDB.getAllBenchmarks()) {

@@ -34,6 +34,7 @@ public class OutputBuilderTest {
     public static final String REPO_NAME = "repo";
     public static final String BRANCH_NAME = "branch";
     public static final String URL = "url";
+    public static final int REPO_ID = 1;
     public static final LocalDate NOW = LocalDate.now();
     public static final String BENCHMARK_NAME_TWO = "benchmark2";
     public static final int EXPECTED_NUM_OF_OUTPUTS = 2;
@@ -69,7 +70,7 @@ public class OutputBuilderTest {
 
         Set<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResult);
-        resultOne = new CommitResult(new SimpleBenchmarkingResult(), benchmarkResults);
+        resultOne = new CommitResult(new SimpleBenchmarkingResult(), benchmarkResults, REPO_ID);
 
         BenchmarkResult benchmarkResultTwo = new BenchmarkResult(propertyResults, benchmarkTwo);
         Set<BenchmarkResult> benchmarkResultsTwo = new HashSet<>();
@@ -77,7 +78,7 @@ public class OutputBuilderTest {
 
         SimpleBenchmarkingResult inputResultTwo = new SimpleBenchmarkingResult();
         inputResultTwo.setCommitHash(HASH_TWO);
-        resultTwo = new CommitResult(inputResultTwo, benchmarkResultsTwo);
+        resultTwo = new CommitResult(inputResultTwo, benchmarkResultsTwo, REPO_ID);
 
         commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, new HashSet<>(),
                 new GitRepository(false, new LinkedList<>(), URL, REPO_NAME, Color.BLACK, NOW),
@@ -93,19 +94,11 @@ public class OutputBuilderTest {
      */
     @Test
     void buildOutput_shouldCreateTwoOutputObjects() {
-        Map<ICommit, CommitResult> commitsWithResults = new HashMap<>();
-        commitsWithResults.put(commitOne, resultOne);
-        commitsWithResults.put(commitTwo, resultTwo);
 
-        List<OutputBenchmarkingResult> outputResults = outputBuilder.buildOutput(commitsWithResults);
+        OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commitOne, resultOne);
 
-        assertNotNull(outputResults);
-        assertEquals(EXPECTED_NUM_OF_OUTPUTS, outputResults.size());
+        assertNotNull(outputResult);
 
-        OutputBenchmarkingResult outputOne = outputResults.get(0);
-        OutputBenchmarkingResult outputTwo = outputResults.get(1);
-
-        assertTrue(outputOne.getCommitHash().equals(HASH_TWO) || outputTwo.getCommitHash().equals(HASH_TWO));
-        assertEquals(EXPECTED_NUM_OF_GROUPS, outputOne.getBenchmarkGroups().size());
+        assertEquals(EXPECTED_NUM_OF_GROUPS, outputResult.getBenchmarkGroups().size());
     }
 }

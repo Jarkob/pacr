@@ -6,6 +6,9 @@ import pacr.webapp_backend.shared.IBenchmarkProperty;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Simple IBenchmark implementation for testing purposes.
+ */
 public class SimpleBenchmark implements IBenchmark {
 
     public static final String PROPERTY_NAME = "property";

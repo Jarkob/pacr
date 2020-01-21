@@ -26,6 +26,7 @@ public class CommitResult implements IBenchmarkingResult {
     @Id
     private String commitHash;
 
+    private int repositoryId;
     private boolean error;
     private String errorMessage;
 
@@ -49,8 +50,10 @@ public class CommitResult implements IBenchmarkingResult {
      * Throws IllegalArgumentException if any parameter is null.
      * @param result the IBenchmarkingResult.
      * @param benchmarkResults the measured data for each benchmark. May be empty.
+     * @param repositoryId id of the repository of the commit.
      */
-    public CommitResult(@NotNull IBenchmarkingResult result, @NotNull Set<BenchmarkResult> benchmarkResults) {
+    public CommitResult(@NotNull IBenchmarkingResult result, @NotNull Set<BenchmarkResult> benchmarkResults,
+                        int repositoryId) {
         if (result == null || benchmarkResults == null) {
             throw new IllegalArgumentException("input cannot be null");
         }
@@ -62,6 +65,7 @@ public class CommitResult implements IBenchmarkingResult {
             this.errorMessage = null;
         }
         this.commitHash = result.getCommitHash();
+        this.repositoryId = repositoryId;
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
@@ -72,9 +76,10 @@ public class CommitResult implements IBenchmarkingResult {
      * @param commitHash the hash of the measured commit. Throws IllegalArgumentException if it is empty.
      * @param systemEnvironment the system environment of the benchmarks.
      * @param benchmarkResults the measured data for each benchmark.
+     * @param repositoryId id of the repository of the commit.
      */
     public CommitResult(@NotNull String commitHash, @NotNull SystemEnvironment systemEnvironment,
-                        @NotNull Set<BenchmarkResult> benchmarkResults) {
+                        @NotNull Set<BenchmarkResult> benchmarkResults, int repositoryId) {
         if (commitHash == null || commitHash.isEmpty()) {
             throw new IllegalArgumentException("commit hash cannot be null or empty");
         }
@@ -84,6 +89,7 @@ public class CommitResult implements IBenchmarkingResult {
         this.error = false;
         this.errorMessage = null;
         this.commitHash = commitHash;
+        this.repositoryId = repositoryId;
         this.systemEnvironment = systemEnvironment;
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
@@ -119,6 +125,13 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     /**
+     * @return Gets the id of the repository of the commit.
+     */
+    public int getRepositoryId() {
+        return repositoryId;
+    }
+
+    /**
      * @return the entry date into the system of the result.
      */
     public LocalDateTime getEntryDate() {
@@ -139,5 +152,13 @@ public class CommitResult implements IBenchmarkingResult {
      */
     public boolean hasGlobalError() {
         return error;
+    }
+
+    /**
+     * Removes the given benchmark result from this commit result.
+     * @param benchmarkResult the benchmark result.
+     */
+    public void removeBenchmarkResult(BenchmarkResult benchmarkResult) {
+        benchmarkResults.remove(benchmarkResult);
     }
 }

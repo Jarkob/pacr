@@ -13,13 +13,18 @@ import pacr.webapp_backend.result_management.BenchmarkResult;
 import pacr.webapp_backend.result_management.CommitResult;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,6 +40,8 @@ public class ResultDBTest {
     private static final String COMMIT_HASH = "1234";
     private static final String COMMIT_HASH_TWO = "5678";
     private static final String COMMIT_HASH_THREE = "9101";
+    private static final int REPO_ID_ONE = 1;
+    private static final int REPO_ID_TWO = 2;
 
     private ResultDB resultDB;
     private BenchmarkDB benchmarkDB;
@@ -66,7 +73,7 @@ public class ResultDBTest {
      */
     @Test
     public void saveResult_saveInDatabase_getResultShouldReturnResult() {
-        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark);
+        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
         CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
@@ -80,7 +87,7 @@ public class ResultDBTest {
      */
     @Test
     public void getResult_changedBenchmark_ShouldReturnChangedBenchmark() {
-        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark);
+        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
         benchmark.setCustomName(BENCHMARK_NAME_TWO);
@@ -97,9 +104,9 @@ public class ResultDBTest {
      */
     @Test
     public void getResults_multipleHashesAsInput_ShouldReturnAllResults() {
-        CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark);
+        CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultOne);
-        CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark);
+        CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultTwo);
 
         List<String> commitHashes = new LinkedList<>();
@@ -116,7 +123,7 @@ public class ResultDBTest {
      */
     @Test
     public void deleteResult_resultSaved_shouldRemoveResult() {
-        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark);
+        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
         this.resultDB.deleteResult(result);
@@ -131,16 +138,16 @@ public class ResultDBTest {
      */
     @Test
     public void getNewestResults_multipleResultsSavedOneDeleted_shouldReturnOrdered() {
-        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH, benchmark));
+        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE));
 
-        CommitResult resultToDelete = createNewCommitResult(COMMIT_HASH_TWO, benchmark);
+        CommitResult resultToDelete = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultToDelete);
 
-        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_THREE, benchmark));
+        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_ONE));
 
         this.resultDB.deleteResult(resultToDelete);
 
-        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_TWO, benchmark));
+        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE));
 
         LocalDateTime previousTime = LocalDateTime.now();
 
@@ -151,7 +158,39 @@ public class ResultDBTest {
         }
     }
 
-    private CommitResult createNewCommitResult(String commitHash, Benchmark benchmark) {
+    /**
+     * Tests whether getNewestResult returns the newest result for a repository and not of a different repository.
+     * @throws InterruptedException if sleep action fails.
+     */
+    @Test
+    void getNewestResult_multipleResultsForRepository_shouldReturnNewest() throws InterruptedException {
+        CommitResult commitResultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        resultDB.saveResult(commitResultOne);
+
+        TimeUnit.SECONDS.sleep(1);
+
+        CommitResult commitResultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
+        resultDB.saveResult(commitResultTwo);
+
+        TimeUnit.SECONDS.sleep(1);
+
+        CommitResult commitResultThree = createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_TWO);
+        resultDB.saveResult(commitResultThree);
+
+        CommitResult newestResult = this.resultDB.getNewestResult(REPO_ID_ONE);
+
+        assertNotNull(newestResult);
+        assertThat(commitResultTwo.getEntryDate()).isCloseTo(newestResult.getEntryDate(), within(10, ChronoUnit.MILLIS));
+        assertEquals(commitResultTwo.getCommitHash(), newestResult.getCommitHash());
+
+        newestResult = this.resultDB.getNewestResult(REPO_ID_TWO);
+
+        assertNotNull(newestResult);
+        assertThat(commitResultThree.getEntryDate()).isCloseTo(newestResult.getEntryDate(), within(10, ChronoUnit.MILLIS));
+        assertEquals(commitResultThree.getCommitHash(), newestResult.getCommitHash());
+    }
+
+    private CommitResult createNewCommitResult(String commitHash, Benchmark benchmark, int repositoryId) {
         BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult();
 
         Set<BenchmarkPropertyResult> propertyResults = new HashSet<>();
@@ -161,6 +200,6 @@ public class ResultDBTest {
         Set<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResult);
 
-        return new CommitResult(commitHash, systemEnvironmentMock, benchmarkResults);
+        return new CommitResult(commitHash, systemEnvironmentMock, benchmarkResults, repositoryId);
     }
 }
