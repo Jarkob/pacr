@@ -1,5 +1,5 @@
 <mat-card>
-    <table *ngIf="selected" mat-table [dataSource]="tableData">
+    <table *ngIf="selectedCommitSha !== ''" mat-table [dataSource]="tableData">
         <ng-container matColumnDef="property">
             <th mat-header-cell *matHeaderCellDef>Property</th>
             <td mat-cell *matCellDef="let element">{{ element.property }}</td>
@@ -11,5 +11,5 @@
         <tr mat-header-row *matHeaderRowDef="columns"></tr>
         <tr mat-row *matRowDef="let row; columns: columns;"></tr>
     </table>
-    <button mat-button *ngIf="!selected" (click)="selectCommit('x')">Select a commit!</button>
+    <p>Select a commit!</p>
 </mat-card>

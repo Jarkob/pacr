@@ -1,6 +1,7 @@
+import { Subscription } from 'rxjs';
+import { DiagramService } from './../services/diagram.service';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
-import { Component, OnInit } from '@angular/core';
-import { Commit } from '../classes/commit';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Row } from '../classes/row';
 
 @Component({
@@ -8,20 +9,33 @@ import { Row } from '../classes/row';
   templateUrl: './detail-view.component.html',
   styleUrls: ['./detail-view.component.css']
 })
-export class DetailViewComponent implements OnInit {
+export class DetailViewComponent implements OnInit, OnDestroy {
 
   constructor(
-    private benchmarkingResultService: BenchmarkingResultService
+    private benchmarkingResultService: BenchmarkingResultService,
+    private diagramService: DiagramService
   ) { }
 
-  selected: boolean;
+  selected = false;
   tableData: Row[];
   columns: string[] = ['property', 'value'];
 
+  selectedCommitSha: string;
+  selectedCommitSubscription: Subscription;
+
   ngOnInit() {
+    this.selectedCommitSubscription = this.diagramService.selectedCommit.subscribe(
+      data => {
+        this.selectedCommitSha = data;
+        this.selectCommit(this.selectedCommitSha);
+      }
+    );
   }
 
-  public selectCommit(sha: string): void {
+  private selectCommit(sha: string): void {
+    if (sha === null || sha === '') {
+      return;
+    }
     this.benchmarkingResultService.getBenchmarkingResultsForCommit(sha).subscribe(
       data => {
         this.tableData = [
@@ -59,4 +73,8 @@ export class DetailViewComponent implements OnInit {
     );
   }
 
+  ngOnDestroy() {
+    // prevent memory leak when component is destroyed
+    this.selectedCommitSubscription.unsubscribe();
+  }
 }

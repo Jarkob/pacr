@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "~8.2.9",
     "@angular/router": "~8.2.9",
     "chart.js": "^2.9.3",
+    "chartjs-plugin-annotation": "^0.5.7",
     "chartjs-plugin-zoom": "^0.7.5",
     "moment": "^2.24.0",
     "ng2-charts": "^2.3.0",
