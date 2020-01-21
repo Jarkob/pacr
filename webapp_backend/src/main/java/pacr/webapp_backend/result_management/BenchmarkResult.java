@@ -1,7 +1,6 @@
 package pacr.webapp_backend.result_management;
 
 import pacr.webapp_backend.shared.IBenchmark;
-import pacr.webapp_backend.shared.IBenchmarkProperty;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

@@ -22,6 +22,13 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
     private Map<String, SimpleBenchmark> benchmarks;
     private String globalError;
 
+    /**
+     * Creates a SimpleBenchmarkingResult with the given parameters.
+     * @param commitHash the hash of the commit of the result.
+     * @param systemEnvironment the system environment of the benchmarker.
+     * @param benchmarks the measured benchmarks.
+     * @param globalError an error message.
+     */
     public SimpleBenchmarkingResult(String commitHash, ISystemEnvironment systemEnvironment,
                                     Map<String, SimpleBenchmark> benchmarks, String globalError) {
         this.commitHash = commitHash;
@@ -30,6 +37,9 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
         this.globalError = globalError;
     }
 
+    /**
+     * Creates a SimpleBenchmarkingResult with a default configuration (no error).
+     */
     public SimpleBenchmarkingResult() {
         HashMap<String, SimpleBenchmark> benchmarks = new HashMap<>();
         benchmarks.put(BENCHMARK_NAME, new SimpleBenchmark());
@@ -60,14 +70,27 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
         return globalError;
     }
 
+    /**
+     * Adds a benchmark to this result.
+     * @param name the name of the benchmark.
+     * @param benchmark the benchmark.
+     */
     public void addBenchmark(String name, SimpleBenchmark benchmark) {
         benchmarks.put(name, benchmark);
     }
 
+    /**
+     * Sets the commit hash of this result.
+     * @param commitHash the commit hash.
+     */
     public void setCommitHash(String commitHash) {
         this.commitHash = commitHash;
     }
 
+    /**
+     * @param name the name of the benchmark.
+     * @return Gets the benchmark of this results with the given name. Returns null if there is none.
+     */
     public SimpleBenchmark getBenchmark(String name) {
         return benchmarks.get(name);
     }

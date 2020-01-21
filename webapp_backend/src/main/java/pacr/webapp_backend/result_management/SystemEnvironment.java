@@ -45,29 +45,6 @@ public class SystemEnvironment implements ISystemEnvironment {
         this.memory = sysEnv.getRamMemory();
     }
 
-    /**
-     * Creates a system environment. Throws IllegalArgumentException if strings are empty or blank. Input may be null
-     * (this implies a detection error for the given input).
-     * @param name the computers name. Cannot be empty or blank.
-     * @param os the os. Cannot be empty or blank.
-     * @param processor the processor model. Cannot be empty or blank.
-     * @param kernel the kernel. Cannot be empty or blank.
-     * @param cores the number of cores.
-     * @param memory the amount of memory in GB.
-     */
-    public SystemEnvironment(String name, String os, String processor, String kernel, int cores, long memory) {
-        if (isInputStringInvalid(name) || isInputStringInvalid(os) || isInputStringInvalid(processor)
-                || isInputStringInvalid(kernel)) {
-            throw new IllegalArgumentException("input cannot be empty or blank");
-        }
-        this.name = name;
-        this.os = os;
-        this.processor = processor;
-        this.kernel = kernel;
-        this.cores = cores;
-        this.memory = memory;
-    }
-
     @Override
     public String getComputerName() {
         return name;
@@ -96,12 +73,5 @@ public class SystemEnvironment implements ISystemEnvironment {
     @Override
     public long getRamMemory() {
         return this.memory;
-    }
-
-    private boolean isInputStringInvalid(String string) {
-        if (string == null) {
-            return false;
-        }
-        return string.isEmpty() || string.isBlank();
     }
 }

@@ -72,7 +72,9 @@ public class BenchmarkProperty {
      * id maps to an object in the database.
      * @param id the unique id from the database.
      */
-    public void setId(int id) { this.id = id; }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      * Gets the name of this property.

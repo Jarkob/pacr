@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management.services;
 
 import pacr.webapp_backend.result_management.CommitResult;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
 
@@ -25,17 +26,17 @@ public interface IResultAccess {
 
     /**
      * Gets all saved results for the given commit hashes.
-     * @param commitHashes the hashes of the commits.
+     * @param commitHashes the hashes of the commits. Cannot be null.
      * @return the results.
      */
-    Collection<CommitResult> getResultsFromCommits(Collection<String> commitHashes);
+    Collection<CommitResult> getResultsFromCommits(@NotNull Collection<String> commitHashes);
 
     /**
      * Gets the saved result of a commit. Returns null if no result is saved for the commit.
      * @param commitHash the hash of the commit. Cannot be null.
      * @return the result of the commit.
      */
-    CommitResult getResultFromCommit(String commitHash);
+    CommitResult getResultFromCommit(@NotNull String commitHash);
 
     /**
      * @return All saved results.
@@ -43,10 +44,10 @@ public interface IResultAccess {
     List<CommitResult> getAllResults();
 
     /**
-     * Saves the given result for a commit.
-     * @param result the result.
+     * Saves the given result for a commit. Replaces any result that has already been saved for this commit.
+     * @param result the result with the hash of the commit. Cannot be null.
      */
-    void saveResult(CommitResult result);
+    void saveResult(@NotNull CommitResult result);
 
     /**
      * Deletes the given result.

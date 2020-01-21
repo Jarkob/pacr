@@ -20,6 +20,13 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
     private String unit;
     private String error;
 
+    /**
+     * Creates a SimpleBenchmarkProperty with given attributes.
+     * @param results the result data.
+     * @param resultInterpretation the interpretation of the results.
+     * @param unit the unit of the results.
+     * @param error an error message.
+     */
     public SimpleBenchmarkProperty(Collection<Double> results, ResultInterpretation resultInterpretation, String unit,
                                    String error) {
         this.results = results;
@@ -28,6 +35,9 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
         this.error = error;
     }
 
+    /**
+     * Creates a SimpleBenchmarkProperty with a default configuration.
+     */
     public SimpleBenchmarkProperty() {
         LinkedList<Double> results = new LinkedList<>();
         results.add(MEASUREMENT);

@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.EventTemplate;
 
@@ -43,7 +44,8 @@ public class NewResultEvent extends EventTemplate {
      *                             no comparison has taken place and averageImprovementPercentage is ignored).
      */
     public NewResultEvent(@NotNull EventCategory category, @NotNull String commitHash, @NotNull String repositoryName,
-                          String globalError, int averageImprovementPercentage, String comparisonCommitHash) {
+                          @Nullable String globalError, int averageImprovementPercentage,
+                          @Nullable String comparisonCommitHash) {
         super(category);
 
         Objects.requireNonNull(category);

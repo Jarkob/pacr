@@ -14,13 +14,13 @@ import pacr.webapp_backend.shared.IObserver;
 import pacr.webapp_backend.shared.IResultExporter;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -68,6 +68,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      */
     public Collection<OutputBenchmarkingResult> getBranchResults(int repositoryId, @NotNull String branch)
             throws NotFoundException {
+        if (!StringUtils.hasText(branch)) {
+            throw new IllegalArgumentException("branch cannot be null, empty or blank");
+        }
+
         Collection<? extends ICommit> commits = commitAccess.getCommitsFromBranch(repositoryId, branch);
 
         if (commits == null) {
@@ -109,9 +113,8 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param benchmarkId the id of the benchmark.
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
      *         omitted)
-     * @throws NotFoundException if no benchmark with the given id could be found.
      */
-    public Collection<OutputBenchmarkingResult> getBenchmarkResults(int benchmarkId) throws NotFoundException {
+    public Collection<OutputBenchmarkingResult> getBenchmarkResults(int benchmarkId) {
         // TODO currently incredibly inefficient
 
         List<CommitResult> allResults = this.resultAccess.getAllResults();
@@ -122,21 +125,14 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
                 if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
                     resultsWithoutOtherBenchmarks.add(result);
                 } else {
-                    // this does not change the result in the database
+                    // don't worry
+                    // this does not alter the result in the database
                     result.removeBenchmarkResult(benchmarkResult);
                 }
             }
         }
 
-        List<OutputBenchmarkingResult> outputResults = new LinkedList<>();
-
-        for (CommitResult result : resultsWithoutOtherBenchmarks) {
-            ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commit, result);
-            outputResults.add(outputResult);
-        }
-
-        return outputResults;
+        return resultsToOutputResults(resultsWithoutOtherBenchmarks);
     }
 
     /**
@@ -144,19 +140,12 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      */
     public List<OutputBenchmarkingResult> getNewestResults() {
         List<CommitResult> results = resultAccess.getNewestResults();
-        List<OutputBenchmarkingResult> outputResultsSameOrder = new LinkedList<>();
 
-        for (CommitResult result : results) {
-            ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commit, result);
-            outputResultsSameOrder.add(outputResult);
-        }
-
-        return outputResultsSameOrder;
+        return resultsToOutputResults(results);
     }
 
     @Override
-    public IBenchmarkingResult getNewestResult(int repositoryID) throws NotFoundException {
+    public IBenchmarkingResult getNewestResult(int repositoryID) {
         return resultAccess.getNewestResult(repositoryID);
     }
 
@@ -175,12 +164,14 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     @Override
-    public void subscribe(IObserver observer) {
+    public void subscribe(@NotNull IObserver observer) {
+        Objects.requireNonNull(observer);
         observers.add(observer);
     }
 
     @Override
-    public void unsubscribe(IObserver observer) {
+    public void unsubscribe(@NotNull IObserver observer) {
+        Objects.requireNonNull(observer);
         observers.remove(observer);
     }
 
@@ -200,7 +191,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
             hashToCommit.put(commit.getCommitHash(), commit);
         }
 
-        // TODO: can elements of this collection legit be null?
+        // if any of the hashes in commitHashes have no saved results, they will be omitted in the output
         Collection<CommitResult> results = resultAccess.getResultsFromCommits(commitHashes);
         List<OutputBenchmarkingResult> outputResults = new LinkedList<>();
 
@@ -211,5 +202,17 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         }
 
         return outputResults;
+    }
+
+    private List<OutputBenchmarkingResult> resultsToOutputResults(List<CommitResult> results) {
+        List<OutputBenchmarkingResult> outputResultsSameOrder = new LinkedList<>();
+
+        for (CommitResult result : results) {
+            ICommit commit = commitAccess.getCommit(result.getCommitHash());
+            OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commit, result);
+            outputResultsSameOrder.add(outputResult);
+        }
+
+        return outputResultsSameOrder;
     }
 }

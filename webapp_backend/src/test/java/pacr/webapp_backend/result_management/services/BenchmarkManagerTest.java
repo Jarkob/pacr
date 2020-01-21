@@ -34,6 +34,7 @@ public class BenchmarkManagerTest {
     private static final int EXPECTED_NUM_OF_PROPERTIES = 2;
     private static final int EXPECTED_NUM_OF_GROUPS = 2;
     private static final int EXPECTED_NUM_OF_GROUPS_AFTER_DEL = 0;
+    private static final int NO_ID = 0;
 
     private Benchmark benchmark;
     private BenchmarkGroup group;
@@ -101,7 +102,8 @@ public class BenchmarkManagerTest {
     }
 
     /**
-     * Tests whether createOrUpdateBenchmark can create a benchmark and then add a property to it
+     * Tests whether createOrUpdateBenchmark can create a benchmark and then add a property to it. Also tests if the id
+     * of the property gets set.
      */
     @Test
     public void createOrUpdateBenchmark_createAndAddProperty_shouldAlsoReturnAddedProperty() {
@@ -117,7 +119,7 @@ public class BenchmarkManagerTest {
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(EXPECTED_NUM_OF_PROPERTIES, savedBenchmark.getProperties().size());
-        assertNotEquals(0, newProperty.getId());
+        assertNotEquals(NO_ID, newProperty.getId());
     }
 
     /**

@@ -8,6 +8,7 @@ import pacr.webapp_backend.result_management.services.IResultAccess;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This is a default implementation of the IResultAccess interface.
@@ -26,6 +27,8 @@ public interface ResultDB extends CrudRepository<CommitResult, String>, IResultA
 
     @Override
     default Collection<CommitResult> getResultsFromCommits(Collection<String> commitHashes) {
+        Objects.requireNonNull(commitHashes);
+
         List<CommitResult> commitResults = new LinkedList<>();
         this.findAllById(commitHashes).forEach(commitResults::add);
         return commitResults;
@@ -33,11 +36,13 @@ public interface ResultDB extends CrudRepository<CommitResult, String>, IResultA
 
     @Override
     default CommitResult getResultFromCommit(String commitHash) {
+        Objects.requireNonNull(commitHash);
         return this.findById(commitHash).orElse(null);
     }
 
     @Override
     default void saveResult(CommitResult result) {
+        Objects.requireNonNull(result);
         this.save(result);
     }
 

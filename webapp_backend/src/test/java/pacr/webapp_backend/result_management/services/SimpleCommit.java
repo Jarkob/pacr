@@ -59,12 +59,10 @@ public class SimpleCommit implements ICommit {
 
     @Override
     public void addLabel(String label) {
-
     }
 
     @Override
     public void removeLabel(String label) {
-
     }
 
     @Override

@@ -26,6 +26,9 @@ public class NewResultEventTest {
     private static final String EXPECTED_NO_COMPARISON_DESCRIPTION = "A new benchmarking result was measured for the commit '"
             + HASH + "' from repository '" + REPO + "'. No data was found for comparison.";
 
+    /**
+     * Tests if title and description get generated properly if it is a successful result with comparison data.
+     */
     @Test
     void getTitleGetDescription_successfulBenchmark_shouldReturnNormalTitle() {
         EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, NO_ERROR, IMPROVEMENT,
@@ -41,6 +44,9 @@ public class NewResultEventTest {
         assertEquals(EXPECTED_NORMAL_DESCRIPTION, description);
     }
 
+    /**
+     * Tests if title and description get generated properly if it is an unsuccessful result (with global error).
+     */
     @Test
     void getTitleGetDescription_errorBenchmark_shouldReturnErrorTitle() {
         EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, ERROR, IMPROVEMENT,
@@ -56,6 +62,9 @@ public class NewResultEventTest {
         assertEquals(EXPECTED_ERROR_DESCRIPTION, description);
     }
 
+    /**
+     * Tests if title and description get generated properly if it is a successful result without comparison data.
+     */
     @Test
     void getTitleGetDescription_noComparison_shouldReturnDescriptionWithoutComparison() {
         EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, NO_ERROR, IMPROVEMENT,
@@ -71,8 +80,13 @@ public class NewResultEventTest {
         assertEquals(EXPECTED_NO_COMPARISON_DESCRIPTION, description);
     }
 
+    /**
+     * Tests if title and description get generated properly if it is an unsuccessful result (with global error)
+     * without comparison data. Should behave the same as if there was comparison data because unsuccessful results can
+     * never be compared anyways.
+     */
     @Test
-    void getTitleGetDescription_errorAndNoComparsion_shouldReturnErrorTitle() {
+    void getTitleGetDescription_errorAndNoComparison_shouldReturnErrorTitle() {
         EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, ERROR, IMPROVEMENT,
                 NO_COMPARISON);
 

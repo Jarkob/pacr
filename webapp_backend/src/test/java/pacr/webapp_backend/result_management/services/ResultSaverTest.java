@@ -118,8 +118,4 @@ public class ResultSaverTest {
         assertNotNull(benchmark);
         assertEquals(EXPECTED_NUM_OF_PROPERTIES_AFTER_ADDING, benchmark.getProperties().size());
     }
-
-    /**
-     * Tests what happens when two results have same commit hash.
-     */
 }

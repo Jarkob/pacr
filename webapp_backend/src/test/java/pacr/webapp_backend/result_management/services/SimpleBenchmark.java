@@ -15,10 +15,17 @@ public class SimpleBenchmark implements IBenchmark {
 
     private Map<String, IBenchmarkProperty> benchmarkProperties;
 
+    /**
+     * Creates SimpleBenchmark with properties.
+     * @param benchmarkProperties the properties.
+     */
     public SimpleBenchmark(Map<String, IBenchmarkProperty> benchmarkProperties) {
         this.benchmarkProperties = benchmarkProperties;
     }
 
+    /**
+     * Creates SimpleBenchmark with default configuration.
+     */
     public SimpleBenchmark() {
         HashMap<String, IBenchmarkProperty> properties = new HashMap<>();
         properties.put(PROPERTY_NAME, new SimpleBenchmarkProperty());
@@ -30,6 +37,11 @@ public class SimpleBenchmark implements IBenchmark {
         return benchmarkProperties;
     }
 
+    /**
+     * Adds a property to this benchmark.
+     * @param name name of the property.
+     * @param property the property.
+     */
     public void addProperty(String name, IBenchmarkProperty property) {
         benchmarkProperties.put(name, property);
     }

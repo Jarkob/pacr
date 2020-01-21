@@ -2,6 +2,7 @@ package pacr.webapp_backend.shared;
 
 import javassist.NotFoundException;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 /**
@@ -10,7 +11,8 @@ import java.util.Collection;
 public interface IResultImporter {
     /**
      * Saves all the given benchmarking results and any benchmarks that are not already in the system.
+     * Replaces any results in the system that belong to commits that are included in this import.
      * @param results the results to import. Cannot be null.
      */
-    void importBenchmarkingResults(Collection<IBenchmarkingResult> results);
+    void importBenchmarkingResults(@NotNull Collection<IBenchmarkingResult> results);
 }

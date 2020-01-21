@@ -15,11 +15,9 @@ import pacr.webapp_backend.shared.ICommit;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Saves benchmarking results for commits and may update other components.
@@ -44,12 +42,14 @@ abstract class ResultSaver {
      * This is a template method.
      * Saves a benchmarking result and saves associated benchmark metadata that is new to the system. Updates other
      * components depending on the implementation of updateOtherComponents.
+     * Any result for the given commit that has already been saved will be replaced by this new result.
      * @param result the benchmarking result that is saved. Cannot be null.
      * @param commit the commit of the benchmarking result. Cannot be null.
      * @param comparisonCommitHash the hash of the commit that is used for comparison when updating other components.
      *                             May be null. In that case no comparison will be executed.
      */
-    void saveResult(IBenchmarkingResult result, ICommit commit, String comparisonCommitHash) {
+    void saveResult(@NotNull IBenchmarkingResult result, @NotNull ICommit commit,
+                    @Nullable String comparisonCommitHash) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 

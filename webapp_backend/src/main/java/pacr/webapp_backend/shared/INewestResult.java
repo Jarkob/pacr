@@ -1,7 +1,5 @@
 package pacr.webapp_backend.shared;
 
-import javassist.NotFoundException;
-
 /**
  * Gets the newest result of a repository.
  */
@@ -12,7 +10,6 @@ public interface INewestResult extends ISubject {
      * yet.
      * @param repositoryID the id of the repository.
      * @return the newest result.
-     * @throws NotFoundException if no repository with this id could be found.
      */
-    IBenchmarkingResult getNewestResult(int repositoryID) throws NotFoundException;
+    IBenchmarkingResult getNewestResult(int repositoryID);
 }

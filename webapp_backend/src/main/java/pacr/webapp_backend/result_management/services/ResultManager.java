@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.result_management.CommitResult;
@@ -9,6 +10,7 @@ import pacr.webapp_backend.shared.IResultDeleter;
 import pacr.webapp_backend.shared.IResultImporter;
 import pacr.webapp_backend.shared.IResultSaver;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
@@ -43,7 +45,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     }
 
     @Override
-    public void deleteBenchmarkingResults(String commitHash) {
+    public void deleteBenchmarkingResults(@NotNull String commitHash) {
         if (!StringUtils.hasText(commitHash)) {
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
@@ -69,7 +71,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     }
 
     @Override
-    public void importBenchmarkingResults(Collection<IBenchmarkingResult> results) {
+    public void importBenchmarkingResults(@NotNull Collection<IBenchmarkingResult> results) {
         Objects.requireNonNull(results);
 
         Map<IBenchmarkingResult, ICommit> resultsWithCommits = new HashMap<>();
@@ -90,7 +92,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     }
 
     @Override
-    public void saveBenchmarkingResults(IBenchmarkingResult benchmarkingResult) {
+    public void saveBenchmarkingResults(@NotNull IBenchmarkingResult benchmarkingResult) {
         Objects.requireNonNull(benchmarkingResult);
 
         ICommit commit = commitAccess.getCommit(benchmarkingResult.getCommitHash());

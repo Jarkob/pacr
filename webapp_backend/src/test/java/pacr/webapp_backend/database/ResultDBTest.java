@@ -36,12 +36,12 @@ public class ResultDBTest {
 
     private static final String BENCHMARK_NAME = "benchmark";
     private static final String BENCHMARK_NAME_TWO = "benchmark2";
-    private static final String GROUP_NAME = "group";
     private static final String COMMIT_HASH = "1234";
     private static final String COMMIT_HASH_TWO = "5678";
     private static final String COMMIT_HASH_THREE = "9101";
     private static final int REPO_ID_ONE = 1;
     private static final int REPO_ID_TWO = 2;
+    private static final int EXPECTED_NUM_OF_RESULTS_ONE_NOT_SAVED = 1;
 
     private ResultDB resultDB;
     private BenchmarkDB benchmarkDB;
@@ -83,6 +83,50 @@ public class ResultDBTest {
     }
 
     /**
+     * Tests whether saving a result with a commit hash that already has a result properly replaces the result.
+     */
+    @Test
+    public void saveResult_alreadySavedForCommit_shouldReplaceResult() {
+        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        this.resultDB.saveResult(result);
+
+        CommitResult newResultForSameCommit = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_TWO);
+        this.resultDB.saveResult(newResultForSameCommit);
+
+        CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
+        assertEquals(REPO_ID_TWO, savedResult.getRepositoryId());
+    }
+
+    /**
+     * Tests whether getAllResults returns all saved results.
+     */
+    @Test
+    public void getAllResults_multipleResultsSaved_shouldReturnAllResults() {
+        CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_TWO);
+
+        this.resultDB.saveResult(resultOne);
+        this.resultDB.saveResult(resultTwo);
+
+        List<CommitResult> allSavedResults = this.resultDB.getAllResults();
+
+        assertEquals(2, allSavedResults.size());
+
+        boolean foundResultOne = false;
+        boolean foundResultTwo = false;
+
+        for (CommitResult savedResult : allSavedResults) {
+            if (savedResult.getCommitHash().equals(COMMIT_HASH)) {
+                foundResultOne = true;
+            } else if (savedResult.getCommitHash().equals(COMMIT_HASH_TWO)) {
+                foundResultTwo = true;
+            }
+        }
+
+        assertTrue(foundResultOne && foundResultTwo);
+    }
+
+    /**
      * Tests whether the benchmark metadata of a result changes if the benchmark is changed in the benchmarkDB.
      */
     @Test
@@ -103,7 +147,7 @@ public class ResultDBTest {
      * Tests whether the proper results are returned if you enter multiple commit hashes.
      */
     @Test
-    public void getResults_multipleHashesAsInput_ShouldReturnAllResults() {
+    public void getResultsFromCommits_multipleHashesAsInput_ShouldReturnAllResults() {
         CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultOne);
         CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
@@ -116,6 +160,23 @@ public class ResultDBTest {
         Collection<CommitResult> savedResults = this.resultDB.getResultsFromCommits(commitHashes);
 
         assertEquals(2, savedResults.size());
+    }
+
+    /**
+     * Tests whether getResultsFromCommits can handle commit hashes that have no result saved.
+     */
+    @Test
+    public void getResultsFromCommits_oneHashHasResultOtherDoesNot_shouldReturnSavedResult() {
+        CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        this.resultDB.saveResult(resultOne);
+
+        List<String> commitHashes = new LinkedList<>();
+        commitHashes.add(COMMIT_HASH);
+        commitHashes.add(COMMIT_HASH_TWO);
+
+        Collection<CommitResult> savedResults = this.resultDB.getResultsFromCommits(commitHashes);
+
+        assertEquals(EXPECTED_NUM_OF_RESULTS_ONE_NOT_SAVED, savedResults.size());
     }
 
     /**

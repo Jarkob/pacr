@@ -50,11 +50,10 @@ public class ResultBenchmarkSaver extends ResultSaver {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 
-        CommitResult comparisonResult = null;
         int averageImprovementPercentage = 0;
 
         if (comparisonCommitHash != null) {
-            comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
+            CommitResult comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
 
             averageImprovementPercentage = averageImprovementPercentage(result, comparisonResult);
         }
