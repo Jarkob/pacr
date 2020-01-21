@@ -21,18 +21,6 @@ import java.util.Objects;
 @Component
 public class ResultBenchmarkSaver extends ResultSaver {
 
-    private static final String TITLE_FORMAT = "New Benchmarking Result for Repository %d";
-    private static final String GENERIC_DESCRIPTION_FORMAT =
-            "A new benchmarking result was measured for the commit '%s' from repository '%d'. ";
-    private static final String NO_COMPARISON_DESCRIPTION = "No data was found for comparison.";
-    private static final String COMPARISON_DESCRIPTION =
-            "On average, the new benchmarking result is %d percent %s then the previous one (commit '%s').";
-    private static final String TITLE_FORMAT_GLOBAL_ERROR = "Error while benchmarking commit for repository '%d'";
-    private static final String DESCRIPTION_FORMAT_GLOBAL_ERROR =
-            "An error occurred while benchmarking commit '%s' for repository '%d': '%s'";
-    private static final String POSITIVE = "better";
-    private static final String NEGATIVE = "worse";
-
     private ResultGetter subjectForObservers;
     private IEventHandler eventHandler;
 
@@ -63,53 +51,28 @@ public class ResultBenchmarkSaver extends ResultSaver {
         Objects.requireNonNull(commit);
 
         CommitResult comparisonResult = null;
+        int averageImprovementPercentage = 0;
 
         if (comparisonCommitHash != null) {
             comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
+
+            averageImprovementPercentage = averageImprovementPercentage(result, comparisonResult);
         }
 
-        eventHandler.addEvent(EventCategory.BENCHMARKING, generateTitle(commit, result),
-                generateDescription(commit, result, comparisonResult));
+        NewResultEvent benchmarkingEvent = new NewResultEvent(EventCategory.BENCHMARKING, commit.getCommitHash(),
+                String.valueOf(commit.getRepositoryID()), result.getGlobalError(), averageImprovementPercentage,
+                comparisonCommitHash);
+
+        eventHandler.addEvent(benchmarkingEvent);
 
         subjectForObservers.updateAll();
     }
 
-    @Deprecated
-    private String generateTitle(ICommit commit, CommitResult result) {
-        if (result.hasGlobalError()) {
-            // TODO this should be the repository's name
-            return String.format(TITLE_FORMAT_GLOBAL_ERROR, commit.getRepositoryID());
-        }
-
-        return String.format(TITLE_FORMAT, commit.getRepositoryID());
-    }
-
-    @Deprecated
-    private String generateDescription(ICommit commit, CommitResult result, CommitResult comparisonResult) {
-        if (result.hasGlobalError()) {
-            // TODO should be repository's name
-            return String.format(DESCRIPTION_FORMAT_GLOBAL_ERROR, commit.getCommitHash(),
-                    commit.getRepositoryID(), result.getGlobalError());
-        }
-
-        String description = String.format(GENERIC_DESCRIPTION_FORMAT, commit.getCommitHash(),
-                commit.getRepositoryID());
-
-        if (comparisonResult == null) {
-            description += NO_COMPARISON_DESCRIPTION;
-        } else {
-            int averageImprovementPercentage = averageImprovementPercentage(result, comparisonResult);
-
-            String positiveOrNegative = averageImprovementPercentage < 0 ? NEGATIVE : POSITIVE;
-
-            description += String.format(COMPARISON_DESCRIPTION, Math.abs(averageImprovementPercentage),
-                    positiveOrNegative, comparisonResult.getCommitHash());
-        }
-
-        return description;
-    }
-
     private int averageImprovementPercentage(CommitResult result, CommitResult comparisonResult) {
+        if (comparisonResult == null) {
+            return 0;
+        }
+
         double totalImprovementPercentage = 0;
         int numberOfComparisons = 0;
 
@@ -139,7 +102,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
             return 0;
         }
 
-        return (int) Math.round(totalImprovementPercentage / numberOfComparisons);
+        return (int) Math.round((totalImprovementPercentage / numberOfComparisons) * 100d);
     }
 
     private double getImprovementPercentage(BenchmarkPropertyResult result, BenchmarkPropertyResult comparison) {
