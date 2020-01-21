@@ -39,12 +39,12 @@ public class BenchmarkingResultsImporter {
      *
      * @param results the results to be imported.
      */
-    public void importBenchmarkingResults(Collection<ImportedBenchmarkingResult> results) {
+    public void importBenchmarkingResults(Collection<OutputBenchmarkingResult> results) {
         LocalDate now = LocalDate.now();
 
         Collection<IBenchmarkingResult> benchmarkingResults = new ArrayList<>();
 
-        for (ImportedBenchmarkingResult result : results) {
+        for (OutputBenchmarkingResult result : results) {
             repositoryImporter.addRepository(result.getRepositoryPullUrl(), now, result.getRepositoryName());
 
             benchmarkingResults.addAll(result.getBenchmarkingResults());
