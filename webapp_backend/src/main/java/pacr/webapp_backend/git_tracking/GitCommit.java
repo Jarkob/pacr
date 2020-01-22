@@ -1,16 +1,12 @@
 package pacr.webapp_backend.git_tracking;
 
+import jdk.jshell.spi.ExecutionControl;
 import pacr.webapp_backend.shared.ICommit;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.ElementCollection;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -40,9 +36,12 @@ public class GitCommit implements ICommit {
     private String commitHash;
 
     private String commitMessage;
-    private LocalDate entryDate;
-    private LocalDate commitDate;
-    private LocalDate authorDate;
+    @Column
+    private LocalDateTime entryDate;
+    @Column
+    private LocalDateTime commitDate;
+    @Column
+    private LocalDateTime authorDate;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<GitCommit> parents;
@@ -53,8 +52,8 @@ public class GitCommit implements ICommit {
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> labels;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    private GitBranch branch;
+    @ManyToMany(cascade = CascadeType.ALL)
+    private Collection<GitBranch> branches;
 
     /**
      * Creates a commit.
@@ -62,33 +61,28 @@ public class GitCommit implements ICommit {
      * @param commitMessage is the commit message.
      * @param commitDate is the commit date.
      * @param authorDate is the author date.
-     * @param parents are the parents of the commit. Is usually just one commit.
      * @param repository is the repository this commit belongs to.
-     * @param branch is the corresponding branch.
      */
-    public GitCommit(@NotNull String commitHash, @NotNull String commitMessage, @NotNull LocalDate commitDate,
-                     @NotNull LocalDate authorDate, @NotNull Set<GitCommit> parents,
-                     @NotNull GitRepository repository, @NotNull GitBranch branch) {
+    public GitCommit(@NotNull String commitHash, @NotNull String commitMessage, @NotNull LocalDateTime commitDate,
+                     @NotNull LocalDateTime authorDate,
+                     @NotNull GitRepository repository) {
         Objects.requireNonNull(commitHash);
         Objects.requireNonNull(commitMessage);
         Objects.requireNonNull(commitDate);
         Objects.requireNonNull(authorDate);
-        Objects.requireNonNull(parents);
         Objects.requireNonNull(repository);
-        Objects.requireNonNull(branch);
 
         this.commitHash = commitHash;
         this.commitMessage = commitMessage;
-        this.entryDate = LocalDate.now();
+        this.entryDate = LocalDateTime.now();
         this.commitDate = commitDate;
         this.authorDate = authorDate;
-        this.parents = parents;
         this.labels = new HashSet<String>();
+        this.branches = new HashSet<>();
+        this.parents = new HashSet<>();
 
         this.repository = repository;
         repository.addNewCommit(this);
-        this.branch = branch;
-        branch.addCommit(this);
     }
 
     @Override
@@ -102,22 +96,22 @@ public class GitCommit implements ICommit {
     }
 
     @Override
-    public LocalDate getEntryDate() {
+    public LocalDateTime getEntryDate() {
         return entryDate;
     }
 
     @Override
-    public LocalDate getCommitDate() {
+    public LocalDateTime getCommitDate() {
         return commitDate;
     }
 
     @Override
-    public LocalDate getAuthorDate() {
+    public LocalDateTime getAuthorDate() {
         return authorDate;
     }
 
     @Override
-    public Collection<? extends ICommit> getParents() {
+    public Collection<GitCommit> getParents() {
         return parents;
     }
 
@@ -130,22 +124,22 @@ public class GitCommit implements ICommit {
      * Sets the branch for this commit.
      * @param branch is the branch being set.
      */
-    public void setBranch(@NotNull GitBranch branch) {
+    public void addBranch(@NotNull GitBranch branch) {
         Objects.requireNonNull(branch);
 
-        if (branch == this.branch) {
+        if (branches.contains(branch)) {
             return;
         }
-        this.branch = branch;
+        branches.add(branch);
         branch.addCommit(this);
     }
 
     /**
-     * Returns the branch this commit belongs to.
-     * @return branch.
+     * Returns the branches this commit belongs to.
+     * @return branches.
      */
-    public GitBranch getBranch() {
-        return branch;
+    public Collection<GitBranch> getBranches() {
+        return branches;
     }
 
     /**
@@ -160,11 +154,6 @@ public class GitCommit implements ICommit {
         }
         this.repository = repository;
         repository.addNewCommit(this);
-    }
-
-    @Override
-    public String getBranchName() {
-        return branch.getName();
     }
 
     @Override
@@ -185,12 +174,21 @@ public class GitCommit implements ICommit {
         return labels;
     }
 
+    @Override
+    public Collection<String> getBranchNames() {
+        return null;//todo
+    }
+
     /**
      * Checks if the repository of this commit is stored in the database.
      * @return true if the repository is stored in the database, false if it isn't.
      */
     public boolean repositoryIsInDatabase() {
         return repository.isInDatabase();
+    }
+
+    public void addParent(GitCommit commit) {
+        parents.add(commit);
     }
 
 }

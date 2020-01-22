@@ -73,6 +73,6 @@ public class GitBranch {
             return;
         }
         this.commits.add(commit);
-        commit.setBranch(this);
+        commit.addBranch(this);
     }
 }

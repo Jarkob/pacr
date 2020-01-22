@@ -32,3 +32,6 @@ build/
 
 ### Logs ###
 logs/
+
+### cloned repositories
+repositories/

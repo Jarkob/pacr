@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking;
 
+import javassist.NotFoundException;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -26,6 +28,8 @@ import java.util.*;
  */
 @Entity
 public class GitRepository {
+
+    private static final String MASTER = "master";
 
     @Id
     // When a repository id is set, is is not 0 anymore, it is an integer greater than 0.
@@ -193,6 +197,7 @@ public class GitRepository {
      */
     public void addBranchToSelection(@NotNull GitBranch branch) {
         Objects.requireNonNull(branch);
+
         selectedBranches.add(branch);
     }
 
@@ -202,6 +207,7 @@ public class GitRepository {
      */
     public void removeBranchFromSelection(@NotNull GitBranch branch) {
         Objects.requireNonNull(selectedBranches);
+
         selectedBranches.remove(branch);
     }
 
@@ -225,5 +231,36 @@ public class GitRepository {
      */
     public boolean isInDatabase() {
         return id > 0;
+    }
+
+    public boolean isBranchSelected(String branchName) {
+        if (branchName.equals(MASTER)) {
+            return true;
+        }
+
+        if (isTrackAllBranches()) { // selectedBranches are ignored branches
+            for (GitBranch branch : selectedBranches) {
+                if (branch.getName().equals(branchName)) {
+                    return false;
+                }
+            }
+            return true;
+        } else { // selected branches are watched branches
+            for (GitBranch branch : selectedBranches) {
+                if (branch.getName().equals(branchName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    public GitBranch getSelectedBranch(String branchName) throws NotFoundException {
+        for (GitBranch branch : selectedBranches) {
+            if (branch.getName().equals(branchName)) {
+                return branch;
+            }
+        }
+        throw new NotFoundException("Branch " + branchName + " was not found.");
     }
 }

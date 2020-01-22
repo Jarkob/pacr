@@ -50,7 +50,7 @@ public class GetCommitDBTest extends GitTrackingDBTest {
         super.gitTrackingDB.addRepository(repository);
 
         commit.setRepository(repository);
-        commit.setBranch(branch);
+        commit.addBranch(branch);
 
         repository.addNewCommit(commit);
         super.gitTrackingDB.addCommit(commit);

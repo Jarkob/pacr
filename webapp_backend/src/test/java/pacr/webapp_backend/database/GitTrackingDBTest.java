@@ -11,7 +11,10 @@ import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.git_tracking.GitRepository;
 
 import java.awt.*;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,13 +57,12 @@ public class GitTrackingDBTest {
         // commit
         commitHash = "c4c5cc";
         String message = "commit message";
-        LocalDate commitDate = LocalDate.now();
-        LocalDate authorDate = LocalDate.now();
-        Set<GitCommit> parents = new HashSet<>();
+        LocalDateTime commitDate = LocalDateTime.now();
+        LocalDateTime authorDate = LocalDateTime.now();
         GitRepository repositoryForCommit = new GitRepository();
         GitBranch branch = new GitBranch("test branch");
 
-        commit = new GitCommit(commitHash, message, commitDate, authorDate, parents, repositoryForCommit, branch);
+        commit = new GitCommit(commitHash, message, commitDate, authorDate, repositoryForCommit);
 
         commit.addLabel("Label1");
         commit.addLabel("Label2");
@@ -166,11 +168,17 @@ public class GitTrackingDBTest {
 
         // checking all parameters
         assertEquals(commit.getMessage(), fromDB.getMessage());
-        assertEquals(commit.getAuthorDate(), fromDB.getAuthorDate());
+        assertDateTimeEquals(commit.getAuthorDate(), fromDB.getAuthorDate());
         for (String label : commit.getLabels()) {
             assertTrue(fromDB.getLabels().contains(label));
         }
         assertEquals(commit.getParents(), fromDB.getParents());
+    }
+
+    private void assertDateTimeEquals(LocalDateTime date1, LocalDateTime date2) {
+        long date1InEpoch = date1.toEpochSecond(ZoneId.systemDefault().getRules().getOffset(Instant.now()));
+        long date2InEpoch = date2.toEpochSecond(ZoneId.systemDefault().getRules().getOffset(Instant.now()));
+        assertEquals(date1InEpoch, date2InEpoch);
     }
 
     /**

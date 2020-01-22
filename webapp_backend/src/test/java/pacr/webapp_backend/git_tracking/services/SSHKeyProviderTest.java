@@ -26,9 +26,9 @@ public class SSHKeyProviderTest {
     private IBenchmarkerConfigurator configuratorMock;
 
     private static String privateKeyPath
-            = "\\src\\test\\resources\\pacr\\webapp_backend\\git_tracking\\services\\sshtest.key";
+            = "/src/test/resources/pacr/webapp_backend/git_tracking/services/git/id_rsa";
     private static String publicKeyPath
-            = "\\src\\test\\resources\\pacr\\webapp_backend\\git_tracking\\services\\sshtest.pub";
+            = "/src/test/resources/pacr/webapp_backend/git_tracking/services/git/id_rsa.pub";
 
     @BeforeEach
     void initialize() {

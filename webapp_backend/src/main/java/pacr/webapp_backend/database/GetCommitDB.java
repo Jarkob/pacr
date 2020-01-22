@@ -60,7 +60,7 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
             return null;
         }
 
-        return commitDB.findCommitsByRepository_IdAndBranch(id, match);
+        return commitDB.findCommitsByRepository_IdAndBranches(id, match);
     }
 
     @Override

@@ -17,6 +17,6 @@ public interface CommitDB extends CrudRepository<GitCommit, String> {
 
     Collection<GitCommit> findCommitsByRepository_Id(int repositoryID);
 
-    Collection<GitCommit> findCommitsByRepository_IdAndBranch(int repositoryID, GitBranch branch);
+    Collection<GitCommit> findCommitsByRepository_IdAndBranches(int repositoryID, GitBranch branch);
 
 }

@@ -1,16 +1,22 @@
 package pacr.webapp_backend.git_tracking.services;
 
 import javassist.NotFoundException;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.git.GitHandler;
 import pacr.webapp_backend.shared.IRepositoryImporter;
 import pacr.webapp_backend.shared.IResultDeleter;
 
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
@@ -31,14 +37,18 @@ public class GitTracking implements IRepositoryImporter {
 
     private IResultDeleter resultDeleter;
 
+    private GitHandler gitHandler;
+
     /**
      * Initiates an instance of GitTracking.
      * @param gitTrackingAccess is the database access for repositories and commits.
      */
-    public GitTracking(@NotNull IGitTrackingAccess gitTrackingAccess) {
+    public GitTracking(@NotNull IGitTrackingAccess gitTrackingAccess, @NotNull GitHandler gitHandler) {
         Objects.requireNonNull(gitTrackingAccess);
+        Objects.requireNonNull(gitHandler);
 
         this.gitTrackingAccess = gitTrackingAccess;
+        this.gitHandler = gitHandler;
     }
 
     /**
@@ -93,9 +103,22 @@ public class GitTracking implements IRepositoryImporter {
     /**
      * Pulls from a repository and adds new commits to the job scheduling.
      * @param repositoryID is the ID of the repository.
+     * @throws NotFoundException when the repository was not found.
      */
-    public void pullFromRepository(int repositoryID) {
-        //todo
+    public void pullFromRepository(int repositoryID) throws NotFoundException {
+        GitRepository gitRepository = gitTrackingAccess.getRepository(repositoryID);
+        if (gitRepository == null) {
+            throw new NotFoundException("Repository with ID " + repositoryID + " was not found.");
+        }
+
+        Collection<GitCommit> commits = null;
+        try {
+            commits = gitHandler.updateRepository(gitRepository);
+        } catch (GitAPIException | IOException e) {
+            e.printStackTrace();
+        }
+
+        //todo untrackedCommits add to db, IJobScheduler, ...
     }
 
     /**
@@ -104,7 +127,12 @@ public class GitTracking implements IRepositoryImporter {
     public void pullFromAllRepositories() {
         for (GitRepository repository : gitTrackingAccess.getAllRepositories()) {
             if (!repository.isHookSet()) {
-                pullFromRepository(repository.getId());
+                try {
+                    pullFromRepository(repository.getId());
+                } catch (NotFoundException e) {
+                    // should not happen
+                    e.printStackTrace();
+                }
             }
         }
     }
