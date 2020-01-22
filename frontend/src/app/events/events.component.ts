@@ -2,6 +2,9 @@ import { Event } from './../classes/event';
 import { Component, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
 
+/**
+ * lists the events emitted by the backend
+ */
 @Component({
   selector: 'app-events',
   templateUrl: './events.component.html',

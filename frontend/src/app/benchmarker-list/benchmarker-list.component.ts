@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+/**
+ * shows a list of the currently registered benchmarkers
+ */
 @Component({
   selector: 'app-benchmarker-list',
   templateUrl: './benchmarker-list.component.html',

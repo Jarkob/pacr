@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Location } from '@angular/common';
 
+/**
+ * the toolbar of the application
+ */
 @Component({
   selector: 'app-toolbar',
   templateUrl: './toolbar.component.html',

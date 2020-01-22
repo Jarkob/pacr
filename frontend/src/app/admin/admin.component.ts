@@ -7,6 +7,9 @@ import { SchedulerService } from '../services/scheduler.service';
 import { Repository } from '../classes/repository';
 import { Job } from '../classes/job';
 
+/**
+ * a component to administrate the application
+ */
 @Component({
   selector: 'app-admin',
   templateUrl: './admin.component.html',

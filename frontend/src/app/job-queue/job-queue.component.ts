@@ -3,6 +3,9 @@ import { SchedulerService } from './../services/scheduler.service';
 import { Component, OnInit } from '@angular/core';
 import { Job } from '../classes/job';
 
+/**
+ * shows the job queue
+ */
 @Component({
   selector: 'app-job-queue',
   templateUrl: './job-queue.component.html',

@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+/**
+ * a dashboard for competitive use cases
+ */
 @Component({
   selector: 'app-competitive-dashboard',
   templateUrl: './competitive-dashboard.component.html',

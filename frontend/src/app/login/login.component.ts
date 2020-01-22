@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+/**
+ * shows a form for login
+ */
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',

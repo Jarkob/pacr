@@ -4,6 +4,9 @@ import { BenchmarkingResultService } from './../services/benchmarking-result.ser
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Row } from '../classes/row';
 
+/**
+ * show the detail view of a commit and his benchmarking results
+ */
 @Component({
   selector: 'app-detail-view',
   templateUrl: './detail-view.component.html',

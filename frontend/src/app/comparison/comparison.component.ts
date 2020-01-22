@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+/**
+ * compares two commits
+ */
 @Component({
   selector: 'app-comparison',
   templateUrl: './comparison.component.html',

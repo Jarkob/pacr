@@ -11,6 +11,9 @@ import { DiagramService } from '../services/diagram.service';
 import * as Chart from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 
+/**
+ * displays benchmarking results in a line diagram
+ */
 @Component({
   selector: 'app-diagram',
   templateUrl: './diagram.component.html',
