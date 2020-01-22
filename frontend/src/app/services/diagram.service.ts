@@ -10,6 +10,5 @@ export class DiagramService {
 
   selectCommit(sha: string) {
     this.selectedCommit.next(sha);
-    console.log('changed selected commit');
   }
 }

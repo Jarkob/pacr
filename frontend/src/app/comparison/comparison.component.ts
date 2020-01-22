@@ -1,3 +1,5 @@
+import { BenchmarkingResultService } from './../services/benchmarking-result.service';
+import { BenchmarkingResult } from './../classes/benchmarking-result';
 import { Component, OnInit } from '@angular/core';
 
 /**
@@ -10,9 +12,26 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ComparisonComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private benchmarkingResultService: BenchmarkingResultService
+  ) { }
+
+  selectedCommits: BenchmarkingResult[] = [];
 
   ngOnInit() {
   }
 
+
+  selectCommit(sha: string) {
+    this.benchmarkingResultService.getBenchmarkingResultsForCommit(sha)
+    .subscribe(
+      data => {
+        this.selectedCommits.push(data);
+      }
+    );
+  }
+
+  clear() {
+    this.selectedCommits = [];
+  }
 }

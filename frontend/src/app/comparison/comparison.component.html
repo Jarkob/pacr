@@ -1,3 +1,12 @@
 <mat-card>
-    <p>TODO: compare</p>
+    <button mat-button [disabled]="this.selectedCommits.length === 2" (click)="selectCommit('')">Select Commit</button>
+    <button mat-button (click)="clear()">Clear</button>
+    <div fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
+        <div *ngIf="this.selectedCommits.length >= 1">
+            <pre>{{ this.selectedCommits[0] | json }}</pre>
+        </div>
+        <div *ngIf="this.selectedCommits.length == 2">
+            <pre>{{ this.selectedCommits[1] | json }}</pre>
+        </div>
+    </div>
 </mat-card>

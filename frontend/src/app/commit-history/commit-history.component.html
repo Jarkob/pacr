@@ -1,5 +1,7 @@
-<mat-card>
-    <h4>Latest commits</h4>
+<mat-card [style.overflow]="'auto'">
+    <mat-card-header>
+        <mat-card-title>Latest Commits</mat-card-title>
+    </mat-card-header>
     <mat-accordion>
         <mat-expansion-panel *ngFor="let commit of commits">
             <mat-expansion-panel-header>
