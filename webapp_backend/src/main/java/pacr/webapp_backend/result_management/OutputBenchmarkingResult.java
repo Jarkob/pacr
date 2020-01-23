@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a benchmarking result for a certain commit. Contains data about the commit and all measurements and/or
@@ -43,16 +44,18 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     /**
      * Creates an OutputBenchmarkingResult for a commit. Copies system environment and error information from the
      * CommitResult and copies commit meta data from the ICommit. Throws IllegalArgumentException if the CommitResult
-     * refers to a different commit hash than the ICommit or if one of the parameters is null.
-     * @param commit the commit.
-     * @param result the result for the commit.
+     * refers to a different commit hash than the ICommit.
+     * @param commit the commit. Cannot be null.
+     * @param result the result for the commit. Cannot be null.
      * @param groups the benchmark groups with benchmarks, their properties and their corresponding measurements.
+     *               Cannot be null.
      */
     public OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
                              @NotNull OutputBenchmarkGroup[] groups) {
-        if (commit == null || result == null || groups == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
+        Objects.requireNonNull(commit);
+        Objects.requireNonNull(result);
+        Objects.requireNonNull(groups);
+
         if (!belongToSameCommit(commit, result)) {
             throw new IllegalArgumentException("commit and result must belong to same commit hash");
         }

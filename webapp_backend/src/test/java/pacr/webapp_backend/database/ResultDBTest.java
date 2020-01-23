@@ -196,17 +196,22 @@ public class ResultDBTest {
     /**
      * Tests whether multiple saved results are returned in the correct order by getNewestResult (even if a result is
      * deleted in between)
+     * @throws InterruptedException if sleep fails.
      */
     @Test
-    public void getNewestResults_multipleResultsSavedOneDeleted_shouldReturnOrdered() {
+    public void getNewestResults_multipleResultsSavedOneDeleted_shouldReturnOrdered() throws InterruptedException {
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE));
 
         CommitResult resultToDelete = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultToDelete);
 
+        TimeUnit.MILLISECONDS.sleep(100);
+
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_ONE));
 
         this.resultDB.deleteResult(resultToDelete);
+
+        TimeUnit.MILLISECONDS.sleep(100);
 
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE));
 
@@ -215,7 +220,9 @@ public class ResultDBTest {
         List<CommitResult> orderedResults = this.resultDB.getNewestResults();
 
         for (CommitResult result : orderedResults) {
-            assertTrue(result.getEntryDate().compareTo(previousTime) <= 0);
+            LocalDateTime currentTime = result.getEntryDate();
+            assertTrue(currentTime.isBefore(previousTime));
+            previousTime = result.getEntryDate();
         }
     }
 

@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a benchmark for output purposes.
@@ -23,14 +24,12 @@ public class OutputBenchmark implements IBenchmark {
 
     /**
      * Creates a new OutputBenchmark with properties (including results) and metadata of the benchmark.
-     * Throws IllegalArgumentException if one of the parameters is null.
-     * @param results the properties with results.
-     * @param benchmark the benchmark that metadata is copied from.
+     * @param results the properties with results. Cannot be null.
+     * @param benchmark the benchmark that metadata is copied from. Cannot be null.
      */
     public OutputBenchmark(@NotNull OutputPropertyResult[] results, @NotNull Benchmark benchmark) {
-        if (results == null || benchmark == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
+        Objects.requireNonNull(results);
+        Objects.requireNonNull(benchmark);
 
         this.results = results;
 

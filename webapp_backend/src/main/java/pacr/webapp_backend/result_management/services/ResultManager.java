@@ -119,7 +119,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
 
         Collection<? extends ICommit> parents = commit.getParents();
 
-        if (parents.size() == 0) {
+        if (parents.isEmpty()) {
             return null;
         }
 
@@ -139,7 +139,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             }
         }
 
-        if (parentsOnSameBranch.size() == 0) {
+        if (parentsOnSameBranch.isEmpty()) {
             // if there are no parents on the same branch, choose the latest parent according to commit date.
             return getCommitLatestCommitDate(parents);
         } else {

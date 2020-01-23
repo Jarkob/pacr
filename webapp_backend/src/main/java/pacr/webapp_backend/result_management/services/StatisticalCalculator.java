@@ -16,13 +16,14 @@ public final class StatisticalCalculator {
     }
 
     /**
-     * Calculates the p-th quantile of the given values. Returns -1 if the given list is empty or null.
+     * Calculates the p-th quantile of the given values. Returns -1 if the given list is empty or null or if the given
+     * quantile is outside 0 to 1.
      * @param p the wanted quantile.
      * @param values the values.
      * @return the calculated quantile.
      */
     public static double getQuantile(double p, @NotNull List<Double> values) {
-        if (values == null || values.size() == 0) {
+        if (values == null || values.isEmpty() || p < 0 || p > 1) {
             return -1;
         }
 

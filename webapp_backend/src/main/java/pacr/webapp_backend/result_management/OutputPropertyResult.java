@@ -6,6 +6,7 @@ import pacr.webapp_backend.shared.ResultInterpretation;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Represents a slimmed down version of a BenchmarkPropertyResult for output. This only contains the statistical values
@@ -27,13 +28,10 @@ public class OutputPropertyResult implements IBenchmarkProperty {
     /**
      * Creates a OutputPropertyResult from a BenchmarkPropertyResult. Copies all statistical data and the associated
      * property.
-     * @param result the BenchmarkPropertyResult that this OutputPropertyResult is cloned from. Throws
-     *               IllegalArgumentException if result is null.
+     * @param result the BenchmarkPropertyResult that this OutputPropertyResult is cloned from. Cannot be null.
      */
     public OutputPropertyResult(@NotNull BenchmarkPropertyResult result) {
-        if (result == null) {
-            throw new IllegalArgumentException("result cannot be null");
-        }
+        Objects.requireNonNull(result);
 
         this.name = result.getName();
         this.unit = result.getUnit();

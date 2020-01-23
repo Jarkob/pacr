@@ -54,7 +54,6 @@ abstract class ResultSaver {
         Objects.requireNonNull(commit);
 
         Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
-
         Collection<Benchmark> benchmarksFromResult = new HashSet<>();
 
         Set<BenchmarkResult> benchmarkResultsToSave = new HashSet<>();
@@ -62,27 +61,11 @@ abstract class ResultSaver {
         Map<String, ? extends IBenchmark> inputBenchmarkResultsMap = result.getBenchmarks();
 
         for (String inputBenchmarkName : inputBenchmarkResultsMap.keySet()) {
-
             IBenchmark inputBenchmarkResult = inputBenchmarkResultsMap.get(inputBenchmarkName);
-
             Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
-
-            Set<BenchmarkPropertyResult> propertyResultsToSave = new HashSet<>();
-
-            Map<String, ? extends IBenchmarkProperty> inputPropertyResultsMap =
-                    inputBenchmarkResult.getBenchmarkProperties();
-
-            for (String inputPropertyName : inputPropertyResultsMap.keySet()) {
-                IBenchmarkProperty inputPropertyResult = inputPropertyResultsMap.get(inputPropertyName);
-
-                BenchmarkPropertyResult propertyResultToSave = getPropertyResultAndUpdateBenchmark(inputPropertyName,
-                        inputPropertyResult, benchmark);
-
-                propertyResultsToSave.add(propertyResultToSave);
-            }
-
             benchmarksFromResult.add(benchmark);
 
+            Set<BenchmarkPropertyResult> propertyResultsToSave = getPropertyResults(inputBenchmarkResult, benchmark);
             BenchmarkResult benchmarkResultToSave = new BenchmarkResult(propertyResultsToSave, benchmark);
 
             benchmarkResultsToSave.add(benchmarkResultToSave);
@@ -91,7 +74,6 @@ abstract class ResultSaver {
         updateSavedBenchmarks(benchmarksFromResult);
 
         CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID());
-
         resultAccess.saveResult(resultToSave);
 
         updateOtherComponents(resultToSave, commit, comparisonCommitHash);
@@ -107,6 +89,24 @@ abstract class ResultSaver {
      */
     abstract void updateOtherComponents(@NotNull CommitResult result, @NotNull ICommit commit,
                                         @Nullable String comparisonCommitHash);
+
+    private Set<BenchmarkPropertyResult> getPropertyResults(IBenchmark inputBenchmarkResult, Benchmark benchmark) {
+        Set<BenchmarkPropertyResult> propertyResultsToSave = new HashSet<>();
+
+        Map<String, ? extends IBenchmarkProperty> inputPropertyResultsMap =
+                inputBenchmarkResult.getBenchmarkProperties();
+
+        for (String inputPropertyName : inputPropertyResultsMap.keySet()) {
+            IBenchmarkProperty inputPropertyResult = inputPropertyResultsMap.get(inputPropertyName);
+
+            BenchmarkPropertyResult propertyResultToSave = getPropertyResultAndUpdateBenchmark(inputPropertyName,
+                    inputPropertyResult, benchmark);
+
+            propertyResultsToSave.add(propertyResultToSave);
+        }
+
+        return propertyResultsToSave;
+    }
 
     private BenchmarkPropertyResult getPropertyResultAndUpdateBenchmark(String propertyName,
                                                                         IBenchmarkProperty propertyResult,

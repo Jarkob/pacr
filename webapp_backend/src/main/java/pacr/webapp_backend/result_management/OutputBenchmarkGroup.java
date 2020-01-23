@@ -3,6 +3,7 @@ package pacr.webapp_backend.result_management;
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents a benchmark group for output purposes.
@@ -15,14 +16,13 @@ public class OutputBenchmarkGroup {
 
     /**
      * Creates a new OutputBenchmarkGroup with a number of benchmarks and metadata of the group.
-     * Throws IllegalArgumentException if a parameter is null.
-     * @param benchmarks the benchmarks.
-     * @param group the BenchmarkGroup that metadata is copied from.
+     * @param benchmarks the benchmarks. Cannot be null.
+     * @param group the BenchmarkGroup that metadata is copied from. Cannot be null.
      */
     public OutputBenchmarkGroup(@NotNull OutputBenchmark[] benchmarks, @NotNull BenchmarkGroup group) {
-        if (benchmarks == null || group == null) {
-            throw new IllegalArgumentException("benchmarks or group cannot be null");
-        }
+        Objects.requireNonNull(benchmarks);
+        Objects.requireNonNull(group);
+
         this.benchmarks = benchmarks;
         this.id = group.getId();
         this.name = group.getName();
@@ -31,12 +31,11 @@ public class OutputBenchmarkGroup {
     /**
      * Creates a new OutputBenchmarkGroup with a number of benchmarks that belong to no group. The name of this
      * OutputBenchmarkGroup will be empty to represent this.
-     * @param benchmarks the benchmarks. Throws IllegalArgumentException if this is null.
+     * @param benchmarks the benchmarks. Cannot be null.
      */
     public OutputBenchmarkGroup(@NotNull OutputBenchmark[] benchmarks) {
-        if (benchmarks == null) {
-            throw new IllegalArgumentException("benchmarks cannot be null");
-        }
+        Objects.requireNonNull(benchmarks);
+
         this.benchmarks = benchmarks;
         this.id = -1;
         this.name = "";

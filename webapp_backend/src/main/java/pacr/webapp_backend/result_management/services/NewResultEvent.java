@@ -37,7 +37,8 @@ public class NewResultEvent extends EventTemplate {
      * @param category the category of the created events. Cannot be null.
      * @param commitHash the hash of the commit that was benchmarked. Cannot be null.
      * @param repositoryName the name of the repository of the commit. Cannot be null.
-     * @param globalError the error message of the result for the commit. May be null if there was no error.
+     * @param globalError the error message of the result for the commit. May be null if there was no error. Otherwise
+     *                    I assume an error (even if this field is empty or blank).
      * @param averageImprovementPercentage the average improvement between this commit and the comparison commit. Not
      *                                     used if comparisonCommitHash is null.
      * @param comparisonCommitHash the hash of the commit used for comparison. May be null (in this case it is assumed
@@ -62,8 +63,11 @@ public class NewResultEvent extends EventTemplate {
     @Override
     protected String buildTitle() {
         if (globalError != null) {
+            // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
+            // (even if global error is blank or empty)
             return String.format(TITLE_FORMAT_GLOBAL_ERROR, repositoryName);
         }
+        // I only assume there was no error if the field globalError is null.
 
         return String.format(TITLE_FORMAT, repositoryName);
     }
@@ -71,20 +75,25 @@ public class NewResultEvent extends EventTemplate {
     @Override
     protected String buildDescription() {
         if (globalError != null) {
+            // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
+            // (even if global error is blank or empty)
             return String.format(DESCRIPTION_FORMAT_GLOBAL_ERROR, commitHash, repositoryName, globalError);
         }
+        // I only assume there was no error if the field globalError is null.
 
-        String description = String.format(GENERIC_DESCRIPTION_FORMAT, commitHash, repositoryName);
+        StringBuilder descriptionBuilder = new StringBuilder();
+
+        descriptionBuilder.append(String.format(GENERIC_DESCRIPTION_FORMAT, commitHash, repositoryName));
 
         if (comparisonCommitHash == null) {
-            description += NO_COMPARISON_DESCRIPTION;
+            descriptionBuilder.append(NO_COMPARISON_DESCRIPTION);
         } else {
             String positiveOrNegative = averageImprovementPercentage < 0 ? NEGATIVE : POSITIVE;
 
-            description += String.format(COMPARISON_DESCRIPTION, Math.abs(averageImprovementPercentage),
-                    positiveOrNegative, comparisonCommitHash);
+            descriptionBuilder.append(String.format(COMPARISON_DESCRIPTION, Math.abs(averageImprovementPercentage),
+                    positiveOrNegative, comparisonCommitHash));
         }
 
-        return description;
+        return descriptionBuilder.toString();
     }
 }
