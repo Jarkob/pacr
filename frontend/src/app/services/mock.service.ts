@@ -18,4 +18,8 @@ export class MockService {
   public getLeanData(): Observable<any> {
     return this.http.get('./assets/lean.json');
   }
+
+  public getBenchmarkingResults(): Observable<any> {
+    return this.http.get('./assets/mock.json');
+  }
 }

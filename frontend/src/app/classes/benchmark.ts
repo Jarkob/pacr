@@ -1,4 +1,3 @@
-import { BenchmarkProperty } from './benchmark-property';
 import { Result } from './result';
 
 export interface Benchmark {

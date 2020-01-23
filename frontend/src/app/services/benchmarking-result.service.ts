@@ -1,3 +1,4 @@
+import { MockService } from './mock.service';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -11,7 +12,8 @@ export class BenchmarkingResultService {
 
   constructor(
     private http: HttpClient,
-    private globalService: GlobalService
+    private globalService: GlobalService,
+    private mockService: MockService
   ) { }
 
   /**
@@ -43,8 +45,9 @@ export class BenchmarkingResultService {
    * get all benchmarking results for one benchmark
    * @param name the name of the benchmark
    */
-  public getBenchmarkingResultsForBenchmark(name: string): Observable<BenchmarkingResult[]> {
-    return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/benchmark/' + name);
+  public getBenchmarkingResultsForBenchmark(name: string): Observable<any> {
+    // return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/benchmark/' + name);
+    return this.mockService.getBenchmarkingResults();
   }
 
   /**

@@ -1,12 +1,20 @@
 <mat-card>
-    <mat-form-field>
-        <mat-label>Benchmark</mat-label>
-        <mat-select [(value)]="selectedBenchmark" (selectionChange)="selectBenchmark(selectedBenchmark)">
-            <mat-option required *ngFor="let benchmark of benchmarks" [value]="benchmark.originalName">
-                {{ benchmark.customName }}
-            </mat-option>
-        </mat-select>
-    </mat-form-field>
+    <mat-card-header>
+        <mat-form-field>
+            <mat-label>Benchmark</mat-label>
+            <mat-select [(value)]="selectedBenchmark" (selectionChange)="loadBenchmark()">
+                <mat-option required *ngFor="let benchmark of benchmarks" [value]="benchmark">
+                    {{ benchmark.customName }}
+                </mat-option>
+            </mat-select> 
+        </mat-form-field>
+        
+        <!-- Push button to the right -->
+        <div fxFlex></div>
+        
+        <button mat-button (click)="openMaximizedDiagram()">Open</button>
+    </mat-card-header>
+
     <canvas baseChart
         [datasets]="datasets"
         [labels]="labels"
@@ -14,5 +22,6 @@
         [legend]="legend"
         [chartType]="type"
         [plugins]="plugins"></canvas>
+    <button mat-button (click)="loadMockData()">Load Mock</button>
 </mat-card>
     
