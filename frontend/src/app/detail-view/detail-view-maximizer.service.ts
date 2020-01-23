@@ -10,13 +10,11 @@ import { DetailViewMaximizedRef } from './detail-view-maximized-ref';
 interface DetailViewMaximizedConfig {
   panelClass?: string;
   hasBackdrop?: boolean;
-  backdropClass?: string;
   commitHash?: string;
 }
 
 const DEFAULT_CONFIG: DetailViewMaximizedConfig = {
   hasBackdrop: true,
-  backdropClass: 'dark-backdrop',
   panelClass: 'tm-file-preview-dialog-panel',
   commitHash: null
 };
@@ -76,7 +74,6 @@ export class DetailViewMaximizerService {
 
     const overlayConfig = new OverlayConfig({
       hasBackdrop: config.hasBackdrop,
-      backdropClass: config.backdropClass,
       panelClass: config.panelClass,
       scrollStrategy: this.overlay.scrollStrategies.block(),
       positionStrategy

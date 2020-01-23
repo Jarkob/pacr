@@ -1,6 +1,7 @@
 import {
     MatToolbarModule,
     MatSidenavModule,
+    MatGridListModule,
     MatIconModule,
     MatButtonModule,
     MatCardModule,
@@ -19,6 +20,7 @@ import { NgModule } from '@angular/core';
     imports: [
         MatToolbarModule,
         MatSidenavModule,
+        MatGridListModule,
         MatTabsModule,
         MatIconModule,
         MatButtonModule,
@@ -34,6 +36,7 @@ import { NgModule } from '@angular/core';
     exports: [
         MatToolbarModule,
         MatSidenavModule,
+        MatGridListModule,
         MatTabsModule,
         MatIconModule,
         MatButtonModule,

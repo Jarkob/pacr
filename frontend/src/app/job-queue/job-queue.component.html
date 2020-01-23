@@ -1,4 +1,4 @@
-<mat-card>
+<mat-card [style.overflow]="'auto'">
     <mat-list *ngIf="this.fullJobQueue">
         <h3 mat-subheader>Prioritized Jobs</h3>
         <mat-list-item *ngFor="let job of this.fullJobQueue.prioritizedJobs">

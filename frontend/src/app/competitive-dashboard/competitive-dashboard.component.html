@@ -1,9 +1,18 @@
-<div class="top" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
-  <app-diagram fxFlex="70%"></app-diagram>
-  <app-events fxFlex="30%"></app-events>
-</div>
+<mat-grid-list cols="100" rowHeight="70%" gutterSize="2em">
+  <mat-grid-tile [colspan]="70">
+    <app-diagram fxFill></app-diagram>
+  </mat-grid-tile>
 
-<div class="bottom" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
-  <app-detail-view fxFlex="70%"></app-detail-view>
-  <app-commit-history fxFlex="30%"></app-commit-history>
-</div>
+  <mat-grid-tile [colspan]="30">
+    <app-events fxFill></app-events>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="70">
+    <app-detail-view fxFill></app-detail-view>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="30">
+    <app-commit-history fxFill></app-commit-history>
+  </mat-grid-tile>
+</mat-grid-list>
+
