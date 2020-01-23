@@ -20,6 +20,10 @@ export class DiagramMaximizedComponent implements OnInit {
   ngOnInit() {
   }
 
+  close() {
+    this.dialogRef.close();
+  }
+
   @HostListener('document:keydown', ['$event']) private handleKeydown(event: KeyboardEvent) {
     if (event.keyCode === ESCAPE_KEY) {
       this.dialogRef.close();

@@ -4,7 +4,7 @@ import { Subscription } from 'rxjs';
 import { DiagramService } from './../services/diagram.service';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
-import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
+import { Component, OnInit, OnDestroy, HostListener, Input } from '@angular/core';
 import { Row } from '../classes/row';
 
 /**
@@ -84,8 +84,8 @@ export class DetailViewComponent implements OnInit, OnDestroy {
 
   // https://blog.thoughtram.io/angular/2017/11/20/custom-overlays-with-angulars-cdk.html
   // https://blog.thoughtram.io/angular/2017/11/27/custom-overlays-with-angulars-cdk-part-two.html
-  public openMaximizedDetailView() {
-    let dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
+  public maximizeDetailView() {
+    const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
       commitHash: this.selectedCommitSha
     });
   }
@@ -95,7 +95,5 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     // prevent memory leak when component is destroyed
     this.selectedCommitSubscription.unsubscribe();
   }
-
-  
 
 }

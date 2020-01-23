@@ -22,4 +22,7 @@ export class DetailViewMaximizedComponent {
     }
   }
 
+  close() {
+    this.dialogRef.close();
+  }
 }

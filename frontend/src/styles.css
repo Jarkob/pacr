@@ -56,3 +56,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(83, 83, 83); 
 }
+
+/* maximize component */
+.maximized {
+  width: 94vw;
+  height: 94vh;
+}

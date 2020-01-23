@@ -12,7 +12,9 @@
         <!-- Push button to the right -->
         <div fxFlex></div>
         
-        <button mat-button (click)="openMaximizedDiagram()">Open</button>
+        <button mat-mini-fab *ngIf="!this.maximized" (click)="maximizeDiagram()">
+            <mat-icon>fullscreen</mat-icon>
+        </button>
     </mat-card-header>
 
     <canvas baseChart

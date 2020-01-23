@@ -5,7 +5,9 @@
         <!-- Push button to the right -->
         <div fxFlex></div>
 
-        <button mat-button (click)="openMaximizedDetailView()">Open</button>
+        <button mat-mini-fab (click)="maximizeDetailView()">
+            <mat-icon>fullscreen</mat-icon>
+        </button>
     </mat-card-header>
 
     <mat-card-content>

@@ -38,7 +38,8 @@ export class DiagramComponent implements OnInit {
   benchmarks: Benchmark[];
   repositoryResults: Map<string, BenchmarkingResult[]> = new Map<string, BenchmarkingResult[]>();
   selectedBenchmark: Benchmark;
-
+  @Input() maximized: boolean;
+  dialogRef: DiagramMaximizedRef;
 
   /**
    * diagram stuff
@@ -129,8 +130,8 @@ export class DiagramComponent implements OnInit {
     this.diagramService.selectCommit(sha);
   }
 
-  public openMaximizedDiagram() {
-    let dialogRef: DiagramMaximizedRef = this.previewDialog.open({ selectedBenchmark: this.selectedBenchmark });
+  public maximizeDiagram() {
+    this.dialogRef = this.previewDialog.open({ selectedBenchmark: this.selectedBenchmark });
   }
 
   /**

@@ -1,3 +1,9 @@
-<mat-card style="width: 94vw; height: 94vh;">
-    <app-diagram [inSelectedBenchmark]="selectedBenchmark"></app-diagram>
+<mat-card class="maximized">
+    <mat-card-header>
+        <div fxFlex></div>
+        <button mat-mini-fab (click)="close()">
+            <mat-icon>fullscreen_exit</mat-icon>
+        </button>
+    </mat-card-header>
+    <app-diagram [inSelectedBenchmark]="selectedBenchmark" [maximized]="true"></app-diagram>
 </mat-card>
