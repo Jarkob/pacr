@@ -169,9 +169,20 @@ public class ResultGetterTest {
      */
     @Test
     void getBenchmarkResults_extraBenchmark_shouldRemoveBenchmark() {
+        when(commitAccessMock.getAllCommits()).thenAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) {
+                Collection<GitCommit> commits = new LinkedList<>();
+                commits.add(commitMock);
+                return commits;
+            }
+        });
+
+        when(commitMock.getCommitHash()).thenReturn(HASH);
+
         List<CommitResult> allResults = new LinkedList<>();
         allResults.add(resultMock);
-        when(resultAccessMock.getAllResults()).thenReturn(allResults);
+        when(resultAccessMock.getResultsFromCommits(any())).thenReturn(allResults);
 
         BenchmarkResult benchmarkResultMock = Mockito.mock(BenchmarkResult.class);
         BenchmarkResult benchmarkResultMockTwo = Mockito.mock(BenchmarkResult.class);

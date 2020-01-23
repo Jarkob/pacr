@@ -40,8 +40,9 @@ public class ResultBenchmarkSaver extends ResultSaver {
 
     /**
      * Creates a new event with comparison to the comparison commit and updates observers of INewestResult.
-     * @param result the result. Throws IllegalArgumentException if this is null.
-     * @param comparisonCommitHash the hash of the commit for comparison. May be null (in this case no comparison is
+     * @param result the result. Cannot be null
+     * @param commit the commit of the result. Cannot be null.
+     * @param comparisonCommitHash the hash of the commit for comparison. May be null (in this case no comparison was
      *                             done).
      */
     @Override
@@ -50,12 +51,21 @@ public class ResultBenchmarkSaver extends ResultSaver {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 
+        double totalImprovementPercentage = 0;
+        int numberOfComparisons = 0;
+
+        for (BenchmarkResult benchmarkResult : result.getBenchmarksIterable()) {
+            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertiesIterable()) {
+                if (propertyResult.isCompared()) {
+                    totalImprovementPercentage += (propertyResult.getRatio() - 1d) * 100d;
+                    ++numberOfComparisons;
+                }
+            }
+        }
+
         int averageImprovementPercentage = 0;
-
-        if (comparisonCommitHash != null) {
-            CommitResult comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
-
-            averageImprovementPercentage = averageImprovementPercentage(result, comparisonResult);
+        if (numberOfComparisons > 0) {
+            averageImprovementPercentage = (int) Math.round(totalImprovementPercentage / numberOfComparisons);
         }
 
         NewResultEvent benchmarkingEvent = new NewResultEvent(EventCategory.BENCHMARKING, commit.getCommitHash(),
@@ -65,52 +75,5 @@ public class ResultBenchmarkSaver extends ResultSaver {
         eventHandler.addEvent(benchmarkingEvent);
 
         subjectForObservers.updateAll();
-    }
-
-    private int averageImprovementPercentage(CommitResult result, CommitResult comparisonResult) {
-        if (comparisonResult == null) {
-            return 0;
-        }
-
-        double totalImprovementPercentage = 0;
-        int numberOfComparisons = 0;
-
-        Iterable<BenchmarkResult> resultBenchmarks = result.getBenchmarksIterable();
-        Map<String, BenchmarkResult> comparisonBenchmarks = comparisonResult.getBenchmarks();
-
-        for (BenchmarkResult resultBenchmark : resultBenchmarks) {
-            BenchmarkResult comparisonBenchmark = comparisonBenchmarks.get(resultBenchmark.getName());
-
-            if (comparisonBenchmark != null) {
-                Iterable<BenchmarkPropertyResult> resultProperties = resultBenchmark.getPropertiesIterable();
-                Map<String, BenchmarkPropertyResult> comparisonProperties =
-                        comparisonBenchmark.getBenchmarkProperties();
-
-                for (BenchmarkPropertyResult resultProperty : resultProperties) {
-                    BenchmarkPropertyResult comparisonProperty = comparisonProperties.get(resultProperty.getName());
-
-                    if (comparisonProperty != null && !resultProperty.isError() && !comparisonProperty.isError()) {
-                        totalImprovementPercentage += getImprovementPercentage(resultProperty, comparisonProperty);
-                        ++numberOfComparisons;
-                    }
-                }
-            }
-        }
-
-        if (numberOfComparisons <= 0) {
-            return 0;
-        }
-
-        return (int) Math.round((totalImprovementPercentage / numberOfComparisons) * 100d);
-    }
-
-    private double getImprovementPercentage(BenchmarkPropertyResult result, BenchmarkPropertyResult comparison) {
-        double differencePercentage = (result.getMean() / comparison.getMean()) - 1;
-
-        if (result.getResultInterpretation() == ResultInterpretation.LESS_IS_BETTER) {
-            differencePercentage = -differencePercentage;
-        }
-
-        return differencePercentage;
     }
 }

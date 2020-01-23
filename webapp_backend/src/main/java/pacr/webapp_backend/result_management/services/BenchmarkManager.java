@@ -35,14 +35,14 @@ public class BenchmarkManager {
     /**
      * @return all saved benchmarks.
      */
-    Collection<Benchmark> getAllBenchmarks() {
+    public Collection<Benchmark> getAllBenchmarks() {
         return benchmarkAccess.getAllBenchmarks();
     }
 
     /**
      * @return all saved benchmark groups.
      */
-    Collection<BenchmarkGroup> getAllGroups() {
+    public Collection<BenchmarkGroup> getAllGroups() {
         return groupAccess.getAllGroups();
     }
 
@@ -80,7 +80,7 @@ public class BenchmarkManager {
      * @param groupID the id of the new group. -1 causes this benchmark not to be associated with any group.
      * @throws NotFoundException if no benchmark and/or group with the given id(s) is saved in the database.
      */
-    void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID)
+    public void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID)
             throws NotFoundException {
         if (name == null || name.isEmpty() || name.isBlank()) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
@@ -118,7 +118,7 @@ public class BenchmarkManager {
      * Creates and saves a new benchmark group. This new group is associated with no benchmarks.
      * @param name the name of the new benchmark group. Throws IllegalArgumentException if this is null, empty or blank.
      */
-    void addGroup(String name) {
+    public void addGroup(String name) {
         if (name == null || name.isEmpty() || name.isBlank()) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
@@ -132,7 +132,7 @@ public class BenchmarkManager {
      * @param name the new name of the group. Throws IllegalArgumentException if this is null, empty or blank.
      * @throws NotFoundException if no group with this id is saved in the database.
      */
-    void updateGroup(int id, String name) throws NotFoundException {
+    public void updateGroup(int id, String name) throws NotFoundException {
         if (name == null || name.isEmpty() || name.isBlank()) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
@@ -153,7 +153,7 @@ public class BenchmarkManager {
      * @param id the id of the group.
      * @throws NotFoundException if no group with this id is saved in the database.
      */
-    void deleteGroup(int id) throws NotFoundException {
+    public void deleteGroup(int id) throws NotFoundException {
         BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
 
         if (group == null) {

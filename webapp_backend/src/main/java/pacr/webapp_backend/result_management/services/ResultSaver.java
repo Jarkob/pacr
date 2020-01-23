@@ -14,6 +14,7 @@ import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -56,16 +57,29 @@ abstract class ResultSaver {
         Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
         Collection<Benchmark> benchmarksFromResult = new HashSet<>();
 
+        CommitResult comparisonResult = null;
+        if (comparisonCommitHash != null) {
+            comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
+        }
+
         Set<BenchmarkResult> benchmarkResultsToSave = new HashSet<>();
 
         Map<String, ? extends IBenchmark> inputBenchmarkResultsMap = result.getBenchmarks();
 
+        Map<String, BenchmarkResult> comparisonBenchmarkResultsMap = new HashMap<>();
+        if (comparisonResult != null) {
+            comparisonBenchmarkResultsMap = comparisonResult.getBenchmarks();
+        }
+
         for (String inputBenchmarkName : inputBenchmarkResultsMap.keySet()) {
             IBenchmark inputBenchmarkResult = inputBenchmarkResultsMap.get(inputBenchmarkName);
+            BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
+
             Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
             benchmarksFromResult.add(benchmark);
 
-            Set<BenchmarkPropertyResult> propertyResultsToSave = getPropertyResults(inputBenchmarkResult, benchmark);
+            Set<BenchmarkPropertyResult> propertyResultsToSave = getPropertyResults(inputBenchmarkResult,
+                    comparisonBenchmarkResult, benchmark);
             BenchmarkResult benchmarkResultToSave = new BenchmarkResult(propertyResultsToSave, benchmark);
 
             benchmarkResultsToSave.add(benchmarkResultToSave);
@@ -73,7 +87,9 @@ abstract class ResultSaver {
 
         updateSavedBenchmarks(benchmarksFromResult);
 
-        CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID());
+        CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID(),
+                comparisonCommitHash);
+
         resultAccess.saveResult(resultToSave);
 
         updateOtherComponents(resultToSave, commit, comparisonCommitHash);
@@ -84,23 +100,31 @@ abstract class ResultSaver {
      * Updates other components based on the result and a commit to compare it to.
      * @param result the result. Cannot be null.
      * @param commit the commit of the result. Cannot be null.
-     * @param comparisonCommitHash the hash of the commit for comparison. May be null. (in this case no comparison is
+     * @param comparisonCommitHash the hash of the commit for comparison. May be null (in this case no comparison was
      *                             done).
      */
     abstract void updateOtherComponents(@NotNull CommitResult result, @NotNull ICommit commit,
                                         @Nullable String comparisonCommitHash);
 
-    private Set<BenchmarkPropertyResult> getPropertyResults(IBenchmark inputBenchmarkResult, Benchmark benchmark) {
+    private Set<BenchmarkPropertyResult> getPropertyResults(IBenchmark inputBenchmarkResult,
+                                                            BenchmarkResult comparisonBenchmarkResult,
+                                                            Benchmark benchmark) {
         Set<BenchmarkPropertyResult> propertyResultsToSave = new HashSet<>();
 
         Map<String, ? extends IBenchmarkProperty> inputPropertyResultsMap =
                 inputBenchmarkResult.getBenchmarkProperties();
 
+        Map<String, BenchmarkPropertyResult> comparisonPropertyResultsMap = new HashMap<>();
+        if (comparisonBenchmarkResult != null) {
+            comparisonPropertyResultsMap = comparisonBenchmarkResult.getBenchmarkProperties();
+        }
+
         for (String inputPropertyName : inputPropertyResultsMap.keySet()) {
             IBenchmarkProperty inputPropertyResult = inputPropertyResultsMap.get(inputPropertyName);
+            BenchmarkPropertyResult comparisonPropertyResult = comparisonPropertyResultsMap.get(inputPropertyName);
 
-            BenchmarkPropertyResult propertyResultToSave = getPropertyResultAndUpdateBenchmark(inputPropertyName,
-                    inputPropertyResult, benchmark);
+            BenchmarkPropertyResult propertyResultToSave = getPropertyResultUpdateBenchmark(inputPropertyName,
+                    inputPropertyResult, comparisonPropertyResult, benchmark);
 
             propertyResultsToSave.add(propertyResultToSave);
         }
@@ -108,9 +132,10 @@ abstract class ResultSaver {
         return propertyResultsToSave;
     }
 
-    private BenchmarkPropertyResult getPropertyResultAndUpdateBenchmark(String propertyName,
-                                                                        IBenchmarkProperty propertyResult,
-                                                                        Benchmark benchmark) {
+    private BenchmarkPropertyResult getPropertyResultUpdateBenchmark(String propertyName,
+                                                                     IBenchmarkProperty propertyResult,
+                                                                     BenchmarkPropertyResult comparisonPropertyResult,
+                                                                     Benchmark benchmark) {
         // new property is created or it is found in the properties of the (saved or newly created) benchmark.
         BenchmarkProperty property = new BenchmarkProperty(propertyName, propertyResult.getUnit(),
                 propertyResult.getResultInterpretation(), benchmark);
@@ -121,10 +146,18 @@ abstract class ResultSaver {
                 break;
             }
         }
-
         benchmark.addProperty(property);
 
-        return new BenchmarkPropertyResult(propertyResult, property);
+        BenchmarkPropertyResult propertyResultToSave =  new BenchmarkPropertyResult(propertyResult, property);
+
+        // comparision to previous result
+        if (comparisonPropertyResult != null && !propertyResultToSave.isError()
+                && !comparisonPropertyResult.isError()) {
+            propertyResultToSave.setRatio(propertyResultToSave.getMean() / comparisonPropertyResult.getMean());
+            propertyResultToSave.setCompared(true);
+        }
+
+        return propertyResultToSave;
     }
 
     private Benchmark getBenchmark(String benchmarkName, Collection<Benchmark> savedBenchmarks) {

@@ -38,6 +38,9 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private boolean error;
     private String errorMessage;
 
+    private double ratio;
+    private boolean compared;
+
     @ManyToOne
     @JoinColumn
     private BenchmarkProperty property;
@@ -50,7 +53,8 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
 
     /**
      * Creates a BenchmarkPropertyResult from an IBenchmarkProperty and its corresponding BenchmarkProperty object.
-     * Calculates mean, quantiles and standard deviation for the given measurements.
+     * Calculates mean, quantiles and standard deviation for the given measurements. Assumes that this result has not
+     * yet been compared.
      *
      * @param measurement the measurements.
      * @param property the property of a benchmark that was measured.
@@ -70,11 +74,14 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         this.median = StatisticalCalculator.getQuantile(0.5, this.measurements);
         this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
         this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
+
+        this.ratio = 1;
+        this.compared = false;
     }
 
     /**
      * Creates a BenchmarkPropertyResult directly from measurements. In this case it is assumed there is no error or
-     * error message for this property.
+     * error message for this property. Assumes that this result has not yet been compared.
      * @param measurements the measurements.
      * @param property the property of a benchmark that was measured.
      */
@@ -88,6 +95,9 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         this.median = StatisticalCalculator.getQuantile(0.5, this.measurements);
         this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
         this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
+
+        this.ratio = 1;
+        this.compared = false;
     }
 
     /**
@@ -178,10 +188,40 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     /**
+     * @return The ratio of this property result with the property result of the previous commit.
+     */
+    public double getRatio() {
+        return ratio;
+    }
+
+    /**
+     * @return {@code true} if this property result was compared to another one, otherwise {@code false}
+     */
+    public boolean isCompared() {
+        return compared;
+    }
+
+    /**
      * Gets the property that is associated with this BenchmarkPropertyResult.
      * @return the property.
      */
     BenchmarkProperty getProperty() {
         return property;
+    }
+
+    /**
+     * Sets the ratio of this results mean to a result for comparison.
+     * @param ratio the ratio between the two means.
+     */
+    public void setRatio(double ratio) {
+        this.ratio = ratio;
+    }
+
+    /**
+     * Sets whether this property result was compared to another result (with a ratio between the means) or not.
+     * @param compared the boolean value.
+     */
+    public void setCompared(boolean compared) {
+        this.compared = compared;
     }
 }

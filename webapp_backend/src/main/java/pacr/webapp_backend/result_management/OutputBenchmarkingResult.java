@@ -25,6 +25,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
     private String commitHash;
     private String commitMessage;
+    private String comparisonCommitHash;
 
     /**
      * The dates are saved as strings in order to be readable in the json that is sent to the front end.
@@ -39,22 +40,21 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     private Collection<String> commitLabels;
 
     private ISystemEnvironment systemEnvironment;
-    private OutputBenchmarkGroup[] groups;
+    private OutputBenchmark[] benchmarks;
 
     /**
      * Creates an OutputBenchmarkingResult for a commit. Copies system environment and error information from the
      * CommitResult and copies commit meta data from the ICommit. Throws IllegalArgumentException if the CommitResult
-     * refers to a different commit hash than the ICommit.
-     * @param commit the commit. Cannot be null.
-     * @param result the result for the commit. Cannot be null.
-     * @param groups the benchmark groups with benchmarks, their properties and their corresponding measurements.
-     *               Cannot be null.
+     * refers to a different commit hash than the ICommit or if one of the parameters is null.
+     * @param commit the commit.
+     * @param result the result for the commit.
+     * @param benchmarks the benchmarks, their properties and their corresponding measurements.
      */
     public OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
-                             @NotNull OutputBenchmarkGroup[] groups) {
+                             @NotNull OutputBenchmark[] benchmarks) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
-        Objects.requireNonNull(groups);
+        Objects.requireNonNull(benchmarks);
 
         if (!belongToSameCommit(commit, result)) {
             throw new IllegalArgumentException("commit and result must belong to same commit hash");
@@ -63,6 +63,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.errorMessage = result.getGlobalError();
         this.commitHash = commit.getCommitHash();
         this.commitMessage = commit.getMessage();
+        this.comparisonCommitHash = result.getComparisonCommitHash();
 
         this.commitEntryDate = commit.getEntryDate().toString();
         this.commitCommitDate = commit.getCommitDate().toString();
@@ -78,7 +79,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.commitLabels = commit.getLabels();
 
         this.systemEnvironment = result.getSystemEnvironment();
-        this.groups = groups;
+        this.benchmarks = benchmarks;
     }
 
     @Override
@@ -93,15 +94,13 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
     @Override
     public Map<String, IBenchmark> getBenchmarks() {
-        Map<String, IBenchmark> benchmarks = new HashMap<>();
+        Map<String, IBenchmark> benchmarkMap = new HashMap<>();
 
-        for (OutputBenchmarkGroup group : groups) {
-            for (OutputBenchmark benchmark : group.getBenchmarks()) {
-                benchmarks.put(benchmark.getOriginalName(), benchmark);
-            }
+        for (OutputBenchmark benchmark : benchmarks) {
+            benchmarkMap.put(benchmark.getOriginalName(), benchmark);
         }
 
-        return benchmarks;
+        return benchmarkMap;
     }
 
     @Override
@@ -177,11 +176,11 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     }
 
     /**
-     * Gets all benchmark groups (for output) with benchmarks that were executed on the commit.
-     * @return the groups.
+     * Gets all benchmarks (for output)that were executed on the commit.
+     * @return the benchmarks.
      */
-    public List<OutputBenchmarkGroup> getBenchmarkGroups() {
-        return Arrays.asList(groups);
+    public List<OutputBenchmark> getBenchmarksList() {
+        return Arrays.asList(benchmarks);
     }
 
     /**

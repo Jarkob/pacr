@@ -15,12 +15,15 @@ import java.util.Objects;
  */
 public class OutputBenchmark implements IBenchmark {
 
+    private static final int NO_GROUP_ID = -1;
+
     private OutputPropertyResult[] results;
 
     private int id;
     private String originalName;
     private String customName;
     private String description;
+    private int groupId;
 
     /**
      * Creates a new OutputBenchmark with properties (including results) and metadata of the benchmark.
@@ -37,6 +40,14 @@ public class OutputBenchmark implements IBenchmark {
         this.originalName = benchmark.getOriginalName();
         this.customName = benchmark.getCustomName();
         this.description = benchmark.getDescription();
+
+        BenchmarkGroup group = benchmark.getGroup();
+
+        if (group != null) {
+            this.groupId = group.getId();
+        } else {
+            this.groupId = NO_GROUP_ID;
+        }
     }
 
     @Override
@@ -88,5 +99,12 @@ public class OutputBenchmark implements IBenchmark {
      */
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * @return Gets the id of the group the benchmark belongs to. -1 if the benchmark belongs to no group.
+     */
+    public int getGroupId() {
+        return groupId;
     }
 }

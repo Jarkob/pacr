@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management;
 
+import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
@@ -37,6 +38,7 @@ public class CommitResult implements IBenchmarkingResult {
     private Set<BenchmarkResult> benchmarkResults;
 
     private LocalDateTime entryDate;
+    private String comparisonCommitHash;
 
     /**
      * Creates empty result. Needed for jpa.
@@ -51,9 +53,11 @@ public class CommitResult implements IBenchmarkingResult {
      * @param result the IBenchmarkingResult.
      * @param benchmarkResults the measured data for each benchmark. May be empty.
      * @param repositoryId id of the repository of the commit.
+     * @param comparisonCommitHash the hash of the commit this result was compared to. May be null (in this case it is
+     *                             implied that no comparison has taken place).
      */
     public CommitResult(@NotNull IBenchmarkingResult result, @NotNull Set<BenchmarkResult> benchmarkResults,
-                        int repositoryId) {
+                        int repositoryId, @Nullable String comparisonCommitHash) {
         if (result == null || benchmarkResults == null) {
             throw new IllegalArgumentException("input cannot be null");
         }
@@ -69,10 +73,12 @@ public class CommitResult implements IBenchmarkingResult {
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
+        this.comparisonCommitHash = comparisonCommitHash;
     }
 
     /**
-     * Creates a CommitResult with no error. Throws IllegalArgumentException if any input parameter is null.
+     * Creates a CommitResult with no error and no comparison. Throws IllegalArgumentException if any input parameter is
+     * null.
      * @param commitHash the hash of the measured commit. Throws IllegalArgumentException if it is empty.
      * @param systemEnvironment the system environment of the benchmarks.
      * @param benchmarkResults the measured data for each benchmark.
@@ -93,6 +99,7 @@ public class CommitResult implements IBenchmarkingResult {
         this.systemEnvironment = systemEnvironment;
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
+        this.comparisonCommitHash = null;
     }
 
     @Override
@@ -152,6 +159,13 @@ public class CommitResult implements IBenchmarkingResult {
      */
     public boolean hasGlobalError() {
         return error;
+    }
+
+    /**
+     * @return The hash of the commit that was used for comparison. May be null if no comparison has taken place.
+     */
+    public String getComparisonCommitHash() {
+        return comparisonCommitHash;
     }
 
     /**

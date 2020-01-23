@@ -30,6 +30,8 @@ import java.util.Set;
 @Component
 public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, IResultExporter {
 
+    private static final int KEEP_ALL_BENCHMARK_DATA = -1;
+
     private IGetCommitAccess commitAccess;
     private IResultAccess resultAccess;
     private OutputBuilder outputBuilder;
@@ -56,7 +58,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      */
     public Collection<OutputBenchmarkingResult> getRepositoryResults(int repositoryId) {
         Collection<? extends ICommit> commits = commitAccess.getCommitsFromRepository(repositoryId);
-        return commitsToOutputResults(commits);
+        return commitsToOutputResults(commits, KEEP_ALL_BENCHMARK_DATA);
     }
 
     /**
@@ -79,7 +81,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
                     + branch + " was found");
         }
 
-        return commitsToOutputResults(commits);
+        return commitsToOutputResults(commits, KEEP_ALL_BENCHMARK_DATA);
     }
 
     /**
@@ -111,28 +113,26 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     /**
      * Gets all benchmarking results with a specific measurements for a specific benchmark.
      * @param benchmarkId the id of the benchmark.
-     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
+     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted)
      */
     public Collection<OutputBenchmarkingResult> getBenchmarkResults(int benchmarkId) {
         // TODO currently incredibly inefficient
 
-        List<CommitResult> allResults = this.resultAccess.getAllResults();
-        List<CommitResult> resultsWithoutOtherBenchmarks = new LinkedList<>();
+        Collection<? extends ICommit> commits = this.commitAccess.getAllCommits();
+        return commitsToOutputResults(commits, benchmarkId);
+    }
 
-        for (CommitResult result : allResults) {
-            for (BenchmarkResult benchmarkResult : result.getBenchmarksIterable()) {
-                if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
-                    resultsWithoutOtherBenchmarks.add(result);
-                } else {
-                    // don't worry
-                    // this does not alter the result in the database
-                    result.removeBenchmarkResult(benchmarkResult);
-                }
-            }
-        }
-
-        return resultsToOutputResults(resultsWithoutOtherBenchmarks);
+    /**
+     * Gets all benchmarking results for a repository with measurements for a specific benchmark.
+     * @param repositoryId the id of the repository.
+     * @param benchmarkId the id of the benchmark.
+     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
+     *         omitted)
+     */
+    public Collection<OutputBenchmarkingResult> getBenchmarkResults(int repositoryId, int benchmarkId) {
+        Collection<? extends ICommit> commitsFromRepository = commitAccess.getCommitsFromRepository(repositoryId);
+        return commitsToOutputResults(commitsFromRepository, benchmarkId);
     }
 
     /**
@@ -182,7 +182,8 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         }
     }
 
-    private List<OutputBenchmarkingResult> commitsToOutputResults(Collection<? extends ICommit> commits) {
+    private List<OutputBenchmarkingResult> commitsToOutputResults(Collection<? extends ICommit> commits,
+                                                                  int benchmarkIdToKeep) {
         Collection<String> commitHashes = new LinkedList<>();
         Map<String, ICommit> hashToCommit = new HashMap<>();
 
@@ -193,6 +194,26 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         // if any of the hashes in commitHashes have no saved results, they will be omitted in the output
         Collection<CommitResult> results = resultAccess.getResultsFromCommits(commitHashes);
+
+        // remove unwanted benchmarks if benchmarkIdToKeep is not -1
+        if (benchmarkIdToKeep != KEEP_ALL_BENCHMARK_DATA) {
+            for (CommitResult result : results) {
+                List<CommitResult> resultsWithoutOtherBenchmarks = new LinkedList<>();
+
+                for (BenchmarkResult benchmarkResult : result.getBenchmarksIterable()) {
+                    if (benchmarkResult.getBenchmark().getId() == benchmarkIdToKeep) {
+                        resultsWithoutOtherBenchmarks.add(result);
+                    } else {
+                        // don't worry
+                        // this does not alter the result in the database
+                        result.removeBenchmarkResult(benchmarkResult);
+                    }
+                }
+
+                results = resultsWithoutOtherBenchmarks;
+            }
+        }
+
         List<OutputBenchmarkingResult> outputResults = new LinkedList<>();
 
         for (CommitResult result : results) {

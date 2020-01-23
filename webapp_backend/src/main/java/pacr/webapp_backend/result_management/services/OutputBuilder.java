@@ -39,47 +39,23 @@ public class OutputBuilder {
             throw new IllegalArgumentException("commit and result must have same commit hash");
         }
 
-        List<OutputBenchmarkGroup> outputGroups = buildOutputGroups(result);
+        List<OutputBenchmark> outputBenchmarks = buildOutputBenchmarks(result);
 
-        return new OutputBenchmarkingResult(commit, result,
-                outputGroups.toArray(new OutputBenchmarkGroup[0]));
+        return new OutputBenchmarkingResult(commit, result, outputBenchmarks.toArray(new OutputBenchmark[0]));
     }
 
-    private List<OutputBenchmarkGroup> buildOutputGroups(CommitResult result) {
+    private List<OutputBenchmark> buildOutputBenchmarks(CommitResult result) {
         Iterable<BenchmarkResult> benchmarkResults = result.getBenchmarksIterable();
 
-        HashMap<BenchmarkGroup, List<OutputBenchmark>> outputGroupsMap = new HashMap<>();
-        List<OutputBenchmark> outputBenchmarksWithoutGroup = new LinkedList<>();
+        List<OutputBenchmark> outputBenchmarks = new LinkedList<>();
 
         for (BenchmarkResult benchmarkResult : benchmarkResults) {
             OutputBenchmark outputBenchmark = buildOutputBenchmark(benchmarkResult);
 
-            BenchmarkGroup group = benchmarkResult.getBenchmark().getGroup();
-
-            if (group != null) {
-                outputGroupsMap.putIfAbsent(group, new LinkedList<>());
-                outputGroupsMap.get(group).add(outputBenchmark);
-            } else {
-                outputBenchmarksWithoutGroup.add(outputBenchmark);
-            }
+            outputBenchmarks.add(outputBenchmark);
         }
 
-        List<OutputBenchmarkGroup> outputGroups = new LinkedList<>();
-
-        OutputBenchmarkGroup noGroup = new OutputBenchmarkGroup(outputBenchmarksWithoutGroup
-                .toArray(new OutputBenchmark[0]));
-        outputGroups.add(noGroup);
-
-        for (BenchmarkGroup group : outputGroupsMap.keySet()) {
-            List<OutputBenchmark> outputBenchmarksForGroup = outputGroupsMap.get(group);
-
-            OutputBenchmarkGroup outputGroup = new OutputBenchmarkGroup(
-                    outputBenchmarksForGroup.toArray(new OutputBenchmark[0]), group);
-
-            outputGroups.add(outputGroup);
-        }
-
-        return outputGroups;
+        return outputBenchmarks;
     }
 
     private OutputBenchmark buildOutputBenchmark(BenchmarkResult benchmarkResult) {

@@ -25,6 +25,8 @@ public class OutputPropertyResult implements IBenchmarkProperty {
     private boolean hadLocalError;
     private String errorMessage;
 
+    private double ratioToPreviousCommit;
+
     /**
      * Creates a OutputPropertyResult from a BenchmarkPropertyResult. Copies all statistical data and the associated
      * property.
@@ -44,7 +46,10 @@ public class OutputPropertyResult implements IBenchmarkProperty {
         this.standardDeviation = result.getStandardDeviation();
         this.hadLocalError = result.isError();
         this.errorMessage = result.getError();
+
+        this.ratioToPreviousCommit = result.getRatio();
     }
+
     /**
      * Gets the mean of all measurements as one result. The individual measurements are not available in a
      * OutputPropertyResult.

@@ -11,6 +11,7 @@ import pacr.webapp_backend.result_management.BenchmarkProperty;
 import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
 import pacr.webapp_backend.result_management.BenchmarkResult;
 import pacr.webapp_backend.result_management.CommitResult;
+import pacr.webapp_backend.result_management.OutputBenchmark;
 import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -24,6 +25,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OutputBuilderTest {
 
@@ -34,15 +36,13 @@ public class OutputBuilderTest {
     public static final int REPO_ID = 1;
     public static final LocalDateTime NOW = LocalDateTime.now();
     public static final String BENCHMARK_NAME_TWO = "benchmark2";
-    public static final String NO_GROUP_NAME = "";
     public static final String GROUP_NAME = "group";
     public static final int NO_GROUP_ID = -1;
+    public static final int GROUP_ID = 0;
     public static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
-    public static final int EXPECTED_NUM_OF_GROUPS_NO_GROUP = 1;
-    public static final int EXPECTED_NUM_OF_GROUPS_ONE_GROUP = 2;
-    public static final int EXPECTED_NUM_OF_BENCHMARKS_PER_GROUP = 1;
     public static final int FIRST = 0;
     public static final int SECOND = 1;
+    public static final String COMPARISON_HASH = "adlifi";
 
     private OutputBuilder outputBuilder;
 
@@ -75,7 +75,7 @@ public class OutputBuilderTest {
         Set<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResult);
         benchmarkResults.add(benchmarkResultTwo);
-        resultOne = new CommitResult(new SimpleBenchmarkingResult(), benchmarkResults, REPO_ID);
+        resultOne = new CommitResult(new SimpleBenchmarkingResult(), benchmarkResults, REPO_ID, COMPARISON_HASH);
 
         commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW,
                 new GitRepository(false, new HashSet<>(), URL, REPO_NAME, Color.BLACK, NOW.toLocalDate()));
@@ -91,10 +91,9 @@ public class OutputBuilderTest {
 
         assertNotNull(outputResult);
 
-        assertEquals(EXPECTED_NUM_OF_GROUPS_NO_GROUP, outputResult.getBenchmarkGroups().size());
-        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, outputResult.getBenchmarkGroups().get(FIRST).getBenchmarks().size());
-        assertEquals(NO_GROUP_NAME, outputResult.getBenchmarkGroups().get(FIRST).getName());
-        assertEquals(NO_GROUP_ID, outputResult.getBenchmarkGroups().get(FIRST).getId());
+        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, outputResult.getBenchmarksList().size());
+        assertEquals(NO_GROUP_ID, outputResult.getBenchmarksList().get(FIRST).getGroupId());
+        assertEquals(NO_GROUP_ID, outputResult.getBenchmarksList().get(SECOND).getGroupId());
     }
 
     /**
@@ -107,10 +106,19 @@ public class OutputBuilderTest {
 
         OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commitOne, resultOne);
 
-        assertEquals(EXPECTED_NUM_OF_GROUPS_ONE_GROUP, outputResult.getBenchmarkGroups().size());
-        assertEquals(EXPECTED_NUM_OF_BENCHMARKS_PER_GROUP,
-                outputResult.getBenchmarkGroups().get(FIRST).getBenchmarks().size());
-        assertEquals(EXPECTED_NUM_OF_BENCHMARKS_PER_GROUP,
-                outputResult.getBenchmarkGroups().get(SECOND).getBenchmarks().size());
+        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, outputResult.getBenchmarksList().size());
+
+        boolean foundNoGroup = false;
+        boolean foundGroup = false;
+
+        for (OutputBenchmark outputBenchmark : outputResult.getBenchmarksList()) {
+            if (outputBenchmark.getGroupId() == NO_GROUP_ID) {
+                foundNoGroup = true;
+            } else if (outputBenchmark.getGroupId() == GROUP_ID) {
+                foundGroup = true;
+            }
+        }
+
+        assertTrue(foundGroup && foundNoGroup);
     }
 }
