@@ -2,7 +2,7 @@ import { DiagramMaximizerService } from './diagram-maximizer.service';
 import { DiagramMaximizedRef } from './diagram-maximized-ref';
 import { BenchmarkingResult } from './../classes/benchmarking-result';
 import { Benchmark } from './../classes/benchmark';
-import { Component, OnInit, HostBinding, ViewChild, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, Input } from '@angular/core';
 import { BenchmarkingResultService } from '../services/benchmarking-result.service';
 import 'chartjs-plugin-zoom';
 import * as ChartAnnotation from 'chartjs-plugin-annotation';
@@ -12,7 +12,6 @@ import { BenchmarkService } from '../services/benchmark.service';
 import { DiagramService } from '../services/diagram.service';
 import * as Chart from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
-import { element } from 'protractor';
 
 /**
  * displays benchmarking results in a line diagram
@@ -86,14 +85,20 @@ export class DiagramComponent implements OnInit {
         }
       },
     },
+    legend: {
+      display: false
+    },
     onClick: (evt, item) => {
       this.deleteLine();
-
+      // if items were selected
       if (item.length !== 0) {
-        this.selectCommit(this.datasets[item[0]._datasetIndex].code[item[0]._index].sha);
+        const selected: any[] = this.chart.chart.getElementAtEvent(evt);
+        this.selectCommit(this.datasets[selected[0]._datasetIndex]
+          .code[selected[0]._index].sha);
 
         // draw horizontal line
-        this.addLine(this.datasets[item[0]._datasetIndex].code[item[0]._index].val);
+        this.addLine(this.datasets[selected[0]._datasetIndex]
+          .code[selected[0]._index].val);
       }
     }
   };
@@ -168,11 +173,11 @@ export class DiagramComponent implements OnInit {
         });
       });
       // TODO sorting breaks code array, should be externally
-      dataset.data.sort((a, b) => {
-        const x = new Date(a.x);
-        const y = new Date(b.x);
-        return x > y ? -1 : x < b ? 1 : 0;
-      });
+      // dataset.data.sort((a, b) => {
+      //   const x = new Date(a.x);
+      //   const y = new Date(b.x);
+      //   return x > y ? -1 : x < b ? 1 : 0;
+      // });
       this.datasets.push(dataset);
     }
   }
@@ -209,7 +214,6 @@ export class DiagramComponent implements OnInit {
     list.push(current);
     if (current.parents.length === 0 || current.marked === true) {
       current.marked = true;
-      console.log('list: ', list);
       this.lists.push(list);
       return;
     }
@@ -287,8 +291,8 @@ export class DiagramComponent implements OnInit {
     for (const [repository, benchmarkingResults] of this.repositoryResults) {
       benchmarkingResults.forEach(benchmarkingResult => {
         benchmarkingResult.groups.forEach(group => {
-          group.benchmarks.forEach(element => {
-            this.benchmarks.push(element);
+          group.benchmarks.forEach(el => {
+            this.benchmarks.push(el);
           });
         });
       });

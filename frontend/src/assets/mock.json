@@ -2,7 +2,7 @@
     "xyz": {
         "sha": "xyz",
         "commitDate": "2020-12-01",
-        "result": "5",
+        "result": "7",
         "parents": ["abc"],
         "marked": "false"
     },

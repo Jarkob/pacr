@@ -8,6 +8,7 @@
                 </mat-option>
             </mat-select> 
         </mat-form-field>
+        <button mat-button (click)="loadMockData()">Load Mock</button>
         
         <!-- Push button to the right -->
         <div fxFlex></div>
@@ -24,6 +25,5 @@
         [legend]="legend"
         [chartType]="type"
         [plugins]="plugins"></canvas>
-    <button mat-button (click)="loadMockData()">Load Mock</button>
 </mat-card>
     
