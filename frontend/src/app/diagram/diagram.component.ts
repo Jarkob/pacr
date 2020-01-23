@@ -40,6 +40,7 @@ export class DiagramComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
   options = {
     maintainAspectRatio: false,
+    lineTension: 0.3,
     scales: {
       xAxes: [{
           type: 'time',
@@ -58,7 +59,8 @@ export class DiagramComponent implements OnInit {
               labelString: 'value'
           },
           ticks: {
-            beginAtZero: true
+            beginAtZero: true,
+            suggestedMin: 0
           }
       }]
     },
@@ -78,10 +80,12 @@ export class DiagramComponent implements OnInit {
       },
     },
     onClick: (evt, item) => {
+      this.deleteLine();
+
       if (item.length !== 0) {
         this.selectCommit(this.datasets[item[0]._datasetIndex].code[item[0]._index].sha);
+
         // draw horizontal line
-        this.deleteLine();
         this.addLine(this.datasets[item[0]._datasetIndex].code[item[0]._index].val);
       }
     }

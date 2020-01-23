@@ -1,6 +1,11 @@
 <mat-card [style.overflow]="'auto'">
     <mat-card-header>
         <mat-card-title>Commit Detail View</mat-card-title>
+        
+        <!-- Push button to the right -->
+        <div fxFlex></div>
+
+        <button mat-button (click)="openMaximizedDetailView()">Open</button>
     </mat-card-header>
 
     <mat-card-content>
@@ -17,24 +22,6 @@
             <tr mat-row *matRowDef="let row; columns: columns;"></tr>
         </table>
         <p *ngIf="selectedCommitSha === ''">Select a commit!</p>
-        <p>
-            Test Lorem ipsum
-        </p>
-        <p>
-            Test Lorem ipsum
-        </p>
-        <p>
-            Test Lorem ipsum
-        </p>
-        <p>
-            Test Lorem ipsum
-        </p>
-        <p>
-            Test Lorem ipsum
-        </p>
-        <p>
-            Test Lorem ipsum
-        </p>
     </mat-card-content>
     
 </mat-card>

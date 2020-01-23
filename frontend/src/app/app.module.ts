@@ -1,9 +1,11 @@
+import { DetailViewMaximizerService } from './detail-view/detail-view-maximizer.service';
 import { BenchmarkerListComponent } from './benchmarker-list/benchmarker-list.component';
 import { JobQueueComponent } from './job-queue/job-queue.component';
 import { CompetitiveDashboardComponent } from './competitive-dashboard/competitive-dashboard.component';
 import { AcademicDashboardComponent } from './academic-dashboard/academic-dashboard.component';
 import { EventsComponent } from './events/events.component';
 import { DetailViewComponent } from './detail-view/detail-view.component';
+import { DetailViewMaximizedComponent } from './detail-view-maximized/detail-view-maximized.component';
 import { GlobalService } from './services/global.service';
 import { SchedulerService } from './services/scheduler.service';
 import { RepositoryService } from './services/repository.service';
@@ -40,12 +42,14 @@ import { HttpClientModule } from '@angular/common/http';
     LoginComponent,
     ToolbarComponent,
     DetailViewComponent,
+    DetailViewMaximizedComponent,
     EventsComponent,
     AcademicDashboardComponent,
     CompetitiveDashboardComponent,
     JobQueueComponent,
     BenchmarkerListComponent
   ],
+  entryComponents: [DetailViewMaximizedComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -56,6 +60,7 @@ import { HttpClientModule } from '@angular/common/http';
     FlexLayoutModule
   ],
   providers: [
+    DetailViewMaximizerService,
     BenchmarkingResultService,
     BenchmarkService,
     EventService,
