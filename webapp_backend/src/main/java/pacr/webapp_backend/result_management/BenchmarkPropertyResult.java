@@ -80,15 +80,19 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     /**
-     * Creates a BenchmarkPropertyResult directly from measurements. In this case it is assumed there is no error or
-     * error message for this property. Assumes that this result has not yet been compared.
+     * Creates a BenchmarkPropertyResult directly from measurements. Assumes that this result has not yet been compared.
      * @param measurements the measurements.
      * @param property the property of a benchmark that was measured.
+     * @param errorMessage the error message.
      */
-    BenchmarkPropertyResult(List<Double> measurements, BenchmarkProperty property) {
+    public BenchmarkPropertyResult(List<Double> measurements, BenchmarkProperty property, String errorMessage) {
         this.property = property;
-        this.error = false;
-        this.errorMessage = null;
+        if (errorMessage == null) {
+            this.error = false;
+        } else {
+            this.error = true;
+        }
+        this.errorMessage = errorMessage;
         this.measurements = measurements;
         this.mean = StatisticalCalculator.getMean(this.measurements);
         this.lowerQuartile = StatisticalCalculator.getQuantile(0.25, this.measurements);
@@ -151,7 +155,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      * Gets the median of the measurements.
      * @return the median.
      */
-    double getMedian() {
+    public double getMedian() {
         return median;
     }
 

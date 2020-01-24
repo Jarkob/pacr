@@ -13,7 +13,7 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
 
     public static final Double MEASUREMENT = 12d;
     public static final String UNIT = "unit";
-    public static final String ERROR = null;
+    public static final String NO_ERROR = null;
 
     private Collection<Double> results;
     private ResultInterpretation resultInterpretation;
@@ -44,7 +44,7 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
         this.results = results;
         this.resultInterpretation = ResultInterpretation.LESS_IS_BETTER;
         this.unit = UNIT;
-        this.error = ERROR;
+        this.error = NO_ERROR;
     }
 
     @Override
@@ -65,5 +65,9 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
     @Override
     public String getError() {
         return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
     }
 }

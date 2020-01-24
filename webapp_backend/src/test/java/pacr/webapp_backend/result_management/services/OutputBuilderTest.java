@@ -25,6 +25,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OutputBuilderTest {
@@ -40,9 +41,12 @@ public class OutputBuilderTest {
     public static final int NO_GROUP_ID = -1;
     public static final int GROUP_ID = 0;
     public static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
+    public static final int EXPECTED_NUM_OF_PROPERTIES = 2;
     public static final int FIRST = 0;
     public static final int SECOND = 1;
     public static final String COMPARISON_HASH = "adlifi";
+    public static final String PROPERTY_NAME_TWO = "pro2";
+    public static final String ERROR = "there was an error";
 
     private OutputBuilder outputBuilder;
 
@@ -51,6 +55,7 @@ public class OutputBuilderTest {
     private Benchmark benchmark;
     private Benchmark benchmarkTwo;
     private BenchmarkProperty property;
+    private BenchmarkProperty propertyTwo;
 
     public OutputBuilderTest() {
         this.outputBuilder = new OutputBuilder();
@@ -64,13 +69,23 @@ public class OutputBuilderTest {
         property = new BenchmarkProperty(SimpleBenchmark.PROPERTY_NAME, SimpleBenchmarkProperty.UNIT,
                 ResultInterpretation.LESS_IS_BETTER, benchmark);
 
+        propertyTwo = new BenchmarkProperty(PROPERTY_NAME_TWO, SimpleBenchmarkProperty.UNIT,
+                ResultInterpretation.LESS_IS_BETTER, benchmarkTwo);
+
         BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(new SimpleBenchmarkProperty(), property);
 
-        Set<BenchmarkPropertyResult> propertyResults = new HashSet<>();
-        propertyResults.add(propertyResult);
+        SimpleBenchmarkProperty iPropResult = new SimpleBenchmarkProperty();
+        iPropResult.setError(ERROR);
+        BenchmarkPropertyResult propertyResultTwo = new BenchmarkPropertyResult(iPropResult, propertyTwo);
 
-        BenchmarkResult benchmarkResult = new BenchmarkResult(propertyResults, benchmark);
-        BenchmarkResult benchmarkResultTwo = new BenchmarkResult(propertyResults, benchmarkTwo);
+        Set<BenchmarkPropertyResult> propertyResultsOne = new HashSet<>();
+        propertyResultsOne.add(propertyResult);
+
+        Set<BenchmarkPropertyResult> propertyResultsTwo = new HashSet<>();
+        propertyResultsTwo.add(propertyResultTwo);
+
+        BenchmarkResult benchmarkResult = new BenchmarkResult(propertyResultsOne, benchmark);
+        BenchmarkResult benchmarkResultTwo = new BenchmarkResult(propertyResultsTwo, benchmarkTwo);
 
         Set<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResult);
@@ -85,9 +100,9 @@ public class OutputBuilderTest {
      * Tests whether buildOutput properly builds one group for two benchmarks without a group.
      */
     @Test
-    void buildOutput_twoBenchmarksWithNoGroup_shouldBuildOneOutputGroupWithTwoBenchmarks() {
+    void buildDetailOutput_twoBenchmarksWithNoGroup_shouldBuildOneOutputGroupWithTwoBenchmarks() {
 
-        OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commitOne, resultOne);
+        OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commitOne, resultOne);
 
         assertNotNull(outputResult);
 
@@ -100,11 +115,11 @@ public class OutputBuilderTest {
      * Tests whether buildOutput properly builds two groups for one benchmark with and one without a group.
      */
     @Test
-    void buildOutput_twoBenchmarksWithAndWithoutGroup_shouldBuildTwoOutputGroups() {
+    void buildDetailOutput_twoBenchmarksWithAndWithoutGroup_shouldBuildTwoOutputGroups() {
         BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         benchmarkTwo.setGroup(group);
 
-        OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commitOne, resultOne);
+        OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commitOne, resultOne);
 
         assertEquals(EXPECTED_NUM_OF_BENCHMARKS, outputResult.getBenchmarksList().size());
 
@@ -120,5 +135,19 @@ public class OutputBuilderTest {
         }
 
         assertTrue(foundGroup && foundNoGroup);
+    }
+
+    @Test
+    void buildDiagramOutput_shouldCopyData() {
+        DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne, resultOne);
+
+        assertEquals(EXPECTED_NUM_OF_PROPERTIES , output.getResult().size());
+
+        assertEquals(SimpleBenchmarkProperty.MEASUREMENT, output.getResult().get(SimpleBenchmark.PROPERTY_NAME).getResult());
+        assertNull(output.getResult().get(SimpleBenchmark.PROPERTY_NAME).getErrorMessage());
+
+        assertEquals(ERROR, output.getResult().get(PROPERTY_NAME_TWO).getErrorMessage());
+        assertNull(output.getResult().get(PROPERTY_NAME_TWO).getResult());
+
     }
 }

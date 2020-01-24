@@ -13,8 +13,10 @@ import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkResult;
 import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
+import pacr.webapp_backend.shared.IBenchmarkingResult;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,10 +33,14 @@ import static org.mockito.Mockito.when;
 public class ResultGetterTest {
 
     public static final String HASH = "hash";
+    public static final String HASH_TWO = "hash2";
     public static final String BRANCH_NAME = "branch";
     public static final int REPO_ID = 1;
     public static final int BENCHMARK_ID = 5;
     public static final int BENCHMARK_ID_TWO = 10;
+    public static final int EXPECTED_NUM_OF_RESULTS = 1;
+    public static final int EXPECTED_NUM_OF_ALL_RESULTS = 1;
+    public static final int EXPECTED_NUM_OF_NEW_RESULTS = 2;
 
     @Mock
     private IGetCommitAccess commitAccessMock;
@@ -48,6 +54,8 @@ public class ResultGetterTest {
     private OutputBuilder outputBuilderMock;
     @Mock
     private OutputBenchmarkingResult outputResultMock;
+    @Mock
+    private DiagramOutputResult diagramOutputMock;
 
     private ResultGetter resultGetter;
 
@@ -59,6 +67,7 @@ public class ResultGetterTest {
         resultMock = Mockito.mock(CommitResult.class);
         outputBuilderMock = Mockito.mock(OutputBuilder.class);
         outputResultMock = Mockito.mock(OutputBenchmarkingResult.class);
+        diagramOutputMock = Mockito.mock(DiagramOutputResult.class);
         this.resultGetter = new ResultGetter(commitAccessMock, resultAccessMock, outputBuilderMock);
     }
 
@@ -71,7 +80,7 @@ public class ResultGetterTest {
     void getCommitResult_shouldBuildOutputObject() throws NotFoundException {
         when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
-        when(outputBuilderMock.buildOutput(commitMock, resultMock)).thenReturn(outputResultMock);
+        when(outputBuilderMock.buildDetailOutput(commitMock, resultMock)).thenReturn(outputResultMock);
 
         OutputBenchmarkingResult outputResult = resultGetter.getCommitResult(HASH);
 
@@ -125,13 +134,43 @@ public class ResultGetterTest {
 
         when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
         when(resultMock.getCommitHash()).thenReturn(HASH);
-        when(outputBuilderMock.buildOutput(commitMock, resultMock)).thenReturn(outputResultMock);
+        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
 
-        Collection<OutputBenchmarkingResult> outputs = resultGetter.getRepositoryResults(REPO_ID);
+        HashMap<String, DiagramOutputResult> outputs = resultGetter.getRepositoryResults(REPO_ID);
 
-        assertEquals(1, outputs.size());
-        assertEquals(outputResultMock, outputs.iterator().next());
-        assertTrue(outputs.contains(outputResultMock));
+        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(diagramOutputMock, outputs.get(HASH));
+    }
+
+    /**
+     * Tests whether getNewestResult returns the same object like the database access class.
+     */
+    @Test
+    void getNewestResult_shouldReturnDatabaseAnswer() {
+        when(resultAccessMock.getNewestResult(REPO_ID)).thenReturn(resultMock);
+
+        IBenchmarkingResult testResult = resultGetter.getNewestResult(REPO_ID);
+
+        assertEquals(resultMock, testResult);
+    }
+
+    @Test
+    void exportAllBenchmarkingResults_shouldReturnDatabaseAnswer() {
+        when(resultAccessMock.getAllResults()).thenAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) {
+                List<CommitResult> results = new LinkedList<>();
+                results.add(resultMock);
+                return results;
+            }
+        });
+
+        when(resultMock.getCommitHash()).thenReturn(HASH);
+
+        List<? extends IBenchmarkingResult> testResults = resultGetter.exportAllBenchmarkingResults();
+
+        assertEquals(EXPECTED_NUM_OF_ALL_RESULTS, testResults.size());
+        assertEquals(HASH, testResults.get(0).getCommitHash());
     }
 
     /**
@@ -146,7 +185,7 @@ public class ResultGetterTest {
             }
         });
 
-        Collection<OutputBenchmarkingResult> outputs = resultGetter.getRepositoryResults(REPO_ID);
+        HashMap<String, DiagramOutputResult> outputs = resultGetter.getRepositoryResults(REPO_ID);
 
         assertEquals(0, outputs.size());
     }
@@ -201,12 +240,89 @@ public class ResultGetterTest {
         when(benchmarkMock.getId()).thenReturn(BENCHMARK_ID);
         when(benchmarkTwoMock.getId()).thenReturn(BENCHMARK_ID_TWO);
 
-        when(outputBuilderMock.buildOutput(any(), any())).thenReturn(outputResultMock);
+        when(outputBuilderMock.buildDiagramOutput(any(), any())).thenReturn(diagramOutputMock);
 
         resultGetter.getBenchmarkResults(BENCHMARK_ID);
 
         verify(resultMock).removeBenchmarkResult(benchmarkResultMockTwo);
         verify(resultMock, never()).removeBenchmarkResult(benchmarkResultMock);
+    }
+
+    /**
+     * Tests whether getBenchmarkResults (when called with repository id) only outputs the benchmark results that the
+     * caller is looking for and properly removes other results.
+     */
+    @Test
+    void getBenchmarkResults_callWithRepoId_shouldRemoveExtraBenchmark() {
+        when(commitAccessMock.getCommitsFromRepository(REPO_ID)).thenAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) {
+                Collection<GitCommit> commits = new LinkedList<>();
+                commits.add(commitMock);
+                return commits;
+            }
+        });
+
+        when(commitMock.getCommitHash()).thenReturn(HASH);
+
+        List<CommitResult> allResults = new LinkedList<>();
+        allResults.add(resultMock);
+        when(resultAccessMock.getResultsFromCommits(any())).thenReturn(allResults);
+
+        BenchmarkResult benchmarkResultMock = Mockito.mock(BenchmarkResult.class);
+        BenchmarkResult benchmarkResultMockTwo = Mockito.mock(BenchmarkResult.class);
+
+        Benchmark benchmarkMock = Mockito.mock(Benchmark.class);
+        Benchmark benchmarkTwoMock = Mockito.mock(Benchmark.class);
+
+        List<BenchmarkResult> benchmarkResults = new LinkedList<>();
+        benchmarkResults.add(benchmarkResultMock);
+        benchmarkResults.add(benchmarkResultMockTwo);
+        when(resultMock.getBenchmarksIterable()).thenReturn(benchmarkResults);
+
+        when(benchmarkResultMock.getBenchmark()).thenReturn(benchmarkMock);
+        when(benchmarkResultMockTwo.getBenchmark()).thenReturn(benchmarkTwoMock);
+
+        when(benchmarkMock.getId()).thenReturn(BENCHMARK_ID);
+        when(benchmarkTwoMock.getId()).thenReturn(BENCHMARK_ID_TWO);
+
+        when(outputBuilderMock.buildDiagramOutput(any(), any())).thenReturn(diagramOutputMock);
+
+        resultGetter.getBenchmarkResults(REPO_ID, BENCHMARK_ID);
+
+        verify(resultMock).removeBenchmarkResult(benchmarkResultMockTwo);
+        verify(resultMock, never()).removeBenchmarkResult(benchmarkResultMock);
+    }
+
+    /**
+     * Tests whether getNewestResults properly builds the output objects and keeps their order from the database.
+     */
+    @Test
+    void getNewestResults_shouldBuildOutputObjects() {
+        List<CommitResult> results = new LinkedList<>();
+        results.add(resultMock);
+        CommitResult resultMockTwo = Mockito.mock(CommitResult.class);
+        results.add(resultMockTwo);
+
+        when(resultAccessMock.getNewestResults()).thenReturn(results);
+
+        when(resultMock.getCommitHash()).thenReturn(HASH);
+        when(resultMockTwo.getCommitHash()).thenReturn(HASH_TWO);
+
+        when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
+        GitCommit commitTwo = Mockito.mock(GitCommit.class);
+
+        when(commitAccessMock.getCommit(HASH_TWO)).thenReturn(commitTwo);
+
+        when(outputBuilderMock.buildDetailOutput(commitMock, resultMock)).thenReturn(outputResultMock);
+        OutputBenchmarkingResult outputResultMockTwo = Mockito.mock(OutputBenchmarkingResult.class);
+        when(outputBuilderMock.buildDetailOutput(commitTwo, resultMockTwo)).thenReturn(outputResultMockTwo);
+
+        List<OutputBenchmarkingResult> newestResults = resultGetter.getNewestResults();
+
+        assertEquals(EXPECTED_NUM_OF_NEW_RESULTS, newestResults.size());
+        assertEquals(outputResultMock, newestResults.get(0));
+        assertEquals(outputResultMockTwo, newestResults.get(1));
     }
 
     /**

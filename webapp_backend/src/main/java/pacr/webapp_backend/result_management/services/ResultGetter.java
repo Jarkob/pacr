@@ -56,9 +56,9 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param repositoryId the id of the repository.
      * @return the benchmarking results.
      */
-    public Collection<OutputBenchmarkingResult> getRepositoryResults(int repositoryId) {
+    public HashMap<String, DiagramOutputResult> getRepositoryResults(int repositoryId) {
         Collection<? extends ICommit> commits = commitAccess.getCommitsFromRepository(repositoryId);
-        return commitsToOutputResults(commits, KEEP_ALL_BENCHMARK_DATA);
+        return commitsToDiagramResults(commits, KEEP_ALL_BENCHMARK_DATA);
     }
 
     /**
@@ -68,7 +68,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @return the benchmarking results.
      * @throws NotFoundException if no repository with the id or no branch with the name could be found.
      */
-    public Collection<OutputBenchmarkingResult> getBranchResults(int repositoryId, @NotNull String branch)
+    public HashMap<String, DiagramOutputResult> getBranchResults(int repositoryId, @NotNull String branch)
             throws NotFoundException {
         if (!StringUtils.hasText(branch)) {
             throw new IllegalArgumentException("branch cannot be null, empty or blank");
@@ -81,7 +81,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
                     + branch + " was found");
         }
 
-        return commitsToOutputResults(commits, KEEP_ALL_BENCHMARK_DATA);
+        return commitsToDiagramResults(commits, KEEP_ALL_BENCHMARK_DATA);
     }
 
     /**
@@ -107,7 +107,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
             throw new NotFoundException("no result for commit with hash " + commitHash + " was found");
         }
 
-        return outputBuilder.buildOutput(commit, result);
+        return outputBuilder.buildDetailOutput(commit, result);
     }
 
     /**
@@ -116,11 +116,11 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted)
      */
-    public Collection<OutputBenchmarkingResult> getBenchmarkResults(int benchmarkId) {
+    public HashMap<String, DiagramOutputResult> getBenchmarkResults(int benchmarkId) {
         // TODO currently incredibly inefficient
 
         Collection<? extends ICommit> commits = this.commitAccess.getAllCommits();
-        return commitsToOutputResults(commits, benchmarkId);
+        return commitsToDiagramResults(commits, benchmarkId);
     }
 
     /**
@@ -130,9 +130,9 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
      *         omitted)
      */
-    public Collection<OutputBenchmarkingResult> getBenchmarkResults(int repositoryId, int benchmarkId) {
+    public HashMap<String, DiagramOutputResult> getBenchmarkResults(int repositoryId, int benchmarkId) {
         Collection<? extends ICommit> commitsFromRepository = commitAccess.getCommitsFromRepository(repositoryId);
-        return commitsToOutputResults(commitsFromRepository, benchmarkId);
+        return commitsToDiagramResults(commitsFromRepository, benchmarkId);
     }
 
     /**
@@ -182,16 +182,25 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         }
     }
 
-    private List<OutputBenchmarkingResult> commitsToOutputResults(Collection<? extends ICommit> commits,
-                                                                  int benchmarkIdToKeep) {
-        Collection<String> commitHashes = new LinkedList<>();
-        Map<String, ICommit> hashToCommit = new HashMap<>();
+    private HashMap<String, DiagramOutputResult> commitsToDiagramResults(Collection<? extends ICommit> commits,
+                                                              int benchmarkIdToKeep) {
+        Map<String, ICommit> hashToCommit = getHashToCommitMap(commits);
 
-        for (ICommit commit : commits) {
-            commitHashes.add(commit.getCommitHash());
-            hashToCommit.put(commit.getCommitHash(), commit);
+        Collection<CommitResult> results = getResultsAndRemoveOtherBenchmarks(hashToCommit.keySet(), benchmarkIdToKeep);
+
+        HashMap<String, DiagramOutputResult> outputResults = new HashMap<>();
+
+        for (CommitResult result : results) {
+            ICommit commitForResult = hashToCommit.get(result.getCommitHash());
+            DiagramOutputResult outputResult = outputBuilder.buildDiagramOutput(commitForResult, result);
+            outputResults.put(result.getCommitHash(), outputResult);
         }
 
+        return outputResults;
+    }
+
+    private Collection<CommitResult> getResultsAndRemoveOtherBenchmarks(Collection<String> commitHashes,
+                                                                        int benchmarkIdToKeep) {
         // if any of the hashes in commitHashes have no saved results, they will be omitted in the output
         Collection<CommitResult> results = resultAccess.getResultsFromCommits(commitHashes);
 
@@ -214,15 +223,17 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
             }
         }
 
-        List<OutputBenchmarkingResult> outputResults = new LinkedList<>();
+        return results;
+    }
 
-        for (CommitResult result : results) {
-            ICommit commitForResult = hashToCommit.get(result.getCommitHash());
-            OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commitForResult, result);
-            outputResults.add(outputResult);
+    private Map<String, ICommit> getHashToCommitMap(Collection<? extends ICommit> commits) {
+        Map<String, ICommit> hashToCommit = new HashMap<>();
+
+        for (ICommit commit : commits) {
+            hashToCommit.put(commit.getCommitHash(), commit);
         }
 
-        return outputResults;
+        return hashToCommit;
     }
 
     private List<OutputBenchmarkingResult> resultsToOutputResults(List<CommitResult> results) {
@@ -230,7 +241,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         for (CommitResult result : results) {
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            OutputBenchmarkingResult outputResult = outputBuilder.buildOutput(commit, result);
+            OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commit, result);
             outputResultsSameOrder.add(outputResult);
         }
 

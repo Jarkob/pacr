@@ -26,6 +26,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
     private String errorMessage;
 
     private double ratioToPreviousCommit;
+    private boolean compared;
 
     /**
      * Creates a OutputPropertyResult from a BenchmarkPropertyResult. Copies all statistical data and the associated
@@ -48,6 +49,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
         this.errorMessage = result.getError();
 
         this.ratioToPreviousCommit = result.getRatio();
+        this.compared = result.isCompared();
     }
 
     /**

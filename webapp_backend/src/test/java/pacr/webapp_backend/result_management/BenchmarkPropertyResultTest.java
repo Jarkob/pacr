@@ -39,8 +39,8 @@ public class BenchmarkPropertyResultTest {
      */
     @BeforeAll
     public static void setUp() {
-        propertyResultEven = new BenchmarkPropertyResult(Arrays.asList(RESULTS_EVEN), propertyMock);
-        propertyResultOdd = new BenchmarkPropertyResult(Arrays.asList(RESULTS_ODD), propertyMock);
+        propertyResultEven = new BenchmarkPropertyResult(Arrays.asList(RESULTS_EVEN), propertyMock, null);
+        propertyResultOdd = new BenchmarkPropertyResult(Arrays.asList(RESULTS_ODD), propertyMock, null);
     }
 
     /**

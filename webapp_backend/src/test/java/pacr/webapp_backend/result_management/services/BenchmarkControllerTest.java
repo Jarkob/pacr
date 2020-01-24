@@ -1,0 +1,195 @@
+package pacr.webapp_backend.result_management.services;
+
+import javassist.NotFoundException;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import pacr.webapp_backend.result_management.Benchmark;
+import pacr.webapp_backend.result_management.BenchmarkGroup;
+import pacr.webapp_backend.result_management.endpoints.BenchmarkController;
+import pacr.webapp_backend.shared.IAuthenticator;
+
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+public class BenchmarkControllerTest {
+
+    public static final String TOKEN = "token";
+    public static final String BENCHMARK_NAME = "benchmark";
+    public static final String GROUP_NAME = "group";
+    public static final String BENCHMARK_DESC = "description";
+    public static final int BENCHMARK_ID = 1;
+    public static final int GROUP_ID = 1;
+
+    @Mock
+    private BenchmarkManager benchmarkManagerMock;
+    @Mock
+    private IAuthenticator authenticatorMock;
+
+    private BenchmarkController benchmarkController;
+    
+    @BeforeEach
+    public void setUp() {
+        benchmarkManagerMock = Mockito.mock(BenchmarkManager.class);
+        authenticatorMock = Mockito.mock(IAuthenticator.class);
+
+        benchmarkController = new BenchmarkController(authenticatorMock, benchmarkManagerMock);
+    }
+
+    /**
+     * Tests whether getAllBenchmarks returns the same as the benchmark manager.
+     */
+    @Test
+    void getAllBenchmarks_shouldReturnSameAsBenchmarkManager() {
+        List<Benchmark> benchmarks = new LinkedList<>();
+        when(benchmarkManagerMock.getAllBenchmarks()).thenReturn(benchmarks);
+
+        Collection<Benchmark> testBenchmarks = benchmarkController.getAllBenchmarks();
+
+        assertEquals(benchmarks, testBenchmarks);
+    }
+
+    /**
+     * Tests whether getAllGroups returns the same as the benchmark manager.
+     */
+    @Test
+    void getAllGroups_shouldReturnSameAsBenchmarkManager() {
+        List<BenchmarkGroup> groups = new LinkedList<>();
+        when(benchmarkManagerMock.getAllGroups()).thenReturn(groups);
+
+        Collection<BenchmarkGroup> testGroups = benchmarkController.getAllGroups();
+
+        assertEquals(groups, testGroups);
+    }
+
+    /**
+     * Tests whether updateBenchmark updates it on the benchmark manager and if it authenticates the token correctly.
+     * @throws NotFoundException if no benchmark was not found. Should not happen since we are mocking this method.
+     */
+    @Test
+    void updateBenchmark_authenticationSucceeds_shouldCallUpdateBenchmarkInManager() throws NotFoundException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+
+        ResponseEntity<Object> response = benchmarkController.updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME,
+                BENCHMARK_DESC, GROUP_ID, TOKEN);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock).updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
+    }
+
+    /**
+     * Tests whether updateBenchmark doesn't update it on the benchmark manager if authentication fails.
+     * @throws NotFoundException if no benchmark was not found. Should not happen since we are mocking this method.
+     */
+    @Test
+    void updateBenchmark_authenticationFails_shouldNotUpdateBenchmark() throws NotFoundException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
+
+        ResponseEntity<Object> response = benchmarkController.updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME,
+                BENCHMARK_DESC, GROUP_ID, TOKEN);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock, never()).updateBenchmark(anyInt(), anyString(), anyString(), anyInt());
+    }
+
+    /**
+     * Tests whether addGroup adds it on the benchmark manager and if it authenticates the token correctly.
+     */
+    @Test
+    void addGroup_authenticationSucceeds_shouldCallAddGroupInManager() {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+
+        ResponseEntity<Object> response = benchmarkController.addGroup(GROUP_NAME, TOKEN);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock).addGroup(GROUP_NAME);
+    }
+
+    /**
+     * Tests whether addGroup doesn't add it on the benchmark manager if authentication fails.
+     */
+    @Test
+    void addGroup_authenticationFails_shouldNotAddGroup() {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
+
+        ResponseEntity<Object> response = benchmarkController.addGroup(GROUP_NAME, TOKEN);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock, never()).addGroup(anyString());
+    }
+
+    /**
+     * Tests whether updateGroup updates it on the benchmark manager and if it authenticates the token correctly.
+     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
+     */
+    @Test
+    void updateGroup_authenticationSucceeds_shouldCallUpdateGroupInManager() throws NotFoundException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+
+        ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock).updateGroup(GROUP_ID, GROUP_NAME);
+    }
+
+    /**
+     * Tests whether updateGroup doesn't update it on the benchmark manager if authentication fails.
+     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
+     */
+    @Test
+    void updateGroup_authenticationFails_shouldNotUpdateGroup() throws NotFoundException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
+
+        ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock, never()).updateGroup(anyInt(), anyString());
+    }
+
+    /**
+     * Tests whether deleteGroup deletes it on the benchmark manager and if it authenticates the token correctly.
+     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
+     */
+    @Test
+    void deleteGroup_authenticationSucceeds_shouldCallDeleteGroupInManager() throws NotFoundException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+
+        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock).deleteGroup(GROUP_ID);
+    }
+
+    /**
+     * Tests whether deleteGroup doesn't delete it on the benchmark manager if authentication fails.
+     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
+     */
+    @Test
+    void deleteGroup_authenticationFails_shouldNotDeleteGroup() throws NotFoundException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
+
+        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        verify(authenticatorMock).authenticate(TOKEN);
+        verify(benchmarkManagerMock, never()).deleteGroup(anyInt());
+    }
+}

@@ -10,13 +10,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
+import pacr.webapp_backend.result_management.services.DiagramOutputResult;
 import pacr.webapp_backend.result_management.services.ResultGetter;
 import pacr.webapp_backend.result_management.services.ResultManager;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Provides endpoints for getting benchmarking results and deleting them.
@@ -46,7 +49,7 @@ public class ResultController {
      * @return the benchmarking results.
      */
     @GetMapping("/results/repository/{repositoryId}")
-    public Collection<OutputBenchmarkingResult> getBenchmarkingResultsFromRepository(@PathVariable int repositoryId) {
+    public Map<String, DiagramOutputResult> getBenchmarkingResultsFromRepository(@PathVariable int repositoryId) {
         return resultGetter.getRepositoryResults(repositoryId);
     }
 
@@ -58,7 +61,7 @@ public class ResultController {
      * @throws NotFoundException if no repository with the given id and/or no branch with the given name could be found.
      */
     @GetMapping("/results/repository/{repositoryId}/{branch}")
-    public Collection<OutputBenchmarkingResult> getBenchmarkingResultsFromBranch(
+    public Map<String, DiagramOutputResult> getBenchmarkingResultsFromBranch(
             @PathVariable int repositoryId, @NotNull @PathVariable String branch) throws NotFoundException {
         if (!StringUtils.hasText(branch)) {
             throw new IllegalArgumentException("branch cannot be null, empty or blank");
@@ -89,7 +92,7 @@ public class ResultController {
      * @return the benchmarking results of one benchmark.
      */
     @GetMapping("/results/benchmark/{benchmarkId}")
-    public Collection<OutputBenchmarkingResult> getBenchmarkingResultsForBenchmark(@PathVariable int benchmarkId) {
+    public Map<String, DiagramOutputResult> getBenchmarkingResultsForBenchmark(@PathVariable int benchmarkId) {
         return resultGetter.getBenchmarkResults(benchmarkId);
     }
 
@@ -100,7 +103,7 @@ public class ResultController {
      * @return the benchmarking results of one benchmark.
      */
     @GetMapping("/results/benchmark/{benchmarkId}/{repositoryId}")
-    public Collection<OutputBenchmarkingResult> getResultsForRepositoryAndBenchmark(@PathVariable int benchmarkId,
+    public Map<String, DiagramOutputResult> getResultsForRepositoryAndBenchmark(@PathVariable int benchmarkId,
                                                                                     @PathVariable int repositoryId) {
         return resultGetter.getBenchmarkResults(repositoryId, benchmarkId);
     }
