@@ -1,11 +1,9 @@
-package pacr.webapp_backend.git_tracking;
+package pacr.webapp_backend.git_tracking.services.entities;
 
-import jdk.jshell.spi.ExecutionControl;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -164,8 +162,7 @@ public class GitCommit implements ICommit {
 
     @Override
     public void removeLabel(String label) {
-        //Objects.requireNonNull(label);
-
+        Objects.requireNonNull(label);
         labels.remove(label);
     }
 
@@ -176,7 +173,11 @@ public class GitCommit implements ICommit {
 
     @Override
     public Collection<String> getBranchNames() {
-        return null;//todo
+        Collection<String> branchNames = new HashSet<>();
+        for (GitBranch branch : branches) {
+            branchNames.add(branch.getName());
+        }
+        return branchNames;
     }
 
     /**

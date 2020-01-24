@@ -1,4 +1,4 @@
-package pacr.webapp_backend.git_tracking;
+package pacr.webapp_backend.git_tracking.services.entities;
 
 import java.util.Set;
 import javax.persistence.Entity;

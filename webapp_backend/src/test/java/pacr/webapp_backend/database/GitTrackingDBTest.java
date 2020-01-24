@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pacr.webapp_backend.git_tracking.GitBranch;
-import pacr.webapp_backend.git_tracking.GitCommit;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
 import java.awt.*;
 import java.time.Instant;

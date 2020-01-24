@@ -11,7 +11,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
 import javax.validation.constraints.NotNull;

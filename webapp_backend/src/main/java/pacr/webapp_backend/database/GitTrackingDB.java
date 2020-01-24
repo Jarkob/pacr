@@ -5,8 +5,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.GitCommit;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
 import javax.validation.constraints.NotNull;
@@ -61,7 +61,6 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     public void removeCommit(@NotNull String commitHash) {
         Objects.requireNonNull(commitHash);
 
-        //todo delete results
         commitDB.deleteById(commitHash);
     }
 
@@ -121,11 +120,6 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
         Objects.requireNonNull(commitHash);
 
         return commitDB.existsById(commitHash);
-    }
-
-    @Override
-    public GitCommit getHead() { // todo implement
-        return null;
     }
 
     @Override

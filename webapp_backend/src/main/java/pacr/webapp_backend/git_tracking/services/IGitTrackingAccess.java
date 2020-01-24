@@ -1,10 +1,9 @@
 package pacr.webapp_backend.git_tracking.services;
 
 import javassist.NotFoundException;
-import pacr.webapp_backend.git_tracking.GitCommit;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
 /**
@@ -75,8 +74,6 @@ public interface IGitTrackingAccess {
     void removeCommit(String commitHash);
 
     boolean containsCommit(String commitHash);
-
-    GitCommit getHead();
 
     GitCommit getHead(String branch);
 

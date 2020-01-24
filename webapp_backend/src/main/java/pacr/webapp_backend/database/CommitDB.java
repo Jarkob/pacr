@@ -2,8 +2,8 @@ package pacr.webapp_backend.database;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.GitBranch;
-import pacr.webapp_backend.git_tracking.GitCommit;
+import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 
 import java.util.Collection;
 

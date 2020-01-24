@@ -1,7 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.git;
 
 import org.eclipse.jgit.api.Git;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;

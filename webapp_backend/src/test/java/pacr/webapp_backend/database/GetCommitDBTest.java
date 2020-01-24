@@ -3,7 +3,7 @@ package pacr.webapp_backend.database;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import pacr.webapp_backend.git_tracking.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

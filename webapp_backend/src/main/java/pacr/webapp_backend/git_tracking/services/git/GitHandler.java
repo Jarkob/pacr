@@ -15,9 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.GitBranch;
-import pacr.webapp_backend.git_tracking.GitCommit;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.shared.IResultDeleter;
 

@@ -1,4 +1,4 @@
-package pacr.webapp_backend.git_tracking;
+package pacr.webapp_backend.git_tracking.services.entities;
 
 import javassist.NotFoundException;
 
@@ -233,26 +233,18 @@ public class GitRepository {
         return id > 0;
     }
 
+    /**
+     * Checks if a branch is selected or not.
+     * @param branchName is the name of the branch.
+     * @return true if the branch is selected, false if not.
+     */
     public boolean isBranchSelected(String branchName) {
-        if (branchName.equals(MASTER)) {
-            return true;
-        }
-
-        if (isTrackAllBranches()) { // selectedBranches are ignored branches
-            for (GitBranch branch : selectedBranches) {
-                if (branch.getName().equals(branchName)) {
-                    return false;
-                }
+        for (GitBranch branch : selectedBranches) {
+            if (branch.getName().equals(branchName)) {
+                return true;
             }
-            return true;
-        } else { // selected branches are watched branches
-            for (GitBranch branch : selectedBranches) {
-                if (branch.getName().equals(branchName)) {
-                    return true;
-                }
-            }
-            return false;
         }
+        return false;
     }
 
     public GitBranch getSelectedBranch(String branchName) throws NotFoundException {
