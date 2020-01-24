@@ -1,6 +1,8 @@
 package pacr.webapp_backend.dashboard_management;
 
 
+import org.springframework.util.StringUtils;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,11 +10,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Instances of this class model dashboards, which contain dashboard modules
@@ -20,7 +20,7 @@ import java.util.List;
  * Those instances furthermore have a title and contain edit and view keys,
  * with which they can be retrieved and edited from the frontend.
  *
- * Public methods of this class canbe used to remove and add modules,
+ * Public methods of this class can be used to remove and add modules,
  * as well as edit keys.
  *
  * @author Benedikt Hahn
@@ -33,8 +33,7 @@ public class Dashboard {
     @GeneratedValue
     private int id;
 
-    static int MIN_POSITION = 0;
-    static int MAX_POSITION = 14;
+    static final int SIZE = 15;
 
     private LocalDate lastAccess = LocalDate.now();
 
@@ -52,7 +51,10 @@ public class Dashboard {
 
     //Limited to 15 positions on the dashboard.
     @OneToMany(cascade = CascadeType.ALL)
-    private List<DashboardModule> modules = Arrays.asList(new DashboardModule[MAX_POSITION - MIN_POSITION  + 1]);
+
+    //List because arrays cannot be stored by JPA
+    @Size(min = SIZE, max = SIZE)
+    private List<DashboardModule> modules = new ArrayList<>(SIZE);
 
 
     /**
@@ -61,10 +63,13 @@ public class Dashboard {
      * @param title The title of the dashboard.
      */
     public Dashboard(@NotNull String title) {
-        if (title == null || title.isEmpty() || title.isBlank()) {
+        if (!StringUtils.hasText(title)) {
             throw new IllegalArgumentException("The dashboard title '" + title + "' must not be null, empty or blank.");
         }
         this.title = title;
+        for (int i = 0; i < SIZE; i++) {
+            this.modules.add(null);
+        }
     }
 
     /**
@@ -74,11 +79,8 @@ public class Dashboard {
      */
     public void addModule(@NotNull DashboardModule module) {
 
-        if (module == null) {
-            throw new IllegalArgumentException("The dashboard module must not be null.");
-        }
-
-        int position = MIN_POSITION - 1;
+        Objects.requireNonNull(module, "The dashboard module must not be null.");
+        int position;
 
         try {
             position = module.getPosition();
@@ -98,7 +100,7 @@ public class Dashboard {
      * Removes the specified module from the dashboard and returns whether the remove operation
      * was successful.
      * @param module The module to be removed.
-     * @return {@code true} if the module could be removed and {@code false} else.
+     * @return {@code true} if the module was removed and {@code false} else.
      */
     public boolean removeModule(@NotNull DashboardModule module) {
         if (module == null) {
@@ -107,12 +109,10 @@ public class Dashboard {
 
         boolean moduleWasRemoved = false;
 
-        for (DashboardModule dm : modules) {
-            if (dm != null && dm.equals(module)) {
-                moduleWasRemoved = removeModule(dm.getPosition());
-                                //No two equal modules can be on the same dashboard,
-                break;          // since their position makes them different.
-            }
+        DashboardModule currentModuleAtPosition = modules.get(module.getPosition());
+
+        if (currentModuleAtPosition != null && currentModuleAtPosition.equals(module)) {
+            moduleWasRemoved = removeModule(currentModuleAtPosition.getPosition());
         }
         return moduleWasRemoved;
     }
@@ -124,15 +124,19 @@ public class Dashboard {
      * @return {@code true} if the module at position could be removed and {@code false} else.
      */
     public boolean removeModule(int position) {
-        if (position < MIN_POSITION || position > MAX_POSITION) {
+        if (position < 0 || position > SIZE - 1) {
             throw new IllegalArgumentException("Dashboards only allow positioning in the range "
-                    + "[" + MIN_POSITION + "," + MAX_POSITION + "].");
+                    + "[" + 0 + "," + (SIZE - 1) + "].");
         }
-        if (modules.get(position) == null) {
-            return false;
+
+        boolean moduleWasRemoved = false;
+
+        if (modules.get(position) != null) {
+            modules.set(position, null);
+            moduleWasRemoved = true;
         }
-        modules.set(position, null);
-        return true;
+
+        return moduleWasRemoved;
     }
 
 
@@ -140,26 +144,34 @@ public class Dashboard {
      * Sets the edit key of this dashboard.
      *
      * @param editKey The new edit key.
+     * @throws KeysAlreadyInitializedException if this method is called, when the keys are already initialized.
      */
-    public void setEditKey(String editKey) {
-        this.editKey = editKey;
+    public void initializeKeys(String editKey, String viewKey) throws KeysAlreadyInitializedException {
+        if (this.editKey != null && this.viewKey != null) {
+            throw new KeysAlreadyInitializedException("The keys have already been initialized.");
+        } else {
+            Objects.requireNonNull(editKey, "The edit key must not be null.");
+            Objects.requireNonNull(viewKey, "The view key must not be null.");
+
+            this.editKey = editKey;
+            this.viewKey = viewKey;
+        }
     }
 
     /**
-     * Sets the view key of this dashboard.
-     *
-     * @param viewKey The new view key.
+     * Prepares the dashboard for sending it to the frontend, when it was not
+     * accessed via a view key.
+     * In this case, its edit key gets removed.
      */
-    public void setViewKey(String viewKey) {
-        this.viewKey = viewKey;
+    public void prepareForViewAccess() {
+        this.editKey = null;
     }
-
 
     /**
      * @return the edit key of this dashboard. The value can be null.
      */
     public String getEditKey() {
-        return this.editKey;
+        return editKey;
     }
 
     /**
@@ -167,6 +179,13 @@ public class Dashboard {
      */
     public String getViewKey() {
         return viewKey;
+    }
+
+    /**
+     * @return the title of this dashboard.
+     */
+    public String getTitle() {
+        return title;
     }
 
     /**

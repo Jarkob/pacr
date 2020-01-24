@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
+import java.util.NoSuchElementException;
+
 public class KeyManagerTest {
 
     @Test
@@ -22,7 +24,7 @@ public class KeyManagerTest {
     void generateEditKey_nullDashboard_ShouldThrowException() {
         Dashboard dashboard = null;
 
-        assertThrows(IllegalArgumentException.class, () -> KeyManager.generateEditKey(dashboard));
+        assertThrows(NullPointerException.class, () -> KeyManager.generateEditKey(dashboard));
 
     }
 
@@ -41,7 +43,7 @@ public class KeyManagerTest {
     void generateViewKey_nullDashboard_ShouldThrowException() {
         Dashboard dashboard = null;
 
-        assertThrows(IllegalArgumentException.class, () -> KeyManager.generateViewKey(dashboard));
+        assertThrows(NullPointerException.class, () -> KeyManager.generateViewKey(dashboard));
 
     }
 }

@@ -23,9 +23,9 @@ public class LeaderboardDashboardModuleTest {
     }
 
     @Test
-    void setBenchmarkOfLeaderboard_SomeName_ShouldSetTheName() {
+    void setBenchmarkName_SomeName_ShouldSetTheName() {
         final String BENCHMARK_NAME = "someName";
-        leaderboardModule.setBenchmarkOfLeaderboard(BENCHMARK_NAME);
+        leaderboardModule.setBenchmarkName(BENCHMARK_NAME);
 
         assertEquals(BENCHMARK_NAME, leaderboardModule.getBenchmarkName());
     }
@@ -37,13 +37,6 @@ public class LeaderboardDashboardModuleTest {
         assertNotEquals(null, leaderboardModule.getLeaderboard());
     }
 
-    @Test
-    void deleteLeaderboard_ShouldHaveNullLeaderboard() {
-        leaderboardModule.setLeaderboard(new Leaderboard());
-        leaderboardModule.deleteLeaderboard();
-
-        assertEquals(null, leaderboardModule.getLeaderboard());
-    }
 
     @Test
     void equals_DifferentClass_ShouldReturnFalse() {
@@ -63,8 +56,8 @@ public class LeaderboardDashboardModuleTest {
     void equals_DifferentBenchmark_ShouldReturnFalse() {
         LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule(12);
 
-        leaderboardModule.setBenchmarkOfLeaderboard("testBenchmark");
-        otherLeaderboardModule.setBenchmarkOfLeaderboard("otherTestBenchmark");
+        leaderboardModule.setBenchmarkName("testBenchmark");
+        otherLeaderboardModule.setBenchmarkName("otherTestBenchmark");
 
         assertNotEquals(leaderboardModule, otherLeaderboardModule);
     }
@@ -75,8 +68,8 @@ public class LeaderboardDashboardModuleTest {
 
         LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule(12);
 
-        leaderboardModule.setBenchmarkOfLeaderboard(BENCHMARK_NAME);
-        otherLeaderboardModule.setBenchmarkOfLeaderboard(BENCHMARK_NAME);
+        leaderboardModule.setBenchmarkName(BENCHMARK_NAME);
+        otherLeaderboardModule.setBenchmarkName(BENCHMARK_NAME);
 
         assertEquals(leaderboardModule, otherLeaderboardModule);
     }

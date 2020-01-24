@@ -1,15 +1,16 @@
 package pacr.webapp_backend.database;
 
-import javassist.NotFoundException;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.services.IDashboardAccess;
+import pacr.webapp_backend.dashboard_management.services.KeyType;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 //TODO
@@ -17,7 +18,7 @@ import java.util.List;
 public interface DashboardDB extends CrudRepository<BenchmarkGroup, Integer>, IDashboardAccess {
 
     @Override
-    default Dashboard getDashboard(@NotNull String key) throws NotFoundException {
+    default Dashboard getDashboard(@NotNull String key) throws NoSuchElementException  {
         return null;
     }
 
@@ -32,18 +33,18 @@ public interface DashboardDB extends CrudRepository<BenchmarkGroup, Integer>, ID
     }
 
     @Override
-    default void deleteDashboard(@NotNull int id) throws NotFoundException {
+    default void updateDashboard(@NotNull Dashboard dashboard) throws NoSuchElementException  {
 
     }
 
     @Override
-    default void deleteDashboard(@NotNull String editKey) throws NotFoundException {
+    default void deleteDashboard(@NotNull String editKey) throws NoSuchElementException {
 
     }
 
     @Override
-    default int checkKeyType(String key) {
-        return 0;
+    default KeyType checkKeyType(String key) {
+        return KeyType.INVALID_KEY;
     }
 
     @Override

@@ -1,30 +1,34 @@
 package pacr.webapp_backend.dashboard_management.services;
 
-import javassist.NotFoundException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.dashboard_management.Dashboard;
+import pacr.webapp_backend.dashboard_management.KeysAlreadyInitializedException;
 import pacr.webapp_backend.dashboard_management.LeaderboardDashboardModule;
 import pacr.webapp_backend.shared.ILeaderboardGetter;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
- * This class is the entry point into the services of
- * the dashboard management package. Therefore it contains
+ * This class is a facade for the dashboard management package. Therefore it contains
  * methods for managing requests and delegating them to other parts of the component.
  *
  * @author Benedikt Hahn
  */
 @Component
 public class DashboardManager {
+    private static final Logger LOGGER = LogManager.getLogger(DashboardManager.class);
 
     private static final String CRON_DAILY = "0 0 0 * * *";
 
     ILeaderboardGetter leaderboardGetter;
+
+    DatabaseTalker databaseTalker;
 
     /**
      * Creates a new dashboard manager.
@@ -34,16 +38,13 @@ public class DashboardManager {
     }
 
     /**
-     * @param key the key of the dashboard which gets requested.
+     * @param key the key, with which the request is made.
      * @return the requested dashboard
-     * @throws NotFoundException if the key does not belong to a dashboard.
+     * @throws NoSuchElementException if the key does not belong to a dashboard.
      */
-    public Dashboard getDashboard(String key) throws NotFoundException {
-        Dashboard dashboard = DatabaseTalker.getDashboard(key);
+    public Dashboard getDashboard(String key) throws NoSuchElementException {
+        Dashboard dashboard = databaseTalker.getDashboard(key);
         dashboard.updateLastAccess();
-
-        //To prevent access from unauthorized users
-        dashboard.setEditKey(null);
 
         //Store the leaderboards in leaderboard modules.
         for (LeaderboardDashboardModule ldm : dashboard.getLeaderboardModules()) {
@@ -57,18 +58,21 @@ public class DashboardManager {
 
     /**
      * @param dashboard The dashboard to be added to the database.
-     * @return The keys of this dashboard in a list. The first item is the view key,
+     * @return The keys of this dashboard in a pair. The first item is the view key,
      * the second the edit key.
      */
-    public List<String> addDashboard(Dashboard dashboard) {
-        KeyManager.generateEditKey(dashboard);
-        KeyManager.generateViewKey(dashboard);
+    public Pair<String, String> addDashboard(Dashboard dashboard) {
 
-        dashboard.getLeaderboardModules().forEach(LeaderboardDashboardModule::deleteLeaderboard);
+        try {
+            dashboard.initializeKeys(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        } catch (KeysAlreadyInitializedException e) {
+            LOGGER.error("The dashboard " + dashboard.getTitle() + " is already initialized and cannot "
+                    + "be initialized again.");
+        }
 
-        DatabaseTalker.storeDashboard(dashboard);
+        databaseTalker.storeDashboard(dashboard);
 
-        return Arrays.asList(dashboard.getViewKey(), dashboard.getEditKey());
+        return Pair.of(dashboard.getViewKey(), dashboard.getEditKey());
     }
 
     /**
@@ -76,15 +80,18 @@ public class DashboardManager {
      * @param dashboard the updated dashboard.
      */
     public void updateDashboard(Dashboard dashboard) {
-        dashboard.getLeaderboardModules().forEach(LeaderboardDashboardModule::deleteLeaderboard);
         dashboard.updateLastAccess();
-        DatabaseTalker.updateDashboard(dashboard);
+        databaseTalker.updateDashboard(dashboard);
     }
 
-    /**@param interval the new deletion interval in days.
+    /**
+     * @param interval the new deletion interval in days.
      */
     public void setDeletionInterval(long interval) {
-        DatabaseTalker.setDeletionInterval(interval);
+        if (interval <= 0) {
+            throw new IllegalArgumentException("The deletion interval must last at least one day long.");
+        }
+        databaseTalker.setDeletionInterval(interval);
     }
 
 
@@ -92,17 +99,17 @@ public class DashboardManager {
      * @return the deletion interval stored in the database.
      */
     public long getDeletionInterval() {
-        return DatabaseTalker.getDeletionInterval();
+        return databaseTalker.getDeletionInterval();
     }
 
     /**
      * Deletes the dashboard with the specified key from the database.
      * @param key the key of the dashboard with which the delete operation was initiated.
-     * @throws NotFoundException if the key does not exist.
+     * @throws NoSuchElementException if the key does not exist.
      * @throws IllegalAccessException if the key is a view key and not sufficient to allow the deletion of a dashboard.
      */
-    public void deleteDashboard(String key) throws NotFoundException, IllegalAccessException {
-        DatabaseTalker.deleteDashboard(key);
+    public void deleteDashboard(String key) throws NoSuchElementException, IllegalAccessException {
+        databaseTalker.deleteDashboard(key);
     }
 
     /**
@@ -111,7 +118,7 @@ public class DashboardManager {
     @Scheduled(cron = CRON_DAILY)
     private void deleteOldDashboards() {
 
-        List<Dashboard> dashboards = DatabaseTalker.getAllDashboards();
+        Collection<Dashboard> dashboards = databaseTalker.getAllDashboards();
         long deletionInterval = getDeletionInterval();
 
         for (Dashboard dashboard : dashboards) {
@@ -123,8 +130,9 @@ public class DashboardManager {
             if (deletionInterval > interval.getDays()) {
                 try {
                     deleteDashboard(dashboard.getEditKey());
-                } catch (NotFoundException | IllegalAccessException e) {
-                    e.printStackTrace();
+                } catch (NoSuchElementException | IllegalAccessException e) {
+                    LOGGER.warn("The dashboard " + dashboard.getTitle() + "could not be delete, even though it is"
+                            + "older than the current deletion interval.");
                 }
             }
         }

@@ -1,10 +1,10 @@
 package pacr.webapp_backend.dashboard_management.services;
 
-import javassist.NotFoundException;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * This interface is used for storing and accessing
@@ -17,9 +17,9 @@ public interface IDashboardAccess {
     /**
      * @param key The key, with which the dashboard was requested.
      * @return the dashboard with the given view key.
-     * @throws NotFoundException if the dashboard could not be found.
+     * @throws NoSuchElementException if the dashboard could not be found.
      */
-    Dashboard getDashboard(@NotNull String key) throws NotFoundException;
+    Dashboard getDashboard(@NotNull String key) throws NoSuchElementException;
 
     /**
      * @param dashboard the dashboard, which will be added to be database.
@@ -28,22 +28,22 @@ public interface IDashboardAccess {
 
     /**
      * @param editKey The edit key of the dashboard, which will be deleted.
-     * @throws NotFoundException if the dashboard does not exist in the database.
+     * @throws NoSuchElementException if the dashboard does not exist in the database.
      */
-    void deleteDashboard(@NotNull String editKey) throws NotFoundException;
+    void deleteDashboard(@NotNull String editKey) throws NoSuchElementException;
 
     /**
-     * @param id The idkey of the dashboard, which will be deleted.
-     * @throws NotFoundException if the dashboard does not exist in the database.
+     * @param dashboard The dashboard, which will be updated.
+     * @throws NoSuchElementException if the dashboard does not exist in the database.
      */
-    void deleteDashboard(@NotNull int id) throws NotFoundException;
+    void updateDashboard(@NotNull Dashboard dashboard) throws NoSuchElementException;
 
     /**
      * @param key the key, whose type should be returned.
      * @return -1 if no such key exists in the database, 0 if the key is a view key and
      * 1 if the key is an edit key.
      */
-    int checkKeyType(String key);
+    KeyType checkKeyType(String key);
 
     /**
      * Stores the given deletion interval as the new deletion interval.

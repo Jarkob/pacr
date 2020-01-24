@@ -3,6 +3,8 @@ package pacr.webapp_backend.dashboard_management;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,7 +17,7 @@ import java.util.List;
 public class LineDiagramDashboardModule extends DashboardModule {
 
     @ElementCollection
-    List<String> trackedRepositories = new ArrayList<>();
+    Collection<String> trackedRepositories = new ArrayList<>();
 
     @ElementCollection
     List<String> trackedBenchmarks = new ArrayList<>();
@@ -42,7 +44,7 @@ public class LineDiagramDashboardModule extends DashboardModule {
      * @param trackedRepositories The new tracked repositories.
      */
     void setTrackedRepositories(List<String> trackedRepositories) {
-        this.trackedRepositories = trackedRepositories;
+        this.trackedRepositories = List.copyOf(trackedRepositories);
     }
 
     /**
@@ -50,7 +52,7 @@ public class LineDiagramDashboardModule extends DashboardModule {
      * @param trackedBenchmarks The new tracked benchmarks.
      */
     void setTrackedBenchmarks(List<String> trackedBenchmarks) {
-        this.trackedBenchmarks = trackedBenchmarks;
+        this.trackedBenchmarks = List.copyOf(trackedBenchmarks);
     }
 
 

@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class CommitHistoryDashboardModuleTest {
 
-    private static CommitHistoryDashboardModule commitHistoryModule;
+    private CommitHistoryDashboardModule commitHistoryModule;
 
 
     @BeforeEach

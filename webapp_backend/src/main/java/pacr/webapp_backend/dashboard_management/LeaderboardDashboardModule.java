@@ -56,18 +56,10 @@ public class LeaderboardDashboardModule extends DashboardModule {
     }
 
     /**
-     * Deletes the leaderboard of this module to avoid duplicate data in the database,
-     * when storing this leaderboard.
-     */
-    public void deleteLeaderboard() {
-        this.leaderboard = null;
-    }
-
-    /**
      * Sets the benchmark, this leaderboard is assigned to.
      * @param benchmarkName The name of the new benchmark.
      */
-    public void setBenchmarkOfLeaderboard(String benchmarkName) {
+    public void setBenchmarkName(String benchmarkName) {
         this.benchmarkName = benchmarkName;
     }
 

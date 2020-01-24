@@ -12,11 +12,11 @@ public class DashboardModuleTest {
     void setPosition_ValidExtremePositions_ShouldNotThrowException_ShouldSetCorrectValues() {
         DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
-        assertDoesNotThrow(() -> dashboardModule.setPosition(DashboardModule.MAX_POSITION));
-        assertEquals(dashboardModule.getPosition(), DashboardModule.MAX_POSITION);
+        assertDoesNotThrow(() -> dashboardModule.setPosition(DashboardModule.SIZE - 1));
+        assertEquals(dashboardModule.getPosition(), DashboardModule.SIZE - 1);
 
-        assertDoesNotThrow(() -> dashboardModule.setPosition(DashboardModule.MIN_POSITION));
-        assertEquals(dashboardModule.getPosition(), DashboardModule.MIN_POSITION);
+        assertDoesNotThrow(() -> dashboardModule.setPosition(0));
+        assertEquals(dashboardModule.getPosition(), 0);
     }
 
 
@@ -25,7 +25,7 @@ public class DashboardModuleTest {
         DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         assertThrows(IllegalArgumentException.class,
-                () -> dashboardModule.setPosition(DashboardModule.MIN_POSITION - 1));
+                () -> dashboardModule.setPosition(-1));
     }
 
     @Test
@@ -33,7 +33,7 @@ public class DashboardModuleTest {
         DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         assertThrows(IllegalArgumentException.class,
-                () -> dashboardModule.setPosition(DashboardModule.MAX_POSITION + 1));
+                () -> dashboardModule.setPosition(DashboardModule.SIZE));
     }
 
     @Test
@@ -43,11 +43,11 @@ public class DashboardModuleTest {
         dashboardModule.setPosition(7);
         assertEquals(7, dashboardModule.getPosition());
 
-        dashboardModule.setPosition(DashboardModule.MAX_POSITION);
-        assertEquals(dashboardModule.getPosition(), DashboardModule.MAX_POSITION);
+        dashboardModule.setPosition(DashboardModule.SIZE - 1);
+        assertEquals(dashboardModule.getPosition(), DashboardModule.SIZE - 1);
 
-        dashboardModule.setPosition(DashboardModule.MIN_POSITION);
-        assertEquals(dashboardModule.getPosition(), DashboardModule.MIN_POSITION);
+        dashboardModule.setPosition(0);
+        assertEquals(dashboardModule.getPosition(), 0);
     }
 
     @Test
@@ -55,11 +55,11 @@ public class DashboardModuleTest {
         DashboardModuleDummy dashboardModule = new DashboardModuleDummy(3);
         assertEquals(3, dashboardModule.getPosition());
 
-        dashboardModule = new DashboardModuleDummy(DashboardModule.MIN_POSITION);
-        assertEquals(DashboardModule.MIN_POSITION, dashboardModule.getPosition());
+        dashboardModule = new DashboardModuleDummy(0);
+        assertEquals(0, dashboardModule.getPosition());
 
-        dashboardModule = new DashboardModuleDummy(DashboardModule.MAX_POSITION);
-        assertEquals(DashboardModule.MAX_POSITION, dashboardModule.getPosition());
+        dashboardModule = new DashboardModuleDummy(DashboardModule.SIZE - 1);
+        assertEquals(DashboardModule.SIZE - 1, dashboardModule.getPosition());
     }
 
     @Test
