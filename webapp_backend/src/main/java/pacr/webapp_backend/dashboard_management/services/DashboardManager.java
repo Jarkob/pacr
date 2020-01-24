@@ -46,12 +46,6 @@ public class DashboardManager {
         Dashboard dashboard = databaseTalker.getDashboard(key);
         dashboard.updateLastAccess();
 
-        //Store the leaderboards in leaderboard modules.
-        for (LeaderboardDashboardModule ldm : dashboard.getLeaderboardModules()) {
-            String benchmarkName = ldm.getBenchmarkName();
-            ldm.setLeaderboard(leaderboardGetter.getLeaderboard(benchmarkName));
-        }
-
         return dashboard;
     }
 

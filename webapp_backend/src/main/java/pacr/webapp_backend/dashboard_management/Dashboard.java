@@ -182,25 +182,6 @@ public class Dashboard {
     }
 
     /**
-     * @return a collection of all leaderboard modules contained in this dashboard.
-     */
-    public Collection<LeaderboardDashboardModule> getLeaderboardModules() {
-
-        //Get a collection of dashboard modules containing only leaderboard modules.
-        ArrayList<DashboardModule> moduleList = new ArrayList<>(this.modules);
-        moduleList.removeIf(
-                (DashboardModule dm) -> dm == null || (dm.getClass() != LeaderboardDashboardModule.class));
-
-        //Cast that collection to actual leaderboard modules.
-        ArrayList<LeaderboardDashboardModule> leaderboardModuleList = new ArrayList<LeaderboardDashboardModule>();
-        for (DashboardModule dm : moduleList) {
-            leaderboardModuleList.add((LeaderboardDashboardModule) dm);
-        }
-
-        return leaderboardModuleList;
-    }
-
-    /**
      * Sets the last access to now.
      */
     public void updateLastAccess() {

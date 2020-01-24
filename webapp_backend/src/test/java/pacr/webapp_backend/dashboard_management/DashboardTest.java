@@ -5,8 +5,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import net.bytebuddy.pool.TypePool;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import pacr.webapp_backend.leaderboard_management.Leaderboard;
 
+import javax.swing.text.AbstractDocument;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public class DashboardTest {
 
@@ -30,7 +33,7 @@ public class DashboardTest {
         eventModule = new EventDashboardModule();
 
         leaderboardModule = new LeaderboardDashboardModule();
-        leaderboardModule.setBenchmarkName("testBenchmark");
+        leaderboardModule.setLeaderboard(new Leaderboard());
 
         lineDiagramModule = new LineDiagramDashboardModule();
         lineDiagramModule.setTrackedBenchmarks(Arrays.asList("testBenchmark"));
@@ -136,53 +139,6 @@ public class DashboardTest {
         LocalDate now = LocalDate.now();
         dashboard.updateLastAccess();
         assertEquals(now, dashboard.getLastAccess());
-    }
-
-    @Test
-    void getLeaderboardModules_NoModules_SouldReturnEmptyCollection() {
-        assertTrue(dashboard.getLeaderboardModules().isEmpty());
-    }
-
-    @Test
-    void getLeaderboardModules_NoLeaderboardModules_ShouldReturnEmptyCollection() {
-        dashboard.addModule(commitHistoryModule);
-        dashboard.addModule(eventModule);
-        dashboard.addModule(lineDiagramModule);
-        dashboard.addModule(queueModule);
-
-        assertTrue(dashboard.getLeaderboardModules().isEmpty());
-    }
-
-    @Test
-    void getLeaderboardModules_OnlyContainsLeaderboardModule_ShouldReturnCollectionWithLeaderboardModule() {
-        dashboard.addModule(leaderboardModule);
-
-        assertTrue(dashboard.getLeaderboardModules().contains(leaderboardModule));
-    }
-
-    @Test
-    void getLeaderboardModules_ContainsLeaderboardModule_ShouldReturnCollectionWithLeaderboardModule() {
-        dashboard.addModule(commitHistoryModule);
-        dashboard.addModule(eventModule);
-        dashboard.addModule(lineDiagramModule);
-        dashboard.addModule(queueModule);
-        dashboard.addModule(leaderboardModule);
-
-        assertTrue(dashboard.getLeaderboardModules().contains(leaderboardModule));
-    }
-
-    @Test
-    void getLeaderboardModules_ContainsManyLeaderboardModules_ShouldReturnCollectionWithLeaderboardModules() {
-        ArrayList<LeaderboardDashboardModule> ldmList = new ArrayList<LeaderboardDashboardModule>();
-
-        for (int i = 0; i < 15; i++) {
-            LeaderboardDashboardModule ldm = new LeaderboardDashboardModule();
-            ldm.setBenchmarkName("testBenchmark");
-            dashboard.addModule(ldm);
-            ldmList.add(ldm);
-        }
-
-        assertTrue(dashboard.getLeaderboardModules().containsAll(ldmList));
     }
 
     @Test

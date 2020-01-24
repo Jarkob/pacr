@@ -1,6 +1,23 @@
 package pacr.webapp_backend.shared;
 
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+
+/**
+ * This class provides an interface for using abstract leaderborads from other components,
+ * than the leaderboard component.
+ * It should be an interface. Only because of technical limitations regarding storing it in the database,
+ * we decide do make it an abstract class.
+ *
+ * @author Benedikt Hahn
+ */
 //TODO
-public interface ILeaderboard {
+@Entity
+public abstract class ILeaderboard {
+
+    @Id
+    String benchmarkName;
+
 }
