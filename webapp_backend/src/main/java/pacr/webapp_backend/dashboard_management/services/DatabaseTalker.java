@@ -96,7 +96,8 @@ public class DatabaseTalker {
         if (keyType == KeyType.INVALID_KEY) {
             throw new NoSuchElementException("The key " + key + "does not belong to an existing dashboard.");
         } else {
-            Dashboard dashboard = dashboardAccess.getDashboard(key);
+            Dashboard dashboard = keyType == KeyType.VIEW_KEY ? dashboardAccess.findByViewKey(key)
+                    : dashboardAccess.findByEditKey(key);
             if (keyType == KeyType.VIEW_KEY) {
                 dashboard.prepareForViewAccess();
             }

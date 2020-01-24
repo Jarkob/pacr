@@ -6,10 +6,4 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EventDashboardModuleTest {
 
-    @Test
-    void constructor_NoArguments_ShouldHaveInvalidState() {
-        EventDashboardModule eventModule = new EventDashboardModule();
-
-        assertThrows(IllegalStateException.class, eventModule::getPosition);
-    }
 }

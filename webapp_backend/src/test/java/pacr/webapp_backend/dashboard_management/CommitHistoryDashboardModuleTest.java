@@ -16,34 +16,20 @@ public class CommitHistoryDashboardModuleTest {
     @BeforeEach
     void init() {
 
-        commitHistoryModule = new CommitHistoryDashboardModule(4);
+        commitHistoryModule = new CommitHistoryDashboardModule();
     }
 
-
-    @Test
-    void constructor_NoArguments_ShouldHaveInvalidState() {
-        CommitHistoryDashboardModule chdm = new CommitHistoryDashboardModule();
-
-        assertThrows(IllegalStateException.class, chdm::getPosition);
-    }
 
     @Test
     void equals_DifferentClass_ShouldReturnFalse() {
-        QueueDashboardModule queueModule = new QueueDashboardModule(4);
+        QueueDashboardModule queueModule = new QueueDashboardModule();
 
         assertNotEquals(commitHistoryModule, queueModule);
     }
 
     @Test
-    void equals_DifferentPosition_ShouldReturnFalse() {
-        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule(7);
-
-        assertNotEquals(commitHistoryModule, otherCommitHistoryModule);
-    }
-
-    @Test
     void equals_DifferentRepositories_ShouldReturnFalse() {
-        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule(4);
+        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
 
         commitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository"));
         otherCommitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository 2"));
@@ -55,7 +41,7 @@ public class CommitHistoryDashboardModuleTest {
     void equals_SameRepositories_ShouldReturnTrue() {
         final String REPOSITORY_NAME = "test repository";
 
-        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule(4);
+        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
 
         commitHistoryModule.setTrackedRepositories(Arrays.asList(REPOSITORY_NAME));
         otherCommitHistoryModule.setTrackedRepositories(Arrays.asList(REPOSITORY_NAME));

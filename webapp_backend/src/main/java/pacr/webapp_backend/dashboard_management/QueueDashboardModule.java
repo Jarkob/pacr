@@ -18,12 +18,4 @@ public class QueueDashboardModule extends DashboardModule {
 
     }
 
-    /**
-     * Creates a new module, with an initial position.
-     * @param position the initial position.
-     */
-    QueueDashboardModule(int position) {
-        super(position);
-    }
-
 }

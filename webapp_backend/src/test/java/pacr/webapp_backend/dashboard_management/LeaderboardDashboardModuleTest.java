@@ -12,16 +12,8 @@ public class LeaderboardDashboardModuleTest {
 
     @BeforeEach
     void init() {
-        leaderboardModule = new LeaderboardDashboardModule(12);
+        leaderboardModule = new LeaderboardDashboardModule();
     }
-
-    @Test
-    void constructor_NoArguments_ShouldHaveInvalidState() {
-        LeaderboardDashboardModule leadModule = new LeaderboardDashboardModule();
-
-        assertThrows(IllegalStateException.class, leadModule::getPosition);
-    }
-
     @Test
     void setBenchmarkName_SomeName_ShouldSetTheName() {
         final String BENCHMARK_NAME = "someName";
@@ -40,21 +32,13 @@ public class LeaderboardDashboardModuleTest {
 
     @Test
     void equals_DifferentClass_ShouldReturnFalse() {
-        QueueDashboardModule queueModule = new QueueDashboardModule(12);
+        QueueDashboardModule queueModule = new QueueDashboardModule();
 
         assertNotEquals(leaderboardModule, queueModule);
     }
-
-    @Test
-    void equals_DifferentPosition_ShouldReturnFalse() {
-        LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule(2);
-
-        assertNotEquals(leaderboardModule, otherLeaderboardModule);
-    }
-
     @Test
     void equals_DifferentBenchmark_ShouldReturnFalse() {
-        LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule(12);
+        LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule();
 
         leaderboardModule.setBenchmarkName("testBenchmark");
         otherLeaderboardModule.setBenchmarkName("otherTestBenchmark");
@@ -66,7 +50,7 @@ public class LeaderboardDashboardModuleTest {
     void equals_SameBenchmarks_ShouldReturnTrue() {
         final String BENCHMARK_NAME = "some benchmark";
 
-        LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule(12);
+        LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule();
 
         leaderboardModule.setBenchmarkName(BENCHMARK_NAME);
         otherLeaderboardModule.setBenchmarkName(BENCHMARK_NAME);

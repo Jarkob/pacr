@@ -20,12 +20,4 @@ public class EventDashboardModule extends DashboardModule {
 
     }
 
-    /**
-     * Creates a new module, with an initial position.
-     * @param position the initial position.
-     */
-    EventDashboardModule(int position) {
-        super(position);
-    }
-
 }

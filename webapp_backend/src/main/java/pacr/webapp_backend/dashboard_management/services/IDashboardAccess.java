@@ -15,11 +15,16 @@ import java.util.NoSuchElementException;
 public interface IDashboardAccess {
 
     /**
-     * @param key The key, with which the dashboard was requested.
-     * @return the dashboard with the given view key.
-     * @throws NoSuchElementException if the dashboard could not be found.
+     * @param editKey The edit key, with which the dashboard was requested.
+     * @return the dashboard with the given edit key.
      */
-    Dashboard getDashboard(@NotNull String key) throws NoSuchElementException;
+    Dashboard findByEditKey(@NotNull String editKey);
+
+    /**
+     * @param viewKey The view key, with which the dashboard was requested.
+     * @return the dashboard with the given view key.
+     */
+    Dashboard findByViewKey(@NotNull String viewKey);
 
     /**
      * @param dashboard the dashboard, which will be added to be database.

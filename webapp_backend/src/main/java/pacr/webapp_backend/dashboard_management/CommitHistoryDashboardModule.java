@@ -25,14 +25,6 @@ public class CommitHistoryDashboardModule extends DashboardModule {
     }
 
     /**
-     * Creates a new module, with an initial position.
-     * @param position the initial position.
-     */
-    CommitHistoryDashboardModule(int position) {
-        super(position);
-    }
-
-    /**
      * Sets the tracked repositories to the given list of repository names.
      * @param trackedRepositories The new tracked repositories.
      */

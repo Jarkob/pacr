@@ -15,12 +15,13 @@ import java.util.NoSuchElementException;
 
 //TODO
 @Component
-public interface DashboardDB extends CrudRepository<BenchmarkGroup, Integer>, IDashboardAccess {
+public interface DashboardDB extends CrudRepository<Dashboard, Integer>, IDashboardAccess {
 
     @Override
-    default Dashboard getDashboard(@NotNull String key) throws NoSuchElementException  {
-        return null;
-    }
+    Dashboard findByEditKey(String editKey);
+
+    @Override
+    Dashboard findByViewKey(String viewKey);
 
     @Override
     default List<Dashboard> getAllDashboards() {

@@ -30,14 +30,6 @@ public class LineDiagramDashboardModule extends DashboardModule {
 
     }
 
-    /**
-     * Creates a new module, with an initial position.
-     * @param position the initial position.
-     */
-    LineDiagramDashboardModule(int position) {
-        super(position);
-    }
-
 
     /**
      * Sets the tracked repositories to the given list of repository names.
@@ -66,10 +58,7 @@ public class LineDiagramDashboardModule extends DashboardModule {
 
         LineDiagramDashboardModule otherModule = (LineDiagramDashboardModule) o;
 
-        if (this.trackedRepositories.equals(otherModule.trackedRepositories)
-            && this.trackedBenchmarks.equals(otherModule.trackedBenchmarks)) {
-            return true;
-        }
-        return false;
+        return this.trackedRepositories.equals(otherModule.trackedRepositories)
+                && this.trackedBenchmarks.equals(otherModule.trackedBenchmarks);
     }
 }

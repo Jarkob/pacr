@@ -25,14 +25,6 @@ public class LeaderboardDashboardModule extends DashboardModule {
     }
 
     /**
-     * Creates a new module, with an initial position.
-     * @param position the initial position.
-     */
-    LeaderboardDashboardModule(int position) {
-        super(position);
-    }
-
-    /**
      * @return the name of the benchmark tracked in this leaderboard.
      */
     public String getBenchmarkName() {
@@ -72,10 +64,6 @@ public class LeaderboardDashboardModule extends DashboardModule {
 
         LeaderboardDashboardModule otherModule = (LeaderboardDashboardModule) o;
 
-        if (benchmarkName.equals(otherModule.benchmarkName)) {
-            return true;
-        }
-
-        return false;
+        return benchmarkName.equals(otherModule.benchmarkName);
     }
 }

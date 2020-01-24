@@ -67,14 +67,10 @@ public class Dashboard {
             throw new IllegalArgumentException("The dashboard title '" + title + "' must not be null, empty or blank.");
         }
         this.title = title;
-        for (int i = 0; i < SIZE; i++) {
-            this.modules.add(null);
-        }
     }
 
     /**
-     * Adds a module to the dashboard, if its position is valid and
-     * its position is not occupied.
+     * Adds a module to the dashboard, if the dashboard is not full.
      * @param module    The module that will be added.
      */
     public void addModule(@NotNull DashboardModule module) {
@@ -82,18 +78,26 @@ public class Dashboard {
         Objects.requireNonNull(module, "The dashboard module must not be null.");
         int position;
 
-        try {
-            position = module.getPosition();
-        } catch (IllegalStateException e) {
-            throw new IllegalArgumentException(e.getMessage());
+        if (modules.size() == SIZE) {
+            throw new DashboardFullException();
         }
 
-        if (modules.get(position) != null) {
-            throw new IllegalArgumentException("The given dashboard module position "
-                                                + position + " is already occupied.");
+        modules.add(module);
+    }
+
+    /**
+     * Adds a module to the dashboard at the specified position, if the dashboard is not full.
+     * @param module    The module that will be added.
+     * @param position  The position, at which the module will be added.
+     */
+    public void addModule(@NotNull DashboardModule module, int position) {
+        Objects.requireNonNull(module, "The dashboard module must not be null.");
+
+        if (modules.size() == SIZE) {
+            throw new DashboardFullException();
         }
 
-        modules.set(position, module);
+        modules.add(position, module);
     }
 
     /**
@@ -103,18 +107,9 @@ public class Dashboard {
      * @return {@code true} if the module was removed and {@code false} else.
      */
     public boolean removeModule(@NotNull DashboardModule module) {
-        if (module == null) {
-            return false;
-        }
+        Objects.requireNonNull(module, "The dashboard module must not be null.");
 
-        boolean moduleWasRemoved = false;
-
-        DashboardModule currentModuleAtPosition = modules.get(module.getPosition());
-
-        if (currentModuleAtPosition != null && currentModuleAtPosition.equals(module)) {
-            moduleWasRemoved = removeModule(currentModuleAtPosition.getPosition());
-        }
-        return moduleWasRemoved;
+        return modules.remove(module);
     }
 
     /**
@@ -124,19 +119,17 @@ public class Dashboard {
      * @return {@code true} if the module at position could be removed and {@code false} else.
      */
     public boolean removeModule(int position) {
-        if (position < 0 || position > SIZE - 1) {
-            throw new IllegalArgumentException("Dashboards only allow positioning in the range "
-                    + "[" + 0 + "," + (SIZE - 1) + "].");
+        if (position >= SIZE || position < 0) {
+            throw new IndexOutOfBoundsException("Dashboard modules can only be positioned in the range"
+                    +  " [0," + (SIZE - 1) + "].");
         }
 
-        boolean moduleWasRemoved = false;
-
-        if (modules.get(position) != null) {
-            modules.set(position, null);
-            moduleWasRemoved = true;
+        try {
+            modules.remove(position);
+        } catch (IndexOutOfBoundsException e) {
+            return false;
         }
-
-        return moduleWasRemoved;
+        return true;
     }
 
 

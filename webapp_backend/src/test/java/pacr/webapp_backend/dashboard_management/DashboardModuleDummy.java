@@ -7,8 +7,4 @@ public class DashboardModuleDummy extends DashboardModule {
         super();
     }
 
-    DashboardModuleDummy(int position) {
-        super(position);
-    }
-
 }

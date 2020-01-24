@@ -24,49 +24,55 @@ public class DashboardTest {
         dashboard = new Dashboard("test");
         noNameDashboard = new Dashboard();
 
-        commitHistoryModule = new CommitHistoryDashboardModule(1);
+        commitHistoryModule = new CommitHistoryDashboardModule();
         commitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository"));
 
-        eventModule = new EventDashboardModule(2);
+        eventModule = new EventDashboardModule();
 
-        leaderboardModule = new LeaderboardDashboardModule(3);
+        leaderboardModule = new LeaderboardDashboardModule();
         leaderboardModule.setBenchmarkName("testBenchmark");
 
-        lineDiagramModule = new LineDiagramDashboardModule(4);
+        lineDiagramModule = new LineDiagramDashboardModule();
         lineDiagramModule.setTrackedBenchmarks(Arrays.asList("testBenchmark"));
         lineDiagramModule.setTrackedRepositories(Arrays.asList("testRepository"));
 
-        queueModule = new QueueDashboardModule(5);
+        queueModule = new QueueDashboardModule();
     }
 
     @Test
     void addModule_ValidPositionsOnDashboard_ShouldNotThrowException() {
-        DashboardModuleDummy dashboardModule1 = new DashboardModuleDummy(0);
-        DashboardModuleDummy dashboardModule2 = new DashboardModuleDummy(4);
-        DashboardModuleDummy dashboardModule3 = new DashboardModuleDummy(5);
-        DashboardModuleDummy dashboardModule4 = new DashboardModuleDummy(14);
 
-        assertDoesNotThrow(() -> dashboard.addModule(dashboardModule1));
-        assertDoesNotThrow(() -> dashboard.addModule(dashboardModule2));
-        assertDoesNotThrow(() -> dashboard.addModule(dashboardModule3));
-        assertDoesNotThrow(() -> dashboard.addModule(dashboardModule4));
-    }
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
 
-
-    @Test
-    void addModule_OverloadPositionOnDashboard_ShouldThrowException() {
-        DashboardModuleDummy dashboardModule1 = new DashboardModuleDummy(8);
-        DashboardModuleDummy dashboardModule2 = new DashboardModuleDummy(8);
-
-        dashboard.addModule(dashboardModule1);
-        assertThrows(IllegalArgumentException.class, () -> dashboard.addModule(dashboardModule2));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy(), 0));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy(), 5));
     }
 
     @Test
-    void addModule_UninitializedDashboardModule_ShouldThrowException() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
+    void addModule_InvalidPositionsOnDashboard_ShouldThrowException() {
 
-        assertThrows(IllegalArgumentException.class, () -> dashboard.addModule(dashboardModule));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
+        assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
+
+        assertThrows(IndexOutOfBoundsException.class,
+                () -> dashboard.addModule(new DashboardModuleDummy(), -1));
+        assertThrows(IndexOutOfBoundsException.class,
+                () -> dashboard.addModule(new DashboardModuleDummy(), 6));
+    }
+
+    @Test
+    void addModule_FullDashboard_ShouldThrowException() {
+        for (int i = 0; i < Dashboard.SIZE; i++) {
+            dashboard.addModule(new DashboardModuleDummy());
+        }
+
+        assertThrows(DashboardFullException.class, () -> dashboard.addModule(new DashboardModuleDummy()));
+        assertThrows(DashboardFullException.class, () -> dashboard.addModule(new DashboardModuleDummy(), 7));
     }
 
     @Test
@@ -74,11 +80,12 @@ public class DashboardTest {
         DashboardModuleDummy dashboardModule = null;
 
         assertThrows(NullPointerException.class, () -> dashboard.addModule(dashboardModule));
+        assertThrows(NullPointerException.class, () -> dashboard.addModule(dashboardModule, 4));
     }
 
     @Test
     void removeModule_EmptyPositionGiven_ShouldReturnFalse() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy(6);
+        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
         assertFalse(dashboard.removeModule(7));
@@ -86,40 +93,32 @@ public class DashboardTest {
 
     @Test
     void removeModule_NonEmptyPositionGiven_ShouldReturnTrue() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy(3);
+        dashboard.addModule(new DashboardModuleDummy());
+        dashboard.addModule(new DashboardModuleDummy());
+        dashboard.addModule(new DashboardModuleDummy());
 
-        dashboard.addModule(dashboardModule);
-        assertTrue(dashboard.removeModule(3));
+        assertTrue(dashboard.removeModule(2));
     }
 
     @Test
     void removeModule_PositionTooSmallGiven_ShouldThrowException() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy(0);
+        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
-        assertThrows(IllegalArgumentException.class, () -> dashboard.removeModule(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> dashboard.removeModule(-1));
     }
 
     @Test
     void removeModule_PositionTooBigGiven_ShouldThrowException() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy(14);
+        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
-        assertThrows(IllegalArgumentException.class, () -> dashboard.removeModule(15));
-    }
-
-    @Test
-    void removeModule_NonExistingDashboardModuleGiven_ShouldReturnFalse() {
-        DashboardModuleDummy dashboardModule1 = new DashboardModuleDummy(0);
-        DashboardModuleDummy dashboardModule2 = new DashboardModuleDummy(14);
-
-        dashboard.addModule(dashboardModule1);
-        assertFalse(dashboard.removeModule(dashboardModule2));
+        assertThrows(IndexOutOfBoundsException.class, () -> dashboard.removeModule(15));
     }
 
     @Test
     void removeModule_ExistingDashboardModuleGiven_ShouldReturnTrue() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy(0);
+        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
         assertTrue(dashboard.removeModule(dashboardModule));
@@ -129,7 +128,7 @@ public class DashboardTest {
     void removeModule_NullDashboardModuleGiven_ShouldReturnFalse() {
         DashboardModuleDummy dashboardModule = null;
 
-        assertFalse(dashboard.removeModule(dashboardModule));
+        assertThrows(NullPointerException.class, () -> dashboard.removeModule(dashboardModule));
     }
 
     @Test
@@ -177,7 +176,7 @@ public class DashboardTest {
         ArrayList<LeaderboardDashboardModule> ldmList = new ArrayList<LeaderboardDashboardModule>();
 
         for (int i = 0; i < 15; i++) {
-            LeaderboardDashboardModule ldm = new LeaderboardDashboardModule(i);
+            LeaderboardDashboardModule ldm = new LeaderboardDashboardModule();
             ldm.setBenchmarkName("testBenchmark");
             dashboard.addModule(ldm);
             ldmList.add(ldm);
