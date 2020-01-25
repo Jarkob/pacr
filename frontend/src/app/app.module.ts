@@ -33,6 +33,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,7 @@ import { HttpClientModule } from '@angular/common/http';
     AcademicDashboardComponent,
     CompetitiveDashboardComponent,
     JobQueueComponent,
-    BenchmarkerListComponent
+    BenchmarkerListComponent,
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
@@ -63,6 +64,7 @@ import { HttpClientModule } from '@angular/common/http';
     BrowserAnimationsModule,
     MaterialModule,
     ChartsModule,
+    CommonModule,
     HttpClientModule,
     FlexLayoutModule
   ],

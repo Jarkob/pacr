@@ -42,10 +42,12 @@ export class BenchmarkingResultService {
   }
 
   /**
-   * get all benchmarking results for one benchmark
-   * @param name the name of the benchmark
+   * get all benchmarking results for one benchmark, one repository and one branch
+   * @param benchmark the name of the benchmark
+   * @param repository the name of the repository
+   * @param branch the branch
    */
-  public getBenchmarkingResultsForBenchmark(name: string): Observable<any> {
+  public getBenchmarkingResults(benchmark: string, repository: string, branch: string): Observable<any> {
     // return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/benchmark/' + name);
     return this.mockService.getBenchmarkingResults();
   }

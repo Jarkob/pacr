@@ -1,29 +1,34 @@
 <mat-card>
-    <mat-card-header>
-        <mat-form-field>
-            <mat-label>Benchmark</mat-label>
-            <mat-select [(value)]="selectedBenchmark" (selectionChange)="loadBenchmark()">
-                <mat-option required *ngFor="let benchmark of benchmarks" [value]="benchmark">
-                    {{ benchmark.customName }}
-                </mat-option>
-            </mat-select> 
-        </mat-form-field>
-        <button mat-button (click)="loadMockData()">Load Mock</button>
-        
-        <!-- Push button to the right -->
-        <div fxFlex></div>
-        
-        <button mat-mini-fab *ngIf="!this.maximized" (click)="maximizeDiagram()">
-            <mat-icon>fullscreen</mat-icon>
-        </button>
-    </mat-card-header>
+    <button class="maximize-button" mat-mini-fab *ngIf="!this.maximized" (click)="maximizeDiagram()">
+        <mat-icon>fullscreen</mat-icon>
+    </button>
+    <div fxLayout="row" fxFlexFill>
+        <div fxFlex="15%">
+            <mat-form-field>
+                <mat-label>Benchmark</mat-label>
+                <mat-select [(value)]="selectedBenchmark" (selectionChange)="loadBenchmark()">
+                    <mat-optgroup *ngFor="let group of this.benchmarks | keyvalue" [label]="group.key">
+                        <mat-option *ngFor="let benchmark of group.value" [value]="benchmark.originalName">
+                            {{ benchmark.customName }}
+                        </mat-option>
+                    </mat-optgroup>
+                </mat-select> 
+            </mat-form-field>
+            <button mat-button (click)="loadMockData()">Load Mock</button>
+            <ul *ngIf="this.legendData">
+                <li *ngFor="let legendItem of this.legendData">
+                    <mat-checkbox>{{ legendItem.repository }} / {{ legendItem.branch }}</mat-checkbox>
+                </li>
+            </ul>
 
-    <canvas baseChart
+        </div>
+        <canvas fxFlex="85%" #diagram baseChart
         [datasets]="datasets"
         [labels]="labels"
         [options]="options"
         [legend]="legend"
         [chartType]="type"
-        [plugins]="plugins"></canvas>
+        [plugins]="plugins">
+        </canvas>
+    </div>
 </mat-card>
-    

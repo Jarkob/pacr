@@ -1,3 +1,4 @@
+import { Dataset } from './../classes/dataset';
 import { DiagramMaximizerService } from './diagram-maximizer.service';
 import { DiagramMaximizedRef } from './diagram-maximized-ref';
 import { BenchmarkingResult } from './../classes/benchmarking-result';
@@ -12,6 +13,8 @@ import { BenchmarkService } from '../services/benchmark.service';
 import { DiagramService } from '../services/diagram.service';
 import * as Chart from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
+import { BenchmarkGroup } from '../classes/benchmark-group';
+import { LegendItem } from '../classes/legend-item';
 
 /**
  * displays benchmarking results in a line diagram
@@ -30,13 +33,23 @@ export class DiagramComponent implements OnInit {
     private benchmarkingResultService: BenchmarkingResultService,
     private repositoryService: RepositoryService,
     private benchmarkService: BenchmarkService,
-    private diagramService: DiagramService
+    private diagramService: DiagramService,
   ) { }
 
+  /**
+   * data
+   */
   repositories: Repository[];
-  benchmarks: Benchmark[];
+  benchmarkGroups: BenchmarkGroup[];
+  benchmarks: Map<string, Benchmark[]> = new Map<string, Benchmark[]>();
   repositoryResults: Map<string, BenchmarkingResult[]> = new Map<string, BenchmarkingResult[]>();
   selectedBenchmark: Benchmark;
+
+  // TODO fix types
+  commits: any;
+  lists: any[];
+
+
   @Input() maximized: boolean;
   dialogRef: DiagramMaximizedRef;
 
@@ -86,9 +99,30 @@ export class DiagramComponent implements OnInit {
       },
     },
     legend: {
+      position: 'left',
+      align: 'start',
+      onClick: (evt, item) => {
+        // FIXME doesn#t work
+        console.log('selected ', item);
+      },
+      labels: {
+        boxWidth: 12
+      },
       display: false
     },
+    legendCallback: this.legendCallback,
     onClick: (evt, item) => {
+      console.log('evt: ', evt);
+    //   var index = legendItem.datasetIndex;
+    //   var ci = this.chart;
+    //   var meta = ci.getDatasetMeta(index);
+
+    //   // See controller.isDatasetVisible comment
+    //   meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
+
+    // // We hid a dataset ... rerender the chart
+    // ci.update();
+
       this.deleteLine();
       // if items were selected
       if (item.length !== 0) {
@@ -105,10 +139,9 @@ export class DiagramComponent implements OnInit {
   labels = [];
   type = 'line';
   legend = true;
-  datasets = [
-    {data: [], code: [], label: 'no data', fill: false, lineTension: 0},
-  ];
+  datasets: Dataset[] = [{data: [], code: [], label: 'no data', fill: false, lineTension: 0, branch: '', repository: ''}];
   plugins = [ChartAnnotation];
+  legendData: any;
 
 
   ngOnInit() {
@@ -116,15 +149,13 @@ export class DiagramComponent implements OnInit {
       this.selectedBenchmark = this.inSelectedBenchmark;
     }
 
+    this.getBenchmarkGroups();
     this.getRepositories();
 
-    // get mock
-    // and branch!
-    this.benchmarkingResultService.getBenchmarkingResultsForBenchmark('test').subscribe(
-      data => {
-        this.commits = data;
-      }
-    );
+    // get mock data
+    this.benchmarkingResultService.getBenchmarkingResults('', '', '').subscribe(data => {
+      this.commits = data;
+    });
   }
 
   /**
@@ -143,7 +174,6 @@ export class DiagramComponent implements OnInit {
    * select a benchmark to be displayed in the diagram
    */
   public loadBenchmark(): void {
-    console.log(this.selectedBenchmark.customName);
     if (this.selectedBenchmark == null) {
       return;
     }
@@ -158,18 +188,18 @@ export class DiagramComponent implements OnInit {
       benchmarkingResults.forEach(benchmarkingResult => {
         benchmarkingResult.groups.forEach(group => {
           // tslint:disable-next-line:no-shadowed-variable
-          group.benchmarks.forEach(element => {
-            if (element.originalName === this.selectedBenchmark.originalName) {
-              dataset.data.push({
-                  x: benchmarkingResult.commitCommitDate,
-                  y: element.results[0].mean,
-                });
-              dataset.code.push({
-                sha: benchmarkingResult.commitHash,
-                val: element.results[0].mean
-              });
-            }
-          });
+          // group.benchmarks.forEach(element => {
+          //   if (element.originalName === this.selectedBenchmark.originalName) {
+          //     dataset.data.push({
+          //         x: benchmarkingResult.commitCommitDate,
+          //         y: element.results[0].mean,
+          //       });
+          //     dataset.code.push({
+          //       sha: benchmarkingResult.commitHash,
+          //       val: element.results[0].mean
+          //     });
+          //   }
+          // });
         });
       });
       // TODO sorting breaks code array, should be externally
@@ -178,8 +208,11 @@ export class DiagramComponent implements OnInit {
       //   const y = new Date(b.x);
       //   return x > y ? -1 : x < b ? 1 : 0;
       // });
-      this.datasets.push(dataset);
+
+      // this.datasets.push(dataset);
     }
+    this.legendData = this.chart.chart.generateLegend();
+    this.chart.update();
   }
 
   public loadMockData() {
@@ -187,10 +220,12 @@ export class DiagramComponent implements OnInit {
     const newestCommit = this.getNewestCommit(this.commits);
     this.lists = [];
     const empty = [];
-    this.dfs(newestCommit, empty);
+    if (newestCommit) {
+      this.dfs(newestCommit, empty);
+    }
     let index = 0;
     for (const list of this.lists) {
-      const dataset = {data: [], code: [], label: '' + index++, fill: false, lineTension: 0};
+      const dataset: Dataset = {data: [], code: [], label: '' + index++, fill: false, lineTension: 0, repository: 'test', branch: 'master'};
       for (const commit of list) {
         dataset.data.push({
           x: commit.commitDate,
@@ -203,12 +238,12 @@ export class DiagramComponent implements OnInit {
       }
       this.datasets.push(dataset);
     }
+
+    this.legendData = this.chart.chart.generateLegend();
+    this.chart.update();
+    this.legendData = this.chart.chart.generateLegend();
   }
 
-  // tslint:disable-next-line:member-ordering
-  commits: any;
-  // tslint:disable-next-line:member-ordering
-  lists: any[];
 
   private dfs(current, list: any[]) {
     list.push(current);
@@ -264,48 +299,58 @@ export class DiagramComponent implements OnInit {
     this.chart.update();
   }
 
+  private legendCallback(currentChart: any): any {
+    const legend: LegendItem[] = [];
+    console.log(currentChart.data);
+    console.log(currentChart.data.datasets);
+    for (const dataset of currentChart.data.datasets) {
+      legend.push({
+        repository: dataset.repository,
+        branch: dataset.branch,
+        datasetIndex: dataset.index
+      });
+    }
+    console.log('legend: ', legend);
+    return legend;
+  }
+
   private getRepositories(): void {
     this.repositoryService.getAllRepositories().subscribe(
       data => {
         this.repositories = data;
-        this.getBenchmarkingResults();
+        // this.getBenchmarkingResults();
       }
     );
+  }
+
+  private getBenchmarkGroups(): void {
+    this.benchmarkService.getAllGroups().subscribe(data => {
+      this.benchmarkGroups = data;
+      this.getBenchmarks();
+    });
   }
 
   private getBenchmarks(): void {
-    this.benchmarkService.getAllBenchmarks().subscribe(
-      data => {
-        this.benchmarks = data;
+    this.benchmarkGroups.forEach(group => {
+      this.benchmarkService.getBenchmarksByGroup(group.id).subscribe(
+        data => this.benchmarks.set(group.name, data)
+      );
+    });
 
-        if (this.benchmarks.length > 0 && this.selectedBenchmark == null) {
-          this.selectedBenchmark = this.benchmarks[0];
-        }
-
-        this.loadBenchmark();
-      }
-    );
-
-    // for mocking purposes
-    this.benchmarks = [];
-    for (const [repository, benchmarkingResults] of this.repositoryResults) {
-      benchmarkingResults.forEach(benchmarkingResult => {
-        benchmarkingResult.groups.forEach(group => {
-          group.benchmarks.forEach(el => {
-            this.benchmarks.push(el);
-          });
-        });
-      });
-    }
+    // if (this.benchmarks.length > 0 && this.selectedBenchmark == null) {
+    //   this.selectedBenchmark = this.benchmarks[0];
+    // }
+    // this.loadBenchmark();
   }
 
+  // @Deprecated should not be used
   private getBenchmarkingResults(): void {
     this.repositories.forEach(repository => {
       this.benchmarkingResultService.getBenchmarkingResultsFromRepository(repository.name)
       .subscribe(
         data => {
           this.repositoryResults.set(repository.name, data);
-          this.getBenchmarks();
+          // this.getBenchmarks();
         }
       );
     });

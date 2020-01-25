@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Benchmark } from '../classes/benchmark';
+import { BenchmarkGroup } from '../classes/benchmark-group';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -26,10 +27,17 @@ export class BenchmarkService {
   }
 
   /**
+   * get all benchmarks from a specific group
+   */
+  public getBenchmarksByGroup(id: number): Observable<Benchmark[]> {
+    return this.http.get<Benchmark[]>(this.globalService.url + '/benchmarks/' + id);
+  }
+
+  /**
    * get all benchmark groups
    */
-  public getAllGroups(): Observable<Benchmark[][]> {
-    return this.http.get<Benchmark[][]>(this.globalService.url + '/groups');
+  public getAllGroups(): Observable<BenchmarkGroup[]> {
+    return this.http.get<BenchmarkGroup[]>(this.globalService.url + '/groups');
   }
 
   /**

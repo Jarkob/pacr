@@ -1,4 +1,20 @@
 mat-card {
     height: 100%;
-    padding-bottom: 4em;
+}
+
+canvas {
+    height: 100%;
+}
+
+.maximize-button {
+    position: absolute;
+    right: 1em;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+ul, li {
+    list-style-type: none;
 }
