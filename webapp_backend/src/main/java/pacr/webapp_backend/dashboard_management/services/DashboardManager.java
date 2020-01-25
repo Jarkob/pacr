@@ -4,7 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.KeysAlreadyInitializedException;
 import pacr.webapp_backend.shared.ILeaderboardGetter;
@@ -23,7 +23,7 @@ import java.util.UUID;
  *
  * @author Benedikt Hahn
  */
-@Component
+@Controller
 public class DashboardManager {
     private static final Logger LOGGER = LogManager.getLogger(DashboardManager.class);
 
@@ -35,9 +35,12 @@ public class DashboardManager {
 
     /**
      * Creates a new dashboard manager.
+     * @param leaderboardGetter the {@code LeaderboardGetter}, which this dashboard manager can get leaderboards from.
+     * @param databaseTalker the {@link DatabaseTalker}, which gives this dashboard manager access to the database.
      */
-    public DashboardManager() {
-
+    public DashboardManager(@NotNull ILeaderboardGetter leaderboardGetter, @NotNull DatabaseTalker databaseTalker) {
+        this.leaderboardGetter = leaderboardGetter;
+        this.databaseTalker = databaseTalker;
     }
 
     /**

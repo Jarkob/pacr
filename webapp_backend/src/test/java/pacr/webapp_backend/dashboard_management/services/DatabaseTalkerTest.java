@@ -8,7 +8,6 @@ public class DatabaseTalkerTest {
 
     @BeforeEach
     void init() {
-        databaseTalker = new DatabaseTalker();
     }
 
     //TODO when DashboardDB has been implemented.

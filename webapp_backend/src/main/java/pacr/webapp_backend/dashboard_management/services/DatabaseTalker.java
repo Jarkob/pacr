@@ -1,14 +1,18 @@
 package pacr.webapp_backend.dashboard_management.services;
 
+import org.springframework.stereotype.Service;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 /**
  * Communicates with the database and has methods for tasks,
  * where database access is required.
  */
+@Service
 public class DatabaseTalker {
 
     IDashboardAccess dashboardAccess;
@@ -18,12 +22,17 @@ public class DatabaseTalker {
     static final long DEFAULT_DELETION_INTERVAL = 10L;
 
     /**
-     * Empty constructor for jpa.
+     * Creates a new database talker.
+     * @param dashboardAccess The object, implementing {@link IDashboardAccess}, which allows access to dashboards in
+     *                        the database.
+     * @param deletionIntervalAccess The object, implementing {@link IDeletionIntervalAccess}, which allows access
+     *                               to dashboards in the database.
      */
-    public DatabaseTalker() {
-    }
+    public DatabaseTalker(@NotNull IDashboardAccess dashboardAccess,
+                          @NotNull IDeletionIntervalAccess deletionIntervalAccess) {
+        Objects.requireNonNull(dashboardAccess, "The dashboard access object must not be null.");
+        Objects.requireNonNull(deletionIntervalAccess, "The deletion interval access object must not be null");
 
-    public DatabaseTalker(IDashboardAccess dashboardAccess, IDeletionIntervalAccess deletionIntervalAccess) {
         this.dashboardAccess = dashboardAccess;
         this.deletionIntervalAccess = deletionIntervalAccess;
     }
@@ -113,14 +122,16 @@ public class DatabaseTalker {
     }
 
     /**
+     * Returns the deletion interval and initializes it, if it is not stored yet.
      * @return the deletion interval from the database.
      */
     long getDeletionInterval() {
-        long deletionInterval = deletionIntervalAccess.getDeletionInterval();
-        if (deletionInterval < 0) {
+        try {
+            return deletionIntervalAccess.getDeletionInterval();
+        } catch (NoSuchElementException e) {
+            setDeletionInterval(DEFAULT_DELETION_INTERVAL);
             return DEFAULT_DELETION_INTERVAL;
         }
-        return deletionInterval;
     }
 
     /**
@@ -131,7 +142,7 @@ public class DatabaseTalker {
     Dashboard getDashboard(String key) throws NoSuchElementException {
         KeyType keyType = checkKeyType(key);
         if (keyType == KeyType.INVALID_KEY) {
-            throw new NoSuchElementException("The key " + key + "does not belong to an existing dashboard.");
+            throw new NoSuchElementException("The key '" + key + "' does not belong to an existing dashboard.");
         } else {
             Dashboard dashboard = keyType == KeyType.VIEW_KEY ? dashboardAccess.findByViewKey(key)
                     : dashboardAccess.findByEditKey(key);

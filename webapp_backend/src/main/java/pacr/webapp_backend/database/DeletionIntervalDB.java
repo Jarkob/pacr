@@ -1,16 +1,22 @@
 package pacr.webapp_backend.database;
 
+import org.springframework.stereotype.Service;
 import pacr.webapp_backend.dashboard_management.services.IDeletionIntervalAccess;
+
+import java.util.NoSuchElementException;
 
 /**
  * This class has direct access to the database, regarding the deletion interval of dashboards.
  * It implements the {@link IDeletionIntervalAccess} interface.
  */
+@Service
 public class DeletionIntervalDB implements IDeletionIntervalAccess {
 
     static final String DELETION_INTERVAL_IDENTIFIER = "deletion-interval";
 
     private ConfigRepo configRepo;
+
+    private static ConfigItem invalidConfigItem = new ConfigItem("deletion-interval", "-1");
 
     /**
      * Creates an instance of DeletionIntervalDB.
@@ -21,9 +27,8 @@ public class DeletionIntervalDB implements IDeletionIntervalAccess {
     }
 
     @Override
-    public long getDeletionInterval() {
-        return Long.parseLong(configRepo.findById(DELETION_INTERVAL_IDENTIFIER).orElseGet(
-                ConfigItem::new).getConfigValue());
+    public long getDeletionInterval() throws NoSuchElementException {
+        return Long.parseLong(configRepo.findById(DELETION_INTERVAL_IDENTIFIER).orElseThrow().getConfigValue());
     }
 
     @Override

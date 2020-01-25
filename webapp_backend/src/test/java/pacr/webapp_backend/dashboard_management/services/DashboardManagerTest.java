@@ -8,7 +8,6 @@ public class DashboardManagerTest {
 
     @BeforeEach
     void init() {
-        dashboardManager = new DashboardManager();
     }
 
     //TODO when DashboardDB has been implemented.
