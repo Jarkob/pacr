@@ -120,13 +120,13 @@ public class GitTracking implements IRepositoryImporter {
      * @param repositoryID is the ID of the repository.
      * @throws NotFoundException when the repository was not found.
      */
-    public void pullFromRepository(int repositoryID) throws NotFoundException {
+    public synchronized void pullFromRepository(int repositoryID) throws NotFoundException {
         GitRepository gitRepository = gitTrackingAccess.getRepository(repositoryID);
         if (gitRepository == null) {
             throw new NotFoundException("Repository with ID " + repositoryID + " was not found.");
         }
 
-        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
+        Collection<GitCommit> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
         LOGGER.info("Got {} untracked commits.", untrackedCommits.size());
 
         // automatically adds all new commits to the database
@@ -136,7 +136,7 @@ public class GitTracking implements IRepositoryImporter {
             jobScheduler.addJob(gitRepository.getPullURL(), commit.getCommitHash());
         }
 
-        LOGGER.info("Finished with pulling from repository with ID {}.", repositoryID);
+        LOGGER.info("Finished with pulling from repository {} ({}).", gitRepository.getName(), repositoryID);
     }
 
     /**

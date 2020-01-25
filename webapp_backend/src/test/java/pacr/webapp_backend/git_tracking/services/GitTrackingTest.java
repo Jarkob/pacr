@@ -120,11 +120,11 @@ public class GitTrackingTest {
         GitCommit commit2 = mock(GitCommit.class);
         when(commit2.getCommitHash()).thenReturn("hash 2");
 
-        when(gitHandler.updateRepository(repository)).thenReturn(Arrays.asList(commit1, commit2));
+        when(gitHandler.pullFromRepository(repository)).thenReturn(Arrays.asList(commit1, commit2));
 
         gitTracking.pullFromRepository(42);
 
-        verify(gitHandler).updateRepository(repository);
+        verify(gitHandler).pullFromRepository(repository);
         verify(jobScheduler).addJob(repository.getPullURL(), commit1.getCommitHash());
         verify(jobScheduler).addJob(repository.getPullURL(), commit2.getCommitHash());
     }
@@ -149,7 +149,7 @@ public class GitTrackingTest {
         when(gitTrackingAccess.getAllRepositories()).thenReturn(Arrays.asList(repository1, repository2));
         when(gitTrackingAccess.getRepository(1)).thenReturn(repository1);
         when(gitTrackingAccess.getRepository(2)).thenReturn(repository2);
-        when(gitHandler.updateRepository(any())).thenReturn(new HashSet<>());
+        when(gitHandler.pullFromRepository(any())).thenReturn(new HashSet<>());
 
         gitTracking.pullFromAllRepositories();
 

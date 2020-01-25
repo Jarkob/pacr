@@ -102,7 +102,7 @@ public class GitHandlerTest {
     }
 
     @BeforeEach
-    public void setUp() throws NotFoundException {
+    public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         // branches
@@ -137,15 +137,6 @@ public class GitHandlerTest {
         }
     }
 
-    private GitCommit initializeCommitMock(String commitHash) {
-        when(gitTrackingAccess.containsCommit(commitHash)).thenReturn(true);
-        GitCommit commit = Mockito.mock(GitCommit.class);
-        when(commit.getCommitHash()).thenReturn(commitHash);
-        when(gitTrackingAccess.getCommit(commitHash)).thenReturn(commit);
-
-        return commit;
-    }
-
     private GitCommit initializeCommit(String commitHash, Collection<GitBranch> branches) {
         GitCommit commit = new GitCommit(commitHash, "msg", LocalDateTime.now(), LocalDateTime.now(),
                 gitRepository);
@@ -167,6 +158,7 @@ public class GitHandlerTest {
 
     /**
      * Clones a repository with a DSA ssh key.
+     * Disabled because the functionality is not implemented.
      */
     @Test @Disabled
     public void cloneRepositoryDSA() throws GitAPIException {
@@ -177,6 +169,7 @@ public class GitHandlerTest {
 
     /**
      * Clones a repository with a ECDSA ssh key.
+     * Disabled because the functionality is not implemented.
      */
     @Test @Disabled
     public void cloneRepositoryECDSA() throws GitAPIException {
@@ -187,6 +180,7 @@ public class GitHandlerTest {
 
     /**
      * Clones a repository with a ED25519 ssh key.
+     * Disabled because the functionality is not implemented.
      */
     @Test @Disabled
     public void cloneRepositoryED25519() throws GitAPIException {
@@ -214,10 +208,13 @@ public class GitHandlerTest {
         assertThrows(GitAPIException.class, () -> gitHandler.cloneRepository(gitRepository));
     }
 
+    /**
+     * Performs a pull for commits with an uninitialized repository.
+     */
     @Test
-    public void updateNewRepository() {
+    public void pullNewRepository() {
 
-        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
+        Collection<GitCommit> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
 
         verify(gitRepository).isBranchSelected(masterBranch.getName());
         verify(gitRepository).isBranchSelected(testBranch1.getName());
@@ -248,21 +245,25 @@ public class GitHandlerTest {
         assertNull(getCommitWithHash(HASH_AC1E8B, untrackedCommits));
     }
 
+    /**
+     * Performs a pull for commits with a repository that is already initialized.
+     * @throws NotFoundException should not happen.
+     */
     @Test
-    public void updateRepositoryWithNewCommits() throws NotFoundException {
+    public void pullRepositoryWithNewCommits() throws NotFoundException {
         // repository is already cloned
         unzip(NEW_COMMITS_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
         // commits until e68151 already tracked for testbranch1, until 9c8c86 for master
         initializeCommit(HASH_39E1A8, Arrays.asList(masterBranch, testBranch1));
         GitCommit headMaster = initializeCommit(HASH_9C8C86, Arrays.asList(masterBranch, testBranch1));
-        GitCommit headTestBranch1 = initializeCommit(HASH_E68151, Arrays.asList(testBranch1));
+        GitCommit headTestBranch1 = initializeCommit(HASH_E68151, Collections.singletonList(testBranch1));
 
         masterBranch.setLocalHead(headMaster);
         testBranch1.setLocalHead(headTestBranch1);
         gitTrackingAccess.updateRepository(gitRepository);
 
-        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
+        Collection<GitCommit> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
 
         GitCommit updatedTracked3 = gitTrackingAccess.getCommit(HASH_E68151);
 
@@ -272,33 +273,37 @@ public class GitHandlerTest {
         assertEquals(5, untrackedCommits.size());
 
         assertCommit(getCommitWithHash(HASH_AC7821, untrackedCommits),
-                2, Arrays.asList(masterBranch));
+                2, Collections.singletonList(masterBranch));
         assertCommit(getCommitWithHash(HASH_6FDE0D, untrackedCommits),
                 1, Arrays.asList(masterBranch, testBranch1));
         assertCommit(getCommitWithHash(HASH_AB1008, untrackedCommits),
-                2, Arrays.asList(masterBranch));
+                2, Collections.singletonList(masterBranch));
         assertCommit(getCommitWithHash(HASH_08AF11, untrackedCommits),
-                1, Arrays.asList(masterBranch));
+                1, Collections.singletonList(masterBranch));
         assertCommit(getCommitWithHash(HASH_E4E234, untrackedCommits),
-                1, Arrays.asList(masterBranch));
+                1, Collections.singletonList(masterBranch));
     }
 
+    /**
+     * Performs a pull for commits with a repository with a force push.
+     * @throws NotFoundException should not happen.
+     */
     @Test
-    public void updateRepositoryForcePush() throws NotFoundException {
+    public void pullRepositoryForcePush() throws NotFoundException {
         // repository is already cloned
         unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
         // commits until 9c8c86 already tracked and commit 8926f7 is not on origin anymore
-        initializeCommit(HASH_39E1A8, Arrays.asList(masterBranch));
-        initializeCommit(HASH_9C8C86, Arrays.asList(masterBranch));
-        GitCommit masterHead = initializeCommit(HASH_8926F7, Arrays.asList(masterBranch));
+        initializeCommit(HASH_39E1A8, Collections.singletonList(masterBranch));
+        initializeCommit(HASH_9C8C86, Collections.singletonList(masterBranch));
+        GitCommit masterHead = initializeCommit(HASH_8926F7, Collections.singletonList(masterBranch));
 
         masterBranch.setLocalHead(masterHead);
         gitTrackingAccess.updateRepository(gitRepository);
 
-        when(cleanUpCommits.cleanUp(any(), eq(gitRepository))).thenReturn(Arrays.asList(HASH_8926F7));
+        when(cleanUpCommits.cleanUp(any(), eq(gitRepository))).thenReturn(Collections.singletonList(HASH_8926F7));
 
-        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
+        Collection<GitCommit> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
 
         assertNotNull(untrackedCommits);
 
@@ -309,6 +314,10 @@ public class GitHandlerTest {
         verify(resultDeleter).deleteBenchmarkingResults(HASH_8926F7);
     }
 
+    /**
+     * Test for cloning the lean repository.
+     * Disabled because it takes very long.
+     */
     @Test @Disabled
     public void leanTest() {
         initializeGitHandler(RSA);
@@ -317,7 +326,7 @@ public class GitHandlerTest {
         when(gitRepository.getPullURL()).thenReturn("git@github.com:leanprover/lean.git");
         when(gitTrackingAccess.containsCommit("ceacfa7445953cbc8860ddabc55407430a9ca5c3")).thenReturn(true);
 
-        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
+        Collection<GitCommit> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
 
         // account for the known commit
         final int expectedCommits = 13724 - 1;

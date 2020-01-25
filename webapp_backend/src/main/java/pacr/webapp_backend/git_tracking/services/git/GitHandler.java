@@ -16,14 +16,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.services.ColorPicker;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.shared.IResultDeleter;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
@@ -91,28 +89,28 @@ public class GitHandler {
      * @param gitRepository is the Repository being updated.
      * @return new commits that need to be added or null if something went wrong.
      */
-    public Collection<GitCommit> updateRepository(@NotNull GitRepository gitRepository) {
+    public Collection<GitCommit> pullFromRepository(@NotNull GitRepository gitRepository) {
         Objects.requireNonNull(gitRepository);
 
         // clone repository if it wasn't cloned already
         File repositoryFolder = cloneRepositoryIfNotExists(gitRepository);
         if (repositoryFolder == null) {
-            LOGGER.error("Could not clone repository with ID {}.", gitRepository.getId());
+            LOGGER.error("Could not clone repository {} ({}).", gitRepository.getName(), gitRepository.getId());
             return null;
         }
 
         Git git = initializeGit(repositoryFolder);
         if (git == null) {
-            LOGGER.error("Could not read repository with ID {}.", gitRepository.getId());
+            LOGGER.error("Could not read repository {} ({}).", gitRepository.getName(), gitRepository.getId());
             return null;
         }
 
         // fetch repository
-        LOGGER.info("Fetching repository with ID {}.", gitRepository.getId());
+        LOGGER.info("Fetching repository {} ({}).", gitRepository.getName(), gitRepository.getId());
         try {
             fetchRepository(git);
         } catch (GitAPIException e) {
-            LOGGER.error("Could not fetch repository with ID {}.", gitRepository.getId());
+            LOGGER.error("Could not fetch repository {} ({}).", gitRepository.getName(), gitRepository.getId());
         }
 
         Set<GitCommit> untrackedCommits = new HashSet<>();
@@ -120,7 +118,8 @@ public class GitHandler {
         // get branches
         List<Ref> branches = getBranches(git);
         if (branches == null) {
-            LOGGER.error("Could not get branches from repository with ID {}.", gitRepository.getId());
+            LOGGER.error("Could not get branches from repository {} ({}).",
+                    gitRepository.getName(), gitRepository.getId());
             return null;
         }
 
@@ -153,7 +152,7 @@ public class GitHandler {
                     throw new RuntimeException("Repository should be found.", ex);
                 }
                 // try again with reset history
-                return updateRepository(gitRepository);
+                return pullFromRepository(gitRepository);
             }
 
         }
