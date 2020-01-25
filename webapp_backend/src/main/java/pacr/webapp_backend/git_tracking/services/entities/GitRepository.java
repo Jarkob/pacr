@@ -226,6 +226,12 @@ public class GitRepository {
         commit.setRepository(this);
     }
 
+    public void removeCommit(@NotNull String commitHash) {
+        Objects.requireNonNull(commitHash);
+
+        commits.remove(commitHash);
+    }
+
     /**
      * Checks if the repository is added to the database. In that case, the ID is not 0 anymore.
      * @return true if it is in the database, false if it isn't.
@@ -239,7 +245,9 @@ public class GitRepository {
      * @param branchName is the name of the branch.
      * @return true if the branch is selected, false if not.
      */
-    public boolean isBranchSelected(String branchName) {
+    public boolean isBranchSelected(@NotNull String branchName) {
+        Objects.requireNonNull(branchName);
+
         for (GitBranch branch : selectedBranches) {
             if (branch.getName().equals(branchName)) {
                 return true;
@@ -248,12 +256,39 @@ public class GitRepository {
         return false;
     }
 
-    public GitBranch getSelectedBranch(String branchName) throws NotFoundException {
+    /**
+     * Gets a selected GitBranch of this repository.
+     * @param branchName is the name of the branch.
+     * @return GitBranch.
+     * @throws NotFoundException if the branch was not found.
+     */
+    public GitBranch getSelectedBranch(@NotNull String branchName) throws NotFoundException {
+        Objects.requireNonNull(branchName);
+
         for (GitBranch branch : selectedBranches) {
             if (branch.getName().equals(branchName)) {
                 return branch;
             }
         }
         throw new NotFoundException("Branch " + branchName + " was not found.");
+    }
+
+    /**
+     * Gets a GitCommit from this repository.
+     * @param commitHash is the commit hash.
+     * @return GitCommit.
+     */
+    public GitCommit getCommit(@NotNull String commitHash) {
+        Objects.requireNonNull(commitHash);
+
+        return commits.getOrDefault(commitHash, null);
+    }
+
+    /**
+     * Gets all commits from this repository.
+     * @return commits.
+     */
+    public Collection<GitCommit> getCommits() {
+        return commits.values();
     }
 }

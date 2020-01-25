@@ -27,6 +27,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
+ * Test case for cleanUpCommits.
+ *
  * @author Pavel Zwerschke
  */
 public class CleanUpCommitsTest {
@@ -71,7 +73,7 @@ public class CleanUpCommitsTest {
 
     @Test
     public void cleanUpCommits() {
-        unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS);
+        unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + REPOSITORY_ID);
         initializeGit();
 
         String MASTER = "master";

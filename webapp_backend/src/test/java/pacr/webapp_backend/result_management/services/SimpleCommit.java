@@ -28,22 +28,22 @@ public class SimpleCommit implements ICommit {
     }
 
     @Override
-    public LocalDate getEntryDate() {
+    public LocalDateTime getEntryDate() {
         return null;
     }
 
     @Override
-    public LocalDate getCommitDate() {
+    public LocalDateTime getCommitDate() {
         return null;
     }
 
     @Override
-    public LocalDate getAuthorDate() {
+    public LocalDateTime getAuthorDate() {
         return null;
     }
 
     @Override
-    public Collection<? extends ICommit> getParents() {
+    public Collection<String> getParentHashes() {
         return null;
     }
 
@@ -53,7 +53,12 @@ public class SimpleCommit implements ICommit {
     }
 
     @Override
-    public String getBranchName() {
+    public String getRepositoryName() {
+        return null;
+    }
+
+    @Override
+    public Collection<String> getBranchNames() {
         return null;
     }
 

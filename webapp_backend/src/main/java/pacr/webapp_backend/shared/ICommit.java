@@ -1,5 +1,6 @@
 package pacr.webapp_backend.shared;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -67,13 +68,13 @@ public interface ICommit {
      * Adds a label to the commit.
      * @param label is the label being added.
      */
-    void addLabel(String label);
+    void addLabel(@NotNull String label);
 
     /**
      * Removes a label from the commit.
      * @param label is the label being removed.
      */
-    void removeLabel(String label);
+    void removeLabel(@NotNull String label);
 
     /**
      * Returns the labels of the commit. This includes Git-Tags and PACR-tags.

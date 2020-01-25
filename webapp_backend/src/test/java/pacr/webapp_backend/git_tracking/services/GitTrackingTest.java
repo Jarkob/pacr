@@ -54,8 +54,9 @@ public class GitTrackingTest {
         when(gitTrackingAccess.addRepository(any())).thenReturn(repositoryId);
         when(colorPicker.getNextColor()).thenReturn(new Color(0xFF0000));
 
-        //assertEquals(repositoryId,
-          //      gitTracking.addRepository("repo_url", null, "name"));
+        assertEquals(repositoryId,
+                gitTracking.addRepository("repo_url", null,
+                        "name", Arrays.asList("master", "testBranch1")));
 
         verify(gitTrackingAccess).addRepository(notNull());
         verify(colorPicker).getNextColor();
@@ -113,17 +114,17 @@ public class GitTrackingTest {
         GitRepository repository = Mockito.mock(GitRepository.class);
         when(repository.getPullURL()).thenReturn("pull url");
         when(gitTrackingAccess.getRepository(anyInt())).thenReturn(repository);
+
         GitCommit commit1 = mock(GitCommit.class);
         when(commit1.getCommitHash()).thenReturn("hash 1");
         GitCommit commit2 = mock(GitCommit.class);
         when(commit2.getCommitHash()).thenReturn("hash 2");
+
         when(gitHandler.updateRepository(repository)).thenReturn(Arrays.asList(commit1, commit2));
 
         gitTracking.pullFromRepository(42);
 
         verify(gitHandler).updateRepository(repository);
-        verify(gitTrackingAccess).addCommit(commit1);
-        verify(gitTrackingAccess).addCommit(commit2);
         verify(jobScheduler).addJob(repository.getPullURL(), commit1.getCommitHash());
         verify(jobScheduler).addJob(repository.getPullURL(), commit2.getCommitHash());
     }
@@ -136,10 +137,11 @@ public class GitTrackingTest {
     }
 
     @Test
-    public void pullFromAllRepositories() {
+    public void pullFromAllRepositories() throws NotFoundException {
         GitRepository repository1 = mock(GitRepository.class);
         when(repository1.isHookSet()).thenReturn(true);
         when(repository1.getId()).thenReturn(1);
+
         GitRepository repository2 = mock(GitRepository.class);
         when(repository2.isHookSet()).thenReturn(false);
         when(repository2.getId()).thenReturn(2);
@@ -150,8 +152,10 @@ public class GitTrackingTest {
         when(gitHandler.updateRepository(any())).thenReturn(new HashSet<>());
 
         gitTracking.pullFromAllRepositories();
+
         verify(gitTrackingAccess).getAllRepositories();
         verify(gitTrackingAccess).getRepository(2);
+        verify(gitTrackingAccess).updateRepository(repository2);
         verifyNoMoreInteractions(gitTrackingAccess);
     }
 

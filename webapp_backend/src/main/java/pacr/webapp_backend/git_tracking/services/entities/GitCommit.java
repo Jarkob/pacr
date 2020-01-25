@@ -1,10 +1,14 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
-import org.hibernate.annotations.DynamicUpdate;
-import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.shared.ICommit;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
+import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
+import javax.persistence.FetchType;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -44,16 +48,16 @@ public class GitCommit implements ICommit {
     @Column
     private LocalDateTime authorDate;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> parentHashes;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private GitRepository repository;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> labels;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<GitBranch> branches;
 
     /**
@@ -65,8 +69,7 @@ public class GitCommit implements ICommit {
      * @param repository is the repository this commit belongs to.
      */
     public GitCommit(@NotNull String commitHash, @NotNull String commitMessage, @NotNull LocalDateTime commitDate,
-                     @NotNull LocalDateTime authorDate,
-                     @NotNull GitRepository repository) {
+                     @NotNull LocalDateTime authorDate, @NotNull GitRepository repository) {
         Objects.requireNonNull(commitHash);
         Objects.requireNonNull(commitMessage);
         Objects.requireNonNull(commitDate);
@@ -113,8 +116,6 @@ public class GitCommit implements ICommit {
 
     @Override
     public Collection<String> getParentHashes() {
-
-
         return parentHashes;
     }
 
@@ -161,14 +162,16 @@ public class GitCommit implements ICommit {
     }
 
     @Override
-    public void addLabel(String label) {
+    public void addLabel(@NotNull String label) {
         Objects.requireNonNull(label);
+
         labels.add(label);
     }
 
     @Override
-    public void removeLabel(String label) {
+    public void removeLabel(@NotNull String label) {
         Objects.requireNonNull(label);
+
         labels.remove(label);
     }
 
@@ -198,7 +201,9 @@ public class GitCommit implements ICommit {
      * Adds a parent hash to this commit.
      * @param commitHash is the parent hash.
      */
-    public void addParent(String commitHash) {
+    public void addParent(@NotNull String commitHash) {
+        Objects.requireNonNull(commitHash);
+
         parentHashes.add(commitHash);
     }
 

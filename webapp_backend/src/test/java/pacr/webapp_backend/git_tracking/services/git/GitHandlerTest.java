@@ -9,13 +9,18 @@ import org.junit.jupiter.api.*;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -31,6 +36,7 @@ import static org.mockito.Mockito.*;
  *
  * @author Pavel Zwerschke
  */
+@SpringBootTest
 public class GitHandlerTest {
 
     private static final String PATH_TO_REPOS = "/target/test/repos";
@@ -56,23 +62,22 @@ public class GitHandlerTest {
     private static final String HASH_AC1E8B = "ac1e8bcda08057edba84469ec80f69a566de58e4";
     private static final String HASH_8926F7 = "8926f7e91d42eb8b5b88343694bd6cd311d6e180";
 
-    private static int repositoryId = 0;
-
     private GitHandler gitHandler;
-    @Mock
+    @Spy
     private GitRepository gitRepository;
-    @Mock
     private GitBranch masterBranch;
-    @Mock
     private GitBranch testBranch1;
-    @Mock
     private GitBranch testBranch2;
-    @Mock
     private IGitTrackingAccess gitTrackingAccess;
     @Mock
     private ICleanUpCommits cleanUpCommits;
     @Mock
     private IResultDeleter resultDeleter;
+
+    @Autowired
+    public GitHandlerTest(IGitTrackingAccess gitTrackingAccess) {
+        this.gitTrackingAccess = gitTrackingAccess;
+    }
 
     @BeforeAll
     public static void deleteFolders() {
@@ -86,6 +91,11 @@ public class GitHandlerTest {
         }
     }
 
+    @AfterEach
+    public void cleanDatabase() throws NotFoundException {
+        gitTrackingAccess.removeRepository(gitRepository.getId());
+    }
+
     @AfterAll
     public static void cleanUp() {
         deleteFolders();
@@ -95,31 +105,22 @@ public class GitHandlerTest {
     public void setUp() throws NotFoundException {
         MockitoAnnotations.initMocks(this);
 
-        newRepositoryId(repositoryId + 1);
-
-        when(gitRepository.getPullURL()).thenReturn(PULL_URL);
-        when(gitRepository.getId()).thenReturn(repositoryId);
-
         // branches
         String MASTER = "master";
         String TEST_BRANCH1 = "testbranch1";
         String TEST_BRANCH2 = "testbranch2";
-        when(masterBranch.getName()).thenReturn(MASTER);
-        when(testBranch1.getName()).thenReturn(TEST_BRANCH1);
-        when(testBranch2.getName()).thenReturn(TEST_BRANCH2);
-        when(gitRepository.getSelectedBranch(MASTER)).thenReturn(masterBranch);
-        when(gitRepository.getSelectedBranch(TEST_BRANCH1)).thenReturn(testBranch1);
-        when(gitRepository.getSelectedBranch(TEST_BRANCH2)).thenReturn(testBranch2);
-        when(gitRepository.getSelectedBranches()).thenReturn(Arrays.asList(masterBranch, testBranch1));
 
-        // tracked branches
-        when(gitRepository.isBranchSelected(anyString())).thenReturn(false);
-        when(gitRepository.isBranchSelected(masterBranch.getName())).thenReturn(true);
-        when(gitRepository.isBranchSelected(testBranch1.getName())).thenReturn(true);
-        when(gitRepository.getSelectedBranches()).thenReturn(Arrays.asList(masterBranch, testBranch1));
+        masterBranch = new GitBranch(MASTER);
+        testBranch1 = new GitBranch(TEST_BRANCH1);
+        testBranch2 = new GitBranch(TEST_BRANCH2);
+        Set<GitBranch> branches = new HashSet<>(Arrays.asList(masterBranch, testBranch1));
 
-        // by default no commits are already being tracked
-        when(gitTrackingAccess.containsCommit(anyString())).thenReturn(false);
+        gitRepository = Mockito.spy(new GitRepository(false, branches,
+                PULL_URL, "testing repo", new Color(0xFFFFFF), null));
+
+        gitTrackingAccess.addRepository(gitRepository);
+
+        initializeGitHandler(RSA);
     }
 
     private void initializeGitHandler(String pathToPrivateKey) {
@@ -142,6 +143,15 @@ public class GitHandlerTest {
         when(commit.getCommitHash()).thenReturn(commitHash);
         when(gitTrackingAccess.getCommit(commitHash)).thenReturn(commit);
 
+        return commit;
+    }
+
+    private GitCommit initializeCommit(String commitHash, Collection<GitBranch> branches) {
+        GitCommit commit = new GitCommit(commitHash, "msg", LocalDateTime.now(), LocalDateTime.now(),
+                gitRepository);
+        for (GitBranch branch : branches) {
+            commit.addBranch(branch);
+        }
         return commit;
     }
 
@@ -187,7 +197,7 @@ public class GitHandlerTest {
 
     private void cloneRepository() throws GitAPIException {
         gitHandler.cloneRepository(gitRepository);
-        File fileInRepository = new File(ABSOLUTE_PATH_TO_REPOS + "/" + repositoryId + "/README.md");
+        File fileInRepository = new File(ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId() + "/README.md");
         assertTrue(fileInRepository.exists());
     }
 
@@ -206,7 +216,6 @@ public class GitHandlerTest {
 
     @Test
     public void updateNewRepository() {
-        initializeGitHandler(RSA);
 
         Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
 
@@ -216,6 +225,9 @@ public class GitHandlerTest {
 
         assertNotNull(untrackedCommits);
         assertEquals(8, untrackedCommits.size());
+
+        assertEquals(HASH_AC7821, masterBranch.getLocalHead().getCommitHash());
+        assertEquals(HASH_6FDE0D, testBranch1.getLocalHead().getCommitHash());
 
         assertCommit(getCommitWithHash(HASH_E68151, untrackedCommits),
                 1, Arrays.asList(masterBranch, testBranch1));
@@ -228,10 +240,10 @@ public class GitHandlerTest {
                 0, Arrays.asList(masterBranch, testBranch1));
         // merge commit
         assertCommit(getCommitWithHash(HASH_AC7821, untrackedCommits),
-                2, Arrays.asList(masterBranch));
+                2, Collections.singletonList(masterBranch));
         // commit is on testbranch2 and was merged into master, so it should be tracked
         assertCommit(getCommitWithHash(HASH_E4E234, untrackedCommits),
-                1, Arrays.asList(masterBranch));
+                1, Collections.singletonList(masterBranch));
         // commit is on testbranch2 and should not be tracked
         assertNull(getCommitWithHash(HASH_AC1E8B, untrackedCommits));
     }
@@ -239,23 +251,22 @@ public class GitHandlerTest {
     @Test
     public void updateRepositoryWithNewCommits() throws NotFoundException {
         // repository is already cloned
-        unzip(NEW_COMMITS_REPOSITORY, ABSOLUTE_PATH_TO_REPOS);
-        initializeGitHandler(RSA);
-        newRepositoryId(19);
+        unzip(NEW_COMMITS_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
+        // commits until e68151 already tracked for testbranch1, until 9c8c86 for master
+        initializeCommit(HASH_39E1A8, Arrays.asList(masterBranch, testBranch1));
+        GitCommit headMaster = initializeCommit(HASH_9C8C86, Arrays.asList(masterBranch, testBranch1));
+        GitCommit headTestBranch1 = initializeCommit(HASH_E68151, Arrays.asList(testBranch1));
 
-        // commits until e68151 already tracked
-        GitCommit tracked1 = initializeCommitMock(HASH_39E1A8);
-        GitCommit tracked2 = initializeCommitMock(HASH_9C8C86);
-        GitCommit tracked3 = initializeCommitMock(HASH_E68151);
-
-        //todo remove
-        //when(gitTrackingAccess.getHead(masterBranch.getName())).thenReturn(tracked3);
-        //when(gitTrackingAccess.getHead(testBranch1.getName())).thenReturn(null);
+        masterBranch.setLocalHead(headMaster);
+        testBranch1.setLocalHead(headTestBranch1);
+        gitTrackingAccess.updateRepository(gitRepository);
 
         Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
 
-        verify(gitTrackingAccess).updateRepository(gitRepository);
+        GitCommit updatedTracked3 = gitTrackingAccess.getCommit(HASH_E68151);
+
+        assertEquals(2, updatedTracked3.getBranches().size());
 
         assertNotNull(untrackedCommits);
         assertEquals(5, untrackedCommits.size());
@@ -273,27 +284,17 @@ public class GitHandlerTest {
     }
 
     @Test
-    public void updateRepositoryForcePush() {
+    public void updateRepositoryForcePush() throws NotFoundException {
         // repository is already cloned
-        unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS);
-        initializeGitHandler(RSA);
-        newRepositoryId(39);
+        unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
         // commits until 9c8c86 already tracked and commit 8926f7 is not on origin anymore
-        initializeCommitMock(HASH_39E1A8);
-        GitCommit commitBeforeHead = initializeCommitMock(HASH_9C8C86);
-        GitCommit head = initializeCommitMock(HASH_8926F7);
+        initializeCommit(HASH_39E1A8, Arrays.asList(masterBranch));
+        initializeCommit(HASH_9C8C86, Arrays.asList(masterBranch));
+        GitCommit masterHead = initializeCommit(HASH_8926F7, Arrays.asList(masterBranch));
 
-        // todo remove
-        //when(gitTrackingAccess.getHead(masterBranch.getName())).thenReturn(head).thenReturn(commitBeforeHead);
-        //when(gitTrackingAccess.getHead(testBranch1.getName())).thenReturn(null);
-
-        when(gitTrackingAccess.containsCommit(HASH_8926F7)).thenReturn(true).thenReturn(false);
-
-        when(gitTrackingAccess.getAllCommitHashes(repositoryId)).thenReturn(Arrays.asList(
-                HASH_39E1A8,
-                HASH_9C8C86,
-                HASH_8926F7));
+        masterBranch.setLocalHead(masterHead);
+        gitTrackingAccess.updateRepository(gitRepository);
 
         when(cleanUpCommits.cleanUp(any(), eq(gitRepository))).thenReturn(Arrays.asList(HASH_8926F7));
 
@@ -301,9 +302,11 @@ public class GitHandlerTest {
 
         assertNotNull(untrackedCommits);
 
+        assertEquals(8, gitTrackingAccess.getAllCommitHashes(gitRepository.getId()).size());
+        assertFalse(gitTrackingAccess.getAllCommitHashes(gitRepository.getId()).contains(HASH_8926F7));
+
         verify(cleanUpCommits).cleanUp(any(), eq(gitRepository));
         verify(resultDeleter).deleteBenchmarkingResults(HASH_8926F7);
-
     }
 
     @Test @Disabled
@@ -321,11 +324,6 @@ public class GitHandlerTest {
         assertEquals(expectedCommits, untrackedCommits.size());
     }
 
-    private void newRepositoryId(int id) {
-        when(gitRepository.getId()).thenReturn(id);
-        repositoryId = id;
-    }
-
     private void assertCommit(GitCommit commit, int parentCount, Collection<GitBranch> branches) {
         assertNotNull(commit);
         assertNotNull(commit.getCommitHash());
@@ -335,7 +333,7 @@ public class GitHandlerTest {
         assertNotNull(commit.getMessage());
         assertNotNull(commit.getLabels());
 
-        assertEquals(repositoryId, commit.getRepositoryID());
+        assertEquals(gitRepository.getId(), commit.getRepositoryID());
         assertEquals(parentCount, commit.getParentHashes().size());
         assertCollectionEquals(branches, commit.getBranches());
     }

@@ -3,6 +3,7 @@ package pacr.webapp_backend.database;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import pacr.webapp_backend.result_management.BenchmarkResult;
 import pacr.webapp_backend.result_management.CommitResult;
 
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalUnit;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
@@ -37,9 +39,10 @@ public class ResultDBTest {
 
     private static final String BENCHMARK_NAME = "benchmark";
     private static final String BENCHMARK_NAME_TWO = "benchmark2";
-    private static final String COMMIT_HASH = "1234";
-    private static final String COMMIT_HASH_TWO = "5678";
-    private static final String COMMIT_HASH_THREE = "9101";
+    private static final String GROUP_NAME = "group";
+    private static final String COMMIT_HASH = "1111";
+    private static final String COMMIT_HASH_TWO = "2222";
+    private static final String COMMIT_HASH_THREE = "3333";
     private static final int REPO_ID_ONE = 1;
     private static final int REPO_ID_TWO = 2;
     private static final int EXPECTED_NUM_OF_RESULTS_ONE_NOT_SAVED = 1;
@@ -206,24 +209,33 @@ public class ResultDBTest {
         CommitResult resultToDelete = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultToDelete);
 
-        TimeUnit.MILLISECONDS.sleep(100);
+        TimeUnit.SECONDS.sleep(1);
+
+        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_ONE));
 
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_ONE));
 
         this.resultDB.deleteResult(resultToDelete);
 
-        TimeUnit.MILLISECONDS.sleep(100);
+        TimeUnit.SECONDS.sleep(1);
 
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE));
+
+        TimeUnit.SECONDS.sleep(1);
 
         LocalDateTime previousTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
         List<CommitResult> orderedResults = this.resultDB.getNewestResults();
 
+        int i = 0;
+
         for (CommitResult result : orderedResults) {
             LocalDateTime currentTime = result.getEntryDate();
-            assertTrue(currentTime.isBefore(previousTime));
+            assertTrue(currentTime.isBefore(previousTime) || currentTime.equals(previousTime),
+                    "result number " + i + ": " + result.getCommitHash() + ": " + currentTime.toString()
+                            + " is not before " + previousTime.toString());
             previousTime = result.getEntryDate();
+            i++;
         }
     }
 
@@ -249,13 +261,13 @@ public class ResultDBTest {
         CommitResult newestResult = this.resultDB.getNewestResult(REPO_ID_ONE);
 
         assertNotNull(newestResult);
-        assertThat(commitResultTwo.getEntryDate()).isCloseTo(newestResult.getEntryDate(), within(10, ChronoUnit.MILLIS));
+        assertThat(commitResultTwo.getEntryDate()).isCloseTo(newestResult.getEntryDate(), within(500, ChronoUnit.MILLIS));
         assertEquals(commitResultTwo.getCommitHash(), newestResult.getCommitHash());
 
         newestResult = this.resultDB.getNewestResult(REPO_ID_TWO);
 
         assertNotNull(newestResult);
-        assertThat(commitResultThree.getEntryDate()).isCloseTo(newestResult.getEntryDate(), within(10, ChronoUnit.MILLIS));
+        assertThat(commitResultThree.getEntryDate()).isCloseTo(newestResult.getEntryDate(), within(500, ChronoUnit.MILLIS));
         assertEquals(commitResultThree.getCommitHash(), newestResult.getCommitHash());
     }
 

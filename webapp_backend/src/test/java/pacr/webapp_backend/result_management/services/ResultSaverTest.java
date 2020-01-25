@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.ResultDB;
-import pacr.webapp_backend.git_tracking.GitCommit;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.IBenchmark;

@@ -2,9 +2,9 @@ package pacr.webapp_backend.result_management.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pacr.webapp_backend.git_tracking.GitBranch;
-import pacr.webapp_backend.git_tracking.GitCommit;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.result_management.BenchmarkProperty;
@@ -17,6 +17,7 @@ import pacr.webapp_backend.shared.ResultInterpretation;
 
 import java.awt.Color;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class OutputBuilderTest {
     public static final String BRANCH_NAME = "branch";
     public static final String URL = "url";
     public static final int REPO_ID = 1;
-    public static final LocalDate NOW = LocalDate.now();
+    public static final LocalDateTime NOW = LocalDateTime.now();
     public static final String BENCHMARK_NAME_TWO = "benchmark2";
     public static final String NO_GROUP_NAME = "";
     public static final String GROUP_NAME = "group";
@@ -76,9 +77,8 @@ public class OutputBuilderTest {
         benchmarkResults.add(benchmarkResultTwo);
         resultOne = new CommitResult(new SimpleBenchmarkingResult(), benchmarkResults, REPO_ID);
 
-        commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, new HashSet<>(),
-                new GitRepository(false, new LinkedList<>(), URL, REPO_NAME, Color.BLACK, NOW),
-                new GitBranch(BRANCH_NAME));
+        commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW,
+                new GitRepository(false, new HashSet<>(), URL, REPO_NAME, Color.BLACK, NOW.toLocalDate()));
     }
 
     /**

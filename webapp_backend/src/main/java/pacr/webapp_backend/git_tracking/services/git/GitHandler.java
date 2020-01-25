@@ -130,11 +130,27 @@ public class GitHandler {
                 checkBranch(branch, git, gitRepository, untrackedCommits);
             } catch (ForcePushException e) {
                 LOGGER.info("Force push detected. Deleting unused commits.");
+                GitBranch gitBranch;
+                try {
+                    gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
+                } catch (NotFoundException ex) {
+                    throw new RuntimeException("Branch should be found.");
+                }
+
+                gitBranch.setLocalHead(null);
+
                 Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository);
 
                 for (String commitHash : toDelete) {
                     resultDeleter.deleteBenchmarkingResults(commitHash);
+
+                    gitRepository.removeCommit(commitHash);
                     gitTrackingAccess.removeCommit(commitHash);
+                }
+                try {
+                    gitTrackingAccess.updateRepository(gitRepository);
+                } catch (NotFoundException ex) {
+                    throw new RuntimeException("Repository should be found.", ex);
                 }
                 // try again with reset history
                 return updateRepository(gitRepository);
@@ -196,7 +212,7 @@ public class GitHandler {
         if (gitRepository.isBranchSelected(getNameOfBranch(branch))) {
             LOGGER.info("Searching for new commits in branch {}.", getNameOfBranch(branch));
             // get commits from branch
-            Set<String> benchmarkedCommitsNotInBranch = new HashSet<>();
+            List<String> benchmarkedCommitsNotInBranch = new ArrayList<>();
 
             Set<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository,
                         branch, benchmarkedCommitsNotInBranch);
@@ -215,16 +231,28 @@ public class GitHandler {
 
             // check if branch contains commits that are already added to the system
             if (!benchmarkedCommitsNotInBranch.isEmpty()) {
+                GitBranch gitBranch;
+                try {
+                    gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
+                } catch (NotFoundException e) {
+                    throw new RuntimeException();
+                }
+
+                // set head of branch to newest commit
+                GitCommit newest = getCommitFromSet(benchmarkedCommitsNotInBranch.get(0), commitsFromBranch);
+                if (newest == null) {
+                    newest = gitTrackingAccess.getCommit(benchmarkedCommitsNotInBranch.get(0));
+                }
+                gitBranch.setLocalHead(newest);
 
                 for (String commitHash : benchmarkedCommitsNotInBranch) {
-                    GitCommit commit = gitTrackingAccess.getCommit(commitHash);
-                    GitBranch gitBranch;
-                    try {
-                        gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
-                    } catch (NotFoundException e) {
-                        LOGGER.error("Could not find branch {}.", getNameOfBranch(branch));
-                        return;
+                    // get commits from ram so that there are fewer DB calls and untrackedCommits are up to date
+                    GitCommit commit = getCommitFromSet(commitHash, untrackedCommits);
+                    if (commit == null) { // not found in untrackedCommits
+                        commit = gitRepository.getCommit(commitHash);
                     }
+                    assert commit != null;
+
                     commit.addBranch(gitBranch);
                 }
 
@@ -237,6 +265,15 @@ public class GitHandler {
         } else {
             LOGGER.info("Skipping branch {} because it is not selected.", getNameOfBranch(branch));
         }
+    }
+
+    private GitCommit getCommitFromSet(String commitHash, Set<GitCommit> commits) {
+        for (GitCommit commit : commits) {
+            if (commitHash.equals(commit.getCommitHash())) {
+                return commit;
+            }
+        }
+        return null;
     }
 
     private GitCommit createCommit(GitRepository gitRepository, RevCommit commit) {
@@ -261,7 +298,7 @@ public class GitHandler {
     }
 
     private Set<GitCommit> searchForNewCommitsInBranch(Git git, GitRepository gitRepository, Ref branch,
-                                                              Set<String> benchmarkedCommitsNotInBranch)
+                                                              List<String> benchmarkedCommitsNotInBranch)
             throws ForcePushException {
 
         assert git != null;
@@ -295,13 +332,11 @@ public class GitHandler {
             GitCommit commit = createCommit(gitRepository, revCommit);
             commit.addBranch(gitBranch);
 
-            String commitHash = commit.getCommitHash();
-
             commitsToAdd.add(commit);
         }
 
         if (!commitsToAdd.isEmpty()) {
-            gitBranch.setLocalHead(commitsToAdd.get(commitsToAdd.size() - 1));
+            gitBranch.setLocalHead(commitsToAdd.get(0));
         }
 
         return new HashSet<>(commitsToAdd);
@@ -319,7 +354,7 @@ public class GitHandler {
      * @throws ForcePushException if a force push was detected.
      */
     private List<RevCommit> getNewCommits(Iterable<RevCommit> commitsIterable,
-                                          Collection<String> benchmarkedCommitsNotInBranch, GitBranch branch)
+                                          List<String> benchmarkedCommitsNotInBranch, GitBranch branch)
             throws ForcePushException {
         List<RevCommit> commits = new ArrayList<>();
 

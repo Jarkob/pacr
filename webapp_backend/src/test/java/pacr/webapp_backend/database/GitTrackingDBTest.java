@@ -11,14 +11,10 @@ import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
 import java.awt.*;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Scanner;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,6 +74,7 @@ public class GitTrackingDBTest {
     public void addRepository() {
         assertFalse(repository.isInDatabase());
         int id = gitTrackingDB.addRepository(repository);
+
         assertTrue(repository.isInDatabase());
 
         assertEquals(id, repository.getId());
@@ -86,6 +83,7 @@ public class GitTrackingDBTest {
         assertEquals(repository.getId(), fromDB.getId());
         assertEquals(repository.getColor(), fromDB.getColor());
         assertEquals(repository.getName(), fromDB.getName());
+        // for this to work the time zone must be set correctly in sql
         assertEquals(repository.getObserveFromDate(), fromDB.getObserveFromDate());
         assertEquals(repository.getPullURL(), fromDB.getPullURL());
     }

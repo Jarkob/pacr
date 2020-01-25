@@ -13,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Implementation for IGitTrackingAccess. Primary bean for dependency injection of this class type.
@@ -125,11 +126,12 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     // todo works better with a sql query
     @Override
     public Collection<String> getAllCommitHashes(int repositoryID) {
-        Collection<GitCommit> gitCommits = getAllCommits(repositoryID);
+        GitRepository gitRepository = getRepository(repositoryID);
+        Collection<GitCommit> commits = gitRepository.getCommits();
 
-        Collection<String> commitHashes = new HashSet<>();
+        Set<String> commitHashes = new HashSet<>();
 
-        for (GitCommit commit : gitCommits) {
+        for (GitCommit commit : commits) {
             commitHashes.add(commit.getCommitHash());
         }
         return commitHashes;

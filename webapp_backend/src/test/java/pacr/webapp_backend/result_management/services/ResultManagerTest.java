@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import javassist.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,15 +9,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.RepositoryDB;
 import pacr.webapp_backend.database.ResultDB;
-import pacr.webapp_backend.git_tracking.GitBranch;
-import pacr.webapp_backend.git_tracking.GitCommit;
-import pacr.webapp_backend.git_tracking.GitRepository;
+import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
+import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 
 import java.awt.Color;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -31,7 +33,7 @@ public class ResultManagerTest {
 
     private static final String HASH_TWO = "hash2";
     private static final String MSG = "msg";
-    private static final LocalDate NOW = LocalDate.now();
+    private static final LocalDateTime NOW = LocalDateTime.now();
     private static final String BRANCH_NAME = "branch";
     private static final String URL = "url";
     private static final String REPO_NAME = "repo";
@@ -70,14 +72,15 @@ public class ResultManagerTest {
                 new Color(0, 0, 0), LocalDate.now()); // TODO change this as soon as the interface changes
 
         // commit
-        commit = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, new HashSet<>(), repository,
-                branch);
+        commit = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, repository);
 
         gitTrackingAccess.addRepository(repository);
     }
 
     @AfterEach
-    public void cleanUp() {
+    public void cleanUp() throws NotFoundException {
+
+        gitTrackingAccess.removeRepository(repository.getId());
         repositoryDB.deleteAll();
         resultDB.deleteAll();
         benchmarkDB.deleteAll();
@@ -109,7 +112,7 @@ public class ResultManagerTest {
         results.add(resultOne);
         results.add(resultTwo);
 
-        gitTrackingAccess.addCommit(new GitCommit(HASH_TWO, MSG, NOW, NOW, new HashSet<>(), repository, branch));
+        gitTrackingAccess.addCommit(new GitCommit(HASH_TWO, MSG, NOW, NOW, repository));
 
         resultManager.importBenchmarkingResults(results);
 
@@ -127,7 +130,7 @@ public class ResultManagerTest {
      * Tests whether deleteAllResultsForRepository only deletes results from commits in that repository.
      */
     @Test
-    void deleteAllResultsForRepository_shouldOnlyDeleteFromRepository() {
+    void deleteAllResultsForRepository_shouldOnlyDeleteFromRepository() throws NotFoundException {
         SimpleBenchmarkingResult resultOne = new SimpleBenchmarkingResult();
         SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
         resultTwo.setCommitHash(HASH_TWO);
@@ -137,9 +140,8 @@ public class ResultManagerTest {
         results.add(resultTwo);
 
         GitRepository repoTwo = new GitRepository(false, new HashSet<>(), URL, REPO_NAME, Color.BLACK,
-                NOW);
-        GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, new HashSet<>(), repoTwo,
-                new GitBranch(BRANCH_NAME));
+                NOW.toLocalDate());
+        GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repoTwo);
 
         gitTrackingAccess.addRepository(repoTwo);
 
@@ -152,6 +154,8 @@ public class ResultManagerTest {
 
         assertNotNull(savedResultOne);
         assertNull(savedResultTwo);
+
+        gitTrackingAccess.removeRepository(repoTwo.getId());
     }
 
     /**
@@ -175,9 +179,8 @@ public class ResultManagerTest {
     void saveBenchmarkingResults_withParent_shouldSaveAsUsual() {
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 
-        Set<GitCommit> parents = new HashSet<>();
-        parents.add(commit);
-        GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, parents, repository, new GitBranch(BRANCH_NAME));
+        GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
+        commitTwo.addParent(SimpleBenchmarkingResult.COMMIT_HASH);
 
         gitTrackingAccess.addCommit(commitTwo);
 

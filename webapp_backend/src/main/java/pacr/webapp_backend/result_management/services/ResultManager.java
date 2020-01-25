@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.result_management.CommitResult;
@@ -11,12 +10,12 @@ import pacr.webapp_backend.shared.IResultImporter;
 import pacr.webapp_backend.shared.IResultSaver;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Collection;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 /**
  * Manages benchmarking results in the system. Can save or import new results and delete old ones.
@@ -117,40 +116,23 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             return null;
         }
 
-        Collection<? extends ICommit> parents = commit.getParents();
+        Collection<String> parentHashes = commit.getParentHashes();
+        Collection<ICommit> parents = new LinkedList<>();
+
+        for (String parentHash : parentHashes) {
+            ICommit parent = commitAccess.getCommit(parentHash);
+            parents.add(parent);
+        }
 
         if (parents.isEmpty()) {
             return null;
         }
 
-        Collection<ICommit> parentsOnSameBranch = new HashSet<>();
-
-        // TODO change this as soon as ICommit interface changes
-        Collection<String> branchesOfCommit = new HashSet<>();
-        branchesOfCommit.add(commit.getBranchName());
-
-        for (ICommit parent : parents) {
-            for (String branch : branchesOfCommit) {
-                // TODO change this as soon as ICommit interface changes
-                if (parent.getBranchName().equals(branch)) {
-                    parentsOnSameBranch.add(parent);
-                    break;
-                }
-            }
-        }
-
-        if (parentsOnSameBranch.isEmpty()) {
-            // if there are no parents on the same branch, choose the latest parent according to commit date.
-            return getCommitLatestCommitDate(parents);
-        } else {
-            // otherwise choose the latest parent that is on the same branch
-            return getCommitLatestCommitDate(parentsOnSameBranch);
-        }
+        return getCommitLatestCommitDate(parents);
     }
 
     private ICommit getCommitLatestCommitDate(Collection<? extends ICommit> commits) {
-        // TODO change this as soon as ICommit interface changes
-        LocalDate latestTime = LocalDate.MIN;
+        LocalDateTime latestTime = LocalDateTime.MIN;
         ICommit latestCommit = null;
         for (ICommit commit : commits) {
             if (commit.getCommitDate().compareTo(latestTime) >= 0) {
