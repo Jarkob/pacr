@@ -1,6 +1,5 @@
 package pacr.webapp_backend.git_tracking.services.git;
 
-import javassist.NotFoundException;
 import net.lingala.zip4j.exception.ZipException;
 import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.TransportConfigCallback;
@@ -92,7 +91,7 @@ public class GitHandlerTest {
     }
 
     @AfterEach
-    public void cleanDatabase() throws NotFoundException {
+    public void cleanDatabase() {
         gitTrackingAccess.removeRepository(gitRepository.getId());
     }
 
@@ -247,10 +246,9 @@ public class GitHandlerTest {
 
     /**
      * Performs a pull for commits with a repository that is already initialized.
-     * @throws NotFoundException should not happen.
      */
     @Test
-    public void pullRepositoryWithNewCommits() throws NotFoundException {
+    public void pullRepositoryWithNewCommits() {
         // repository is already cloned
         unzip(NEW_COMMITS_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
@@ -286,10 +284,9 @@ public class GitHandlerTest {
 
     /**
      * Performs a pull for commits with a repository with a force push.
-     * @throws NotFoundException should not happen.
      */
     @Test
-    public void pullRepositoryForcePush() throws NotFoundException {
+    public void pullRepositoryForcePush() {
         // repository is already cloned
         unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
@@ -307,8 +304,8 @@ public class GitHandlerTest {
 
         assertNotNull(untrackedCommits);
 
-        assertEquals(8, gitTrackingAccess.getAllCommitHashes(gitRepository.getId()).size());
-        assertFalse(gitTrackingAccess.getAllCommitHashes(gitRepository.getId()).contains(HASH_8926F7));
+        assertEquals(8, gitRepository.getAllCommitHashes().size());
+        assertFalse(gitRepository.getAllCommitHashes().contains(HASH_8926F7));
 
         verify(cleanUpCommits).cleanUp(any(), eq(gitRepository));
         verify(resultDeleter).deleteBenchmarkingResults(HASH_8926F7);

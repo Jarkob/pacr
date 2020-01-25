@@ -55,7 +55,7 @@ public class CleanUpCommitsTest {
     public void setUp() {
         deleteFolders();
         MockitoAnnotations.initMocks(this);
-        cleanUpCommits = new CleanUpCommits(gitTrackingAccess);
+        cleanUpCommits = new CleanUpCommits();
 
         when(gitRepository.getId()).thenReturn(REPOSITORY_ID);
     }
@@ -93,7 +93,7 @@ public class CleanUpCommitsTest {
 
         when(gitTrackingAccess.containsCommit(HASH_8926F7)).thenReturn(true);
 
-        when(gitTrackingAccess.getAllCommitHashes(REPOSITORY_ID)).thenReturn(Arrays.asList(
+        when(gitRepository.getAllCommitHashes()).thenReturn(Arrays.asList(
                 HASH_39E1A8,
                 HASH_9C8C86,
                 HASH_8926F7));

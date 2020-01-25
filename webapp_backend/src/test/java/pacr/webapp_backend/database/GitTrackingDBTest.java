@@ -106,12 +106,7 @@ public class GitTrackingDBTest {
         int id = gitTrackingDB.addRepository(repository);
         GitRepository fromDB = gitTrackingDB.getRepository(id);
 
-        try {
-            gitTrackingDB.removeRepository(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            fail();
-        }
+        gitTrackingDB.removeRepository(id);
 
         assertNull(gitTrackingDB.getRepository(id));
     }
@@ -138,12 +133,8 @@ public class GitTrackingDBTest {
         assertNotEquals(newName, fromDB.getName());
 
         // load updated repository
-        try {
-            gitTrackingDB.updateRepository(repository);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            fail();
-        }
+        gitTrackingDB.updateRepository(repository);
+
         fromDB = gitTrackingDB.getRepository(id);
         assertEquals(newName, fromDB.getName());
     }
@@ -195,12 +186,7 @@ public class GitTrackingDBTest {
     @AfterEach
     public void cleanUp() {
         for (GitRepository repository : gitTrackingDB.getAllRepositories()) {
-            try {
-                gitTrackingDB.removeRepository(repository.getId());
-            } catch (NotFoundException e) {
-                e.printStackTrace();
-                fail();
-            }
+            gitTrackingDB.removeRepository(repository.getId());
         }
     }
 

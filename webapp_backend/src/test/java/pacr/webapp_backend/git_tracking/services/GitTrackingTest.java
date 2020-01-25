@@ -1,6 +1,5 @@
 package pacr.webapp_backend.git_tracking.services;
 
-import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -16,6 +15,7 @@ import java.awt.Color;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -75,7 +75,7 @@ public class GitTrackingTest {
     }
 
     @Test
-    public void removeRepository() throws NotFoundException {
+    public void removeRepository() {
         int repositoryId = 42;
 
         GitCommit commit1 = Mockito.mock(GitCommit.class);
@@ -94,14 +94,14 @@ public class GitTrackingTest {
     }
 
     @Test
-    public void removeRepositoryNotFound() throws NotFoundException {
-        doThrow(NotFoundException.class).when(gitTrackingAccess).removeRepository(anyInt());
+    public void removeRepositoryNotFound() {
+        doThrow(NoSuchElementException.class).when(gitTrackingAccess).removeRepository(anyInt());
 
-        assertThrows(NotFoundException.class, () -> gitTracking.removeRepository(42));
+        assertThrows(NoSuchElementException.class, () -> gitTracking.removeRepository(42));
     }
 
     @Test
-    public void updateRepository() throws NotFoundException {
+    public void updateRepository() {
         GitRepository repository = Mockito.mock(GitRepository.class);
 
         gitTracking.updateRepository(repository);
@@ -110,7 +110,7 @@ public class GitTrackingTest {
     }
 
     @Test
-    public void pullFromRepository() throws NotFoundException {
+    public void pullFromRepository() {
         GitRepository repository = Mockito.mock(GitRepository.class);
         when(repository.getPullURL()).thenReturn("pull url");
         when(gitTrackingAccess.getRepository(anyInt())).thenReturn(repository);
@@ -133,11 +133,11 @@ public class GitTrackingTest {
     public void pullFromRepositoryNotFound() {
         when(gitTrackingAccess.getRepository(anyInt())).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> gitTracking.pullFromRepository(42));
+        assertThrows(NoSuchElementException.class, () -> gitTracking.pullFromRepository(42));
     }
 
     @Test
-    public void pullFromAllRepositories() throws NotFoundException {
+    public void pullFromAllRepositories() {
         GitRepository repository1 = mock(GitRepository.class);
         when(repository1.isHookSet()).thenReturn(true);
         when(repository1.getId()).thenReturn(1);

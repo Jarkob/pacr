@@ -1,8 +1,5 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
-import javassist.NotFoundException;
-import org.hibernate.annotations.DynamicUpdate;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -14,7 +11,13 @@ import javax.persistence.FetchType;
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Collection;
 
 /**
  * This class represents a repository.
@@ -226,6 +229,10 @@ public class GitRepository {
         commit.setRepository(this);
     }
 
+    /**
+     * Removes a commit from the repository.
+     * @param commitHash is the hash of the commit being removed.
+     */
     public void removeCommit(@NotNull String commitHash) {
         Objects.requireNonNull(commitHash);
 
@@ -260,9 +267,9 @@ public class GitRepository {
      * Gets a selected GitBranch of this repository.
      * @param branchName is the name of the branch.
      * @return GitBranch.
-     * @throws NotFoundException if the branch was not found.
+     * @throws NoSuchElementException if the branch was not found.
      */
-    public GitBranch getSelectedBranch(@NotNull String branchName) throws NotFoundException {
+    public GitBranch getSelectedBranch(@NotNull String branchName) throws NoSuchElementException {
         Objects.requireNonNull(branchName);
 
         for (GitBranch branch : selectedBranches) {
@@ -270,7 +277,7 @@ public class GitRepository {
                 return branch;
             }
         }
-        throw new NotFoundException("Branch " + branchName + " was not found.");
+        throw new NoSuchElementException("Branch " + branchName + " was not found.");
     }
 
     /**
@@ -290,5 +297,13 @@ public class GitRepository {
      */
     public Collection<GitCommit> getCommits() {
         return commits.values();
+    }
+
+    /**
+     * Returns all commit hashes of this repository.
+     * @return commit hashes.
+     */
+    public Collection<String> getAllCommitHashes() {
+        return commits.keySet();
     }
 }

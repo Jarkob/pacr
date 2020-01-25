@@ -12,7 +12,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
-import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
@@ -32,20 +31,19 @@ public class CleanUpCommits implements ICleanUpCommits {
 
     private static final Logger LOGGER = LogManager.getLogger(CleanUpCommits.class);
 
-    private IGitTrackingAccess gitTrackingAccess;
-
-    public CleanUpCommits(@NotNull IGitTrackingAccess gitTrackingAccess) {
-        Objects.requireNonNull(gitTrackingAccess);
-
-        this.gitTrackingAccess = gitTrackingAccess;
+    /**
+     * Creates an instance of CleanUpCommits.
+     */
+    public CleanUpCommits() {
     }
 
+    @Override
     public Collection<String> cleanUp(@NotNull Git git, @NotNull GitRepository gitRepository) {
         Objects.requireNonNull(git);
         Objects.requireNonNull(gitRepository);
 
         // initialize map that stores whether the commit is used or not
-        Collection<String> commitHashes = gitTrackingAccess.getAllCommitHashes(gitRepository.getId());
+        Collection<String> commitHashes = gitRepository.getAllCommitHashes();
         Map<String, Boolean> commitUsed = new HashMap<>();
         for (String commitHash : commitHashes) {
             commitUsed.put(commitHash, Boolean.FALSE);
@@ -92,6 +90,8 @@ public class CleanUpCommits implements ICleanUpCommits {
                 toDelete.add(entry.getKey());
             }
         }
+
+        LOGGER.info("Found {} commits to delete.", toDelete.size());
 
         return toDelete;
     }

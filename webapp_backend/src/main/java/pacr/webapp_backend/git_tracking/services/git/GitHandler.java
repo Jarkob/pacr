@@ -27,9 +27,17 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Objects;
+import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Is responsible for handling JGit. Pulls from repositories, clones repositories.
@@ -113,6 +121,9 @@ public class GitHandler {
             LOGGER.error("Could not fetch repository {} ({}).", gitRepository.getName(), gitRepository.getId());
         }
 
+        // delete branches that are not in origin anymore
+        deleteBranches(git, gitRepository);
+
         Set<GitCommit> untrackedCommits = new HashSet<>();
 
         // get branches
@@ -128,34 +139,17 @@ public class GitHandler {
             try {
                 checkBranch(branch, git, gitRepository, untrackedCommits);
             } catch (ForcePushException e) {
-                LOGGER.info("Force push detected. Deleting unused commits.");
-                GitBranch gitBranch;
-                try {
-                    gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
-                } catch (NotFoundException ex) {
-                    throw new RuntimeException("Branch should be found.");
-                }
+                handleForcePush(git, gitRepository, branch);
 
-                gitBranch.setLocalHead(null);
-
-                Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository);
-
-                for (String commitHash : toDelete) {
-                    resultDeleter.deleteBenchmarkingResults(commitHash);
-
-                    gitRepository.removeCommit(commitHash);
-                    gitTrackingAccess.removeCommit(commitHash);
-                }
-                try {
-                    gitTrackingAccess.updateRepository(gitRepository);
-                } catch (NotFoundException ex) {
-                    throw new RuntimeException("Repository should be found.", ex);
-                }
                 // try again with reset history
                 return pullFromRepository(gitRepository);
             }
-
         }
+
+        // search for git tags
+        LOGGER.info("Searching for Git-Tags.");
+        searchForGitTags(git, gitRepository);
+        gitTrackingAccess.updateRepository(gitRepository);
 
         git.getRepository().close();
         git.close();
@@ -163,11 +157,73 @@ public class GitHandler {
         return untrackedCommits;
     }
 
+    private void handleForcePush(Git git, GitRepository gitRepository, Ref branch) {
+        GitBranch gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
+
+        gitBranch.setLocalHead(null);
+
+        Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository);
+
+        for (String commitHash : toDelete) {
+            resultDeleter.deleteBenchmarkingResults(commitHash);
+
+            gitRepository.removeCommit(commitHash);
+            gitTrackingAccess.removeCommit(commitHash);
+        }
+        gitTrackingAccess.updateRepository(gitRepository);
+    }
+
+    private void searchForGitTags(Git git, GitRepository gitRepository) {
+        List<Ref> tags;
+        try {
+            tags = git.tagList().call();
+        } catch (GitAPIException e) {
+            LOGGER.error("Could not get Git-Tags.");
+            return;
+        }
+
+        for (Ref tag : tags) {
+            String taggedHash = tag.getObjectId().getName();
+            GitCommit tagged = gitRepository.getCommit(taggedHash);
+
+            tagged.addLabel(getNameOfLabel(tag));
+        }
+    }
+
+    /**
+     * Deletes branches that are not in origin anymore.
+     * @param git is the access to origin.
+     * @param gitRepository is the git repository with the selected branches.
+     */
+    private void deleteBranches(Git git, GitRepository gitRepository) {
+
+        Map<String, Boolean> branchNotDeleted = new HashMap<>();
+
+        for (GitBranch branch : gitRepository.getSelectedBranches()) {
+            branchNotDeleted.put(branch.getName(), Boolean.FALSE);
+        }
+
+        for (String branchName : getBranchNames(git)) {
+            if (branchNotDeleted.containsKey(branchName)) {
+                branchNotDeleted.put(branchName, Boolean.TRUE);
+            }
+        }
+
+        for (Map.Entry<String, Boolean> entry : branchNotDeleted.entrySet()) {
+            if (!entry.getValue()) {
+                GitBranch branch = gitRepository.getSelectedBranch(entry.getKey());
+
+                gitRepository.removeBranchFromSelection(branch);
+            }
+        }
+
+    }
+
     private File cloneRepositoryIfNotExists(GitRepository gitRepository) {
         File repositoryFolder = getRepositoryWorkingDir(gitRepository);
 
         if (!repositoryFolder.exists()) {
-            boolean successful = repositoryFolder.mkdirs();
+            repositoryFolder.mkdirs();
             try {
                 cloneRepository(gitRepository);
             } catch (GitAPIException e) {
@@ -205,10 +261,24 @@ public class GitHandler {
         return branches;
     }
 
+    private List<String> getBranchNames(Git git) {
+        List<Ref> branches = getBranches(git);
+
+        List<String> branchNames = new ArrayList<>();
+
+        for (Ref branch : branches) {
+            branchNames.add(getNameOfBranch(branch));
+        }
+
+        return branchNames;
+    }
+
     private void checkBranch(Ref branch, Git git, GitRepository gitRepository,
                              Set<GitCommit> untrackedCommits) throws ForcePushException {
 
         if (gitRepository.isBranchSelected(getNameOfBranch(branch))) {
+            GitBranch gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
+
             LOGGER.info("Searching for new commits in branch {}.", getNameOfBranch(branch));
             // get commits from branch
             List<String> benchmarkedCommitsNotInBranch = new ArrayList<>();
@@ -218,31 +288,14 @@ public class GitHandler {
 
             untrackedCommits.addAll(commitsFromBranch);
 
-            try {
-                // commitsFromBranch were already added to the repository in searchForNewCommits
-                gitTrackingAccess.updateRepository(gitRepository);
-            } catch (NotFoundException e) {
-                throw new RuntimeException("Repository should be found.");
-            }
+            // commitsFromBranch were already added to the repository in searchForNewCommits
+            gitTrackingAccess.updateRepository(gitRepository);
 
             LOGGER.info("Added {} commits to the system for branch {}.",
                     commitsFromBranch.size(), getNameOfBranch(branch));
 
             // check if branch contains commits that are already added to the system
             if (!benchmarkedCommitsNotInBranch.isEmpty()) {
-                GitBranch gitBranch;
-                try {
-                    gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
-                } catch (NotFoundException e) {
-                    throw new RuntimeException();
-                }
-
-                // set head of branch to newest commit
-                GitCommit newest = getCommitFromSet(benchmarkedCommitsNotInBranch.get(0), commitsFromBranch);
-                if (newest == null) {
-                    newest = gitTrackingAccess.getCommit(benchmarkedCommitsNotInBranch.get(0));
-                }
-                gitBranch.setLocalHead(newest);
 
                 for (String commitHash : benchmarkedCommitsNotInBranch) {
                     // get commits from ram so that there are fewer DB calls and untrackedCommits are up to date
@@ -255,15 +308,21 @@ public class GitHandler {
                     commit.addBranch(gitBranch);
                 }
 
-                try {
-                    gitTrackingAccess.updateRepository(gitRepository);
-                } catch (NotFoundException e) {
-                    throw new RuntimeException("Repository should be found.");
-                }
+                gitTrackingAccess.updateRepository(gitRepository);
             }
+
+            // update branch head
+            setBranchHead(branch, gitRepository, gitBranch);
         } else {
             LOGGER.info("Skipping branch {} because it is not selected.", getNameOfBranch(branch));
         }
+    }
+
+    private void setBranchHead(Ref branch, GitRepository gitRepository, GitBranch gitBranch) {
+
+        GitCommit head = gitRepository.getCommit(branch.getObjectId().getName());
+
+        gitBranch.setLocalHead(head);
     }
 
     private GitCommit getCommitFromSet(String commitHash, Set<GitCommit> commits) {
@@ -306,12 +365,7 @@ public class GitHandler {
         assert benchmarkedCommitsNotInBranch != null;
 
         String branchName = getNameOfBranch(branch);
-        GitBranch gitBranch;
-        try {
-            gitBranch = gitRepository.getSelectedBranch(branchName);
-        } catch (NotFoundException e) {
-            throw new RuntimeException(); //todo
-        }
+        GitBranch gitBranch = gitRepository.getSelectedBranch(branchName);
 
         // iterate over all commits from branch
         Iterable<RevCommit> commitsIterable = null;
@@ -328,17 +382,32 @@ public class GitHandler {
         List<GitCommit> commitsToAdd = new ArrayList<>();
 
         for (RevCommit revCommit : commits) {
+            if (revCommit.getFullMessage().contains("#pacr-ignore")) {
+                continue;
+            }
+
             GitCommit commit = createCommit(gitRepository, revCommit);
+
+            if (revCommit.getFullMessage().contains("#pacr-label")) {
+                commit.addLabel(searchForLabel(revCommit.getFullMessage()));
+            }
+
             commit.addBranch(gitBranch);
 
             commitsToAdd.add(commit);
         }
 
-        if (!commitsToAdd.isEmpty()) {
-            gitBranch.setLocalHead(commitsToAdd.get(0));
+        return new HashSet<>(commitsToAdd);
+    }
+
+    private String searchForLabel(String message) {
+        int startIndex = message.indexOf("#pacr-label");
+        int endIndex = message.indexOf(" ", startIndex);
+        if (endIndex == -1) {
+            endIndex = message.length();
         }
 
-        return new HashSet<>(commitsToAdd);
+        return message.substring(startIndex, endIndex);
     }
 
     /**
@@ -367,6 +436,9 @@ public class GitHandler {
                     // branch doesn't have the commit yet
                     benchmarkedCommitsNotInBranch.add(commit.getName());
                 } else if (!localHead.getCommitHash().equals(commit.getName())) { // check for force push
+                    LOGGER.info("LOCALHEAD CH: {}", localHead.getCommitHash());
+                    LOGGER.info("COMMIT HASH {}", commit.getName());
+                    LOGGER.info("Force push detected at {}. Deleting unused commits.", commit.getName());
                     throw new ForcePushException();
                 } else { // all new commits from branch found
                     break;
@@ -400,7 +472,8 @@ public class GitHandler {
     public void cloneRepository(@NotNull GitRepository gitRepository) throws GitAPIException {
         Objects.requireNonNull(gitRepository);
 
-        LOGGER.info("Cloning repository with id {} and URL {}.", gitRepository.getId(), gitRepository.getPullURL());
+        LOGGER.info("Cloning repository {} ({}). URL: {}.", gitRepository.getName(), gitRepository.getId(),
+                gitRepository.getPullURL());
 
         Git git = Git.cloneRepository()
                 .setDirectory(getRepositoryWorkingDir(gitRepository))
@@ -428,6 +501,11 @@ public class GitHandler {
 
         // remove the "refs/remotes/origin/" part
         return branch.getName().substring(20);
+    }
+
+    private String getNameOfLabel(Ref tag) {
+        // returns the "refs/tags/" part
+        return tag.getName().substring(10);
     }
 
 }

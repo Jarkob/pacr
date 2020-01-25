@@ -1,10 +1,11 @@
 package pacr.webapp_backend.git_tracking.services;
 
-import javassist.NotFoundException;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 /**
  * Represents the interface for storing and accessing
@@ -37,23 +38,23 @@ public interface IGitTrackingAccess {
     /**
      * Deletes a repository.
      * @param repositoryID is the ID of the repository being deleted.
-     * @throws NotFoundException when the repository was not found.
+     * @throws NoSuchElementException when the repository was not found.
      */
-    void removeRepository(int repositoryID) throws NotFoundException;
+    void removeRepository(int repositoryID) throws NoSuchElementException;
 
     /**
      * Updates a repository.
      * @param repository is the repository being updated.
-     * @throws NotFoundException when the repository was not found.
+     * @throws NoSuchElementException when the repository was not found.
      */
-    void updateRepository(GitRepository repository) throws NotFoundException;
+    void updateRepository(@NotNull GitRepository repository) throws NoSuchElementException;
 
     /**
      * Stores a commit. The repository to which the commit
      * belongs to must already be stored already in the database.
      * @param commit is the commit being stored.
      */
-    void addCommit(GitCommit commit);
+    void addCommit(@NotNull GitCommit commit);
 
     /**
      * Returns all commits belonging to a repository.
@@ -67,13 +68,13 @@ public interface IGitTrackingAccess {
      * @param commitHash is the commit hash of the commit.
      * @return the commit with this commit hash or null if not found.
      */
-    GitCommit getCommit(String commitHash);
+    GitCommit getCommit(@NotNull String commitHash);
 
     /**
      * Removes a commit.
      * @param commitHash is the commit hash of the commit.
      */
-    void removeCommit(String commitHash);
+    void removeCommit(@NotNull String commitHash);
 
     /**
      * Checks if a commit is in the database or not.
@@ -81,12 +82,5 @@ public interface IGitTrackingAccess {
      * @return true if the commit is already in the database,
      * false if not.
      */
-    boolean containsCommit(String commitHash);
-
-    /**
-     * Returns all commit hashes of a repository.
-     * @param repositoryID is the ID of the repository.
-     * @return all commits hashes of the repository.
-     */
-    Collection<String> getAllCommitHashes(int repositoryID);
+    boolean containsCommit(@NotNull String commitHash);
 }

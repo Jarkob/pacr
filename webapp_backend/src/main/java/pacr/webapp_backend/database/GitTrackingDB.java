@@ -1,6 +1,5 @@
 package pacr.webapp_backend.database;
 
-import javassist.NotFoundException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Primary;
@@ -10,10 +9,10 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.NoSuchElementException;
 
 /**
  * Implementation for IGitTrackingAccess. Primary bean for dependency injection of this class type.
@@ -88,10 +87,10 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void removeRepository(int repositoryID) throws NotFoundException {
+    public void removeRepository(int repositoryID) {
         GitRepository repository = getRepository(repositoryID);
         if (repository == null) {
-            throw new NotFoundException("Repository with ID " + repositoryID + " was not found.");
+            throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
         }
 
         LOGGER.info("Deleting commits belonging to repository with ID {}.", repositoryID);
@@ -106,11 +105,11 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void updateRepository(@NotNull GitRepository repository) throws NotFoundException {
+    public void updateRepository(@NotNull GitRepository repository) throws NoSuchElementException {
         Objects.requireNonNull(repository);
 
         if (getRepository(repository.getId()) == null) {
-            throw new NotFoundException("Repository with ID " + repository.getId() + " was not found.");
+            throw new NoSuchElementException("Repository with ID " + repository.getId() + " was not found.");
         }
 
         addRepository(repository);
@@ -121,20 +120,6 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
         Objects.requireNonNull(commitHash);
 
         return commitDB.existsById(commitHash);
-    }
-
-    // todo works better with a sql query
-    @Override
-    public Collection<String> getAllCommitHashes(int repositoryID) {
-        GitRepository gitRepository = getRepository(repositoryID);
-        Collection<GitCommit> commits = gitRepository.getCommits();
-
-        Set<String> commitHashes = new HashSet<>();
-
-        for (GitCommit commit : commits) {
-            commitHashes.add(commit.getCommitHash());
-        }
-        return commitHashes;
     }
 
 }

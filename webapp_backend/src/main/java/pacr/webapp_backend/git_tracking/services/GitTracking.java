@@ -1,6 +1,5 @@
 package pacr.webapp_backend.git_tracking.services;
 
-import javassist.NotFoundException;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
@@ -14,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -93,9 +93,9 @@ public class GitTracking implements IRepositoryImporter {
     /**
      * Removes a repository.
      * @param repositoryID is the ID of the repository.
-     * @throws NotFoundException if the repository was not found in the database.
+     * @throws NoSuchElementException if the repository was not found in the database.
      */
-    public void removeRepository(int repositoryID) throws NotFoundException {
+    public void removeRepository(int repositoryID) throws NoSuchElementException {
         LOGGER.info("Removing repository with ID {}.", repositoryID);
         for (GitCommit commit : gitTrackingAccess.getAllCommits(repositoryID)) {
             resultDeleter.deleteBenchmarkingResults(commit.getCommitHash());
@@ -107,9 +107,9 @@ public class GitTracking implements IRepositoryImporter {
     /**
      * Updates a repository.
      * @param repository is the repository being updated.
-     * @throws NotFoundException if the repository was not found in the database.
+     * @throws NoSuchElementException if the repository was not found in the database.
      */
-    public void updateRepository(@NotNull GitRepository repository) throws NotFoundException {
+    public void updateRepository(@NotNull GitRepository repository) throws NoSuchElementException {
         Objects.requireNonNull(repository);
 
         gitTrackingAccess.updateRepository(repository);
@@ -118,12 +118,12 @@ public class GitTracking implements IRepositoryImporter {
     /**
      * Pulls from a repository and adds new commits to the job scheduling.
      * @param repositoryID is the ID of the repository.
-     * @throws NotFoundException when the repository was not found.
+     * @throws NoSuchElementException when the repository was not found.
      */
-    public synchronized void pullFromRepository(int repositoryID) throws NotFoundException {
+    public synchronized void pullFromRepository(int repositoryID) throws NoSuchElementException {
         GitRepository gitRepository = gitTrackingAccess.getRepository(repositoryID);
         if (gitRepository == null) {
-            throw new NotFoundException("Repository with ID " + repositoryID + " was not found.");
+            throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
         }
 
         Collection<GitCommit> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
@@ -145,11 +145,7 @@ public class GitTracking implements IRepositoryImporter {
     public void pullFromAllRepositories() {
         for (GitRepository repository : gitTrackingAccess.getAllRepositories()) {
             if (!repository.isHookSet()) {
-                try {
-                    pullFromRepository(repository.getId());
-                } catch (NotFoundException e) {
-                    throw new RuntimeException("Repository should be found.");
-                }
+                pullFromRepository(repository.getId());
             }
         }
     }
