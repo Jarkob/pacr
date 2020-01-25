@@ -4,7 +4,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -33,6 +32,7 @@ public class LineDiagramDashboardModule extends DashboardModule {
 
     /**
      * Sets the tracked repositories to the given list of repository names.
+     *
      * @param trackedRepositories The new tracked repositories.
      */
     void setTrackedRepositories(List<String> trackedRepositories) {
@@ -41,12 +41,12 @@ public class LineDiagramDashboardModule extends DashboardModule {
 
     /**
      * Sets the tracked benchmarks to the given list of benchmark names.
+     *
      * @param trackedBenchmarks The new tracked benchmarks.
      */
     void setTrackedBenchmarks(List<String> trackedBenchmarks) {
         this.trackedBenchmarks = List.copyOf(trackedBenchmarks);
     }
-
 
 
     @Override

@@ -1,7 +1,5 @@
 package pacr.webapp_backend.dashboard_management;
 
-import pacr.webapp_backend.dashboard_management.DashboardModule;
-
 import javax.persistence.Entity;
 
 /**

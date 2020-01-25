@@ -3,8 +3,6 @@ package pacr.webapp_backend.dashboard_management;
 
 import pacr.webapp_backend.shared.ILeaderboard;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 

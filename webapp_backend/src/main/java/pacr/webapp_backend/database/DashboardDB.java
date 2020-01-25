@@ -4,16 +4,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.services.IDashboardAccess;
-import pacr.webapp_backend.dashboard_management.services.KeyType;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Collection;
 
-
-//TODO
+/**
+ * This interface allows access to a database regarding entities,
+ * which are managed in the dashboard_management component.
+ * For this, it contains jpa auto-generated methods and default implementations.
+ */
 @Component
 public interface DashboardDB extends CrudRepository<Dashboard, Integer>, IDashboardAccess {
 
@@ -24,37 +23,21 @@ public interface DashboardDB extends CrudRepository<Dashboard, Integer>, IDashbo
     Dashboard findByViewKey(String viewKey);
 
     @Override
-    default List<Dashboard> getAllDashboards() {
-        return new ArrayList<Dashboard>();
+    Collection<Dashboard> findAll();
+
+
+    @Override
+    default void storeDashboard(@NotNull Dashboard dashboard) {
+        this.save(dashboard);
     }
 
     @Override
-    default void addDashboard(@NotNull Dashboard dashboard) {
-
-    }
+    Dashboard removeDashboardByEditKey(String editKey);
 
     @Override
-    default void updateDashboard(@NotNull Dashboard dashboard) throws NoSuchElementException  {
-
-    }
+    boolean existsDashboardByEditKey(String editKey);
 
     @Override
-    default void deleteDashboard(@NotNull String editKey) throws NoSuchElementException {
+    boolean existsDashboardByViewKey(String viewKey);
 
-    }
-
-    @Override
-    default KeyType checkKeyType(String key) {
-        return KeyType.INVALID_KEY;
-    }
-
-    @Override
-    default void setDeletionInterval(long deletionInterval) {
-
-    }
-
-    @Override
-    default long getDeletionInterval() {
-        return 0;
-    }
 }

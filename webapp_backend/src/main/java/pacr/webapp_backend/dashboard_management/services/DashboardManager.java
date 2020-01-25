@@ -7,12 +7,15 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.KeysAlreadyInitializedException;
-import pacr.webapp_backend.dashboard_management.LeaderboardDashboardModule;
 import pacr.webapp_backend.shared.ILeaderboardGetter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.*;
+import java.util.Collection;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * This class is a facade for the dashboard management package. Therefore it contains
@@ -42,7 +45,9 @@ public class DashboardManager {
      * @return the requested dashboard
      * @throws NoSuchElementException if the key does not belong to a dashboard.
      */
-    public Dashboard getDashboard(String key) throws NoSuchElementException {
+    public Dashboard getDashboard(@NotNull String key) throws NoSuchElementException {
+        Objects.requireNonNull(key);
+
         Dashboard dashboard = databaseTalker.getDashboard(key);
         dashboard.updateLastAccess();
 
@@ -55,7 +60,8 @@ public class DashboardManager {
      * @return The keys of this dashboard in a pair. The first item is the view key,
      * the second the edit key.
      */
-    public Pair<String, String> addDashboard(Dashboard dashboard) {
+    public Pair<String, String> addDashboard(@NotNull Dashboard dashboard) {
+        Objects.requireNonNull(dashboard);
 
         try {
             dashboard.initializeKeys(UUID.randomUUID().toString(), UUID.randomUUID().toString());
@@ -71,11 +77,21 @@ public class DashboardManager {
 
     /**
      * Saves an updated version of an existing dashboard to the database
+     *
      * @param dashboard the updated dashboard.
+     * @throws IllegalAccessException if the dashboard, was not authorized by a valid edit key.
+     * @throws NoSuchElementException if the given dashboard does not yet exist in the database.
      */
-    public void updateDashboard(Dashboard dashboard) {
+    public void updateDashboard(@NotNull Dashboard dashboard) throws NoSuchElementException, IllegalAccessException {
+        Objects.requireNonNull(dashboard);
+
         dashboard.updateLastAccess();
-        databaseTalker.updateDashboard(dashboard);
+        try {
+            databaseTalker.updateDashboard(dashboard);
+        } catch (IllegalAccessException | NoSuchElementException e) {
+            LOGGER.warn(e.getMessage());
+            throw e;
+        }
     }
 
     /**
@@ -83,7 +99,7 @@ public class DashboardManager {
      */
     public void setDeletionInterval(long interval) {
         if (interval <= 0) {
-            throw new IllegalArgumentException("The deletion interval must last at least one day long.");
+            throw new IllegalArgumentException("The deletion interval must last at least one day.");
         }
         databaseTalker.setDeletionInterval(interval);
     }
@@ -98,11 +114,14 @@ public class DashboardManager {
 
     /**
      * Deletes the dashboard with the specified key from the database.
+     *
      * @param key the key of the dashboard with which the delete operation was initiated.
      * @throws NoSuchElementException if the key does not exist.
      * @throws IllegalAccessException if the key is a view key and not sufficient to allow the deletion of a dashboard.
      */
-    public void deleteDashboard(String key) throws NoSuchElementException, IllegalAccessException {
+    public void deleteDashboard(@NotNull String key) throws NoSuchElementException, IllegalAccessException {
+        Objects.requireNonNull(key);
+
         databaseTalker.deleteDashboard(key);
     }
 

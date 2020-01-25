@@ -1,7 +1,5 @@
 package pacr.webapp_backend.dashboard_management.services;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
 import java.util.Collection;
@@ -13,49 +11,81 @@ import java.util.NoSuchElementException;
  */
 public class DatabaseTalker {
 
-    private static final Logger LOGGER = LogManager.getLogger(DashboardManager.class);
-
     IDashboardAccess dashboardAccess;
+
+    IDeletionIntervalAccess deletionIntervalAccess;
+
+    static final long DEFAULT_DELETION_INTERVAL = 10L;
 
     /**
      * Empty constructor for jpa.
      */
     public DatabaseTalker() {
+    }
 
+    public DatabaseTalker(IDashboardAccess dashboardAccess, IDeletionIntervalAccess deletionIntervalAccess) {
+        this.dashboardAccess = dashboardAccess;
+        this.deletionIntervalAccess = deletionIntervalAccess;
     }
 
     /**
      * Checks what kind of key the given string is.
+     *
      * @param key The string which should be checked.
      * @return -1, if the key does not belong to any dashboard, 0, if the key is a view key
      * and 1 if the key is an edit key.
      */
     private KeyType checkKeyType(String key) {
-        return dashboardAccess.checkKeyType(key);
-    }
 
-    /**
-     * Stores the given dashboard in the database.
-     * @param dashboard the dashboard which will be stored.
-     */
-    void storeDashboard(Dashboard dashboard) {
-        dashboardAccess.addDashboard(dashboard);
-    }
+        boolean isEditKey = dashboardAccess.existsDashboardByEditKey(key);
+        boolean isViewKey = dashboardAccess.existsDashboardByViewKey(key);
 
-    /**
-     * Updates an existing dashboard in the database.
-     * @param dashboard the newer version of the dashboard.
-     */
-    void updateDashboard(Dashboard dashboard) {
-        try {
-            dashboardAccess.updateDashboard(dashboard);
-        } catch (NoSuchElementException e) {
-            LOGGER.warn("The dashboard " + dashboard.getTitle() + " does not yet exist in the database.");
+        if (isEditKey && !isViewKey) {
+            return KeyType.EDIT_KEY;
+        } else if (!isEditKey && isViewKey) {
+            return KeyType.VIEW_KEY;
+        } else if (!isEditKey) {
+            return KeyType.INVALID_KEY;
+        } else {
+            throw new IllegalStateException("The key '" + key + "' is both a edit and a view key.");
         }
     }
 
     /**
+     * Stores the given dashboard in the database.
+     *
+     * @param dashboard the dashboard which will be stored.
+     */
+    void storeDashboard(Dashboard dashboard) {
+        dashboardAccess.storeDashboard(dashboard);
+    }
+
+    /**
+     * Updates an existing dashboard in the database.
+     *
+     * @param dashboard the newer version of the dashboard.
+     * @throws IllegalAccessException if the dashboard does not contain a valid edit key, for access.
+     * @throws NoSuchElementException if the dashboard does not yet exist.
+     */
+    void updateDashboard(Dashboard dashboard) throws IllegalAccessException, NoSuchElementException {
+        String editKey = dashboard.getEditKey();
+        if (editKey == null) {
+            throw new IllegalAccessException("The dashboard can only be updated via access with an edit key.");
+        }
+
+        KeyType keyType = checkKeyType(editKey);
+        if (keyType == KeyType.INVALID_KEY) {
+            throw new NoSuchElementException("The key ' " + editKey + "' does not belong to an existing dashboard.");
+        } else if (keyType == KeyType.VIEW_KEY) {
+            throw new IllegalAccessException("The supposed edit key '" + editKey + "' is not an edit key.");
+        }
+
+        dashboardAccess.storeDashboard(dashboard);
+    }
+
+    /**
      * Deletes a dashboard with a specific edit key from the database
+     *
      * @param key The key, with which the delete operation was initiated.
      * @throws NoSuchElementException if the key does not exist.
      * @throws IllegalAccessException if the key is a view key and not sufficient to allow the deletion of a dashboard.
@@ -63,27 +93,34 @@ public class DatabaseTalker {
     void deleteDashboard(String key) throws NoSuchElementException, IllegalAccessException {
         KeyType keyType = checkKeyType(key);
         if (keyType == KeyType.INVALID_KEY) {
-            throw new NoSuchElementException("The key " + key + "does not belong to an existing dashboard.");
-        } else  if (keyType == KeyType.VIEW_KEY) {
-            throw new IllegalAccessException("The key " + key + "is not an edit key.");
+            throw new NoSuchElementException("The key '" + key + "' does not belong to an existing dashboard.");
+        } else if (keyType == KeyType.VIEW_KEY) {
+            throw new IllegalAccessException("The key '" + key + "' is not an edit key.");
         }
 
-        dashboardAccess.deleteDashboard(key);
+        dashboardAccess.removeDashboardByEditKey(key);
+
     }
 
     /**
      * Stores the given deletion interval as the new deletion interval.
+     *
      * @param deletionInterval the new deletion interval.
      */
     void setDeletionInterval(long deletionInterval) {
-        dashboardAccess.setDeletionInterval(deletionInterval);
+
+        deletionIntervalAccess.setDeletionInterval(deletionInterval);
     }
 
     /**
      * @return the deletion interval from the database.
      */
     long getDeletionInterval() {
-        return dashboardAccess.getDeletionInterval();
+        long deletionInterval = deletionIntervalAccess.getDeletionInterval();
+        if (deletionInterval < 0) {
+            return DEFAULT_DELETION_INTERVAL;
+        }
+        return deletionInterval;
     }
 
     /**
@@ -109,6 +146,6 @@ public class DatabaseTalker {
      * @return a list of all dashboards.
      */
     Collection<Dashboard> getAllDashboards() {
-        return dashboardAccess.getAllDashboards();
+        return dashboardAccess.findAll();
     }
 }

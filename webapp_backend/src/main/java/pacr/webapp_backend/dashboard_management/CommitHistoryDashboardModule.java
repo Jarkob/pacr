@@ -26,10 +26,11 @@ public class CommitHistoryDashboardModule extends DashboardModule {
 
     /**
      * Sets the tracked repositories to the given list of repository names.
+     *
      * @param trackedRepositories The new tracked repositories.
      */
-     void setTrackedRepositories(List<String> trackedRepositories) {
-         this.trackedRepositories = List.copyOf(trackedRepositories);
+    void setTrackedRepositories(List<String> trackedRepositories) {
+        this.trackedRepositories = List.copyOf(trackedRepositories);
     }
 
     @Override

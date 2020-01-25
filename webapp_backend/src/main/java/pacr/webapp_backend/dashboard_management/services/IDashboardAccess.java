@@ -3,8 +3,7 @@ package pacr.webapp_backend.dashboard_management.services;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Collection;
 
 /**
  * This interface is used for storing and accessing
@@ -27,43 +26,32 @@ public interface IDashboardAccess {
     Dashboard findByViewKey(@NotNull String viewKey);
 
     /**
-     * @param dashboard the dashboard, which will be added to be database.
+     * Stores the given dashboard in the database, overwriting an older version, if necessary.
+     *
+     * @param dashboard the dashboard, which will be stored in the database.
      */
-    void addDashboard(@NotNull Dashboard dashboard);
+    void storeDashboard(@NotNull Dashboard dashboard);
 
     /**
      * @param editKey The edit key of the dashboard, which will be deleted.
-     * @throws NoSuchElementException if the dashboard does not exist in the database.
+     * @return the removed dashboard.
      */
-    void deleteDashboard(@NotNull String editKey) throws NoSuchElementException;
+    Dashboard removeDashboardByEditKey(String editKey);
 
     /**
-     * @param dashboard The dashboard, which will be updated.
-     * @throws NoSuchElementException if the dashboard does not exist in the database.
+     * @param editKey the edit key, whose existence should be checked.
+     * @return {@code true} if the edit key does belong to an existing dashboard, else {@code false}.
      */
-    void updateDashboard(@NotNull Dashboard dashboard) throws NoSuchElementException;
+    boolean existsDashboardByEditKey(String editKey);
 
     /**
-     * @param key the key, whose type should be returned.
-     * @return -1 if no such key exists in the database, 0 if the key is a view key and
-     * 1 if the key is an edit key.
+     * @param viewKey the view key, whose existence should be checked.
+     * @return {@code true} if the view key does belong to an existing dashboard, else {@code false}.
      */
-    KeyType checkKeyType(String key);
+    boolean existsDashboardByViewKey(String viewKey);
 
     /**
-     * Stores the given deletion interval as the new deletion interval.
-     * @param deletionInterval the new deletion interval.
+     * @return a collection of all dashboards, that currently exist in the database.
      */
-    void setDeletionInterval(long deletionInterval);
-
-    /**
-     * Receives the deletion interval from the database.
-     * @return the deletion interval.
-     */
-    long getDeletionInterval();
-
-    /**
-     * @return a list of all currently existing dashboards in the database.
-     */
-    List<Dashboard> getAllDashboards();
+    Collection<Dashboard> findAll();
 }
