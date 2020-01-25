@@ -9,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,6 +24,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
     private String commitHash;
     private String commitMessage;
+    private String commitURL;
     private String comparisonCommitHash;
 
     /**
@@ -35,6 +35,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     private String commitAuthorDate;
 
     private int commitRepositoryId;
+    private String commitRepositoryName;
     private Collection<String> commitBranchNames;
     private Collection<String> commitParentHashes;
     private Collection<String> commitLabels;
@@ -62,6 +63,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.globalError = result.hasGlobalError();
         this.errorMessage = result.getGlobalError();
         this.commitHash = commit.getCommitHash();
+        this.commitURL = commit.getCommitURL();
         this.commitMessage = commit.getMessage();
         this.comparisonCommitHash = result.getComparisonCommitHash();
 
@@ -70,9 +72,9 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.commitAuthorDate = commit.getAuthorDate().toString();
 
         this.commitRepositoryId = commit.getRepositoryID();
+        this.commitRepositoryName = commit.getRepositoryName();
 
-        // TODO change this as soon as ICommit interface is up to date
-        this.commitBranchNames = new LinkedList<>();
+        this.commitBranchNames = commit.getBranchNames();
 
         this.commitParentHashes = commit.getParentHashes();
 

@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -63,11 +62,9 @@ public class ResultControllerTest {
 
     /**
      * Tests whether getResultsFromBranch correctly calls the ResultGetter.
-     * @throws NotFoundException if repository or branch wasn't found. Should not happen since we are mocking this
-     * method.
      */
     @Test
-    void getResultsFromBranch_shouldCallResultGetter() throws NotFoundException {
+    void getResultsFromBranch_shouldCallResultGetter() {
         HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
         when(resultGetterMock.getBranchResults(REPO_ID, BRANCH_NAME)).thenReturn(getterOutput);
 
@@ -80,10 +77,9 @@ public class ResultControllerTest {
 
     /**
      * Tests whether getResultForCommit correctly calls the ResultGetter.
-     * @throws NotFoundException if commit was not found. Should not happen since we are mocking this method.
      */
     @Test
-    void getResultForCommit_shouldCallResultGetter() throws NotFoundException {
+    void getResultForCommit_shouldCallResultGetter() {
         OutputBenchmarkingResult outputMock = Mockito.mock(OutputBenchmarkingResult.class);
         when(resultGetterMock.getCommitResult(HASH)).thenReturn(outputMock);
 

@@ -1,13 +1,14 @@
 package pacr.webapp_backend.result_management.services;
 
-import javassist.NotFoundException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.result_management.BenchmarkProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 /**
  * Manages benchmark meta data and saves new benchmarks.
@@ -78,10 +79,8 @@ public class BenchmarkManager {
      * @param name the new custom name. Throws IllegalArgumentException if it is null, empty or blank.
      * @param description The new description. Throws IllegalArgumentException if it is null.
      * @param groupID the id of the new group. -1 causes this benchmark not to be associated with any group.
-     * @throws NotFoundException if no benchmark and/or group with the given id(s) is saved in the database.
      */
-    public void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID)
-            throws NotFoundException {
+    public void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID) {
         if (name == null || name.isEmpty() || name.isBlank()) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
@@ -91,7 +90,7 @@ public class BenchmarkManager {
 
         Benchmark benchmark = benchmarkAccess.getBenchmark(benchmarkID);
         if (benchmark == null) {
-            throw new NotFoundException("no benchmark with id " + benchmarkID);
+            throw new NoSuchElementException("no benchmark with id " + benchmarkID);
         }
 
         BenchmarkGroup group = null;
@@ -101,7 +100,7 @@ public class BenchmarkManager {
         if (groupID != GROUP_ID_NO_GROUP) {
             group = this.groupAccess.getBenchmarkGroup(groupID);
             if (group == null) {
-                throw new NotFoundException("no group with id " + groupID);
+                throw new NoSuchElementException("no group with id " + groupID);
             }
         }
         
@@ -119,7 +118,7 @@ public class BenchmarkManager {
      * @param name the name of the new benchmark group. Throws IllegalArgumentException if this is null, empty or blank.
      */
     public void addGroup(String name) {
-        if (name == null || name.isEmpty() || name.isBlank()) {
+        if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
         BenchmarkGroup group = new BenchmarkGroup(name);
@@ -130,17 +129,16 @@ public class BenchmarkManager {
      * The name of the group is updated to the given name.
      * @param id the id of the group.
      * @param name the new name of the group. Throws IllegalArgumentException if this is null, empty or blank.
-     * @throws NotFoundException if no group with this id is saved in the database.
      */
-    public void updateGroup(int id, String name) throws NotFoundException {
-        if (name == null || name.isEmpty() || name.isBlank()) {
+    public void updateGroup(int id, String name) {
+        if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
 
         BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
 
         if (group == null) {
-            throw new NotFoundException("no group with id " + id);
+            throw new NoSuchElementException("no group with id " + id);
         }
 
         group.setName(name);
@@ -151,13 +149,12 @@ public class BenchmarkManager {
     /**
      * Deletes the group. Benchmarks that are still associated with this group now belong to no group.
      * @param id the id of the group.
-     * @throws NotFoundException if no group with this id is saved in the database.
      */
-    public void deleteGroup(int id) throws NotFoundException {
+    public void deleteGroup(int id) {
         BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
 
         if (group == null) {
-            throw new NotFoundException("no group with id " + id);
+            throw new NoSuchElementException("no group with id " + id);
         }
 
         for (Benchmark benchmark : this.getAllBenchmarks()) {

@@ -69,7 +69,7 @@ public class ResultManagerTest {
         Set<GitBranch> selectedBranches = new HashSet<>();
         selectedBranches.add(branch);
         repository = new GitRepository(true, selectedBranches, URL, REPO_NAME,
-                new Color(0, 0, 0), LocalDate.now()); // TODO change this as soon as the interface changes
+                new Color(0, 0, 0), LocalDate.now());
 
         // commit
         commit = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, repository);

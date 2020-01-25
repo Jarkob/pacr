@@ -3,6 +3,7 @@ package pacr.webapp_backend.result_management;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 
@@ -39,6 +40,8 @@ public class BenchmarkPropertyResultTest {
      */
     @BeforeAll
     public static void setUp() {
+        propertyMock = Mockito.mock(BenchmarkProperty.class);
+
         propertyResultEven = new BenchmarkPropertyResult(Arrays.asList(RESULTS_EVEN), propertyMock, null);
         propertyResultOdd = new BenchmarkPropertyResult(Arrays.asList(RESULTS_ODD), propertyMock, null);
     }

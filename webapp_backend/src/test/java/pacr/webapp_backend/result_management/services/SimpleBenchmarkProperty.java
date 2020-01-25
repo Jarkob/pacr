@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
@@ -67,7 +68,10 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
         return error;
     }
 
-    public void setError(String error) {
+    /**
+     * @param error Sets the error message. May be null. This implies there was no error.
+     */
+    public void setError(@Nullable String error) {
         this.error = error;
     }
 }

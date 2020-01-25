@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.endpoints;
 
-import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -18,7 +17,7 @@ import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
-import java.util.Objects;
+import java.util.NoSuchElementException;
 
 /**
  * Provides endpoints for getting benchmark metadata and changing it (if the user is authenticated).
@@ -78,7 +77,7 @@ public class BenchmarkController {
         if (authenticator.authenticate(jwt)) {
             try {
                 benchmarkManager.updateBenchmark(benchmarkId, name, description, groupId);
-            } catch (NotFoundException e) {
+            } catch (NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
             }
 
@@ -128,7 +127,7 @@ public class BenchmarkController {
         if (authenticator.authenticate(jwt)) {
             try {
                 benchmarkManager.updateGroup(groupId, name);
-            } catch (NotFoundException e) {
+            } catch (NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
             }
 
@@ -155,7 +154,7 @@ public class BenchmarkController {
         if (authenticator.authenticate(jwt)) {
             try {
                 benchmarkManager.deleteGroup(groupId);
-            } catch (NotFoundException e) {
+            } catch (NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
             }
 

@@ -69,7 +69,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
         }
 
         NewResultEvent benchmarkingEvent = new NewResultEvent(EventCategory.BENCHMARKING, commit.getCommitHash(),
-                String.valueOf(commit.getRepositoryID()), result.getGlobalError(), averageImprovementPercentage,
+                commit.getRepositoryName(), result.getGlobalError(), averageImprovementPercentage,
                 comparisonCommitHash);
 
         eventHandler.addEvent(benchmarkingEvent);

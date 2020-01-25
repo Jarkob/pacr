@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import javassist.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,6 @@ import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.shared.ResultInterpretation;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -124,10 +122,9 @@ public class BenchmarkManagerTest {
 
     /**
      * Tests whether updateBenchmark changes the custom name of a benchmark in the database (and nothing else).
-     * @throws NotFoundException if the benchmark wasn't found in the database. This is a critical test failure.
      */
     @Test
-    public void updateBenchmark_newName_shouldOnlyChangeName() throws NotFoundException {
+    public void updateBenchmark_newName_shouldOnlyChangeName() {
         benchmarkDB.saveBenchmark(benchmark);
 
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME_TWO, BENCHMARK_DESCRIPTION, group.getId());
@@ -142,10 +139,9 @@ public class BenchmarkManagerTest {
 
     /**
      * Tests whether updateBenchmark changes the group of a benchmark in the database (and nothing else).
-     * @throws NotFoundException if the benchmark wasn't found in the database. This is a critical test failure.
      */
     @Test
-    public void updateBenchmark_newGroup_shouldOnlyChangeGroup() throws NotFoundException {
+    public void updateBenchmark_newGroup_shouldOnlyChangeGroup() {
         benchmarkDB.saveBenchmark(benchmark);
 
         BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
@@ -164,10 +160,9 @@ public class BenchmarkManagerTest {
     /**
      * Tests whether a benchmark can be removed from a group with updateBenchmark by passing the groupId
      * GROUP_ID_NO_GROUP.
-     * @throws NotFoundException if the benchmark was not found in the database. This is a critical test failure.
      */
     @Test
-    public void updateBenchmark_groupIdNoGroup_shouldMakeGroupNull() throws NotFoundException {
+    public void updateBenchmark_groupIdNoGroup_shouldMakeGroupNull() {
         benchmarkDB.saveBenchmark(benchmark);
 
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME, BENCHMARK_DESCRIPTION,
@@ -190,10 +185,9 @@ public class BenchmarkManagerTest {
 
     /**
      * Tests whether updateGroup updates contents of group.
-     * @throws NotFoundException if the group could not be found in the database. This is a critical test failure.
      */
     @Test
-    public void updateGroup_newName_shouldChangeName() throws NotFoundException {
+    public void updateGroup_newName_shouldChangeName() {
         benchmarkManager.updateGroup(group.getId(), GROUP_NAME_TWO);
 
         BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(group.getId());
@@ -203,10 +197,9 @@ public class BenchmarkManagerTest {
 
     /**
      * Tests whether deleteGroup removes the group from the database.
-     * @throws NotFoundException if the group could not be found in the database. This is a critical test failure.
      */
     @Test
-    public void deleteGroup_shouldRemoveGroupFromDatabase() throws NotFoundException {
+    public void deleteGroup_shouldRemoveGroupFromDatabase() {
         benchmarkManager.deleteGroup(group.getId());
 
         assertEquals(EXPECTED_NUM_OF_GROUPS_AFTER_DEL, groupDB.count());
@@ -214,10 +207,9 @@ public class BenchmarkManagerTest {
 
     /**
      * Tests whether deleteGroup also removes the group from an associated benchmark.
-     * @throws NotFoundException if the group could not be found in the database. This is a critical test failure.
      */
     @Test
-    public void deleteGroup_benchmarkHasGroup_shouldRemoveGroupFromBenchmark() throws NotFoundException {
+    public void deleteGroup_benchmarkHasGroup_shouldRemoveGroupFromBenchmark() {
         benchmarkDB.saveBenchmark(benchmark);
 
         benchmarkManager.deleteGroup(group.getId());

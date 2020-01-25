@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import javassist.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -19,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -74,10 +74,9 @@ public class ResultGetterTest {
     /**
      * Tests whether getCommitResult returns the output result if everything is in order (commit and result are saved
      * in database).
-     * @throws NotFoundException if ResultGetter could not get commit or result. This is a critical test failure.
      */
     @Test
-    void getCommitResult_shouldBuildOutputObject() throws NotFoundException {
+    void getCommitResult_shouldBuildOutputObject() {
         when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
         when(outputBuilderMock.buildDetailOutput(commitMock, resultMock)).thenReturn(outputResultMock);
@@ -91,11 +90,11 @@ public class ResultGetterTest {
      * Tests whether getCommitResult properly throws exception if the commit could not be found.
      */
     @Test
-    void getCommitResult_noCommitFound_shouldThrowNotFoundException() {
+    void getCommitResult_noCommitFound_shouldThrowNoSuchElement() {
         when(commitAccessMock.getCommit(HASH)).thenReturn(null);
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
 
-        Assertions.assertThrows(NotFoundException.class,  () -> {
+        Assertions.assertThrows(NoSuchElementException.class,  () -> {
             resultGetter.getCommitResult(HASH);
         });
     }
@@ -104,11 +103,11 @@ public class ResultGetterTest {
      * Tests whether getCommitResult properly throws exception if the result could not be found.
      */
     @Test
-    void getCommitResult_noResultFound_shouldThrowNotFoundException() {
+    void getCommitResult_noResultFound_shouldThrowNoSuchElement() {
         when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(null);
 
-        Assertions.assertThrows(NotFoundException.class,  () -> {
+        Assertions.assertThrows(NoSuchElementException.class,  () -> {
             resultGetter.getCommitResult(HASH);
         });
     }
@@ -194,10 +193,10 @@ public class ResultGetterTest {
      * Tests whether getBranchResults throws exception if the branch or repository does not exist.
      */
     @Test
-    void getBranchResults_noBranch_shouldThrowNotFoundException() {
+    void getBranchResults_noBranch_shouldThrowNoSuchElementException() {
         when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME)).thenReturn(null);
 
-        assertThrows(NotFoundException.class, () -> {
+        assertThrows(NoSuchElementException.class, () -> {
             resultGetter.getBranchResults(REPO_ID, BRANCH_NAME);
         });
     }

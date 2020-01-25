@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management;
 
 
+import org.springframework.lang.Nullable;
 import pacr.webapp_backend.result_management.services.StatisticalCalculator;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -12,9 +13,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents the measured data of one property or an error message for a property.
@@ -23,6 +26,8 @@ import java.util.List;
  */
 @Entity
 public class BenchmarkPropertyResult implements IBenchmarkProperty {
+    private static final int DEFAULT_RATIO = 1;
+
     @Id
     @GeneratedValue
     private int id;
@@ -75,23 +80,23 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
         this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
 
-        this.ratio = 1;
+        this.ratio = DEFAULT_RATIO;
         this.compared = false;
     }
 
     /**
      * Creates a BenchmarkPropertyResult directly from measurements. Assumes that this result has not yet been compared.
-     * @param measurements the measurements.
-     * @param property the property of a benchmark that was measured.
-     * @param errorMessage the error message.
+     * @param measurements the measurements. Cannot be null.
+     * @param property the property of a benchmark that was measured. Cannot be null.
+     * @param errorMessage the error message. May be null. In this case no error is assumed.
      */
-    public BenchmarkPropertyResult(List<Double> measurements, BenchmarkProperty property, String errorMessage) {
+    public BenchmarkPropertyResult(@NotNull List<Double> measurements, @NotNull BenchmarkProperty property,
+                                   @Nullable String errorMessage) {
+        Objects.requireNonNull(measurements);
+        Objects.requireNonNull(property);
+
         this.property = property;
-        if (errorMessage == null) {
-            this.error = false;
-        } else {
-            this.error = true;
-        }
+        this.error = errorMessage != null;
         this.errorMessage = errorMessage;
         this.measurements = measurements;
         this.mean = StatisticalCalculator.getMean(this.measurements);
@@ -100,7 +105,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
         this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
 
-        this.ratio = 1;
+        this.ratio = DEFAULT_RATIO;
         this.compared = false;
     }
 

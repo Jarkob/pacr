@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import javassist.NotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.result_management.BenchmarkResult;
@@ -20,6 +19,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -66,10 +66,8 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param repositoryId the id of the repository of the branch.
      * @param branch the name of the branch. Cannot be null, empty or blank.
      * @return the benchmarking results.
-     * @throws NotFoundException if no repository with the id or no branch with the name could be found.
      */
-    public HashMap<String, DiagramOutputResult> getBranchResults(int repositoryId, @NotNull String branch)
-            throws NotFoundException {
+    public HashMap<String, DiagramOutputResult> getBranchResults(int repositoryId, @NotNull String branch) {
         if (!StringUtils.hasText(branch)) {
             throw new IllegalArgumentException("branch cannot be null, empty or blank");
         }
@@ -77,7 +75,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         Collection<? extends ICommit> commits = commitAccess.getCommitsFromBranch(repositoryId, branch);
 
         if (commits == null) {
-            throw new NotFoundException("no repository with id " + repositoryId + " or no branch with name "
+            throw new NoSuchElementException("no repository with id " + repositoryId + " or no branch with name "
                     + branch + " was found");
         }
 
@@ -88,9 +86,8 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * Gets the benchmarking result of a commit.
      * @param commitHash the hash of the commit. Cannot be null, empty or blank.
      * @return the benchmarking result.
-     * @throws NotFoundException if no commit with this hash or no result for this commit could be found.
      */
-    public OutputBenchmarkingResult getCommitResult(@NotNull String commitHash) throws NotFoundException {
+    public OutputBenchmarkingResult getCommitResult(@NotNull String commitHash) {
         if (!StringUtils.hasText(commitHash)) {
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
@@ -98,13 +95,13 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         ICommit commit = commitAccess.getCommit(commitHash);
 
         if (commit == null) {
-            throw new NotFoundException("no commit with hash " + commitHash + " was found.");
+            throw new NoSuchElementException("no commit with hash " + commitHash + " was found.");
         }
 
         CommitResult result = resultAccess.getResultFromCommit(commitHash);
 
         if (result == null) {
-            throw new NotFoundException("no result for commit with hash " + commitHash + " was found");
+            throw new NoSuchElementException("no result for commit with hash " + commitHash + " was found");
         }
 
         return outputBuilder.buildDetailOutput(commit, result);

@@ -52,7 +52,7 @@ public class DiagramOutputResult {
             }
         }
 
-        this.parents = null; // TODO add this as soon as ICommit interface changes
+        this.parents = commit.getParentHashes().toArray(new String[0]);
         this.globalError = commitResult.getGlobalError();
     }
 

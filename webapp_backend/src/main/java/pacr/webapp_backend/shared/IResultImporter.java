@@ -1,7 +1,5 @@
 package pacr.webapp_backend.shared;
 
-import javassist.NotFoundException;
-
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 

@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import javassist.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -75,10 +74,9 @@ public class BenchmarkControllerTest {
 
     /**
      * Tests whether updateBenchmark updates it on the benchmark manager and if it authenticates the token correctly.
-     * @throws NotFoundException if no benchmark was not found. Should not happen since we are mocking this method.
      */
     @Test
-    void updateBenchmark_authenticationSucceeds_shouldCallUpdateBenchmarkInManager() throws NotFoundException {
+    void updateBenchmark_authenticationSucceeds_shouldCallUpdateBenchmarkInManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
         ResponseEntity<Object> response = benchmarkController.updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME,
@@ -91,10 +89,9 @@ public class BenchmarkControllerTest {
 
     /**
      * Tests whether updateBenchmark doesn't update it on the benchmark manager if authentication fails.
-     * @throws NotFoundException if no benchmark was not found. Should not happen since we are mocking this method.
      */
     @Test
-    void updateBenchmark_authenticationFails_shouldNotUpdateBenchmark() throws NotFoundException {
+    void updateBenchmark_authenticationFails_shouldNotUpdateBenchmark() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
         ResponseEntity<Object> response = benchmarkController.updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME,
@@ -135,10 +132,9 @@ public class BenchmarkControllerTest {
 
     /**
      * Tests whether updateGroup updates it on the benchmark manager and if it authenticates the token correctly.
-     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
      */
     @Test
-    void updateGroup_authenticationSucceeds_shouldCallUpdateGroupInManager() throws NotFoundException {
+    void updateGroup_authenticationSucceeds_shouldCallUpdateGroupInManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
         ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
@@ -150,10 +146,9 @@ public class BenchmarkControllerTest {
 
     /**
      * Tests whether updateGroup doesn't update it on the benchmark manager if authentication fails.
-     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
      */
     @Test
-    void updateGroup_authenticationFails_shouldNotUpdateGroup() throws NotFoundException {
+    void updateGroup_authenticationFails_shouldNotUpdateGroup() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
         ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
@@ -165,10 +160,9 @@ public class BenchmarkControllerTest {
 
     /**
      * Tests whether deleteGroup deletes it on the benchmark manager and if it authenticates the token correctly.
-     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
      */
     @Test
-    void deleteGroup_authenticationSucceeds_shouldCallDeleteGroupInManager() throws NotFoundException {
+    void deleteGroup_authenticationSucceeds_shouldCallDeleteGroupInManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
         ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
@@ -180,10 +174,9 @@ public class BenchmarkControllerTest {
 
     /**
      * Tests whether deleteGroup doesn't delete it on the benchmark manager if authentication fails.
-     * @throws NotFoundException if the group was not found. Should not happen since we mock this method.
      */
     @Test
-    void deleteGroup_authenticationFails_shouldNotDeleteGroup() throws NotFoundException {
+    void deleteGroup_authenticationFails_shouldNotDeleteGroup() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
         ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);

@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.endpoints;
 
-import javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -16,8 +15,6 @@ import pacr.webapp_backend.result_management.services.ResultManager;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,11 +55,10 @@ public class ResultController {
      * @param repositoryId the id of the repository.
      * @param branch the name of the branch. Cannot be null, empty or blank.
      * @return the benchmarking results.
-     * @throws NotFoundException if no repository with the given id and/or no branch with the given name could be found.
      */
     @GetMapping("/results/repository/{repositoryId}/{branch}")
     public Map<String, DiagramOutputResult> getBenchmarkingResultsFromBranch(
-            @PathVariable int repositoryId, @NotNull @PathVariable String branch) throws NotFoundException {
+            @PathVariable int repositoryId, @NotNull @PathVariable String branch) {
         if (!StringUtils.hasText(branch)) {
             throw new IllegalArgumentException("branch cannot be null, empty or blank");
         }
@@ -74,11 +70,9 @@ public class ResultController {
      * Gets the benchmarking result of a specific commit.
      * @param commitHash the hash of the commit. Cannot be null, empty or blank.
      * @return the benchmarking result.
-     * @throws NotFoundException if no commit with this hash or no result for this commit could be found.
      */
     @GetMapping("/results/commit/{commitHash}")
-    public OutputBenchmarkingResult getBenchmarkingResultForCommit(@NotNull @PathVariable String commitHash)
-            throws NotFoundException {
+    public OutputBenchmarkingResult getBenchmarkingResultForCommit(@NotNull @PathVariable String commitHash) {
         if (!StringUtils.hasText(commitHash)) {
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
