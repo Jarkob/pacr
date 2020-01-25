@@ -39,13 +39,9 @@ public class GitCommit implements ICommit {
     @Id
     private String commitHash;
 
-    @Column(length = 1000)
     private String commitMessage;
-    @Column
     private LocalDateTime entryDate;
-    @Column
     private LocalDateTime commitDate;
-    @Column
     private LocalDateTime authorDate;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -187,6 +183,11 @@ public class GitCommit implements ICommit {
             branchNames.add(branch.getName());
         }
         return branchNames;
+    }
+
+    @Override
+    public String getCommitURL() {
+        return repository.getCommitLinkPrefix() + commitHash;
     }
 
     /**

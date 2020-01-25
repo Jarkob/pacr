@@ -87,4 +87,10 @@ public interface ICommit {
      * @return branch names.
      */
     Collection<String> getBranchNames();
+
+    /**
+     * Gets the HTTPS URL for this commit.
+     * @return url or null if it doesn't exist.
+     */
+    String getCommitURL();
 }

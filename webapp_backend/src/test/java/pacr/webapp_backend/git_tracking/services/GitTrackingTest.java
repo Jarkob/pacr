@@ -2,6 +2,7 @@ package pacr.webapp_backend.git_tracking.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
@@ -54,12 +55,16 @@ public class GitTrackingTest {
         when(gitTrackingAccess.addRepository(any())).thenReturn(repositoryId);
         when(colorPicker.getNextColor()).thenReturn(new Color(0xFF0000));
 
+        ArgumentCaptor<GitRepository> repositoryCaptor = ArgumentCaptor.forClass(GitRepository.class);
+
         assertEquals(repositoryId,
-                gitTracking.addRepository("repo_url", null,
+                gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr.git", null,
                         "name", Arrays.asList("master", "testBranch1")));
 
-        verify(gitTrackingAccess).addRepository(notNull());
+        verify(gitTrackingAccess).addRepository(repositoryCaptor.capture());
+        assertEquals("https://git.scc.kit.edu/pacr/pacr/commit/", repositoryCaptor.getValue().getCommitLinkPrefix());
         verify(colorPicker).getNextColor();
+
     }
 
     @Test

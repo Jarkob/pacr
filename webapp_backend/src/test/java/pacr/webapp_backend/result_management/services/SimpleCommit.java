@@ -63,6 +63,11 @@ public class SimpleCommit implements ICommit {
     }
 
     @Override
+    public String getCommitURL() {
+        return null;
+    }
+
+    @Override
     public void addLabel(String label) {
     }
 

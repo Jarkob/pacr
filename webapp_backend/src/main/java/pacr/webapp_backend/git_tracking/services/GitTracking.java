@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Objects;
+import java.util.List;
+import java.util.Arrays;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -75,11 +77,37 @@ public class GitTracking implements IRepositoryImporter {
         GitRepository repository = new GitRepository(false, new HashSet<>(),
                 repositoryURL, name, colorPicker.getNextColor(), observeFromDate);
 
+        String commitLinkPrefix = getCommitLinkPrefix(repositoryURL);
+
+        if (commitLinkPrefix != null) {
+            repository.setCommitLinkPrefix(commitLinkPrefix);
+        }
+
         for (String branchName : branchNames) {
             GitBranch branch = new GitBranch(branchName);
             repository.addBranchToSelection(branch);
         }
         return gitTrackingAccess.addRepository(repository);
+    }
+
+    private String getCommitLinkPrefix(String pullURL) {
+        List<String> gitPrefixes = Arrays.asList("git@github.com", "git@gitlab.com", "git@git.scc.kit.edu");
+
+        for (String prefix : gitPrefixes) {
+            if (pullURL.startsWith(prefix)) {
+                return getCommitURLPrefix(pullURL, prefix);
+            }
+        }
+        return null;
+    }
+
+    private String getCommitURLPrefix(String pullURL, String gitPrefix) {
+        int startIndex = pullURL.indexOf(':') + 1; // ':' is the separator for host and repository path
+        int endIndex = pullURL.indexOf(".git");
+        String gitHttpsPrefix = "https://" + gitPrefix.substring(4) + "/";
+        String repositoryInfix = pullURL.substring(startIndex, endIndex);
+        String commitSuffix = "/commit/";
+        return gitHttpsPrefix + repositoryInfix + commitSuffix;
     }
 
     /**

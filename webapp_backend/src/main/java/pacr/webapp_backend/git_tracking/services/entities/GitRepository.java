@@ -52,6 +52,7 @@ public class GitRepository {
     private boolean isHookSet;
     private Color color;
     private LocalDate observeFromDate;
+    private String commitLinkPrefix;
 
     /**
      * Creates an empty repository. Necessary to be an Entity.
@@ -59,6 +60,7 @@ public class GitRepository {
     public GitRepository() {
         this.commits = new HashMap<>();
         this.selectedBranches = new HashSet<>();
+        this.commitLinkPrefix = null;
     }
 
     /**
@@ -87,6 +89,7 @@ public class GitRepository {
         this.isHookSet = false;
         this.color = color;
         this.observeFromDate = observeFromDate;
+        this.commitLinkPrefix = null;
     }
 
     /**
@@ -111,6 +114,22 @@ public class GitRepository {
      */
     public boolean isTrackAllBranches() {
         return trackAllBranches;
+    }
+
+    /**
+     * Gets the commit link prefix of the repository.
+     * @return the prefix of the URL directing to the commit.
+     */
+    public String getCommitLinkPrefix() {
+        return commitLinkPrefix;
+    }
+
+    /**
+     * Sets the commit link prefix of the repository.
+     * @param commitLinkPrefix is the prefix of the URL directing to the commit.
+     */
+    public void setCommitLinkPrefix(String commitLinkPrefix) {
+        this.commitLinkPrefix = commitLinkPrefix;
     }
 
     /**
