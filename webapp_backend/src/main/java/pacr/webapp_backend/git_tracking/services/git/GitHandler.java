@@ -7,20 +7,23 @@ import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
-import org.eclipse.jgit.lib.*;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.treewalk.TreeWalk;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import pacr.webapp_backend.git_tracking.services.ColorPicker;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.shared.IResultDeleter;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
@@ -39,10 +42,8 @@ import java.util.*;
 public class GitHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(GitHandler.class);
-    private static final String MASTER = "master";
 
     private String pathToWorkingDir;
-    private File repositoryWorkingDir;
 
     private IGitTrackingAccess gitTrackingAccess;
     private TransportConfigCallback transportConfigCallback;
@@ -54,6 +55,9 @@ public class GitHandler {
      * @param pathToRepositories is the path where the repositories are being stored.
      * @param transportConfigCallback is the TransportConfigCallback needed for SSH authentication.
      * @param gitTrackingAccess is the access to the DB for storing commits.
+     * @param cleanUpCommits is the strategy that is used to select the commits not being needed anymore
+     *                       after a force push.
+     * @param resultDeleter is the component used to delete benchmarking results.
      * @throws IOException when the working directory cannot be created.
      */
     public GitHandler(@NotNull @Value("${gitRepositoriesPath}") String pathToRepositories,
@@ -64,6 +68,8 @@ public class GitHandler {
         Objects.requireNonNull(pathToRepositories);
         Objects.requireNonNull(transportConfigCallback);
         Objects.requireNonNull(gitTrackingAccess);
+        Objects.requireNonNull(cleanUpCommits);
+        Objects.requireNonNull(resultDeleter);
 
         this.transportConfigCallback = transportConfigCallback;
         this.pathToWorkingDir = System.getProperty("user.dir") + pathToRepositories;
@@ -71,7 +77,8 @@ public class GitHandler {
         this.cleanUpCommits = cleanUpCommits;
         this.resultDeleter = resultDeleter;
 
-        repositoryWorkingDir = new File(pathToWorkingDir);
+        File repositoryWorkingDir = new File(pathToWorkingDir);
+
         if (!repositoryWorkingDir.exists()) {
             if (!repositoryWorkingDir.mkdirs()) {
                 throw new IOException("Could not create repository working directory.");
@@ -82,116 +89,154 @@ public class GitHandler {
     /**
      * Updates a repository. Initially clones it if it doesn't exist yet or pulls the repository.
      * @param gitRepository is the Repository being updated.
-     * @return new commits that need to be added
+     * @return new commits that need to be added or null if something went wrong.
      */
-    public Collection<GitCommit> updateRepository(@NotNull GitRepository gitRepository) throws GitAPIException, IOException {
+    public Collection<GitCommit> updateRepository(@NotNull GitRepository gitRepository) {
         Objects.requireNonNull(gitRepository);
 
-        File repositoryFolder = getRepositoryWorkingDir(gitRepository);
-
         // clone repository if it wasn't cloned already
-        if (!repositoryFolder.exists()) {
-            boolean successful = repositoryFolder.mkdirs();
-            cloneRepository(gitRepository);
+        File repositoryFolder = cloneRepositoryIfNotExists(gitRepository);
+        if (repositoryFolder == null) {
+            LOGGER.error("Could not clone repository with ID {}.", gitRepository.getId());
+            return null;
         }
 
-        Repository repository = null;
-        try {
-            repository = getRepository(repositoryFolder.getAbsolutePath());
-        } catch (IOException e) {
+        Git git = initializeGit(repositoryFolder);
+        if (git == null) {
             LOGGER.error("Could not read repository with ID {}.", gitRepository.getId());
-            throw e;
+            return null;
         }
-
-        Git git = new Git(repository);
 
         // fetch repository
         LOGGER.info("Fetching repository with ID {}.", gitRepository.getId());
-        git.fetch().setRemote("origin")
-                .setTransportConfigCallback(transportConfigCallback)
-                .call();
+        try {
+            fetchRepository(git);
+        } catch (GitAPIException e) {
+            LOGGER.error("Could not fetch repository with ID {}.", gitRepository.getId());
+        }
 
-        Map<String, GitCommit> untrackedCommits = new HashMap<>();
-        Map<String, Collection<String>> parentsOfCommits = new HashMap<>();
-        Map<String, Collection<String>> branchesOfCommits = new HashMap<>();
+        Set<GitCommit> untrackedCommits = new HashSet<>();
+
         // get branches
-        List<Ref> branches = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
+        List<Ref> branches = getBranches(git);
+        if (branches == null) {
+            LOGGER.error("Could not get branches from repository with ID {}.", gitRepository.getId());
+            return null;
+        }
+
         for (Ref branch : branches) {
 
-            if (gitRepository.isBranchSelected(getNameOfBranch(branch))) {
-                LOGGER.info("Searching for new commits in branch {}.", getNameOfBranch(branch));
-                // get commits from branch
-                try {
-                    Collection<String> benchmarkedCommitsNotInBranch = new HashSet<>();
-                    Collection<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository,
-                            branch, parentsOfCommits, branchesOfCommits, benchmarkedCommitsNotInBranch);
+            try {
+                checkBranch(branch, git, gitRepository, untrackedCommits);
+            } catch (ForcePushException e) {
+                LOGGER.info("Force push detected. Deleting unused commits.");
+                Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository);
 
-                    // check if branch is being added for the first time and you need to add commits to branch
-                    if (!benchmarkedCommitsNotInBranch.isEmpty()) {
-                        for (String commitHash : benchmarkedCommitsNotInBranch) {
-                            GitCommit commit = gitTrackingAccess.getCommit(commitHash);
-                            GitBranch gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
-                            gitBranch.addCommit(commit);
-                        }
-                        gitTrackingAccess.updateRepository(gitRepository);
-                    }
-
-                    for (GitCommit commit : commitsFromBranch) {
-                        untrackedCommits.put(commit.getCommitHash(), commit);
-                    }
-                } catch (ForcePushException e) {
-                    LOGGER.info("Force push detected. Deleting unused commits.");
-                    Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository);
-
-                    for (String commitHash : toDelete) {
-                        resultDeleter.deleteBenchmarkingResults(commitHash);
-                        gitTrackingAccess.removeCommit(commitHash);
-                    }
-                    // try again with reset history
-                    updateRepository(gitRepository);
-                } catch (NotFoundException e) {
-                    e.printStackTrace();
-                    // todo error handling
+                for (String commitHash : toDelete) {
+                    resultDeleter.deleteBenchmarkingResults(commitHash);
+                    gitTrackingAccess.removeCommit(commitHash);
                 }
-            } else {
-                LOGGER.info("Skipping branch {} because it is not selected.", getNameOfBranch(branch));
+                // try again with reset history
+                return updateRepository(gitRepository);
             }
+
         }
 
         git.getRepository().close();
         git.close();
 
-        // add parents to GitCommits
-        for (GitCommit commit : untrackedCommits.values()) {
-            Collection<String> parentHashes = parentsOfCommits.get(commit.getCommitHash());
-            assert parentHashes != null;
+        return untrackedCommits;
+    }
 
-            for (String parentHash : parentHashes) {
-                if (untrackedCommits.containsKey(parentHash)) { // parent is also untracked
-                    GitCommit parent = untrackedCommits.get(parentHash);
-                    commit.addParent(parent);
-                } else if (gitTrackingAccess.containsCommit(parentHash)) { // parent is already tracked
-                    GitCommit parent = gitTrackingAccess.getCommit(parentHash);
-                    commit.addParent(parent);
-                } // else parent is not in selectedBranches
+    private File cloneRepositoryIfNotExists(GitRepository gitRepository) {
+        File repositoryFolder = getRepositoryWorkingDir(gitRepository);
+
+        if (!repositoryFolder.exists()) {
+            boolean successful = repositoryFolder.mkdirs();
+            try {
+                cloneRepository(gitRepository);
+            } catch (GitAPIException e) {
+                e.printStackTrace();
+                return null;
             }
         }
+        return repositoryFolder;
+    }
 
-        // add branches to GitCommits
-        for (GitCommit commit : untrackedCommits.values()) {
-            Collection<String> branchesNames = branchesOfCommits.get(commit.getCommitHash());
-            assert branchesNames != null;
+    private Git initializeGit(File repositoryDir) {
+        Repository repository = null;
+        try {
+            repository = getRepository(repositoryDir.getAbsolutePath());
+        } catch (IOException e) {
+            return null;
+        }
 
-            for (String branchName : branchesNames) {
+        return new Git(repository);
+    }
+
+    private void fetchRepository(Git git) throws GitAPIException {
+        git.fetch().setRemote("origin")
+                .setTransportConfigCallback(transportConfigCallback)
+                .call();
+    }
+
+    private List<Ref> getBranches(Git git) {
+        List<Ref> branches = null;
+        try {
+            branches = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
+        } catch (GitAPIException e) {
+            e.printStackTrace();
+        }
+        return branches;
+    }
+
+    private void checkBranch(Ref branch, Git git, GitRepository gitRepository,
+                             Set<GitCommit> untrackedCommits) throws ForcePushException {
+
+        if (gitRepository.isBranchSelected(getNameOfBranch(branch))) {
+            LOGGER.info("Searching for new commits in branch {}.", getNameOfBranch(branch));
+            // get commits from branch
+            Set<String> benchmarkedCommitsNotInBranch = new HashSet<>();
+
+            Set<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository,
+                        branch, benchmarkedCommitsNotInBranch);
+
+            untrackedCommits.addAll(commitsFromBranch);
+
+            try {
+                // commitsFromBranch were already added to the repository in searchForNewCommits
+                gitTrackingAccess.updateRepository(gitRepository);
+            } catch (NotFoundException e) {
+                throw new RuntimeException("Repository should be found.");
+            }
+
+            LOGGER.info("Added {} commits to the system for branch {}.",
+                    commitsFromBranch.size(), getNameOfBranch(branch));
+
+            // check if branch contains commits that are already added to the system
+            if (!benchmarkedCommitsNotInBranch.isEmpty()) {
+
+                for (String commitHash : benchmarkedCommitsNotInBranch) {
+                    GitCommit commit = gitTrackingAccess.getCommit(commitHash);
+                    GitBranch gitBranch;
+                    try {
+                        gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
+                    } catch (NotFoundException e) {
+                        LOGGER.error("Could not find branch {}.", getNameOfBranch(branch));
+                        return;
+                    }
+                    commit.addBranch(gitBranch);
+                }
+
                 try {
-                    commit.addBranch(gitRepository.getSelectedBranch(branchName));
+                    gitTrackingAccess.updateRepository(gitRepository);
                 } catch (NotFoundException e) {
-                    LOGGER.error("Branch {} was not found in the repository.", branchName);
+                    throw new RuntimeException("Repository should be found.");
                 }
             }
+        } else {
+            LOGGER.info("Skipping branch {} because it is not selected.", getNameOfBranch(branch));
         }
-
-        return untrackedCommits.values();
     }
 
     private GitCommit createCommit(GitRepository gitRepository, RevCommit commit) {
@@ -206,67 +251,110 @@ public class GitHandler {
         LocalDateTime commitDate = LocalDateTime.ofEpochSecond(commitTime, 0,
                 ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
 
-        return new GitCommit(commitHash, commitMessage, commitDate, authorDate, gitRepository);
-    }
+        GitCommit gitCommit = new GitCommit(commitHash, commitMessage, commitDate, authorDate, gitRepository);
 
-    private Collection<GitCommit> searchForNewCommitsInBranch(Git git, GitRepository gitRepository, Ref branch,
-                                                              Map<String, Collection<String>> parents,
-                                                              Map<String, Collection<String>> branches,
-                                                              Collection<String> benchmarkedCommitsNotInBranch)
-            throws ForcePushException {
-
-        // iterate over all commits from branch
-        Iterable<RevCommit> commits = null;
-        try {
-            commits = git.log().add(branch.getObjectId()).call();
-        } catch (MissingObjectException | IncorrectObjectTypeException | GitAPIException e) {
-            LOGGER.error("Could not get commits from branch {}", getNameOfBranch(branch));
+        for (int i = 0; i < commit.getParentCount(); ++i) {
+            gitCommit.addParent(commit.getParent(i).getName());
         }
 
-        Collection<GitCommit> untrackedCommits = new HashSet<>();
-        // search for first commit that is already stored in DB
-        for (RevCommit commit : commits) {
-            if (!gitTrackingAccess.containsCommit(commit.getName())) {
-                untrackedCommits.add(createCommit(gitRepository, commit));
-                // add branch
-                Collection<String> branchesOfCommit = branches.get(commit.getName());
-                if (branchesOfCommit == null) {
-                    branchesOfCommit = new HashSet<>();
-                    branchesOfCommit.add(getNameOfBranch(branch));
-                    branches.put(commit.getName(), branchesOfCommit);
-                } else {
-                    branchesOfCommit.add(getNameOfBranch(branch));
-                }
+        return gitCommit;
+    }
 
-                // add parents
-                Collection<String> parentsOfCommit = new HashSet<>();
-                for (int i = 0; i < commit.getParentCount(); ++i) {
-                    parentsOfCommit.add(commit.getParent(i).getName());
-                }
-                parents.put(commit.getName(), parentsOfCommit);
-            } else { // last tracked commit found
-                GitCommit localHead = gitTrackingAccess.getHead(getNameOfBranch(branch));
-                if (localHead == null) { // branch has no commits yet
+    private Set<GitCommit> searchForNewCommitsInBranch(Git git, GitRepository gitRepository, Ref branch,
+                                                              Set<String> benchmarkedCommitsNotInBranch)
+            throws ForcePushException {
+
+        assert git != null;
+        assert gitRepository != null;
+        assert branch != null;
+        assert benchmarkedCommitsNotInBranch != null;
+
+        String branchName = getNameOfBranch(branch);
+        GitBranch gitBranch;
+        try {
+            gitBranch = gitRepository.getSelectedBranch(branchName);
+        } catch (NotFoundException e) {
+            throw new RuntimeException(); //todo
+        }
+
+        // iterate over all commits from branch
+        Iterable<RevCommit> commitsIterable = null;
+        try {
+            commitsIterable = git.log().add(branch.getObjectId()).call();
+        } catch (MissingObjectException | IncorrectObjectTypeException | GitAPIException e) {
+            LOGGER.error("Could not get commits from branch {}", branchName);
+            return new HashSet<>();
+        }
+
+        // add all new commits to commits ordered by their commit history
+        // and check that no force push occurred
+        List<RevCommit> commits = getNewCommits(commitsIterable, benchmarkedCommitsNotInBranch, gitBranch);
+        List<GitCommit> commitsToAdd = new ArrayList<>();
+
+        for (RevCommit revCommit : commits) {
+            GitCommit commit = createCommit(gitRepository, revCommit);
+            commit.addBranch(gitBranch);
+
+            String commitHash = commit.getCommitHash();
+
+            commitsToAdd.add(commit);
+        }
+
+        if (!commitsToAdd.isEmpty()) {
+            gitBranch.setLocalHead(commitsToAdd.get(commitsToAdd.size() - 1));
+        }
+
+        return new HashSet<>(commitsToAdd);
+    }
+
+    /**
+     * Looks for new commits that are not added to the system yet.
+     * If a commit which is already in the system but does not belong to the branch yet,
+     * it is added to benchmarkedCommitsNotInBranch.
+     * @param commitsIterable is the output of git log.
+     * @param branch is the branch currently looked at.
+     * @param benchmarkedCommitsNotInBranch is the list of commits that are already in the system,
+     *                                      but not in the branch yet.
+     * @return list of new commits.
+     * @throws ForcePushException if a force push was detected.
+     */
+    private List<RevCommit> getNewCommits(Iterable<RevCommit> commitsIterable,
+                                          Collection<String> benchmarkedCommitsNotInBranch, GitBranch branch)
+            throws ForcePushException {
+        List<RevCommit> commits = new ArrayList<>();
+
+        for (RevCommit commit : commitsIterable) {
+            if (gitTrackingAccess.containsCommit(commit.getName())) {
+
+                GitCommit localHead = branch.getLocalHead();
+                GitCommit alreadyContained = gitTrackingAccess.getCommit(commit.getName());
+
+                if (localHead == null || !alreadyContained.getBranchNames().contains(branch.getName())) {
+                    // branch doesn't have the commit yet
                     benchmarkedCommitsNotInBranch.add(commit.getName());
                 } else if (!localHead.getCommitHash().equals(commit.getName())) { // check for force push
                     throw new ForcePushException();
                 } else { // all new commits from branch found
                     break;
                 }
+            } else {
+                commits.add(commit);
             }
         }
-        return untrackedCommits;
+
+        return commits;
     }
 
     private Repository getRepository(String path) throws IOException {
+        assert path != null;
+
         FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-        Repository repository = repositoryBuilder.setGitDir(
+        return repositoryBuilder.setGitDir(
                 new File(path + "/.git"))
                 .readEnvironment()
                 .findGitDir()
                 .setMustExist(true)
                 .build();
-        return repository;
     }
 
 
@@ -277,6 +365,8 @@ public class GitHandler {
      */
     public void cloneRepository(@NotNull GitRepository gitRepository) throws GitAPIException {
         Objects.requireNonNull(gitRepository);
+
+        LOGGER.info("Cloning repository with id {} and URL {}.", gitRepository.getId(), gitRepository.getPullURL());
 
         Git git = Git.cloneRepository()
                 .setDirectory(getRepositoryWorkingDir(gitRepository))
@@ -294,7 +384,14 @@ public class GitHandler {
         return new File(repositoryFolderPath);
     }
 
-    public static String getNameOfBranch(Ref branch) {
+    /**
+     * Returns the name of a branch.
+     * @param branch is the branch of which the name should be returned.
+     * @return branch name
+     */
+    public static String getNameOfBranch(@NotNull Ref branch) {
+        Objects.requireNonNull(branch);
+
         // remove the "refs/remotes/origin/" part
         return branch.getName().substring(20);
     }

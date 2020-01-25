@@ -1,11 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
 import java.util.Set;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.GeneratedValue;
-import javax.persistence.OneToMany;
-import javax.persistence.FetchType;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,8 +22,8 @@ public class GitBranch {
 
     private String name;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    private Set<GitCommit> commits;
+    @ManyToOne
+    private GitCommit localHead;
 
     /**
      * Creates an empty branch. Necessary to be an Entity.
@@ -43,7 +39,7 @@ public class GitBranch {
         Objects.requireNonNull(name);
 
         this.name = name;
-        this.commits = new HashSet<>();
+        this.localHead = null;
     }
 
     /**
@@ -55,24 +51,18 @@ public class GitBranch {
     }
 
     /**
-     * Returns all commits in this branch.
-     * @return commits
+     * Returns the head of this branch.
+     * @return GitCommit
      */
-    public Collection<GitCommit> getCommits() {
-        return commits;
+    public GitCommit getLocalHead() {
+        return localHead;
     }
 
     /**
-     * Adds a commit to this branch.
-     * @param commit is the commit being added.
+     * Sets the head of this branch.
+     * @param localHead is the head.
      */
-    public void addCommit(@NotNull GitCommit commit) {
-        Objects.requireNonNull(commit);
-
-        if (commits.contains(commit)) {
-            return;
-        }
-        this.commits.add(commit);
-        commit.addBranch(this);
+    public void setLocalHead(GitCommit localHead) {
+        this.localHead = localHead;
     }
 }

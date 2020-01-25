@@ -122,12 +122,7 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
         return commitDB.existsById(commitHash);
     }
 
-    @Override
-    public GitCommit getHead(String branch) { // todo implement
-        return null;
-    }
-
-    // todo works better with an sql query
+    // todo works better with a sql query
     @Override
     public Collection<String> getAllCommitHashes(int repositoryID) {
         Collection<GitCommit> gitCommits = getAllCommits(repositoryID);

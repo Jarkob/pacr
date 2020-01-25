@@ -1,6 +1,5 @@
 package pacr.webapp_backend.shared;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
@@ -51,7 +50,7 @@ public interface ICommit {
      * Returns the parents for this commit. Is usually just one commit.
      * @return parents
      */
-    Collection<? extends ICommit> getParents();
+    Collection<String> getParentHashes();
 
     /**
      * Returns the ID for the corresponding repository.
@@ -59,8 +58,21 @@ public interface ICommit {
      */
     int getRepositoryID();
 
+    /**
+     * @return the name for the corresponding repository
+     */
+    String getRepositoryName();
+
+    /**
+     * Adds a label to the commit.
+     * @param label is the label being added.
+     */
     void addLabel(String label);
 
+    /**
+     * Removes a label from the commit.
+     * @param label is the label being removed.
+     */
     void removeLabel(String label);
 
     /**
@@ -69,5 +81,9 @@ public interface ICommit {
      */
     Collection<String> getLabels();
 
+    /**
+     * Gets all branch names.
+     * @return branch names.
+     */
     Collection<String> getBranchNames();
 }

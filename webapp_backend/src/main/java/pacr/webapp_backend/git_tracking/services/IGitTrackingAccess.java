@@ -37,12 +37,14 @@ public interface IGitTrackingAccess {
     /**
      * Deletes a repository.
      * @param repositoryID is the ID of the repository being deleted.
+     * @throws NotFoundException when the repository was not found.
      */
     void removeRepository(int repositoryID) throws NotFoundException;
 
     /**
      * Updates a repository.
      * @param repository is the repository being updated.
+     * @throws NotFoundException when the repository was not found.
      */
     void updateRepository(GitRepository repository) throws NotFoundException;
 
@@ -73,9 +75,18 @@ public interface IGitTrackingAccess {
      */
     void removeCommit(String commitHash);
 
+    /**
+     * Checks if a commit is in the database or not.
+     * @param commitHash is the commit hash.
+     * @return true if the commit is already in the database,
+     * false if not.
+     */
     boolean containsCommit(String commitHash);
 
-    GitCommit getHead(String branch);
-
+    /**
+     * Returns all commit hashes of a repository.
+     * @param repositoryID is the ID of the repository.
+     * @return all commits hashes of the repository.
+     */
     Collection<String> getAllCommitHashes(int repositoryID);
 }

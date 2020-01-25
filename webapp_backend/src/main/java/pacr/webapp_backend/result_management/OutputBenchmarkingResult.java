@@ -73,11 +73,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         // TODO change this as soon as ICommit interface is up to date
         this.commitBranchNames = new LinkedList<>();
 
-        List<String> parentHashes = new LinkedList<>();
-        for (ICommit parent : commit.getParents()) {
-            parentHashes.add(parent.getCommitHash());
-        }
-        this.commitParentHashes = parentHashes;
+        this.commitParentHashes = commit.getParentHashes();
 
         this.commitLabels = commit.getLabels();
 

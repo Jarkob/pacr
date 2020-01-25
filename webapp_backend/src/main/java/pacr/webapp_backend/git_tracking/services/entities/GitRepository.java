@@ -1,6 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
 import javassist.NotFoundException;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -32,14 +33,14 @@ public class GitRepository {
     private static final String MASTER = "master";
 
     @Id
-    // When a repository id is set, is is not 0 anymore, it is an integer greater than 0.
+    // When a repository id is set, it is not 0 anymore, it is an integer greater than 0.
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
 
     private boolean trackAllBranches;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Collection<GitBranch> selectedBranches;
+    private Set<GitBranch> selectedBranches;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Map<String, GitCommit> commits;
@@ -67,7 +68,7 @@ public class GitRepository {
      * @param observeFromDate is the date from which on the repository is being observed.
      *                        Is null if all commits are being observed.
      */
-    public GitRepository(boolean trackAllBranches, @NotNull Collection<GitBranch> selectedBranches,
+    public GitRepository(boolean trackAllBranches, @NotNull Set<GitBranch> selectedBranches,
                          @NotNull String pullURL, @NotNull String name,
                          @NotNull Color color, LocalDate observeFromDate) {
         Objects.requireNonNull(selectedBranches);

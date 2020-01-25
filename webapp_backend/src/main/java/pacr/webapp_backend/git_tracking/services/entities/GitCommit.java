@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
+import org.hibernate.annotations.DynamicUpdate;
+import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.persistence.*;
@@ -33,6 +35,7 @@ public class GitCommit implements ICommit {
     @Id
     private String commitHash;
 
+    @Column(length = 1000)
     private String commitMessage;
     @Column
     private LocalDateTime entryDate;
@@ -41,17 +44,17 @@ public class GitCommit implements ICommit {
     @Column
     private LocalDateTime authorDate;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<GitCommit> parents;
+    @ElementCollection
+    private Set<String> parentHashes;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private GitRepository repository;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> labels;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    private Collection<GitBranch> branches;
+    @ManyToMany
+    private Set<GitBranch> branches;
 
     /**
      * Creates a commit.
@@ -77,7 +80,7 @@ public class GitCommit implements ICommit {
         this.authorDate = authorDate;
         this.labels = new HashSet<String>();
         this.branches = new HashSet<>();
-        this.parents = new HashSet<>();
+        this.parentHashes = new HashSet<>();
 
         this.repository = repository;
         repository.addNewCommit(this);
@@ -109,13 +112,20 @@ public class GitCommit implements ICommit {
     }
 
     @Override
-    public Collection<GitCommit> getParents() {
-        return parents;
+    public Collection<String> getParentHashes() {
+
+
+        return parentHashes;
     }
 
     @Override
     public int getRepositoryID() {
         return repository.getId();
+    }
+
+    @Override
+    public String getRepositoryName() {
+        return repository.getName();
     }
 
     /**
@@ -125,11 +135,7 @@ public class GitCommit implements ICommit {
     public void addBranch(@NotNull GitBranch branch) {
         Objects.requireNonNull(branch);
 
-        if (branches.contains(branch)) {
-            return;
-        }
         branches.add(branch);
-        branch.addCommit(this);
     }
 
     /**
@@ -188,8 +194,12 @@ public class GitCommit implements ICommit {
         return repository.isInDatabase();
     }
 
-    public void addParent(GitCommit commit) {
-        parents.add(commit);
+    /**
+     * Adds a parent hash to this commit.
+     * @param commitHash is the parent hash.
+     */
+    public void addParent(String commitHash) {
+        parentHashes.add(commitHash);
     }
 
 }

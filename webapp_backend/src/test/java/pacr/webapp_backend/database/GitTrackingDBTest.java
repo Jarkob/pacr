@@ -15,8 +15,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +44,7 @@ public class GitTrackingDBTest {
         this.gitTrackingDB = gitTrackingDB;
     }
 
+
     /**
      * Creates a repository and a commit.
      */
@@ -55,7 +58,7 @@ public class GitTrackingDBTest {
                 new Color(0, 0, 0), LocalDate.now());
 
         // commit
-        commitHash = "c4c5cc";
+        commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
         String message = "commit message";
         LocalDateTime commitDate = LocalDateTime.now();
         LocalDateTime authorDate = LocalDateTime.now();
@@ -151,34 +154,35 @@ public class GitTrackingDBTest {
      * Adds a commit to the database and asserts that the values are being stored in the database.
      */
     @Test
-    public void addCommit() {
+    public void addCommit() throws NotFoundException {
+        GitRepository repository = new GitRepository(false, new HashSet<>(), "git@github.com:leanprover/lean.git",
+                "testingrepo", new Color(0x00000), null);
+        String commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
+
         // first add repository to DB
         gitTrackingDB.addRepository(repository);
 
-        repository.addNewCommit(commit);
+        GitCommit parent = new GitCommit(commitHash,
+                "commited suicide", LocalDateTime.now(), LocalDateTime.now(), repository);
+
+        int amountCommits = 3;
+        for (int i = 0; i < amountCommits - 1; i++) {
+            GitCommit child = new GitCommit(commitHash + i, "commited", LocalDateTime.now(), LocalDateTime.now(),
+                    repository);
+            child.addParent(parent.getCommitHash());
+
+            parent = child;
+        }
+
         // then add commit to DB
-        gitTrackingDB.addCommit(commit);
+        gitTrackingDB.updateRepository(repository);
 
         // getting all commits with repository ID
         Collection<GitCommit> commits = gitTrackingDB.getAllCommits(repository.getId());
-        assertEquals(1, commits.size());
+        assertEquals(amountCommits, commits.size());
 
         // getting commit with commitHash
         GitCommit fromDB = gitTrackingDB.getCommit(commitHash);
-
-        // checking all parameters
-        assertEquals(commit.getMessage(), fromDB.getMessage());
-        assertDateTimeEquals(commit.getAuthorDate(), fromDB.getAuthorDate());
-        for (String label : commit.getLabels()) {
-            assertTrue(fromDB.getLabels().contains(label));
-        }
-        assertEquals(commit.getParents(), fromDB.getParents());
-    }
-
-    private void assertDateTimeEquals(LocalDateTime date1, LocalDateTime date2) {
-        long date1InEpoch = date1.toEpochSecond(ZoneId.systemDefault().getRules().getOffset(Instant.now()));
-        long date2InEpoch = date2.toEpochSecond(ZoneId.systemDefault().getRules().getOffset(Instant.now()));
-        assertEquals(date1InEpoch, date2InEpoch);
     }
 
     /**

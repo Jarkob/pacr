@@ -2,10 +2,12 @@ package pacr.webapp_backend.git_tracking.services.git;
 
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
+import org.apache.tomcat.util.http.fileupload.FileUtils;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -31,10 +33,9 @@ public class CleanUpCommitsTest {
 
     private static final String PATH_TO_REPOS = "/target/test/repos";
     private static final String ABSOLUTE_PATH_TO_REPOS = System.getProperty("user.dir") + PATH_TO_REPOS;
-    private static final String RESOURCES = System.getProperty("user.dir")
-            + "/src/test/resources/pacr/webapp_backend/git_tracking/services/git";
+    private static final String RESOURCES = "/src/test/resources/pacr/webapp_backend/git_tracking/services/git";
     private static final String RSA = RESOURCES + "/id_rsa";
-    private static final String FORCE_PUSH_REPOSITORY = RESOURCES + "/forcePush.zip";
+    private static final String FORCE_PUSH_REPOSITORY = System.getProperty("user.dir") + RESOURCES + "/forcePush.zip";
     private static final int REPOSITORY_ID = 39;
 
     private static final String HASH_39E1A8 = "39e1a8c8f9951015a101c18c55533947d0a44bdd";
@@ -50,10 +51,22 @@ public class CleanUpCommitsTest {
 
     @BeforeEach
     public void setUp() {
+        deleteFolders();
         MockitoAnnotations.initMocks(this);
         cleanUpCommits = new CleanUpCommits(gitTrackingAccess);
 
         when(gitRepository.getId()).thenReturn(REPOSITORY_ID);
+    }
+
+    public static void deleteFolders() {
+        File repos = new File(ABSOLUTE_PATH_TO_REPOS);
+        if (repos.exists()) {
+            try {
+                FileUtils.deleteDirectory(repos);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Test
@@ -116,6 +129,7 @@ public class CleanUpCommitsTest {
                     .setTransportConfigCallback(new SSHTransportConfigCallback(RSA))
                     .call();
         } catch (IOException | GitAPIException e) {
+            e.printStackTrace();
             fail();
         }
     }

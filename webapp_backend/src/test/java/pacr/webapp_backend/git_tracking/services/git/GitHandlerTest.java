@@ -23,8 +23,7 @@ import pacr.webapp_backend.shared.IResultDeleter;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * Test cases for GitHandler.
@@ -36,16 +35,15 @@ public class GitHandlerTest {
 
     private static final String PATH_TO_REPOS = "/target/test/repos";
     private static final String ABSOLUTE_PATH_TO_REPOS = System.getProperty("user.dir") + PATH_TO_REPOS;
-    private static final String RESOURCES = System.getProperty("user.dir")
-            + "/src/test/resources/pacr/webapp_backend/git_tracking/services/git";
+    private static final String RESOURCES = "/src/test/resources/pacr/webapp_backend/git_tracking/services/git";
     private static final String RSA = RESOURCES + "/id_rsa";
     private static final String DSA = RESOURCES + "/id_dsa";
     private static final String ECDSA = RESOURCES + "/id_ecdsa";
     private static final String ED25519 = RESOURCES + "/id_ed25519";
     private static final String PULL_URL = "git@git.scc.kit.edu:pacr/pacr-test-repository.git";
     private static final String PULL_URL_NO_AUTHORIZATION = "git@git.scc.kit.edu:pacr/pacr-specification.git";
-    private static final String NEW_COMMITS_REPOSITORY = RESOURCES + "/newCommits.zip";
-    private static final String FORCE_PUSH_REPOSITORY = RESOURCES + "/forcePush.zip";
+    private static final String NEW_COMMITS_REPOSITORY = System.getProperty("user.dir") + RESOURCES + "/newCommits.zip";
+    private static final String FORCE_PUSH_REPOSITORY = System.getProperty("user.dir") + RESOURCES + "/forcePush.zip";
 
     private static final String HASH_39E1A8 = "39e1a8c8f9951015a101c18c55533947d0a44bdd";
     private static final String HASH_9C8C86 = "9c8c86f5939c88329d9f46f7f5266f6c6b2e515e";
@@ -124,6 +122,29 @@ public class GitHandlerTest {
         when(gitTrackingAccess.containsCommit(anyString())).thenReturn(false);
     }
 
+    private void initializeGitHandler(String pathToPrivateKey) {
+        TransportConfigCallback transportConfigCallback
+                = new SSHTransportConfigCallback(pathToPrivateKey);
+
+        // create GitHandler
+        try {
+            gitHandler = new GitHandler(
+                    PATH_TO_REPOS, transportConfigCallback, gitTrackingAccess, cleanUpCommits, resultDeleter);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    private GitCommit initializeCommitMock(String commitHash) {
+        when(gitTrackingAccess.containsCommit(commitHash)).thenReturn(true);
+        GitCommit commit = Mockito.mock(GitCommit.class);
+        when(commit.getCommitHash()).thenReturn(commitHash);
+        when(gitTrackingAccess.getCommit(commitHash)).thenReturn(commit);
+
+        return commit;
+    }
+
     /**
      * Clones a repository with a RSA ssh key.
      */
@@ -187,13 +208,7 @@ public class GitHandlerTest {
     public void updateNewRepository() {
         initializeGitHandler(RSA);
 
-        Collection<GitCommit> untrackedCommits = null;
-        try {
-            untrackedCommits = gitHandler.updateRepository(gitRepository);
-        } catch (GitAPIException | IOException e) {
-            e.printStackTrace();
-            fail();
-        }
+        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
 
         verify(gitRepository).isBranchSelected(masterBranch.getName());
         verify(gitRepository).isBranchSelected(testBranch1.getName());
@@ -234,20 +249,12 @@ public class GitHandlerTest {
         GitCommit tracked2 = initializeCommitMock(HASH_9C8C86);
         GitCommit tracked3 = initializeCommitMock(HASH_E68151);
 
-        when(gitTrackingAccess.getHead(masterBranch.getName())).thenReturn(tracked3);
-        when(gitTrackingAccess.getHead(testBranch1.getName())).thenReturn(null);
+        //todo remove
+        //when(gitTrackingAccess.getHead(masterBranch.getName())).thenReturn(tracked3);
+        //when(gitTrackingAccess.getHead(testBranch1.getName())).thenReturn(null);
 
-        Collection<GitCommit> untrackedCommits = null;
-        try {
-            untrackedCommits = gitHandler.updateRepository(gitRepository);
-        } catch (GitAPIException | IOException e) {
-            e.printStackTrace();
-            fail();
-        }
+        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
 
-        verify(testBranch1).addCommit(tracked1);
-        verify(testBranch1).addCommit(tracked2);
-        verify(testBranch1).addCommit(tracked3);
         verify(gitTrackingAccess).updateRepository(gitRepository);
 
         assertNotNull(untrackedCommits);
@@ -277,8 +284,9 @@ public class GitHandlerTest {
         GitCommit commitBeforeHead = initializeCommitMock(HASH_9C8C86);
         GitCommit head = initializeCommitMock(HASH_8926F7);
 
-        when(gitTrackingAccess.getHead(masterBranch.getName())).thenReturn(head).thenReturn(commitBeforeHead);
-        when(gitTrackingAccess.getHead(testBranch1.getName())).thenReturn(null);
+        // todo remove
+        //when(gitTrackingAccess.getHead(masterBranch.getName())).thenReturn(head).thenReturn(commitBeforeHead);
+        //when(gitTrackingAccess.getHead(testBranch1.getName())).thenReturn(null);
 
         when(gitTrackingAccess.containsCommit(HASH_8926F7)).thenReturn(true).thenReturn(false);
 
@@ -289,18 +297,28 @@ public class GitHandlerTest {
 
         when(cleanUpCommits.cleanUp(any(), eq(gitRepository))).thenReturn(Arrays.asList(HASH_8926F7));
 
-        Collection<GitCommit> untrackedCommits = null;
-        try {
-            untrackedCommits = gitHandler.updateRepository(gitRepository);
-        } catch (GitAPIException | IOException e) {
-            e.printStackTrace();
-            fail();
-        }
+        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
+
         assertNotNull(untrackedCommits);
 
         verify(cleanUpCommits).cleanUp(any(), eq(gitRepository));
         verify(resultDeleter).deleteBenchmarkingResults(HASH_8926F7);
 
+    }
+
+    @Test @Disabled
+    public void leanTest() {
+        initializeGitHandler(RSA);
+
+        when(gitRepository.getId()).thenReturn(200);
+        when(gitRepository.getPullURL()).thenReturn("git@github.com:leanprover/lean.git");
+        when(gitTrackingAccess.containsCommit("ceacfa7445953cbc8860ddabc55407430a9ca5c3")).thenReturn(true);
+
+        Collection<GitCommit> untrackedCommits = gitHandler.updateRepository(gitRepository);
+
+        // account for the known commit
+        final int expectedCommits = 13724 - 1;
+        assertEquals(expectedCommits, untrackedCommits.size());
     }
 
     private void newRepositoryId(int id) {
@@ -318,7 +336,7 @@ public class GitHandlerTest {
         assertNotNull(commit.getLabels());
 
         assertEquals(repositoryId, commit.getRepositoryID());
-        assertEquals(parentCount, commit.getParents().size());
+        assertEquals(parentCount, commit.getParentHashes().size());
         assertCollectionEquals(branches, commit.getBranches());
     }
 
@@ -348,26 +366,4 @@ public class GitHandlerTest {
         return null;
     }
 
-    private void initializeGitHandler(String pathToPrivateKey) {
-        TransportConfigCallback transportConfigCallback
-                = new SSHTransportConfigCallback(pathToPrivateKey);
-
-        // create GitHandler
-        try {
-            gitHandler = new GitHandler(
-                    PATH_TO_REPOS, transportConfigCallback, gitTrackingAccess, cleanUpCommits, resultDeleter);
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail();
-        }
-    }
-
-    private GitCommit initializeCommitMock(String commitHash) {
-        when(gitTrackingAccess.containsCommit(commitHash)).thenReturn(true);
-        GitCommit commit = Mockito.mock(GitCommit.class);
-        when(commit.getCommitHash()).thenReturn(commitHash);
-        when(gitTrackingAccess.getCommit(commitHash)).thenReturn(commit);
-
-        return commit;
-    }
 }
