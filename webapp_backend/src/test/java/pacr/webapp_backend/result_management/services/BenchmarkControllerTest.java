@@ -185,4 +185,17 @@ public class BenchmarkControllerTest {
         verify(authenticatorMock).authenticate(TOKEN);
         verify(benchmarkManagerMock, never()).deleteGroup(anyInt());
     }
+
+    /**
+     * Tests whether getBenchmarksByGroup properly forwards the answer from the benchmark manager.
+     */
+    @Test
+    void getBenchmarksByGroup_shouldCallMethodInManager() {
+        List<Benchmark> benchmarks = new LinkedList<>();
+        when(benchmarkManagerMock.getBenchmarksByGroup(GROUP_ID)).thenReturn(benchmarks);
+
+        Collection<Benchmark> testBenchmarks = benchmarkController.getBenchmarksByGroup(GROUP_ID);
+
+        assertEquals(benchmarks, testBenchmarks);
+    }
 }

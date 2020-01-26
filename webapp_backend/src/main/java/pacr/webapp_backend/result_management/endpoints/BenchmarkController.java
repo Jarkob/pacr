@@ -48,6 +48,16 @@ public class BenchmarkController {
     }
 
     /**
+     * Gets all benchmarks of a group. Gets all benchmarks with no group if the given id is -1.
+     * @param groupId the id of the group of -1.
+     * @return the benchmarks of the group or with no group.
+     */
+    @GetMapping("/benchmarks/{groupId}")
+    public Collection<Benchmark> getBenchmarksByGroup(@PathVariable int groupId) {
+        return benchmarkManager.getBenchmarksByGroup(groupId);
+    }
+
+    /**
      * Gets all benchmark groups and their metadata.
      * @return the groups.
      */

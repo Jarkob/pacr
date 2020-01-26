@@ -11,6 +11,9 @@ import pacr.webapp_backend.result_management.BenchmarkProperty;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.shared.ResultInterpretation;
+
+import java.util.Collection;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -33,6 +36,8 @@ public class BenchmarkManagerTest {
     private static final int EXPECTED_NUM_OF_GROUPS = 2;
     private static final int EXPECTED_NUM_OF_GROUPS_AFTER_DEL = 0;
     private static final int NO_ID = 0;
+    private static final int NO_GROUP_ID = -1;
+    private static final int EXPECTED_NUM_OF_BENCHMARKS = 1;
 
     private Benchmark benchmark;
     private BenchmarkGroup group;
@@ -217,5 +222,19 @@ public class BenchmarkManagerTest {
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertNull(savedBenchmark.getGroup());
+    }
+
+    /**
+     * Tests whether getBenchmarksByGroup gets benchmarks with no group if given -1.
+     */
+    @Test
+    public void getBenchmarksByGroup_parameterMinusOne_shouldReturnBenchmarksWithNoGroup() {
+        benchmark.setGroup(null);
+        benchmarkDB.saveBenchmark(benchmark);
+
+        Collection<Benchmark> savedBenchmarksWithNoGroup = benchmarkManager.getBenchmarksByGroup(NO_GROUP_ID);
+
+        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, savedBenchmarksWithNoGroup.size());
+        assertEquals(BENCHMARK_NAME, savedBenchmarksWithNoGroup.iterator().next().getOriginalName());
     }
 }

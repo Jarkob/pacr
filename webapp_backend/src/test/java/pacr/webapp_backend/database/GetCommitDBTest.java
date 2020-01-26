@@ -4,6 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
+import pacr.webapp_backend.shared.ICommit;
+
+import java.time.LocalDateTime;
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -14,6 +19,9 @@ public class GetCommitDBTest extends GitTrackingDBTest {
     private static final int EXPECTED_NUM_OF_COMMITS_ON_BRANCH = 1;
     private static final int EXPECTED_NUM_OF_ALL_COMMITS = 1;
     private static final String BRANCH_NAME = "branch";
+    private static final String BRANCH_NAME_TWO = "branch2";
+    private static final String HASH_TWO = "hash2";
+    private static final String MSG = "message";
 
     private GetCommitDB getCommitDB;
 
@@ -45,18 +53,29 @@ public class GetCommitDBTest extends GitTrackingDBTest {
     @Test
     public void getCommitsFromBranch_branchWithCommits_shouldReturnAllCommitsOnBranch() {
         GitBranch branch = new GitBranch(BRANCH_NAME);
+        GitBranch branch2 = new GitBranch(BRANCH_NAME_TWO);
         repository.addBranchToSelection(branch);
+        repository.addBranchToSelection(branch2);
 
         super.gitTrackingDB.addRepository(repository);
 
         commit.setRepository(repository);
         commit.addBranch(branch);
 
-        repository.addNewCommit(commit);
-        super.gitTrackingDB.addCommit(commit);
+        GitCommit commit2 = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), repository);
+        commit2.addBranch(branch2);
 
-        assertEquals(EXPECTED_NUM_OF_COMMITS_ON_BRANCH,
-                getCommitDB.getCommitsFromBranch(repository.getId(), BRANCH_NAME).size());
+        repository.addNewCommit(commit);
+        repository.addNewCommit(commit2);
+
+        super.gitTrackingDB.updateRepository(repository);
+        super.gitTrackingDB.addCommit(commit);
+        super.gitTrackingDB.addCommit(commit2);
+
+        Collection<? extends ICommit> branchCommits = getCommitDB.getCommitsFromBranch(repository.getId(), BRANCH_NAME);
+
+        assertEquals(EXPECTED_NUM_OF_COMMITS_ON_BRANCH, branchCommits.size());
+        assertEquals(commitHash, branchCommits.iterator().next().getCommitHash());
     }
 
     /**

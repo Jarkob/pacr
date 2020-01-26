@@ -1,6 +1,8 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.lang.Nullable;
 import pacr.webapp_backend.result_management.Benchmark;
+import pacr.webapp_backend.result_management.BenchmarkGroup;
 
 import java.util.Collection;
 
@@ -26,4 +28,11 @@ public interface IBenchmarkAccess {
      * @param benchmark the benchmark.
      */
     void saveBenchmark(Benchmark benchmark);
+
+    /**
+     * Gets all the benchmarks of a given group.
+     * @param group the group.
+     * @return the benchmarks.
+     */
+    Collection<Benchmark> getBenchmarksOfGroup(@Nullable BenchmarkGroup group);
 }

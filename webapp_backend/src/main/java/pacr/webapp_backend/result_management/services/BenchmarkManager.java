@@ -41,6 +41,20 @@ public class BenchmarkManager {
     }
 
     /**
+     * Gets all benchmarks of a group. Gets all benchmarks with no group if the given id is -1.
+     * @param groupId the id of the group.
+     * @return the benchmarks of the group or of no group.
+     */
+    public Collection<Benchmark> getBenchmarksByGroup(int groupId) {
+        BenchmarkGroup group = null;
+        if (groupId != GROUP_ID_NO_GROUP) {
+            group = groupAccess.getBenchmarkGroup(groupId);
+        }
+
+        return benchmarkAccess.getBenchmarksOfGroup(group);
+    }
+
+    /**
      * @return all saved benchmark groups.
      */
     public Collection<BenchmarkGroup> getAllGroups() {

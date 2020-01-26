@@ -24,6 +24,7 @@ public class BenchmarkDBTest {
     private static final String UNIT = "unit";
     private static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
     private static final int EXPECTED_NUM_OF_PROPERTIES = 1;
+    private static final int EXPECTED_NUM_OF_BENCHMARKS_OF_GROUP = 1;
 
     private BenchmarkDB benchmarkDB;
     private BenchmarkGroupDB groupDB;
@@ -149,5 +150,51 @@ public class BenchmarkDBTest {
 
         assertEquals(EXPECTED_NUM_OF_PROPERTIES, savedBenchmark.getProperties().size());
         assertEquals(PROPERTY_NAME, savedBenchmark.getProperties().iterator().next().getName());
+    }
+
+    /**
+     * Tests whether getBenchmarksOfGroup only returns the benchmarks of that group.
+     */
+    @Test
+    void getBenchmarksOfGroup_twoGroupsTwoBenchmarks_shouldOnlyReturnBenchmarkOfGroup() {
+        Benchmark benchmarkOne = new Benchmark(BENCHMARK_NAME);
+        Benchmark benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
+
+        BenchmarkGroup groupOne = new BenchmarkGroup(GROUP_NAME);
+        benchmarkOne.setGroup(groupOne);
+        BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+        benchmarkTwo.setGroup(groupTwo);
+
+        groupDB.saveBenchmarkGroup(groupOne);
+        groupDB.saveBenchmarkGroup(groupTwo);
+        benchmarkDB.saveBenchmark(benchmarkOne);
+        benchmarkDB.saveBenchmark(benchmarkTwo);
+
+        BenchmarkGroup savedGroupOne = groupDB.getBenchmarkGroup(groupOne.getId());
+        Collection<Benchmark> benchmarksOfGroupOne = benchmarkDB.getBenchmarksOfGroup(savedGroupOne);
+
+        assertEquals(EXPECTED_NUM_OF_BENCHMARKS_OF_GROUP, benchmarksOfGroupOne.size());
+        assertEquals(BENCHMARK_NAME, benchmarksOfGroupOne.iterator().next().getOriginalName());
+    }
+
+    /**
+     * Tests whether getBenchmarksOfGroup gets benchmarks without a group if null is given.
+     */
+    @Test
+    void getBenchmarkOfGroup_groupIsNull_shouldReturnBenchmarkWithoutGroup() {
+        Benchmark benchmarkOne = new Benchmark(BENCHMARK_NAME);
+        Benchmark benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
+
+        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        benchmarkOne.setGroup(group);
+
+        groupDB.saveBenchmarkGroup(group);
+        benchmarkDB.saveBenchmark(benchmarkOne);
+        benchmarkDB.saveBenchmark(benchmarkTwo);
+
+        Collection<Benchmark> benchmarksOfGroupOne = benchmarkDB.getBenchmarksOfGroup(null);
+
+        assertEquals(EXPECTED_NUM_OF_BENCHMARKS_OF_GROUP, benchmarksOfGroupOne.size());
+        assertEquals(BENCHMARK_NAME_TWO, benchmarksOfGroupOne.iterator().next().getOriginalName());
     }
 }
