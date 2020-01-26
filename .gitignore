@@ -2,3 +2,7 @@
 frontend/src/assets/compprak.json
 
 frontend/src/assets/lean.json
+
+webapp_backend/adminPasswordHash.txt
+
+webapp_backend/secret.txt
