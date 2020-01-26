@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IBenchmarkerConfigurator;
@@ -21,6 +23,8 @@ import java.util.Objects;
  */
 @Component
 public class SSHKeyProvider {
+
+    private static final Logger LOGGER = LogManager.getLogger(SSHKeyProvider.class);
 
     private IBenchmarkerConfigurator configurator;
     private File privateKeyFile;
@@ -68,6 +72,8 @@ public class SSHKeyProvider {
      * @throws IOException when the Private Key file could not be read.
      */
     public void sendPrivateKeyToBenchmarker() throws IOException {
+        LOGGER.info("Sending SSH private key to all benchmarkers.");
+
         configurator.updateSSHKey(readFile(privateKeyFile));
     }
 
