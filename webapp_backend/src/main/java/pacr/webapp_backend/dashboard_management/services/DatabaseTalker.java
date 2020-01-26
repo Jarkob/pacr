@@ -107,7 +107,7 @@ public class DatabaseTalker {
             throw new IllegalAccessException("The key '" + key + "' is not an edit key.");
         }
 
-        dashboardAccess.removeDashboardByEditKey(key);
+        dashboardAccess.delete(dashboardAccess.findByEditKey(key));
 
     }
 

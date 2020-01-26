@@ -24,11 +24,31 @@ public class LineDiagramDashboardModuleTest {
     }
 
     @Test
+    void equals_DifferentAmountOfRepositories_ShouldReturnFalse() {
+        LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
+
+        lineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo"));
+        otherLineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo", "test_repo_2"));
+
+        assertNotEquals(lineDiagramModule, otherLineDiagramModule);
+    }
+
+    @Test
     void equals_DifferentRepositories_ShouldReturnFalse() {
         LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
 
         lineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo"));
         otherLineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo_different"));
+
+        assertNotEquals(lineDiagramModule, otherLineDiagramModule);
+    }
+
+    @Test
+    void equals_DifferentAmountOfBenchmarks_ShouldReturnFalse() {
+        LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
+
+        lineDiagramModule.setTrackedBenchmarks(Arrays.asList("test_benchmark"));
+        otherLineDiagramModule.setTrackedBenchmarks(Arrays.asList("test_benchmark", "test_benchmark_2"));
 
         assertNotEquals(lineDiagramModule, otherLineDiagramModule);
     }

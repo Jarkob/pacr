@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.services.IDashboardAccess;
 
+import javax.persistence.EntityTransaction;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 
@@ -32,12 +33,13 @@ public interface DashboardDB extends CrudRepository<Dashboard, Integer>, IDashbo
     }
 
     @Override
-    Dashboard removeDashboardByEditKey(String editKey);
+    void delete(Dashboard dashboard);
 
     @Override
     boolean existsDashboardByEditKey(String editKey);
 
     @Override
     boolean existsDashboardByViewKey(String viewKey);
+
 
 }

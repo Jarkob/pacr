@@ -28,7 +28,8 @@ public class Leaderboard extends ILeaderboard {
         this.benchmarkName = benchmarkName;
     }
 
-    public boolean equals() {
+    @Override
+    public boolean equals(Object o) {
         return true;
     }
 }

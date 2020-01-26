@@ -6,7 +6,7 @@ import javax.persistence.Id;
 
 
 /**
- * This class provides an interface for using abstract leaderborads from other components,
+ * This class provides an interface for using abstract leaderboards from other components,
  * than the leaderboard component.
  * It should be an interface. Only because of technical limitations regarding storing it in the database,
  * we decide do make it an abstract class.

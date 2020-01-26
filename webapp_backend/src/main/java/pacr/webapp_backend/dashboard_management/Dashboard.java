@@ -47,7 +47,7 @@ public class Dashboard {
     private String title;
 
     //Limited to 15 positions on the dashboard.
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
 
     //List because arrays cannot be stored by JPA
     @Size(min = 0, max = SIZE)
@@ -134,7 +134,6 @@ public class Dashboard {
         return true;
     }
 
-
     /**
      * Sets the edit key of this dashboard.
      *
@@ -202,5 +201,74 @@ public class Dashboard {
      */
     public int getId() {
         return id;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || Dashboard.class != o.getClass()) {
+            return false;
+        }
+
+        Dashboard otherDashboard = (Dashboard) o;
+
+
+        //Are the titles not equal?
+        if (this.title != null && !this.title.equals(otherDashboard.title)
+                || otherDashboard.title != null && !otherDashboard.title.equals(this.title)) {
+
+            return false;
+        }
+
+
+        //Are the view keys not equal?
+        if (this.viewKey != null && !this.viewKey.equals(otherDashboard.viewKey)
+                || otherDashboard.viewKey != null && !otherDashboard.viewKey.equals(this.viewKey)) {
+
+            return false;
+        }
+
+
+        //Are the edit keys not equal?
+        if (this.editKey != null && !this.editKey.equals(otherDashboard.editKey)
+                || otherDashboard.editKey != null && !otherDashboard.editKey.equals(this.editKey)) {
+
+            return false;
+        }
+
+
+        //Are the ids not identical?
+        if (this.id != otherDashboard.id) {
+            return false;
+        }
+
+
+        //Is the last access not equal?
+        if (this.lastAccess != null && !this.lastAccess.equals(otherDashboard.lastAccess)
+                || otherDashboard.lastAccess != null && !otherDashboard.lastAccess.equals(this.lastAccess)) {
+
+            return false;
+        }
+
+
+        //Is one 'modules' bigger than the other?
+        if (this.modules.size() != otherDashboard.modules.size()) {
+            return false;
+        }
+
+        //Are the modules not equal?
+        for (int i = 0; i < this.modules.size(); i++) {
+            if (!this.modules.get(i).equals(otherDashboard.modules.get(i))) {
+                return false;
+            }
+        }
+
+        return true;
+
     }
 }

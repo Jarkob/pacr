@@ -1,10 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import javax.persistence.*;
+import java.util.*;
 
 /**
  * Instances of this class represent line diagram modules on a dashboard.
@@ -15,10 +12,10 @@ import java.util.List;
 @Entity
 public class LineDiagramDashboardModule extends DashboardModule {
 
-    @ElementCollection
-    Collection<String> trackedRepositories = new ArrayList<>();
+    @ElementCollection(fetch = FetchType.EAGER)
+    Set<String> trackedRepositories = new HashSet<>();
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     List<String> trackedBenchmarks = new ArrayList<>();
 
 
@@ -35,8 +32,8 @@ public class LineDiagramDashboardModule extends DashboardModule {
      *
      * @param trackedRepositories The new tracked repositories.
      */
-    void setTrackedRepositories(List<String> trackedRepositories) {
-        this.trackedRepositories = List.copyOf(trackedRepositories);
+    public void setTrackedRepositories(List<String> trackedRepositories) {
+        this.trackedRepositories = Set.copyOf(trackedRepositories);
     }
 
     /**
@@ -44,7 +41,7 @@ public class LineDiagramDashboardModule extends DashboardModule {
      *
      * @param trackedBenchmarks The new tracked benchmarks.
      */
-    void setTrackedBenchmarks(List<String> trackedBenchmarks) {
+    public void setTrackedBenchmarks(List<String> trackedBenchmarks) {
         this.trackedBenchmarks = List.copyOf(trackedBenchmarks);
     }
 
@@ -58,7 +55,25 @@ public class LineDiagramDashboardModule extends DashboardModule {
 
         LineDiagramDashboardModule otherModule = (LineDiagramDashboardModule) o;
 
-        return this.trackedRepositories.equals(otherModule.trackedRepositories)
-                && this.trackedBenchmarks.equals(otherModule.trackedBenchmarks);
+        if (this.trackedRepositories.size() != otherModule.trackedRepositories.size()) {
+            return false;
+        }
+
+        for (String repo : this.trackedRepositories) {
+            if (!otherModule.trackedRepositories.contains(repo)) {
+                return false;
+            }
+        }
+
+        if (this.trackedBenchmarks.size() != otherModule.trackedBenchmarks.size()) {
+            return false;
+        }
+
+        for (String benchmarkName : this.trackedBenchmarks) {
+            if (!otherModule.trackedBenchmarks.contains(benchmarkName)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

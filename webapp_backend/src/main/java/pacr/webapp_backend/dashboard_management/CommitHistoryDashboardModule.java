@@ -2,6 +2,7 @@ package pacr.webapp_backend.dashboard_management;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 public class CommitHistoryDashboardModule extends DashboardModule {
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     List<String> trackedRepositories = new ArrayList<>();
 
     /**
@@ -29,7 +30,7 @@ public class CommitHistoryDashboardModule extends DashboardModule {
      *
      * @param trackedRepositories The new tracked repositories.
      */
-    void setTrackedRepositories(List<String> trackedRepositories) {
+    public void setTrackedRepositories(List<String> trackedRepositories) {
         this.trackedRepositories = List.copyOf(trackedRepositories);
     }
 
@@ -41,7 +42,17 @@ public class CommitHistoryDashboardModule extends DashboardModule {
 
         CommitHistoryDashboardModule otherModule = (CommitHistoryDashboardModule) o;
 
-        return this.trackedRepositories.equals(otherModule.trackedRepositories);
+        if (this.trackedRepositories.size() != otherModule.trackedRepositories.size()) {
+            return false;
+        }
+
+        for (String repo : this.trackedRepositories) {
+            if (!otherModule.trackedRepositories.contains(repo)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 }

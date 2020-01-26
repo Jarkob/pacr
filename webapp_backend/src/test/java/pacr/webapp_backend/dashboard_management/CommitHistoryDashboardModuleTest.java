@@ -28,6 +28,17 @@ public class CommitHistoryDashboardModuleTest {
     }
 
     @Test
+    void equals_DifferentAmountOfRepositories_ShouldReturnFalse() {
+        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
+
+        commitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository"));
+        otherCommitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository", "testRepository 2"));
+
+        assertNotEquals(commitHistoryModule, otherCommitHistoryModule);
+    }
+
+
+    @Test
     void equals_DifferentRepositories_ShouldReturnFalse() {
         CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
 

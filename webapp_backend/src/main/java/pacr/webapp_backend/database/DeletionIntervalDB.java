@@ -1,5 +1,6 @@
 package pacr.webapp_backend.database;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pacr.webapp_backend.dashboard_management.services.IDeletionIntervalAccess;
 
@@ -22,6 +23,7 @@ public class DeletionIntervalDB implements IDeletionIntervalAccess {
      * Creates an instance of DeletionIntervalDB.
      * @param configRepo is the JPA ConfigRepository used to store the configuration.
      */
+    @Autowired
     public DeletionIntervalDB(ConfigRepo configRepo) {
         this.configRepo = configRepo;
     }

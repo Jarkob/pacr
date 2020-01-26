@@ -43,6 +43,13 @@ public class DashboardTest {
     }
 
     @Test
+    void constructor_emptyTitle_ShouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> new Dashboard(""));
+        assertThrows(IllegalArgumentException.class, () -> new Dashboard(null));
+        assertThrows(IllegalArgumentException.class, () -> new Dashboard(" "));
+    }
+
+    @Test
     void addModule_ValidPositionsOnDashboard_ShouldNotThrowException() {
 
         assertDoesNotThrow(() -> dashboard.addModule(new DashboardModuleDummy()));
@@ -188,6 +195,135 @@ public class DashboardTest {
     @Test
     void getTitle_ShouldReturnTitle() {
         assertEquals("test", dashboard.getTitle());
+    }
+
+    @Test
+    void equals_SameObject_ShouldReturnTrue() {
+        assertEquals(dashboard, dashboard);
+    }
+
+    @Test
+    void equals_DifferentSimpleObjectSameAttributes_ShouldReturnTrue() {
+        Dashboard dashboard1 = new Dashboard();
+        Dashboard dashboard2 = new Dashboard();
+
+        assertEquals(dashboard1, dashboard2);
+    }
+
+    @Test
+    void equals_NullObject_ShouldReturnFalse() {
+        assertNotEquals(dashboard, null);
+    }
+
+    @Test
+    void equals_OtherClass_ShouldReturnFalse() {
+        assertNotEquals(dashboard, new DashboardModuleDummy());
+    }
+
+    @Test
+    void equals_DifferentTitles_ShouldReturnFalse() {
+
+        Dashboard dashboard1 = new Dashboard("title_a");
+        Dashboard dashboard2 = new Dashboard("title_b");
+
+        assertNotEquals(dashboard1, dashboard2);
+    }
+
+    @Test
+    void equals_DifferentViewKey_ShouldReturnFalse() {
+
+        Dashboard dashboard1 = new Dashboard("title");
+        Dashboard dashboard2 = new Dashboard("title");
+
+        dashboard1.initializeKeys("Different", "Same");
+        dashboard2.initializeKeys("Not The Same", "Same");
+
+        assertNotEquals(dashboard1, dashboard2);
+    }
+
+    @Test
+    void equals_DifferentEditKey_ShouldReturnFalse() {
+
+        Dashboard dashboard1 = new Dashboard("title");
+        Dashboard dashboard2 = new Dashboard("title");
+
+        dashboard1.initializeKeys("Same", "Different");
+        dashboard2.initializeKeys("Same", "Not The Same");
+
+        assertNotEquals(dashboard1, dashboard2);
+    }
+
+    @Test
+    void equals_DifferentAmountOfModules_ShouldReturnFalse() {
+
+        Dashboard dashboard1 = new Dashboard("title");
+        Dashboard dashboard2 = new Dashboard("title");
+
+        dashboard1.addModule(commitHistoryModule);
+
+
+        assertNotEquals(dashboard1, dashboard2);
+    }
+
+    @Test
+    void equals_DifferentModules_ShouldReturnFalse() {
+        Dashboard dashboard1 = new Dashboard("title");
+        Dashboard dashboard2 = new Dashboard("title");
+
+        dashboard1.addModule(leaderboardModule);
+        dashboard2.addModule(lineDiagramModule);
+
+        assertNotEquals(dashboard1, dashboard2);
+
+    }
+
+    @Test
+    void equals_DifferentComplexObjectSameAttributes_ShouldReturnTrue() {
+        Dashboard dashboard1 = new Dashboard("test_title");
+        Dashboard dashboard2 = new Dashboard("test_title");
+
+        dashboard1.initializeKeys("test_edit_key", "test_view_key");
+        dashboard2.initializeKeys("test_edit_key", "test_view_key");
+
+        dashboard1.updateLastAccess();
+        dashboard2.updateLastAccess();
+
+
+
+        dashboard1.addModule(commitHistoryModule);
+
+        commitHistoryModule = new CommitHistoryDashboardModule();
+        commitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository"));
+        dashboard2.addModule(commitHistoryModule);
+
+
+        dashboard1.addModule(eventModule);
+
+        eventModule = new EventDashboardModule();
+        dashboard2.addModule(eventModule);
+
+
+        dashboard1.addModule(leaderboardModule);
+
+        leaderboardModule = new LeaderboardDashboardModule();
+        leaderboardModule.setLeaderboard(new Leaderboard());
+        dashboard2.addModule(leaderboardModule);
+
+
+        dashboard1.addModule(lineDiagramModule);
+
+        lineDiagramModule = new LineDiagramDashboardModule();
+        lineDiagramModule.setTrackedBenchmarks(Arrays.asList("testBenchmark"));
+        lineDiagramModule.setTrackedRepositories(Arrays.asList("testRepository"));
+        dashboard2.addModule(lineDiagramModule);
+
+
+        dashboard1.addModule(queueModule);
+
+        queueModule = new QueueDashboardModule();
+        dashboard2.addModule(queueModule);
+
+        assertTrue(dashboard1.equals(dashboard2));
     }
 
 }

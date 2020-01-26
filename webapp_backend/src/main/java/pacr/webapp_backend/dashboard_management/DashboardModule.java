@@ -16,7 +16,7 @@ import javax.persistence.Id;
  */
 @Entity
 @Configurable
-abstract class DashboardModule {
+public abstract class DashboardModule {
 
     @Id
     @GeneratedValue
