@@ -8,3 +8,6 @@ webapp_backend/adminPasswordHash.txt
 webapp_backend/secret.txt
 
 webapp_backend/spring-shell.log
+
+
+webapp_backend/repositories/
