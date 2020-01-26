@@ -1,11 +1,16 @@
+import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
+import { BenchmarkService } from './../services/benchmark.service';
+import { Benchmark } from './../classes/benchmark';
+import { BenchmarkProperty } from './../classes/benchmark-property';
+import { BenchmarkingResult } from './../classes/benchmarking-result';
+import { StringService } from './../services/strings.service';
 import { DetailViewMaximizerService } from './detail-view-maximizer.service';
 import { DetailViewMaximizedRef } from './detail-view-maximized-ref';
 import { Subscription } from 'rxjs';
 import { DiagramService } from './../services/diagram.service';
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { OverlayRef } from '@angular/cdk/overlay';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
-import { Component, OnInit, OnDestroy, HostListener, Input } from '@angular/core';
-import { Row } from '../classes/row';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 /**
  * show the detail view of a commit and his benchmarking results
@@ -17,66 +22,50 @@ import { Row } from '../classes/row';
 })
 export class DetailViewComponent implements OnInit, OnDestroy {
 
-  maximizedDetailViewOverlayRef: OverlayRef;
-
   constructor(
     private previewDialog: DetailViewMaximizerService,
     private benchmarkingResultService: BenchmarkingResultService,
-    private diagramService: DiagramService
+    private diagramService: DiagramService,
+    private stringService: StringService,
+    private benchmarkService: BenchmarkService
   ) { }
 
-  selected = false;
-  tableData: Row[];
-  columns: string[] = ['property', 'value'];
-
-  selectedCommitSha: string;
+  strings: any;
+  benchmarkingResult: CommitBenchmarkingResult;
   selectedCommitSubscription: Subscription;
+  maximizedDetailViewOverlayRef: OverlayRef;
+
+  // selectedBenchmarkProperty[0] is Benchmark,
+  // selectedBenchmarkProperty[1] is BenchmarkProperty
+  selectedBenchmarkProperty: any[];
+
+  benchmarks: Benchmark[];
+
+  selected = false;
 
   ngOnInit() {
-    this.selectedCommitSubscription = this.diagramService.selectedCommit.subscribe(
+    this.stringService.getDetailViewStrings().subscribe(
       data => {
-        this.selectedCommitSha = data;
-        this.selectCommit(this.selectedCommitSha);
+        this.strings = data;
       }
     );
+    this.selectedCommitSubscription = this.diagramService.selectedCommit.subscribe(
+      data => {
+        this.selectCommit(data);
+      }
+    );
+
+    this.getBenchmarks();
   }
 
   private selectCommit(sha: string): void {
     if (sha === null || sha === '') {
       return;
     }
+
     this.benchmarkingResultService.getBenchmarkingResultsForCommit(sha).subscribe(
       data => {
-        this.tableData = [
-          {
-            property: 'sha',
-            value: data.commitHash,
-          },
-          {
-            property: 'message',
-            value: data.commitMessage
-          },
-          {
-            property: 'entry-date',
-            value: '' + data.commitEntryDate
-          },
-          {
-            property: 'commit-date',
-            value: '' + data.commitCommitDate
-          },
-          {
-            property: 'author-date',
-            value: '' + data.commitAuthorDate
-          },
-          {
-            property: 'repository',
-            value: data.commitRepositoryid
-          },
-          {
-            property: 'branch',
-            value: data.commitBranchName
-          }
-        ];
+        this.benchmarkingResult = data;
         this.selected = true;
       }
     );
@@ -86,8 +75,17 @@ export class DetailViewComponent implements OnInit, OnDestroy {
   // https://blog.thoughtram.io/angular/2017/11/27/custom-overlays-with-angulars-cdk-part-two.html
   public maximizeDetailView() {
     const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
-      commitHash: this.selectedCommitSha
+      commitHash: this.benchmarkingResult.commitHash
     });
+  }
+
+  private getBenchmarks(): void {
+    this.benchmarkService.getAllBenchmarks().subscribe(
+      data => {
+        this.benchmarks = data;
+        console.log(this.benchmarks[0].properties[0]);
+      }
+    );
   }
 
 

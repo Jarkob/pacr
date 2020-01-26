@@ -15,6 +15,7 @@ import {
     MatListModule,
     MatCheckboxModule,
     MatTreeModule,
+    MatChipsModule,
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -35,7 +36,8 @@ import { NgModule } from '@angular/core';
         MatSelectModule,
         MatListModule,
         MatCheckboxModule,
-        MatTreeModule
+        MatTreeModule,
+        MatChipsModule
     ],
     exports: [
         MatToolbarModule,
@@ -52,6 +54,7 @@ import { NgModule } from '@angular/core';
         MatInputModule,
         MatSelectModule,
         MatListModule,
+        MatChipsModule,
         MatCheckboxModule,
         MatTreeModule
     ]

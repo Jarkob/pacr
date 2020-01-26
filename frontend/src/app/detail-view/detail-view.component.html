@@ -1,6 +1,29 @@
 <mat-card [style.overflow]="'auto'">
     <mat-card-header>
-        <mat-card-title>Commit Detail View</mat-card-title>
+        <mat-card-title>
+            <div>
+                <span>{{ strings?.cardTitle }}</span>
+                <a *ngIf="selected && benchmarkingResult?.commitUrl" href="{{ benchmarkingResult?.commitUrl }}" 
+                    matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
+                    {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
+                </a>
+                <span *ngIf="selected && !benchmarkingResult?.commitUrl"
+                    matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
+                    {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
+                </span>
+            </div>
+            <div *ngIf="selected" class="labelContainer">
+                <mat-chip-list>
+                    <mat-chip *ngIf="benchmarkingResult.globalError" selected selectable="false" color="warn" class="label"
+                        matTooltip="{{ strings.globalErrorLabelTooltip }}">
+                        {{ strings.globalErrorLabel }}
+                    </mat-chip>
+                    <mat-chip *ngFor="let label of benchmarkingResult.commitLabels" class="label" selectable="false">
+                        {{ label }}                  
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+        </mat-card-title>
         
         <!-- Push button to the right -->
         <div fxFlex></div>
@@ -11,19 +34,220 @@
     </mat-card-header>
 
     <mat-card-content>
-        <table *ngIf="selectedCommitSha !== ''" mat-table [dataSource]="tableData">
-            <ng-container matColumnDef="property">
-                <th mat-header-cell *matHeaderCellDef>Property</th>
-                <td mat-cell *matCellDef="let element">{{ element.property }}</td>
-            </ng-container>
-            <ng-container matColumnDef="value">
-                <th mat-header-cell *matHeaderCellDef>Value</th>
-                <td mat-cell *matCellDef="let element">{{ element.value }}</td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="columns"></tr>
-            <tr mat-row *matRowDef="let row; columns: columns;"></tr>
-        </table>
-        <p *ngIf="selectedCommitSha === ''">Select a commit!</p>
+        <div *ngIf="selected; then detailView else emptyDetailView"></div>
+
+        <!-- The Detail View with a selected commit -->
+        <ng-template #detailView>
+            <div>
+                <div id="commitDetails">
+                    <mat-accordion class="headers-align">
+                        <mat-expansion-panel [hideToggle]="benchmarkingResult.commitMessage.length < 50">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.commitMessage }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ benchmarkingResult.commitMessage }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        
+                            {{ benchmarkingResult.commitMessage }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel [hideToggle]="benchmarkingResult.repositoryName.length < 50">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.repository }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ benchmarkingResult.repositoryName }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        
+                            {{ benchmarkingResult.repositoryName }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel [hideToggle]="benchmarkingResult.commitBranchNames.join(strings.listSeparator).length < 50">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.branches }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ benchmarkingResult.commitBranchNames.join(strings.listSeparator) }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        
+                            {{ benchmarkingResult.commitBranchNames.join(strings.listSeparator) }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.authorDate }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ benchmarkingResult.commitAuthorDate }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        
+                            {{ benchmarkingResult.commitAuthorDate }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.commitDate }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ benchmarkingResult.commitCommitDate }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        
+                            {{ benchmarkingResult.commitCommitDate }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.entryDate }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ benchmarkingResult.commitEntryDate }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            {{ benchmarkingResult.commitEntryDate }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel *ngIf="benchmarkingResult.globalError" 
+                                            [hideToggle]="benchmarkingResult.errorMessage.length < 50">
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.globalError }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ benchmarkingResult.errorMessage }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+                        
+                            {{ benchmarkingResult.errorMessage }}
+                        </mat-expansion-panel>                        
+                    </mat-accordion>
+                </div>
+
+                <div id="benchmarkingResults">                
+                    <mat-form-field fxFill>
+                        <mat-label>{{ strings.property }}</mat-label>
+                        <mat-select [(value)]="selectedBenchmarkProperty">
+                            <mat-select-trigger *ngIf="selectedBenchmarkProperty"
+                            matTooltip="{{ selectedBenchmarkProperty[0].customName }}: {{ selectedBenchmarkProperty[1].name }}">
+                                {{ selectedBenchmarkProperty[0].customName }}: {{ selectedBenchmarkProperty[1].name }}
+                            </mat-select-trigger>
+
+                            <mat-optgroup *ngFor="let benchmark of benchmarkingResult.benchmarks" [label]="benchmark.customName">
+                                <mat-option *ngFor="let property of benchmark.results" [value]="[benchmark, property]">
+                                    {{property.name}}
+                                </mat-option>
+                            </mat-optgroup>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <p *ngIf="selectedBenchmarkProperty" class="mat-h4">
+                        {{ strings.interpretation }} {{ selectedBenchmarkProperty[1].interpretation }}
+                    </p>
+
+                    <!-- Display Local Error -->
+                    <mat-accordion *ngIf="selectedBenchmarkProperty && selectedBenchmarkProperty[1].hadLocalError" 
+                        class="headers-align">
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.localError }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ selectedBenchmarkProperty[1].errorMessage }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            {{ selectedBenchmarkProperty[1].errorMessage }}
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                    
+                    <!-- Display Results -->
+                    <mat-accordion *ngIf="selectedBenchmarkProperty && !selectedBenchmarkProperty[1].hadLocalError" 
+                        class="headers-align">
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.median }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ selectedBenchmarkProperty[1].median | number:'1.3' }} {{ selectedBenchmarkProperty[1].unit }}
+                                    <span *ngIf="selectedBenchmarkProperty[1].compared"
+                                        [ngClass]="{red : selectedBenchmarkProperty[1].ratioToPreviousCommit < 0, 
+                                                   black: selectedBenchmarkProperty[1].ratioToPreviousCommit === 0, 
+                                                   green: selectedBenchmarkProperty[1].ratioToPreviousCommit > 0}">
+                                        {{ selectedBenchmarkProperty[1].ratioToPreviousCommit | percent:'1.0-2' }}
+                                    </span>
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            {{ selectedBenchmarkProperty[1].median | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.lowerQuartile }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ selectedBenchmarkProperty[1].lowerQuartile | number:'1.3' }} {{ selectedBenchmarkProperty[1].unit }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            {{ selectedBenchmarkProperty[1].lowerQuartile | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.upperQuartile }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ selectedBenchmarkProperty[1].upperQuartile | number:'1.3' }} {{ selectedBenchmarkProperty[1].unit }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            {{ selectedBenchmarkProperty[1].upperQuartile | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.standardDeviation }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ selectedBenchmarkProperty[1].standardDeviation | number:'1.3' }} {{ selectedBenchmarkProperty[1].unit }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            {{ selectedBenchmarkProperty[1].standardDeviation | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
+                        </mat-expansion-panel>
+                        <mat-expansion-panel hideToggle>
+                            <mat-expansion-panel-header>
+                                <mat-panel-title>
+                                    {{ strings.mean }}
+                                </mat-panel-title>
+                                <mat-panel-description>
+                                    {{ selectedBenchmarkProperty[1].mean | number:'1.3' }} {{ selectedBenchmarkProperty[1].unit }}
+                                </mat-panel-description>
+                            </mat-expansion-panel-header>
+
+                            {{ selectedBenchmarkProperty[1].mean | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
+                        </mat-expansion-panel>
+                    </mat-accordion>
+                </div>
+            </div>
+            
+        </ng-template>
+
+        <!-- The empty Detail View -->
+        <ng-template #emptyDetailView>
+            <div>
+                <p>{{ strings?.noCommitSeleted }}</p>
+            </div>
+        </ng-template>        
     </mat-card-content>
     
 </mat-card>

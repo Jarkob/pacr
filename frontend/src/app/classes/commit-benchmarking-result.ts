@@ -1,18 +1,21 @@
-import { BenchmarkGroup } from './benchmark-group';
+import { OutputBenchmark } from './output-benchmark';
 import { SystemEnvironment } from './system-environment';
-
-export interface BenchmarkingResult {
-    globalError: string;
+export interface CommitBenchmarkingResult {
+    id: number;
+    globalError: boolean;
+    errorMessage: string;
     commitHash: string;
     commitMessage: string;
     commitEntryDate: Date;
     commitCommitDate: Date;
     commitAuthorDate: Date;
-    commitRepositoryName: string;
+    repositoryId: number;
+    repositoryName: string;
     commitUrl: string;
+    comparisonCommitHash: string;
     commitBranchNames: string[];
     commitParentHashes: string[];
     commitLabels: string[];
     systemEnvironment: SystemEnvironment;
-    groups: BenchmarkGroup[];
+    benchmarks: OutputBenchmark[];
 }

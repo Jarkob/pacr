@@ -26,7 +26,7 @@ export class ComparisonComponent implements OnInit {
     this.benchmarkingResultService.getBenchmarkingResultsForCommit(sha)
     .subscribe(
       data => {
-        this.selectedCommits.push(data);
+        // todo
       }
     );
   }

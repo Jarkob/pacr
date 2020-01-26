@@ -33,6 +33,6 @@ export class EventService {
    * get the commit history
    */
   public getCommitHistory(): Observable<Commit[]> {
-    return this.http.get<Commit[]>(this.globalService.url + '/commit-history');
+    return this.http.get<Commit[]>(this.globalService.url + '/history');
   }
 }

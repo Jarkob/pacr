@@ -1,3 +1,4 @@
+import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { MockService } from './mock.service';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
@@ -37,8 +38,8 @@ export class BenchmarkingResultService {
    * get all benchmarking results for one commit
    * @param sha the commit hash
    */
-  public getBenchmarkingResultsForCommit(sha: string): Observable<BenchmarkingResult> {
-    return this.http.get<BenchmarkingResult>(this.globalService.url + '/results/commit/' + sha);
+  public getBenchmarkingResultsForCommit(sha: string): Observable<CommitBenchmarkingResult> {
+    return this.http.get<CommitBenchmarkingResult>(this.globalService.url + '/results/commit/' + sha);
   }
 
   /**
@@ -55,7 +56,7 @@ export class BenchmarkingResultService {
   /**
    * get all new benchmarking results
    */
-  public getNewBenchmarkingResults(): Observable<BenchmarkingResult[]> {
-    return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/new');
+  public getNewBenchmarkingResults(): Observable<CommitBenchmarkingResult[]> {
+    return this.http.get<CommitBenchmarkingResult[]>(this.globalService.url + '/history');
   }
 }

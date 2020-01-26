@@ -35,6 +35,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+a {
+  color: cornflowerblue;
+  text-decoration: none;
+}
+
 /* Scrollbar style */
 
 /* width */
@@ -61,4 +66,15 @@ body {
 .maximized {
   width: 92vw;
   height: 92vh;
+}
+
+/* Aligns headers in mat-expansion-panel which belong to the same mat-accordion */
+.headers-align .mat-expansion-panel-header-title,
+.headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
 }

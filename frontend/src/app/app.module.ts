@@ -1,3 +1,5 @@
+import { ShortenStringPipe } from './pipes/shorten-string-pipe';
+import { BrachesPipe } from './pipes/braces-pipe';
 import { DiagramMaximizerService } from './diagram/diagram-maximizer.service';
 import { DetailViewMaximizerService } from './detail-view/detail-view-maximizer.service';
 import { GlobalService } from './services/global.service';
@@ -33,7 +35,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, PercentPipe } from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -53,6 +55,8 @@ import { CommonModule } from '@angular/common';
     CompetitiveDashboardComponent,
     JobQueueComponent,
     BenchmarkerListComponent,
+    BrachesPipe,
+    ShortenStringPipe
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
@@ -78,6 +82,11 @@ import { CommonModule } from '@angular/common';
     RepositoryService,
     SchedulerService,
     GlobalService
+  ],
+  exports: [
+    BrachesPipe,
+    ShortenStringPipe,
+    PercentPipe
   ],
   bootstrap: [AppComponent]
 })

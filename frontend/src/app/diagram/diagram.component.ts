@@ -52,6 +52,8 @@ export class DiagramComponent implements OnInit {
 
   @Input() maximized: boolean;
   dialogRef: DiagramMaximizedRef;
+  commits: any;
+  lists: any[];
 
   /**
    * diagram stuff
@@ -343,16 +345,4 @@ export class DiagramComponent implements OnInit {
     // this.loadBenchmark();
   }
 
-  // @Deprecated should not be used
-  private getBenchmarkingResults(): void {
-    this.repositories.forEach(repository => {
-      this.benchmarkingResultService.getBenchmarkingResultsFromRepository(repository.name)
-      .subscribe(
-        data => {
-          this.repositoryResults.set(repository.name, data);
-          // this.getBenchmarks();
-        }
-      );
-    });
-  }
 }

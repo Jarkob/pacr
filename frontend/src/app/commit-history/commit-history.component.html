@@ -2,7 +2,7 @@
     <mat-card-header>
         <mat-card-title>Latest Commits</mat-card-title>
     </mat-card-header>
-    <mat-accordion>
+    <mat-accordion class="headers-align">
         <mat-expansion-panel *ngFor="let commit of commits">
             <mat-expansion-panel-header>
                 <mat-panel-title>{{ commit.sha }}</mat-panel-title>

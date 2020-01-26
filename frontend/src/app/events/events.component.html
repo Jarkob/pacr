@@ -1,7 +1,7 @@
 <mat-card [style.overflow]="'auto'">
     <mat-tab-group>
         <mat-tab label="Benchmarkingevents">
-            <mat-accordion>
+            <mat-accordion class="headers-align">
                 <mat-expansion-panel *ngFor="let event of benchmarkingEvents">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{ event.title }}</mat-panel-title>
@@ -12,7 +12,7 @@
             </mat-accordion>
         </mat-tab>
         <mat-tab label="Leaderboardevents">
-            <mat-accordion>
+            <mat-accordion class="headers-align">
                 <mat-expansion-panel *ngFor="let event of leaderboardEvents">
                     <mat-expansion-panel-header>
                         <mat-panel-title>{{ event.title }}</mat-panel-title>

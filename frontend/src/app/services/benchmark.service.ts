@@ -1,9 +1,9 @@
+import { BenchmarkGroup } from './../classes/benchmark-group';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Benchmark } from '../classes/benchmark';
-import { BenchmarkGroup } from '../classes/benchmark-group';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })

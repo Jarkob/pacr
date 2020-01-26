@@ -1,0 +1,22 @@
+{
+    "cardTitle": "Commit Detail View",
+    "noCommitSeleted": "Please select a commit in the diagram.",
+    "globalErrorLabel": "failed",
+    "globalErrorLabelTooltip": "No results are available because of a script exception.\nA detailed error message can be found under global error.",
+    "commitMessage": "Message:",
+    "repository": "Repository:",
+    "branches": "Branches:",
+    "listSeparator": ", ",
+    "authorDate": "Author Date:",
+    "commitDate": "Commit Date:",
+    "entryDate": "Entry Date:",
+    "globalError": "Global Error:",
+    "median": "Median:",
+    "lowerQuartile": "Lower Quartile:",
+    "upperQuartile": "Upper Quartile:",
+    "standardDeviation": "Standard Deviation:",
+    "mean": "Mean:",
+    "interpretation": "Interpretation:",
+    "property": "Property",
+    "localError": "Error Message:"
+}
