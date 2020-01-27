@@ -1,3 +1,4 @@
+import { StringService } from './../services/strings.service';
 import { DetailViewMaximizerService } from './../detail-view/detail-view-maximizer.service';
 import { DetailViewMaximizedRef } from './../detail-view/detail-view-maximized-ref';
 import { SystemEnvironment } from './../classes/system-environment';
@@ -24,8 +25,11 @@ export class AdminComponent implements OnInit {
     private importExportService: ImportExportService,
     private repositoryService: RepositoryService,
     private schedulerService: SchedulerService,
-    private previewDialog: DetailViewMaximizerService
+    private previewDialog: DetailViewMaximizerService,
+    private stringService: StringService
   ) { }
+
+  strings: any;
 
   pullInterval: number;
   deletionInterval: number;
@@ -34,6 +38,11 @@ export class AdminComponent implements OnInit {
   jobs: Job[];
 
   ngOnInit() {
+    this.stringService.getAdminInterfaceStrings().subscribe(
+      data => {
+        this.strings = data;
+      }
+    );
   }
 
   public updateIntervals(): void {

@@ -1,21 +1,48 @@
 <div class="top" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
     <mat-card fxFlex="70%">
-        <form>
-            <p>
-                <mat-form-field>
-                    <input matInput type="number" placeholder="Pullinterval" value={{pullInterval}}>
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-form-field>
-                    <input matInput type="number" placeholder="Deletioninterval" value={{deletionInterval}}>
-                </mat-form-field>
-            </p>
-            <button mat-fab color="primary" (click)="updateIntervals()" matToolTip="save">
-                <mat-icon>save</mat-icon>
-            </button>
-        </form>
+        <mat-tab-group animationDuration="0ms">
+            <mat-tab label="{{ strings?.tabRepositories }}">
+                <mat-tab-group animationDuration="0ms">
+                    <mat-tab label="{{ strings?.tabRepositoryOverview }}">
+
+                    </mat-tab>
+                    <mat-tab label="{{ strings?.tabAddRepository }}">
+
+                    </mat-tab>
+                    <mat-tab label="{{ strings?.tabEditRepository }}">
+
+                    </mat-tab>
+                </mat-tab-group>
+            </mat-tab>
+            <mat-tab label="{{ strings?.tabBenchmarks }}">
+            
+            </mat-tab>
+            <mat-tab label="{{ strings?.tabSSH }}">
+            
+            </mat-tab>
+            <mat-tab label="{{ strings?.tabImportExport }}">
+            
+            </mat-tab>            
+            <mat-tab label="{{ strings?.tabDashboards }}" [disabled]="true">
+                <form>
+                    <p>
+                        <mat-form-field>
+                            <input matInput type="number" placeholder="Pullinterval" value={{pullInterval}}>
+                        </mat-form-field>
+                    </p>
+                    <p>
+                        <mat-form-field>
+                            <input matInput type="number" placeholder="Deletioninterval" value={{deletionInterval}}>
+                        </mat-form-field>
+                    </p>
+                    <button mat-fab color="primary" (click)="updateIntervals()" matToolTip="save">
+                        <mat-icon>save</mat-icon>
+                    </button>
+                </form>
+            </mat-tab>
+        </mat-tab-group>        
     </mat-card>
+
     <app-job-queue fxFlex="30%"></app-job-queue>
 </div>
 

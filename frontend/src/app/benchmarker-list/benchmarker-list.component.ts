@@ -22,7 +22,7 @@ export class BenchmarkerListComponent implements OnInit {
     benchmarkers: SystemEnvironment[];
 
   ngOnInit() {
-    this.stringService.getBenchmarkerList().subscribe(
+    this.stringService.getBenchmarkerListStrings().subscribe(
       data => {
         this.strings = data;
       }

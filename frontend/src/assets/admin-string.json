@@ -1,0 +1,10 @@
+{
+    "tabRepositories": "Repositories",
+    "tabBenchmarks": "Benchmarks",
+    "tabSSH": "SSH",
+    "tabImportExport": "Import/Export",
+    "tabDashboards": "Dashboards",
+    "tabRepositoryOverview": "Overview",
+    "tabAddRepository": "Add",
+    "tabEditRepository": "Edit"
+}

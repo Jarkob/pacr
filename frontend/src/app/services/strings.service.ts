@@ -41,7 +41,14 @@ export class StringService {
     /**
      * get strings for the benchmarker list
      */
-    public getBenchmarkerList(): Observable<any> {
+    public getBenchmarkerListStrings(): Observable<any> {
         return this.http.get('./assets/benchmarker-list-string.json');
+    }
+
+    /**
+     * get strings for the admin interface
+     */
+    public getAdminInterfaceStrings(): Observable<any> {
+        return this.http.get('./assets/admin-string.json');
     }
 }
