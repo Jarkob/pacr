@@ -41,6 +41,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, PercentPipe } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { DragDropModule} from '@angular/cdk/drag-drop';
@@ -68,7 +69,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     JobQueueComponent,
     BenchmarkerListComponent,
     BrachesPipe,
-    ShortenStringPipe
+    ShortenStringPipe,
   ],
   entryComponents: [
     DetailViewMaximizedComponent,

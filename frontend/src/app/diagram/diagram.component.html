@@ -16,8 +16,8 @@
             </mat-form-field>
             <button mat-button (click)="loadMockData()">Load Mock</button>
             <ul *ngIf="this.legendData">
-                <li *ngFor="let legendItem of this.legendData">
-                    <mat-checkbox>{{ legendItem.repository }} / {{ legendItem.branch }}</mat-checkbox>
+                <li *ngFor="let legendItem of this.legendData; let i = index">
+                    <mat-checkbox [(ngModel)]="this.checked[i]" (change)="toggleLine(i)">{{ legendItem.repository }}/{{ legendItem.branch }}</mat-checkbox>
                 </li>
             </ul>
 

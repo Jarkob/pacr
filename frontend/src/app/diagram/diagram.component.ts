@@ -45,10 +45,16 @@ export class DiagramComponent implements OnInit {
   repositoryResults: Map<string, BenchmarkingResult[]> = new Map<string, BenchmarkingResult[]>();
   selectedBenchmark: Benchmark;
 
+  // TODO fix types
+  commits: any;
+  // the lines that show up in the diagram
+  lists: any[];
+  // if a list should show up in the diagram
+  checked: boolean[];
+
+
   @Input() maximized: boolean;
   dialogRef: DiagramMaximizedRef;
-  commits: any;
-  lists: any[];
 
   /**
    * diagram stuff
@@ -167,6 +173,12 @@ export class DiagramComponent implements OnInit {
     this.dialogRef = this.previewDialog.open({ selectedBenchmark: this.selectedBenchmark });
   }
 
+  public toggleLine(index: number) {
+    const datasetIndex = this.legendData[index].datasetIndex;
+    this.chart.datasets[datasetIndex].hidden = this.checked[index];
+    this.chart.update();
+  }
+
   /**
    * select a benchmark to be displayed in the diagram
    */
@@ -213,6 +225,7 @@ export class DiagramComponent implements OnInit {
   }
 
   public loadMockData() {
+    this.checked = [];
     this.datasets = [];
     const newestCommit = this.getNewestCommit(this.commits);
     this.lists = [];
@@ -222,7 +235,8 @@ export class DiagramComponent implements OnInit {
     }
     let index = 0;
     for (const list of this.lists) {
-      const dataset: Dataset = {data: [], code: [], label: '' + index++, fill: false, lineTension: 0, repository: 'test', branch: 'master'};
+      this.checked[index] = false;
+      const dataset: Dataset = {data: [], code: [], label: '' + index, fill: false, lineTension: 0, repository: 'test', branch: 'master'};
       for (const commit of list) {
         dataset.data.push({
           x: commit.commitDate,
@@ -232,13 +246,21 @@ export class DiagramComponent implements OnInit {
           sha: commit.sha,
           val: commit.result
         });
+        index++;
       }
+
+      // both is important, otherwise event listening for change of legend gets messed up
+      this.chart.datasets.push(dataset);
       this.datasets.push(dataset);
+    }
+
+    // has to remove empty dataset, otherwise legend does not work
+    if (this.chart.datasets.length > this.lists.length) {
+      this.chart.datasets.splice(0, 1);
     }
 
     this.legendData = this.chart.chart.generateLegend();
     this.chart.update();
-    this.legendData = this.chart.chart.generateLegend();
   }
 
 
@@ -298,16 +320,16 @@ export class DiagramComponent implements OnInit {
 
   private legendCallback(currentChart: any): any {
     const legend: LegendItem[] = [];
-    console.log(currentChart.data);
-    console.log(currentChart.data.datasets);
+    let index = 0;
     for (const dataset of currentChart.data.datasets) {
+      console.log('dataset: ', dataset);
       legend.push({
         repository: dataset.repository,
         branch: dataset.branch,
-        datasetIndex: dataset.index
+        datasetIndex: index // FIXME highly likely to cause issues
       });
+      index++;
     }
-    console.log('legend: ', legend);
     return legend;
   }
 
