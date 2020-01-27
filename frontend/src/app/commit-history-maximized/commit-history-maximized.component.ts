@@ -33,6 +33,11 @@ export class CommitHistoryMaximizedComponent implements OnInit {
     );
   }
 
+  public selectCommit(commitHash: string) {
+    this.dialogRef.selectCommit(commitHash);
+    this.close();
+  }
+
   public close() {
     this.dialogRef.close();
   }

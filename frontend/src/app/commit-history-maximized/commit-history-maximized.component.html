@@ -13,10 +13,28 @@
         <mat-accordion id="history" class="headers-align">
             <mat-expansion-panel *ngFor="let commit of commits">
                 <mat-expansion-panel-header>
-                <mat-panel-title> {{ commit.commitEntryDate }} {{ commit.commitHash | shortenString:7 | braces }}</mat-panel-title>
+                    <mat-panel-title> 
+                        {{ commit.commitEntryDate | date }}                         
+                    </mat-panel-title>
+                    
                     <mat-panel-description>{{ commit.commitMessage }}</mat-panel-description>
                 </mat-expansion-panel-header>
-                {{ commit.commitMessage }}
+                
+                <p class="mat-h3">
+                    {{ strings?.commitHash }}
+                    
+                    <a id="openDetailView" (click)="selectCommit(commit.commitHash)" matTooltip="{{commit.commitHash}}" matTooltipPosition="right">
+                        {{ commit.commitHash | shortenString:7 | braces }}
+                    </a>
+                </p>
+                <p class="mat-h3">
+                    {{ strings?.commitDate }}
+                    <span class="mat-h4">{{ commit.commitCommitDate | date }}</span> 
+                </p>
+                
+
+                <p class="mat-h3">{{ strings?.commitMessage }}</p>
+                <p class="mat-h3">{{ commit.commitMessage }}</p>
             </mat-expansion-panel>
         </mat-accordion>
     </mat-card-content>    

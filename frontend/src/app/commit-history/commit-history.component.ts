@@ -44,7 +44,7 @@ export class CommitHistoryComponent implements OnInit {
   }
 
   public maximizeCommitHistory() {
-    const dialogRef: CommitHistoryMaximizedRef = this.previewDialog.open();
+    const dialogRef: CommitHistoryMaximizedRef = this.previewDialog.open(this);
   }
 
 }

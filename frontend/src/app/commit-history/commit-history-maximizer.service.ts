@@ -1,3 +1,4 @@
+import { CommitHistoryComponent } from './commit-history.component';
 import { CommitHistoryMaximizedComponent } from './../commit-history-maximized/commit-history-maximized.component';
 import { CommitHistoryMaximizedRef } from './commit-history-maximized-ref';
 import { Injectable, Injector, ComponentRef } from '@angular/core';
@@ -21,7 +22,7 @@ export class CommitHistoryMaximizerService {
     private injector: Injector,
     private overlay: Overlay) { }
 
-  open(config: CommitHistoryMaximizedConfig = {}) {
+  open(historyComponent: CommitHistoryComponent, config: CommitHistoryMaximizedConfig = {}) {
     // Override default configuration
     const dialogConfig = { ...DEFAULT_CONFIG, ...config };
 
@@ -29,7 +30,7 @@ export class CommitHistoryMaximizerService {
     const overlayRef = this.createOverlay(dialogConfig);
 
     // Instantiate remote control
-    const dialogRef = new CommitHistoryMaximizedRef(overlayRef);
+    const dialogRef = new CommitHistoryMaximizedRef(overlayRef, historyComponent);
 
     const overlayComponent = this.attachDialogContainer(overlayRef, dialogConfig, dialogRef);
 
