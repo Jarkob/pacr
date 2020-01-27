@@ -41,7 +41,7 @@
             <div>
                 <div id="commitDetails">
                     <mat-accordion class="headers-align">
-                        <mat-expansion-panel [hideToggle]="benchmarkingResult.commitMessage.length < 50">
+                        <mat-expansion-panel hideToggle>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     {{ strings.commitMessage }}
@@ -53,7 +53,7 @@
                         
                             {{ benchmarkingResult.commitMessage }}
                         </mat-expansion-panel>
-                        <mat-expansion-panel [hideToggle]="benchmarkingResult.repositoryName.length < 50">
+                        <mat-expansion-panel hideToggle>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     {{ strings.repository }}
@@ -65,7 +65,7 @@
                         
                             {{ benchmarkingResult.repositoryName }}
                         </mat-expansion-panel>
-                        <mat-expansion-panel [hideToggle]="benchmarkingResult.commitBranchNames.join(strings.listSeparator).length < 50">
+                        <mat-expansion-panel hideToggle>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     {{ strings.branches }}
@@ -113,8 +113,7 @@
 
                             {{ benchmarkingResult.commitEntryDate }}
                         </mat-expansion-panel>
-                        <mat-expansion-panel *ngIf="benchmarkingResult.globalError" 
-                                            [hideToggle]="benchmarkingResult.errorMessage.length < 50">
+                        <mat-expansion-panel *ngIf="benchmarkingResult.globalError" hideToggle>
                             <mat-expansion-panel-header>
                                 <mat-panel-title>
                                     {{ strings.globalError }}

@@ -1,15 +1,287 @@
-<mat-card class="maximized">
+<mat-card class="maximized" [style.overflow]="'auto'">
     <mat-card-header>
-        <mat-card-title>Full Commit Detail View</mat-card-title>
+        <mat-card-title>
+            <span>{{ strings?.cardTitle }}</span>
+            <a class="mat-h2" *ngIf="benchmarkingResult?.commitUrl" href="{{ benchmarkingResult?.commitUrl }}" 
+                matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
+                {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
+            </a>
+            <span class="mat-h2" *ngIf="!benchmarkingResult?.commitUrl"
+                matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
+                {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
+            </span>
+            <div class="labelContainer">
+                <mat-chip-list>
+                    <mat-chip *ngIf="benchmarkingResult?.globalError" selected selectable="false" color="warn" class="label"
+                        matTooltip="{{ strings?.globalErrorLabelTooltip }}">
+                        {{ strings?.globalErrorLabel }}
+                    </mat-chip>
+                    <mat-chip *ngFor="let label of benchmarkingResult?.commitLabels" class="label" selectable="false">
+                        {{ label }}                  
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
+        </mat-card-title>
         <div fxFlex></div>
         <button mat-mini-fab (click)="close()">
             <mat-icon>fullscreen_exit</mat-icon>
         </button>
     </mat-card-header>
     
-    <p>
-        {{commitHash}}
-    </p>
+    <mat-card-content>
+        <mat-tab-group animationDuration="0ms">
+            <mat-tab label="{{ strings?.tabCommitData }}">
+                <p class="mat-h2 sectionHeading"> {{ strings?.commitData }} </p>
+
+                <mat-accordion class="headers-align">
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.commitMessage }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.commitMessage }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.commitMessage }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.repository }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.repositoryName }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.repositoryName }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.branches }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.commitBranchNames.join(strings?.listSeparator) }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.commitBranchNames.join(strings?.listSeparator) }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.authorDate }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.commitAuthorDate }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.commitAuthorDate }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.commitDate }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.commitCommitDate }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.commitCommitDate }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.entryDate }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.commitEntryDate }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+
+                        {{ benchmarkingResult?.commitEntryDate }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel *ngIf="benchmarkingResult?.globalError" hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.globalError }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.errorMessage }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.errorMessage }}
+                    </mat-expansion-panel>                        
+                </mat-accordion>
+
+                <p class="mat-h2 sectionHeading"> {{ strings?.systemEnvironment }} </p>
+
+                <mat-accordion class="headers-align">
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.benchmarkerName }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.systemEnvironment.name }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.systemEnvironment.name }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.os }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.systemEnvironment.os }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.systemEnvironment.os }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.kernel }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.systemEnvironment.kernel }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.systemEnvironment.kernel }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.processor }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.systemEnvironment.processor }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.systemEnvironment.processor }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.cores }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.systemEnvironment.cores }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.systemEnvironment.cores }}
+                    </mat-expansion-panel>
+                    <mat-expansion-panel hideToggle>
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                {{ strings?.memory }}
+                            </mat-panel-title>
+                            <mat-panel-description>
+                                {{ benchmarkingResult?.systemEnvironment.memory }} {{ strings?.memoryUnit }}
+                            </mat-panel-description>
+                        </mat-expansion-panel-header>
+                    
+                        {{ benchmarkingResult?.systemEnvironment.memory }} {{ strings?.memoryUnit }}
+                    </mat-expansion-panel>          
+                </mat-accordion>
+            </mat-tab>
+        <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.globalError">
+                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">                
+                    <ng-container matColumnDef="benchmarkGroup">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.benchmarkGroup }} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.benchmarkGroup }} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="benchmark">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.benchmark }} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.benchmark}} </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="property">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.property }} </th>
+                        <td mat-cell *matCellDef="let element">
+                            <mat-icon id="localErrorIcon" *ngIf="element.hadLocalError" color="warn">error_outline</mat-icon>
+                            {{element.property}}
+                        </td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="median">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableMedian }} </th>
+                        <td mat-cell *matCellDef="let element">
+                            <span id="medianValue">
+                                {{element.median | number:'1.4' }} {{ element.unit }}
+                            </span>
+                            
+                            <span *ngIf="element.compared" id="compareRation"
+                                [ngClass]="{red : element.ratioToPreviousCommit < 0, 
+                                            black: element.ratioToPreviousCommit === 0, 
+                                            green: element.ratioToPreviousCommit > 0}">
+                                {{ element.ratioToPreviousCommit | percent:'1.0-2' }}
+                            </span>                           
+                        </td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="lowerQuartile">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableLowerQuartile }} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.lowerQuartile | number:'1.4' }} {{ element.unit }} </td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="upperQuartile">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableUpperQuartile }} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.upperQuartile | number:'1.4' }} {{ element.unit }} </td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="standardDeviation">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableStandardDeviation }} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.standardDeviation | number:'1.4' }} {{ element.unit }} </td>
+                    </ng-container>
+                
+                    <ng-container matColumnDef="mean">
+                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableMean }} </th>
+                        <td mat-cell *matCellDef="let element"> {{element.mean | number:'1.4' }} {{ element.unit }} </td>
+                    </ng-container>
+                
+                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                
+                    <!-- Group header -->
+                    <ng-container matColumnDef="groupHeader">
+                        <td colspan="999" mat-cell *matCellDef="let group">
+                            <mat-icon id="expandIcon" *ngIf="group.expanded">expand_less</mat-icon>
+                            <mat-icon id="expandIcon" *ngIf="!group.expanded">expand_more</mat-icon>
+                            <span class="mat-h2" *ngIf="group.level === 1">{{ strings?.benchmarkGroup }} {{ group[groupByColumns[group.level - 1]] }}</span>
+                            <span class="mat-h3" *ngIf="group.level === 2">{{ strings?.benchmark }} {{ group[groupByColumns[group.level - 1]] }}</span> 
+                        </td>
+                    </ng-container>
+
+                    <!-- LocalError header -->
+                    <ng-container matColumnDef="localErrorHeader">
+                        <td colspan="999" mat-cell *matCellDef="let element">
+                            <span>{{ strings?.localError }} {{ element.errorMessage }}</span>
+                        </td>
+                    </ng-container>
+                
+                  <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup" (click)="groupHeaderClick(row)"> </tr>
+
+                  <tr mat-row *matRowDef="let row; columns: ['property', 'localErrorHeader']; when: hadLocalError"> </tr>
+                
+                </table>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card-content>
+    
 </mat-card>
 
 

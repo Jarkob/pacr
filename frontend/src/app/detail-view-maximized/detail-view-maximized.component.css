@@ -1,0 +1,52 @@
+.label {
+    font-size: 12px;
+    padding: 0, 4px;
+    border-radius: 3px;
+}
+
+.labelContainer {
+    margin-top: 6px;
+}
+
+table {
+    width: 100%;
+}
+
+#compareRation {
+    margin-left: 30px;
+}
+
+#localErrorIcon {
+    font-size: 18px;
+    width: 18px;
+    height: 17px;
+    vertical-align: bottom;
+}
+
+#expandIcon {
+    height: 26px;
+    vertical-align: bottom;
+}
+
+.valign-center {
+    display: inline-flex;
+    vertical-align: center;
+    align-items: bottom;
+}
+
+.red {
+    color: red; 
+}
+
+.black {
+    color: black;
+}
+
+.green {
+    color: green;
+}
+
+.sectionHeading {
+    margin-top: 15px;
+    margin-bottom: 8px;
+}

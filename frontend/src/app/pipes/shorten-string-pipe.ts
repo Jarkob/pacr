@@ -11,6 +11,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({name: 'shortenString'})
 export class ShortenStringPipe implements PipeTransform {
   transform(value: string, amt?: number): string {
-    return value.substr(0, amt);
+    if (value !== null) {
+      return value.substr(0, amt);
+    }
+
+    return '';
   }
 }

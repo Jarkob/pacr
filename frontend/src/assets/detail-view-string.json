@@ -4,6 +4,7 @@
     "globalErrorLabel": "failed",
     "globalErrorLabelTooltip": "No results are available because of a script exception.\nA detailed error message can be found under global error.",
     "commitMessage": "Message:",
+    
     "repository": "Repository:",
     "branches": "Branches:",
     "listSeparator": ", ",
@@ -18,5 +19,28 @@
     "mean": "Mean:",
     "interpretation": "Interpretation:",
     "property": "Property",
-    "localError": "Error Message:"
+    "localError": "Error Message:",
+    
+    "benchmarkGroup": "Group:",
+    "benchmark": "Benchmark:",
+    "tabCommitData": "Metadata",
+    "tabCommitResults": "Results",
+    "tabResultDisabledTooltip": "There was a global error and all benchmarks failed.",
+    "undefinedGroup": "Undefined Group",
+    "tableMedian": "Median",
+    "tableLowerQuartile": "Lower Quartile",
+    "tableUpperQuartile": "Upper Quartile",
+    "tableStandardDeviation": "Standard Deviation",
+    "tableMean": "Mean",
+
+    "commitData": "Commit Data:",
+    "systemEnvironment": "System Environment:",
+
+    "benchmarkerName": "Name:",
+    "os": "Operating System:",
+    "processor": "Processor:",
+    "kernel": "Kernel:",
+    "cores": "Cores:",
+    "memory": "Memory:",
+    "memoryUnit": "GiB"
 }

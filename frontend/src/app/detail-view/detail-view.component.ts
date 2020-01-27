@@ -26,8 +26,7 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     private previewDialog: DetailViewMaximizerService,
     private benchmarkingResultService: BenchmarkingResultService,
     private diagramService: DiagramService,
-    private stringService: StringService,
-    private benchmarkService: BenchmarkService
+    private stringService: StringService
   ) { }
 
   strings: any;
@@ -38,8 +37,6 @@ export class DetailViewComponent implements OnInit, OnDestroy {
   // selectedBenchmarkProperty[0] is Benchmark,
   // selectedBenchmarkProperty[1] is BenchmarkProperty
   selectedBenchmarkProperty: any[];
-
-  benchmarks: Benchmark[];
 
   selected = false;
 
@@ -54,8 +51,6 @@ export class DetailViewComponent implements OnInit, OnDestroy {
         this.selectCommit(data);
       }
     );
-
-    this.getBenchmarks();
   }
 
   private selectCommit(sha: string): void {
@@ -78,16 +73,6 @@ export class DetailViewComponent implements OnInit, OnDestroy {
       commitHash: this.benchmarkingResult.commitHash
     });
   }
-
-  private getBenchmarks(): void {
-    this.benchmarkService.getAllBenchmarks().subscribe(
-      data => {
-        this.benchmarks = data;
-        console.log(this.benchmarks[0].properties[0]);
-      }
-    );
-  }
-
 
   ngOnDestroy() {
     // prevent memory leak when component is destroyed
