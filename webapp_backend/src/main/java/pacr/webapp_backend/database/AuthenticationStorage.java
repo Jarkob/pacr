@@ -2,7 +2,7 @@ package pacr.webapp_backend.database;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.authentication.IAuthenticationAccess;
+import pacr.webapp_backend.authentication.services.IAuthenticationAccess;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;

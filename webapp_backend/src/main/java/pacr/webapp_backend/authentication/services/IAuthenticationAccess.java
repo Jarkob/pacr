@@ -1,4 +1,4 @@
-package pacr.webapp_backend.authentication;
+package pacr.webapp_backend.authentication.services;
 
 import javax.validation.constraints.NotNull;
 

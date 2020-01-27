@@ -1,4 +1,4 @@
-package pacr.webapp_backend.authentication;
+package pacr.webapp_backend.authentication.services;
 
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IAuthenticator;
