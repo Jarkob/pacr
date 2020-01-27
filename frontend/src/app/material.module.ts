@@ -16,6 +16,7 @@ import {
     MatCheckboxModule,
     MatTreeModule,
     MatChipsModule,
+    MatCheckbox,
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -55,6 +56,7 @@ import { NgModule } from '@angular/core';
         MatSelectModule,
         MatListModule,
         MatChipsModule,
+        MatCheckbox,
         MatCheckboxModule,
         MatTreeModule
     ]

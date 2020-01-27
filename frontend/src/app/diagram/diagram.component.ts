@@ -45,11 +45,6 @@ export class DiagramComponent implements OnInit {
   repositoryResults: Map<string, BenchmarkingResult[]> = new Map<string, BenchmarkingResult[]>();
   selectedBenchmark: Benchmark;
 
-  // TODO fix types
-  commits: any;
-  lists: any[];
-
-
   @Input() maximized: boolean;
   dialogRef: DiagramMaximizedRef;
   commits: any;

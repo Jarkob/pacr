@@ -1,10 +1,13 @@
+import { Branch } from './branch';
+import { Repository } from './repository';
 export interface Commit {
-    sha: string;
+    commitHash: string;
     commitDate: Date;
     authorDate: Date;
-    commitMessage: string;
     entryDate: Date;
-    gitTags: string[];
-    repository: string;
-    branch: string;
+    commitMessage: string;
+    labels: string[];
+    repository: Repository;
+    branches: Branch[];
+    parentHashes: string[];
 }
