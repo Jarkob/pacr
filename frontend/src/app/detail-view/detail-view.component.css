@@ -11,16 +11,6 @@ mat-card {
     flex-flow: column;
 }
 
-.label {
-    font-size: 12px;
-    padding: 0, 4px;
-    border-radius: 3px;
-}
-
-.labelContainer {
-    margin-top: 6px;
-}
-
 #commitDetails {
     display: inline-block;
     width: 59%;
@@ -31,32 +21,4 @@ mat-card {
     width: 39%;
     height: 100%;
     float: right;
-}
-
-.mat-expanded mat-panel-description {
-    display: none;
-}
-
-.red {
-    color: red; 
-}
-
-.black {
-    color: black;
-}
-
-.green {
-    color: green;
-}
-
-mat-panel-description{
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow:ellipsis;
-    width: 100%;
-    display: block;
-}
-
-mat-panel-title{
-    white-space:nowrap;
 }

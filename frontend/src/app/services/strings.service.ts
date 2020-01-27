@@ -18,11 +18,17 @@ export class StringService {
     ) { }
 
     /**
-     * get the current job queue
+     * get strings for the detail view
      */
     public getDetailViewStrings(): Observable<any> {
         return this.http.get('./assets/detail-view-string.json');
     }
 
+     /**
+      * get strings for the event list
+      */
+    public getEventsStrings(): Observable<any> {
+        return this.http.get('./assets/events-string.json');
+    }
 
 }

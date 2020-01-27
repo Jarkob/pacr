@@ -78,3 +78,47 @@ a {
   justify-content: space-between;
   align-items: center;
 }
+
+.valign-center {
+  display: inline-flex;
+  vertical-align: center;
+  align-items: bottom;
+}
+
+mat-panel-description{
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width: 100%;
+  display: block;
+}
+
+mat-panel-title{
+  white-space:nowrap;
+}
+
+.mat-expanded mat-panel-description {
+  display: none;
+}
+
+.label {
+  font-size: 12px;
+  padding: 0, 4px;
+  border-radius: 3px;
+}
+
+.labelContainer {
+  margin-top: 6px;
+}
+
+.red {
+  color: red; 
+}
+
+.black {
+  color: black;
+}
+
+.green {
+  color: green;
+}
