@@ -1,5 +1,7 @@
 package pacr.webapp_backend.dashboard_management.endpoints;
 
+import org.apache.coyote.Response;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,8 +50,7 @@ public class ManageDashboardController {
             Dashboard dashboard = dashboardManager.getDashboard(key);
             return ResponseEntity.ok(dashboard);
         } catch (NoSuchElementException e) {
-            //TODO add useful exception handling
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -63,9 +64,15 @@ public class ManageDashboardController {
     public ResponseEntity<Object> addDashboard(@NotNull Dashboard dashboard) {
         Objects.requireNonNull(dashboard);
 
-        dashboardManager.addDashboard(dashboard);
+        Pair<String, String> keys;
 
-        return ResponseEntity.ok().build();
+        try {
+            keys = dashboardManager.addDashboard(dashboard);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+
+        return ResponseEntity.ok().body(keys);
     }
 
     /**

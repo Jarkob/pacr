@@ -22,8 +22,8 @@ public class DashboardManagerTest {
 
     private Dashboard dashboardClone;
 
-    private static final String EDIT_KEY = "edit key";
-    private static final String VIEW_KEY = "view key";
+    private  String editKey;
+    private  String viewKey;
 
     @Autowired
     DashboardManagerTest (DashboardManager dashboardManager) {
@@ -34,13 +34,13 @@ public class DashboardManagerTest {
     void init() {
         dashboard = new Dashboard("test");
 
-        dashboard.initializeKeys(EDIT_KEY, VIEW_KEY);
+        Pair<String, String> keys = dashboardManager.addDashboard(dashboard);
 
-        dashboardManager.addDashboard(dashboard);
-
+        viewKey = keys.getFirst();
+        editKey = keys.getSecond();
 
         dashboardClone = new Dashboard();
-        dashboardClone.initializeKeys(EDIT_KEY, VIEW_KEY);
+        dashboardClone.initializeKeys(editKey, viewKey);
     }
 
     @AfterEach
@@ -68,8 +68,8 @@ public class DashboardManagerTest {
 
     @Test
     void getDashboard_ExistingKeys_ShouldReturnDashboard() {
-        assertEquals(dashboard, dashboardManager.getDashboard(EDIT_KEY));
-        assertEquals(dashboard.getId(), dashboardManager.getDashboard(VIEW_KEY).getId());
+        assertEquals(dashboard, dashboardManager.getDashboard(editKey));
+        assertEquals(dashboard.getId(), dashboardManager.getDashboard(viewKey).getId());
     }
 
     @Test
@@ -90,13 +90,8 @@ public class DashboardManagerTest {
     }
 
     @Test
-    void addDashboard_InitializedDashboard_ShouldNotChangeKeys() {
-        Pair<String,String> keys = dashboardManager.addDashboard(dashboard);
-
-        assertEquals(VIEW_KEY, keys.getFirst());
-        assertEquals(EDIT_KEY, keys.getSecond());
-
-        assertDoesNotThrow(() -> dashboardManager.getDashboard(EDIT_KEY));
+    void addDashboard_PreInitializedDashboard_ShouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> dashboardManager.addDashboard(dashboardClone));
     }
 
     @Test
@@ -110,14 +105,14 @@ public class DashboardManagerTest {
 
         assertDoesNotThrow(() -> dashboardManager.updateDashboard(dashboardClone));
 
-        assertEquals(dashboardClone, dashboardManager.getDashboard(EDIT_KEY));
-        assertNotEquals(dashboard, dashboardManager.getDashboard(EDIT_KEY));
+        assertEquals(dashboardClone, dashboardManager.getDashboard(editKey));
+        assertNotEquals(dashboard, dashboardManager.getDashboard(editKey));
     }
 
     @Test
     void updateDashboard_ViewKeyInDashboard_ShouldThrowException() {
         Dashboard dashboardClone = new Dashboard("title");
-        dashboardClone.initializeKeys(VIEW_KEY, EDIT_KEY);
+        dashboardClone.initializeKeys(viewKey, editKey);
 
         assertThrows(IllegalAccessException.class, () -> dashboardManager.updateDashboard(dashboardClone));
     }
@@ -125,7 +120,7 @@ public class DashboardManagerTest {
     @Test
     void updateDashboard_InvalidKeyInDashboard_ShouldThrowException() {
         Dashboard dashboardClone = new Dashboard("title");
-        dashboardClone.initializeKeys("404", VIEW_KEY);
+        dashboardClone.initializeKeys("404", viewKey);
 
         assertThrows(NoSuchElementException.class, () -> dashboardManager.updateDashboard(dashboardClone));
     }

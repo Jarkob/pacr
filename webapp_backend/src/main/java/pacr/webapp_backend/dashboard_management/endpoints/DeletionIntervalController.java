@@ -1,5 +1,6 @@
 package pacr.webapp_backend.dashboard_management.endpoints;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,12 +31,14 @@ public class DeletionIntervalController {
      * @param dashboardManager the dashboard manager, used for entry into the services .
      * @param authenticator the authenticator, which checks whether admin requests are authorized.
      */
+    @Autowired
     public DeletionIntervalController(@NotNull DashboardManager dashboardManager,
                                       @NotNull IAuthenticator authenticator) {
         Objects.requireNonNull(dashboardManager, "The dashboard manager must not be null.");
         Objects.requireNonNull(authenticator, "The authenticator must not be null.");
 
         this.dashboardManager = dashboardManager;
+        this.authenticator = authenticator;
     }
 
 
@@ -67,14 +70,14 @@ public class DeletionIntervalController {
             try {
                 dashboardManager.setDeletionInterval(deletionInterval);
             } catch (IllegalArgumentException e) {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             }
 
-            ResponseEntity.ok().build();
+            return ResponseEntity.ok().build();
 
         }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(INVALID_TOKEN_MESSAGE);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(INVALID_TOKEN_MESSAGE);
     }
 
 }

@@ -71,6 +71,7 @@ public class DashboardManager {
         } catch (KeysAlreadyInitializedException e) {
             LOGGER.error("The dashboard " + dashboard.getTitle() + " is already initialized and cannot "
                     + "be initialized again.");
+            throw new IllegalArgumentException("This dashboard has already been initialized.");
         }
 
         databaseTalker.storeDashboard(dashboard);
