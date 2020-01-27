@@ -12,6 +12,6 @@
   </mat-grid-tile>
 
   <mat-grid-tile [colspan]="30">
-    <app-commit-history fxFill></app-commit-history>
+    <app-commit-history fxFill (commitSelectedEvent)="openCommitDetailView($event)"></app-commit-history>
   </mat-grid-tile>
 </mat-grid-list>

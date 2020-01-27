@@ -1,0 +1,10 @@
+{
+    "title": "Online Benchmarkers",
+    "computerName": "Name:",
+    "os": "Operating System:",
+    "processor": "Processor:",
+    "kernel": "Kernel:",
+    "cores": "Logical Cores:",
+    "ram": "Available RAM:",
+    "ramUnit": "GiB"
+}

@@ -1,3 +1,5 @@
+import { DetailViewMaximizerService } from './../detail-view/detail-view-maximizer.service';
+import { DetailViewMaximizedRef } from './../detail-view/detail-view-maximized-ref';
 import { SystemEnvironment } from './../classes/system-environment';
 import { RepositoryService } from './../services/repository.service';
 import { ImportExportService } from './../services/import-export.service';
@@ -21,7 +23,8 @@ export class AdminComponent implements OnInit {
     private benchmarkService: BenchmarkService,
     private importExportService: ImportExportService,
     private repositoryService: RepositoryService,
-    private schedulerService: SchedulerService
+    private schedulerService: SchedulerService,
+    private previewDialog: DetailViewMaximizerService
   ) { }
 
   pullInterval: number;
@@ -35,4 +38,11 @@ export class AdminComponent implements OnInit {
 
   public updateIntervals(): void {
   }
+
+  public openCommitDetailView(hash: string) {
+    const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
+      commitHash: hash
+    });
+  }
+
 }

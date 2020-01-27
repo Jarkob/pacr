@@ -1,3 +1,5 @@
+import { DetailViewMaximizerService } from './../detail-view/detail-view-maximizer.service';
+import { DetailViewMaximizedRef } from './../detail-view/detail-view-maximized-ref';
 import { Component, OnInit } from '@angular/core';
 
 /**
@@ -10,8 +12,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AcademicDashboardComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private previewDialog: DetailViewMaximizerService,
+  ) { }
 
   ngOnInit(): void {
   }
+
+  public openCommitDetailView(hash: string) {
+    const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
+      commitHash: hash
+    });
+  }
+
 }

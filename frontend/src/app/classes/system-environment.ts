@@ -1,9 +1,9 @@
 export interface SystemEnvironment {
     id: number;
-    name: string;
+    computerName: string;
     os: string;
     processor: string;
     kernel: string;
     cores: number;
-    memory: number;
+    ramMemory: number;
 }

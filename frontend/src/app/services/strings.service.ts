@@ -32,9 +32,16 @@ export class StringService {
     }
 
     /**
-     * get strings for the event list
+     * get strings for the commit history
      */
      public getCommitHistoryStrings(): Observable<any> {
         return this.http.get('./assets/commit-history-string.json');
+    }
+
+    /**
+     * get strings for the benchmarker list
+     */
+    public getBenchmarkerList(): Observable<any> {
+        return this.http.get('./assets/benchmarker-list-string.json');
     }
 }

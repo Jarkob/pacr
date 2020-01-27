@@ -21,5 +21,5 @@
 
 <div class="bottom" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
     <app-benchmarker-list fxFlex="70%"></app-benchmarker-list>
-    <app-commit-history fxFlex="30%"></app-commit-history>
+    <app-commit-history fxFlex="30%" (commitSelectedEvent)="openCommitDetailView($event)"></app-commit-history>
 </div>

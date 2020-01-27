@@ -129,11 +129,11 @@
                                 {{ strings?.benchmarkerName }}
                             </mat-panel-title>
                             <mat-panel-description>
-                                {{ benchmarkingResult?.systemEnvironment.name }}
+                                {{ benchmarkingResult?.systemEnvironment.computerName }}
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                     
-                        {{ benchmarkingResult?.systemEnvironment.name }}
+                        {{ benchmarkingResult?.systemEnvironment.computerName }}
                     </mat-expansion-panel>
                     <mat-expansion-panel hideToggle>
                         <mat-expansion-panel-header>
@@ -189,11 +189,11 @@
                                 {{ strings?.memory }}
                             </mat-panel-title>
                             <mat-panel-description>
-                                {{ benchmarkingResult?.systemEnvironment.memory }} {{ strings?.memoryUnit }}
+                                {{ benchmarkingResult?.systemEnvironment.ramMemory }} {{ strings?.memoryUnit }}
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                     
-                        {{ benchmarkingResult?.systemEnvironment.memory }} {{ strings?.memoryUnit }}
+                        {{ benchmarkingResult?.systemEnvironment.ramMemory }} {{ strings?.memoryUnit }}
                     </mat-expansion-panel>          
                 </mat-accordion>
             </mat-tab>

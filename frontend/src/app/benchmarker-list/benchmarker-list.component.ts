@@ -1,3 +1,6 @@
+import { SystemEnvironment } from './../classes/system-environment';
+import { BenchmarkerCommunicationService } from './../services/benchmarker-communication.service';
+import { StringService } from './../services/strings.service';
 import { Component, OnInit } from '@angular/core';
 
 /**
@@ -10,9 +13,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BenchmarkerListComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private stringService: StringService,
+    private benchmarkerService: BenchmarkerCommunicationService
+  ) { }
+
+    strings: any;
+    benchmarkers: SystemEnvironment[];
 
   ngOnInit() {
+    this.stringService.getBenchmarkerList().subscribe(
+      data => {
+        this.strings = data;
+      }
+    );
+    this.benchmarkerService.getOnlineBenchmarkers().subscribe(
+      data => {
+        this.benchmarkers = data;
+      }
+    );
   }
 
 }
