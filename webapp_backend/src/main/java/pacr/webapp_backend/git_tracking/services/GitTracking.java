@@ -11,12 +11,8 @@ import pacr.webapp_backend.shared.IResultDeleter;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.List;
-import java.util.Arrays;
+import java.util.*;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -70,7 +66,7 @@ public class GitTracking implements IRepositoryImporter {
      */
     @Override
     public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
-                             @NotNull Collection<String> branchNames) {
+                             @NotNull Set<String> branchNames) {
         Objects.requireNonNull(repositoryURL);
         Objects.requireNonNull(name);
 
@@ -114,7 +110,7 @@ public class GitTracking implements IRepositoryImporter {
      * Returns all repositories.
      * @return collection of repositories.
      */
-    public Collection<GitRepository> getAllRepositories() {
+    public Set<GitRepository> getAllRepositories() {
         return gitTrackingAccess.getAllRepositories();
     }
 

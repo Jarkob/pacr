@@ -77,7 +77,7 @@ public class GitCommit implements ICommit {
         this.entryDate = LocalDateTime.now();
         this.commitDate = commitDate;
         this.authorDate = authorDate;
-        this.labels = new HashSet<String>();
+        this.labels = new HashSet<>();
         this.branches = new HashSet<>();
         this.parentHashes = new HashSet<>();
 

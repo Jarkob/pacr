@@ -21,7 +21,6 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.*;
 
 /**
@@ -59,10 +58,11 @@ public class GitTrackingTest {
 
         assertEquals(repositoryId,
                 gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr.git", null,
-                        "name", Arrays.asList("master", "testBranch1")));
+                        "name", new HashSet<>(Arrays.asList("master", "testBranch1"))));
 
         verify(gitTrackingAccess).addRepository(repositoryCaptor.capture());
-        assertEquals("https://git.scc.kit.edu/pacr/pacr/commit/", repositoryCaptor.getValue().getCommitLinkPrefix());
+        assertEquals("https://git.scc.kit.edu/pacr/pacr/commit/",
+                repositoryCaptor.getValue().getCommitLinkPrefix());
         verify(colorPicker).getNextColor();
 
     }
@@ -70,7 +70,7 @@ public class GitTrackingTest {
     @Test
     public void getAllRepositories() {
         GitRepository repository = Mockito.mock(GitRepository.class);
-        when(gitTrackingAccess.getAllRepositories()).thenReturn(Arrays.asList(repository));
+        when(gitTrackingAccess.getAllRepositories()).thenReturn(new HashSet<>(Arrays.asList(repository)));
 
         Collection<GitRepository> repositories = gitTracking.getAllRepositories();
         assertEquals(1, repositories.size());
@@ -151,7 +151,7 @@ public class GitTrackingTest {
         when(repository2.isHookSet()).thenReturn(false);
         when(repository2.getId()).thenReturn(2);
 
-        when(gitTrackingAccess.getAllRepositories()).thenReturn(Arrays.asList(repository1, repository2));
+        when(gitTrackingAccess.getAllRepositories()).thenReturn(new HashSet<>(Arrays.asList(repository1, repository2)));
         when(gitTrackingAccess.getRepository(1)).thenReturn(repository1);
         when(gitTrackingAccess.getRepository(2)).thenReturn(repository2);
         when(gitHandler.pullFromRepository(any())).thenReturn(new HashSet<>());
