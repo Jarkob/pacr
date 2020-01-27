@@ -1,3 +1,5 @@
+import { CommitHistoryMaximizedComponent } from './commit-history-maximized/commit-history-maximized.component';
+import { CommitHistoryMaximizerService } from './commit-history/commit-history-maximizer.service';
 import { ShortenStringPipe } from './pipes/shorten-string-pipe';
 import { BrachesPipe } from './pipes/braces-pipe';
 import { DiagramMaximizerService } from './diagram/diagram-maximizer.service';
@@ -44,6 +46,7 @@ import { CommonModule, PercentPipe } from '@angular/common';
     DiagramComponent,
     DiagramMaximizedComponent,
     CommitHistoryComponent,
+    CommitHistoryMaximizedComponent,
     AdminComponent,
     DashboardComponent,
     LoginComponent,
@@ -60,7 +63,8 @@ import { CommonModule, PercentPipe } from '@angular/common';
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
-    DiagramMaximizedComponent
+    DiagramMaximizedComponent,
+    CommitHistoryMaximizedComponent
   ],
   imports: [
     BrowserModule,
@@ -74,6 +78,7 @@ import { CommonModule, PercentPipe } from '@angular/common';
   ],
   providers: [
     DetailViewMaximizerService,
+    CommitHistoryMaximizerService,
     DiagramMaximizerService,
     BenchmarkingResultService,
     BenchmarkService,

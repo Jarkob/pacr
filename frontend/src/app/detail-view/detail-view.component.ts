@@ -1,8 +1,4 @@
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
-import { BenchmarkService } from './../services/benchmark.service';
-import { Benchmark } from './../classes/benchmark';
-import { BenchmarkProperty } from './../classes/benchmark-property';
-import { BenchmarkingResult } from './../classes/benchmarking-result';
 import { StringService } from './../services/strings.service';
 import { DetailViewMaximizerService } from './detail-view-maximizer.service';
 import { DetailViewMaximizedRef } from './detail-view-maximized-ref';
@@ -53,12 +49,12 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     );
   }
 
-  private selectCommit(sha: string): void {
-    if (sha === null || sha === '') {
+  public selectCommit(commitHash: string): void {
+    if (commitHash === null || commitHash === '') {
       return;
     }
 
-    this.benchmarkingResultService.getBenchmarkingResultsForCommit(sha).subscribe(
+    this.benchmarkingResultService.getBenchmarkingResultsForCommit(commitHash).subscribe(
       data => {
         this.benchmarkingResult = data;
         this.selected = true;

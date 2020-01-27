@@ -1,9 +1,9 @@
+import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { Event } from './../classes/event';
 import { GlobalService } from './global.service';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { Commit } from '../classes/commit';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class EventService {
   /**
    * get the commit history
    */
-  public getCommitHistory(): Observable<Commit[]> {
-    return this.http.get<Commit[]>(this.globalService.url + '/history');
+  public getCommitHistory(): Observable<CommitBenchmarkingResult[]> {
+    return this.http.get<CommitBenchmarkingResult[]>(this.globalService.url + '/history');
   }
 }

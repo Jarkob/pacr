@@ -1,6 +1,9 @@
+import { StringService } from './../services/strings.service';
+import { CommitHistoryMaximizerService } from './commit-history-maximizer.service';
+import { CommitHistoryMaximizedRef } from './commit-history-maximized-ref';
+import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { EventService } from './../services/event.service';
-import { Component, OnInit } from '@angular/core';
-import { Commit } from '../classes/commit';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 
 /**
  * shows the commit history
@@ -13,17 +16,35 @@ import { Commit } from '../classes/commit';
 export class CommitHistoryComponent implements OnInit {
 
   constructor(
-    private eventService: EventService
+    private eventService: EventService,
+    private previewDialog: CommitHistoryMaximizerService,
+    private stringService: StringService
   ) { }
 
-  commits: Commit[];
+  @Output() commitSelectedEvent = new EventEmitter();
+  strings: any;
+  commits: CommitBenchmarkingResult[];
+
+
+  public selectCommit(commitHash: string) {
+    this.commitSelectedEvent.emit(commitHash);
+  }
 
   ngOnInit() {
+    this.stringService.getCommitHistoryStrings().subscribe(
+      data => {
+        this.strings = data;
+      }
+    );
     this.eventService.getCommitHistory().subscribe(
       data => {
         this.commits = data;
       }
     );
+  }
+
+  public maximizeCommitHistory() {
+    const dialogRef: CommitHistoryMaximizedRef = this.previewDialog.open();
   }
 
 }

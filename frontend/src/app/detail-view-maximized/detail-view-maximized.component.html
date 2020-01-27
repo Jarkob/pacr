@@ -76,11 +76,11 @@
                                 {{ strings?.authorDate }}
                             </mat-panel-title>
                             <mat-panel-description>
-                                {{ benchmarkingResult?.commitAuthorDate }}
+                                {{ benchmarkingResult?.commitAuthorDate | date }}
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                     
-                        {{ benchmarkingResult?.commitAuthorDate }}
+                        {{ benchmarkingResult?.commitAuthorDate | date }}
                     </mat-expansion-panel>
                     <mat-expansion-panel hideToggle>
                         <mat-expansion-panel-header>
@@ -88,11 +88,11 @@
                                 {{ strings?.commitDate }}
                             </mat-panel-title>
                             <mat-panel-description>
-                                {{ benchmarkingResult?.commitCommitDate }}
+                                {{ benchmarkingResult?.commitCommitDate | date }}
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                     
-                        {{ benchmarkingResult?.commitCommitDate }}
+                        {{ benchmarkingResult?.commitCommitDate | date }}
                     </mat-expansion-panel>
                     <mat-expansion-panel hideToggle>
                         <mat-expansion-panel-header>
@@ -100,11 +100,11 @@
                                 {{ strings?.entryDate }}
                             </mat-panel-title>
                             <mat-panel-description>
-                                {{ benchmarkingResult?.commitEntryDate }}
+                                {{ benchmarkingResult?.commitEntryDate | date }}
                             </mat-panel-description>
                         </mat-expansion-panel-header>
 
-                        {{ benchmarkingResult?.commitEntryDate }}
+                        {{ benchmarkingResult?.commitEntryDate | date }}
                     </mat-expansion-panel>
                     <mat-expansion-panel *ngIf="benchmarkingResult?.globalError" hideToggle>
                         <mat-expansion-panel-header>
@@ -258,7 +258,7 @@
                 
                     <!-- Group header -->
                     <ng-container matColumnDef="groupHeader">
-                        <td colspan="999" mat-cell *matCellDef="let group">
+                        <td colspan="5" mat-cell *matCellDef="let group">
                             <mat-icon id="expandIcon" *ngIf="group.expanded">expand_less</mat-icon>
                             <mat-icon id="expandIcon" *ngIf="!group.expanded">expand_more</mat-icon>
                             <span class="mat-h2" *ngIf="group.level === 1">{{ strings?.benchmarkGroup }} {{ group[groupByColumns[group.level - 1]] }}</span>
@@ -268,8 +268,8 @@
 
                     <!-- LocalError header -->
                     <ng-container matColumnDef="localErrorHeader">
-                        <td colspan="999" mat-cell *matCellDef="let element">
-                            <span>{{ strings?.localError }} {{ element.errorMessage }}</span>
+                        <td colspan="5" mat-cell *matCellDef="let element">
+                            {{ strings?.localError }} {{ element.errorMessage }}
                         </td>
                     </ng-container>
                 

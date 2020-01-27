@@ -55,8 +55,8 @@ export class DetailViewMaximizedComponent implements OnInit {
   public dataSource = new MatTableDataSource<Result | Group>([]);
 
   constructor(
-    public dialogRef: DetailViewMaximizedRef,
     @Inject(COMMIT_HASH_DATA) public commitHash: string,
+    public dialogRef: DetailViewMaximizedRef,
     private stringService: StringService,
     private benchmarkingResultService: BenchmarkingResultService,
     private benchmarkService: BenchmarkService

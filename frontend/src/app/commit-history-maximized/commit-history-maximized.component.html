@@ -1,0 +1,23 @@
+<mat-card class="maximized" [style.overflow]="'auto'">
+    <mat-card-header>
+        <mat-card-title>Latest Commits</mat-card-title>
+
+        <!-- Push button to the right -->
+        <div fxFlex></div>
+
+        <button mat-mini-fab (click)="close()">
+            <mat-icon>fullscreen_exit</mat-icon>
+        </button>
+    </mat-card-header>
+    <mat-card-content>
+        <mat-accordion id="history" class="headers-align">
+            <mat-expansion-panel *ngFor="let commit of commits">
+                <mat-expansion-panel-header>
+                <mat-panel-title> {{ commit.commitEntryDate }} {{ commit.commitHash | shortenString:7 | braces }}</mat-panel-title>
+                    <mat-panel-description>{{ commit.commitMessage }}</mat-panel-description>
+                </mat-expansion-panel-header>
+                {{ commit.commitMessage }}
+            </mat-expansion-panel>
+        </mat-accordion>
+    </mat-card-content>    
+</mat-card>

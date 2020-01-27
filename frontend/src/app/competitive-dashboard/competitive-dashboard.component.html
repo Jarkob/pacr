@@ -8,11 +8,11 @@
   </mat-grid-tile>
 
   <mat-grid-tile [colspan]="70">
-    <app-detail-view fxFill></app-detail-view>
+    <app-detail-view fxFill #commitDetailView></app-detail-view>
   </mat-grid-tile>
 
   <mat-grid-tile [colspan]="30">
-    <app-commit-history fxFill></app-commit-history>
+    <app-commit-history fxFill (commitSelectedEvent)="commitDetailView.selectCommit($event)"></app-commit-history>
   </mat-grid-tile>
 </mat-grid-list>
 

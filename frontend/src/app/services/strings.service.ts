@@ -31,4 +31,10 @@ export class StringService {
         return this.http.get('./assets/events-string.json');
     }
 
+    /**
+     * get strings for the event list
+     */
+     public getCommitHistoryStrings(): Observable<any> {
+        return this.http.get('./assets/commit-history-string.json');
+    }
 }

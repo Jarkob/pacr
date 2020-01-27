@@ -83,11 +83,11 @@
                                     {{ strings.authorDate }}
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    {{ benchmarkingResult.commitAuthorDate }}
+                                    {{ benchmarkingResult.commitAuthorDate | date }}
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                         
-                            {{ benchmarkingResult.commitAuthorDate }}
+                            {{ benchmarkingResult.commitAuthorDate | date }}
                         </mat-expansion-panel>
                         <mat-expansion-panel hideToggle>
                             <mat-expansion-panel-header>
@@ -95,11 +95,11 @@
                                     {{ strings.commitDate }}
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    {{ benchmarkingResult.commitCommitDate }}
+                                    {{ benchmarkingResult.commitCommitDate | date }}
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
                         
-                            {{ benchmarkingResult.commitCommitDate }}
+                            {{ benchmarkingResult.commitCommitDate | date }}
                         </mat-expansion-panel>
                         <mat-expansion-panel hideToggle>
                             <mat-expansion-panel-header>
@@ -107,11 +107,11 @@
                                     {{ strings.entryDate }}
                                 </mat-panel-title>
                                 <mat-panel-description>
-                                    {{ benchmarkingResult.commitEntryDate }}
+                                    {{ benchmarkingResult.commitEntryDate | date }}
                                 </mat-panel-description>
                             </mat-expansion-panel-header>
 
-                            {{ benchmarkingResult.commitEntryDate }}
+                            {{ benchmarkingResult.commitEntryDate | date }}
                         </mat-expansion-panel>
                         <mat-expansion-panel *ngIf="benchmarkingResult.globalError" hideToggle>
                             <mat-expansion-panel-header>
