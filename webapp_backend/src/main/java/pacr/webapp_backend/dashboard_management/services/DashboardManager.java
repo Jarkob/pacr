@@ -49,7 +49,7 @@ public class DashboardManager {
      * @throws NoSuchElementException if the key does not belong to a dashboard.
      */
     public Dashboard getDashboard(@NotNull String key) throws NoSuchElementException {
-        Objects.requireNonNull(key);
+        Objects.requireNonNull(key, "The key must not be null.");
 
         Dashboard dashboard = databaseTalker.getDashboard(key);
         dashboard.updateLastAccess();
@@ -64,7 +64,7 @@ public class DashboardManager {
      * the second the edit key.
      */
     public Pair<String, String> addDashboard(@NotNull Dashboard dashboard) {
-        Objects.requireNonNull(dashboard);
+        Objects.requireNonNull(dashboard, "The dashboard must not be null.");
 
         try {
             dashboard.initializeKeys(UUID.randomUUID().toString(), UUID.randomUUID().toString());
@@ -86,7 +86,7 @@ public class DashboardManager {
      * @throws NoSuchElementException if the given dashboard does not yet exist in the database.
      */
     public void updateDashboard(@NotNull Dashboard dashboard) throws NoSuchElementException, IllegalAccessException {
-        Objects.requireNonNull(dashboard);
+        Objects.requireNonNull(dashboard, "The dashboard must not be null.");
 
         dashboard.updateLastAccess();
         try {
@@ -123,7 +123,7 @@ public class DashboardManager {
      * @throws IllegalAccessException if the key is a view key and not sufficient to allow the deletion of a dashboard.
      */
     public void deleteDashboard(@NotNull String key) throws NoSuchElementException, IllegalAccessException {
-        Objects.requireNonNull(key);
+        Objects.requireNonNull(key, "The key must not be null.");
 
         databaseTalker.deleteDashboard(key);
     }
@@ -132,7 +132,7 @@ public class DashboardManager {
      * Deletes all dashboards, which are older than the deletion interval.
      */
     @Scheduled(cron = CRON_DAILY)
-    private void deleteOldDashboards() {
+    void deleteOldDashboards() {
 
         Collection<Dashboard> dashboards = databaseTalker.getAllDashboards();
         long deletionInterval = getDeletionInterval();

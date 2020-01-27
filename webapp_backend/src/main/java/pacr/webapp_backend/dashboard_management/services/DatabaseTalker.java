@@ -88,6 +88,7 @@ public class DatabaseTalker {
         } else if (keyType == KeyType.VIEW_KEY) {
             throw new IllegalAccessException("The supposed edit key '" + editKey + "' is not an edit key.");
         }
+        dashboardAccess.delete(dashboardAccess.findByEditKey(editKey));
 
         dashboardAccess.storeDashboard(dashboard);
     }

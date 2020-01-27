@@ -25,4 +25,8 @@ public interface IDeletionIntervalAccess {
      */
     long getDeletionInterval() throws NoSuchElementException;
 
+    /**
+     * Deletes the current deletion interval.
+     */
+    void delete();
 }

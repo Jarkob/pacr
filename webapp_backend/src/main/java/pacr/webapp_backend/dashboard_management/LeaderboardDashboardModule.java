@@ -37,6 +37,14 @@ public class LeaderboardDashboardModule extends DashboardModule {
 
         LeaderboardDashboardModule otherModule = (LeaderboardDashboardModule) o;
 
+        if (leaderboard == null && otherModule.leaderboard == null) {
+            return true;
+        }
+
+        if (leaderboard == null) {
+            return false;
+        }
+
         return leaderboard.equals(otherModule.leaderboard);
     }
 }

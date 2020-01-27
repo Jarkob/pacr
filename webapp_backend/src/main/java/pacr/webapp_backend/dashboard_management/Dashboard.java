@@ -135,9 +135,10 @@ public class Dashboard {
     }
 
     /**
-     * Sets the edit key of this dashboard.
+     * Sets the keys of this dashboard.
      *
      * @param editKey The new edit key.
+     * @param viewKey The new view key.
      * @throws KeysAlreadyInitializedException if this method is called, when the keys are already initialized.
      */
     public void initializeKeys(String editKey, String viewKey) throws KeysAlreadyInitializedException {

@@ -17,8 +17,6 @@ public class DeletionIntervalDB implements IDeletionIntervalAccess {
 
     private ConfigRepo configRepo;
 
-    private static ConfigItem invalidConfigItem = new ConfigItem("deletion-interval", "-1");
-
     /**
      * Creates an instance of DeletionIntervalDB.
      * @param configRepo is the JPA ConfigRepository used to store the configuration.
@@ -39,5 +37,10 @@ public class DeletionIntervalDB implements IDeletionIntervalAccess {
         configItem.setConfigKey(DELETION_INTERVAL_IDENTIFIER);
         configItem.setConfigValue(String.valueOf(interval));
         configRepo.save(configItem);
+    }
+
+    @Override
+    public void delete() {
+        configRepo.delete(configRepo.getOne(DELETION_INTERVAL_IDENTIFIER));
     }
 }
