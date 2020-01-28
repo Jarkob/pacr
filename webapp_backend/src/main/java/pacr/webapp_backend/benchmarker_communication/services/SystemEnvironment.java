@@ -12,9 +12,7 @@ public class SystemEnvironment implements ISystemEnvironment {
     private String kernel;
     private String processor;
     private int cores;
-
-    // in Gigabytes
-    private long ramMemory;
+    private long ramMemory; // in GiB
 
     /**
      * Creates an empty SystemEnvironment.

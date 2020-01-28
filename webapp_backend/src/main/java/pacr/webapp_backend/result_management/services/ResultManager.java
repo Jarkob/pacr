@@ -98,7 +98,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         ICommit commit = commitAccess.getCommit(benchmarkingResult.getCommitHash());
 
         if (commit == null) {
-            throw new IllegalArgumentException("could not find commit with hash " + benchmarkingResult.getCommitHash());
+            // todo (just for testing)
+            //throw new IllegalArgumentException("could not find commit with hash " + benchmarkingResult.getCommitHash());
         }
 
         String comparisonCommitHash = null;

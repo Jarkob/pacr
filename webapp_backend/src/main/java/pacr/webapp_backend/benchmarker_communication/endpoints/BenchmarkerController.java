@@ -106,7 +106,7 @@ public class BenchmarkerController
     @Override
     public void sendSSHKey(String sshKey) {
         if (stringIsValid(sshKey)) {
-            template.convertAndSend("/topic/sshKey", sshKey);
+            template.convertAndSend("/topic/sshKey", new SSHKeyMessage(sshKey));
         }
     }
 

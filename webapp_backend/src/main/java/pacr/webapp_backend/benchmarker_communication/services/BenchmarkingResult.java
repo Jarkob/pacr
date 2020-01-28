@@ -1,6 +1,8 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
 import java.util.Map;
+
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmark;
 
 /**
@@ -30,10 +32,19 @@ public class BenchmarkingResult {
      * @return an error message if there was a general error. Null is returned if there was no error.
      */
     public String getGlobalError() {
-        if (globalError.isEmpty() || globalError.isBlank()) {
+        if (!StringUtils.hasText(globalError)) {
             return null;
         }
 
         return globalError;
+    }
+
+    /**
+     * TODO
+     * @param globalError
+     * @return
+     */
+    public void setGlobalError(String globalError) {
+        this.globalError = globalError;
     }
 }

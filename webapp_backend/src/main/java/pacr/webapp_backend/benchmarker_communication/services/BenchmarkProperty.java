@@ -10,7 +10,7 @@ import pacr.webapp_backend.shared.ResultInterpretation;
  */
 public class BenchmarkProperty implements IBenchmarkProperty {
 
-    private List<Double> results;
+    private Collection<Double> results;
     private ResultInterpretation resultInterpretation;
     private String unit;
     private String error;
@@ -45,5 +45,37 @@ public class BenchmarkProperty implements IBenchmarkProperty {
         }
         
         return error;
+    }
+
+    /**
+     * TODO
+     * @param results
+     */
+    public void setResults(Collection<Double> results) {
+        this.results = results;
+    }
+
+    /**
+     * TODO
+     * @param resultInterpretation
+     */
+    public void setResultInterpretation(ResultInterpretation resultInterpretation) {
+        this.resultInterpretation = resultInterpretation;
+    }
+
+    /**
+     * TODO
+     * @param unit
+     */
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    /**
+     * TODO
+     * @param error
+     */
+    public void setError(String error) {
+        this.error = error;
     }
 }

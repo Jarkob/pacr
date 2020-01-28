@@ -13,6 +13,11 @@ public enum ResultInterpretation {
     /**
      * Higher values are regarded better.
      */
-    MORE_IS_BETTER
+    MORE_IS_BETTER,
+
+    /**
+     * Values are not regarded as better or worse.
+     */
+    NEUTRAL
 
 }

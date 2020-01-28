@@ -10,8 +10,9 @@ import pacr.webapp_backend.shared.ISystemEnvironment;
  */
 public class JobResult implements IBenchmarkingResult {
 
-    private String commitHash;
     private long executionTime;
+    private String repository;
+    private String commitHash;
     private SystemEnvironment systemEnvironment;
     private BenchmarkingResult benchmarkingResult;
 
@@ -43,11 +44,19 @@ public class JobResult implements IBenchmarkingResult {
         return benchmarkingResult.getGlobalError();
     }
 
+    public void setBenchmarkingResult(BenchmarkingResult benchmarkingResult) {
+        this.benchmarkingResult = benchmarkingResult;
+    }
+
     /**
      * @return the execution time needed to perform the job in seconds.
      */
     public long getExecutionTime() {
         return executionTime;
+    }
+
+    public String getRepository() {
+        return repository;
     }
 
 }

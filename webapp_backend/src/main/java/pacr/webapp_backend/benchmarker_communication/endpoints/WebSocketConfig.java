@@ -37,7 +37,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      */
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/connect").setHandshakeHandler(new AssignPrincipalHandshakeHandler());
+        registry.addEndpoint("/connect").setHandshakeHandler(new AssignPrincipalHandshakeHandler()).withSockJS();
     }
 
 }

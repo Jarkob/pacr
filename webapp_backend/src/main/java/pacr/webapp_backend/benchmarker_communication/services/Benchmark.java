@@ -23,4 +23,12 @@ public class Benchmark implements IBenchmark {
     public Map<String, ? extends IBenchmarkProperty> getBenchmarkProperties() {
         return properties;
     }
+
+    /**
+     * TODO
+     * @param properties
+     */
+    public void setProperties(Map<String, BenchmarkProperty> properties) {
+        this.properties = properties;
+    }
 }
