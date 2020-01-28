@@ -26,7 +26,7 @@ public class OutputBuilder {
      * means they must refer to the same commit hash).
      * @param commit the commit. Cannot be null.
      * @param result the result. Cannot be null.
-     * @return an OutputBenchmarkingResult copied from the commit and result.
+     * @return an {@link OutputBenchmarkingResult} copied from the commit and result.
      */
     OutputBenchmarkingResult buildDetailOutput(@NotNull ICommit commit, @NotNull CommitResult result) {
         Objects.requireNonNull(commit);
@@ -46,7 +46,7 @@ public class OutputBuilder {
      * they refer to the same commit hash).
      * @param commit the commit. Cannot be null.
      * @param result the result. Cannot be null.
-     * @return a DiagramOutputResult copied from the commit and result.
+     * @return a {@link DiagramOutputResult} copied from the commit and result.
      */
     DiagramOutputResult buildDiagramOutput(@NotNull ICommit commit, @NotNull CommitResult result) {
         Objects.requireNonNull(commit);

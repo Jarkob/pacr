@@ -39,7 +39,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
     }
 
     /**
-     * Creates a new event with comparison to the comparison commit and updates observers of INewestResult.
+     * Creates a new event with comparison to the comparison commit and updates observers of {@link INewestResult}.
      * @param result the result. Cannot be null
      * @param commit the commit of the result. Cannot be null.
      * @param comparisonCommitHash the hash of the commit for comparison. May be null (in this case no comparison was

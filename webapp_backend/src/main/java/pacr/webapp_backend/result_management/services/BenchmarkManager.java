@@ -95,7 +95,7 @@ public class BenchmarkManager {
      * @param groupID the id of the new group. -1 causes this benchmark not to be associated with any group.
      */
     public void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID) {
-        if (name == null || name.isEmpty() || name.isBlank()) {
+        if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
         if (description == null) {

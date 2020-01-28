@@ -150,7 +150,7 @@ abstract class ResultSaver {
 
         BenchmarkPropertyResult propertyResultToSave =  new BenchmarkPropertyResult(propertyResult, property);
 
-        // comparision to previous result
+        // comparison to previous result
         if (comparisonPropertyResult != null && !propertyResultToSave.isError()
                 && !comparisonPropertyResult.isError()) {
             propertyResultToSave.setRatio(propertyResultToSave.getMean() / comparisonPropertyResult.getMean());

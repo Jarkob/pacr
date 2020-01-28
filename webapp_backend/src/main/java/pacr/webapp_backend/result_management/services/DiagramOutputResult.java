@@ -14,7 +14,7 @@ import java.util.Objects;
  */
 public class DiagramOutputResult {
 
-    private String sha;
+    private String commitHash;
     private String commitDate;
     private String authorDate;
     private HashMap<String, ResultWithError> result;
@@ -32,10 +32,10 @@ public class DiagramOutputResult {
         Objects.requireNonNull(commit);
 
         if (!commitResult.getCommitHash().equals(commit.getCommitHash())) {
-            throw new IllegalArgumentException("result and commit must have same hash");
+            throw new IllegalArgumentException("result and commit must have the same hash");
         }
 
-        this.sha = commitResult.getCommitHash();
+        this.commitHash = commitResult.getCommitHash();
         this.commitDate = commit.getCommitDate().toString();
         this.authorDate = commit.getAuthorDate().toString();
 
@@ -59,8 +59,8 @@ public class DiagramOutputResult {
     /**
      * @return the commit hash.
      */
-    public String getSha() {
-        return sha;
+    public String getCommitHash() {
+        return commitHash;
     }
 
     /**
