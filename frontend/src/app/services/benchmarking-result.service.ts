@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BenchmarkingResult } from '../classes/benchmarking-result';
 import { Observable } from 'rxjs';
+import { Commit } from '../classes/commit';
 
 @Injectable({
   providedIn: 'root'
@@ -51,6 +52,14 @@ export class BenchmarkingResultService {
   public getBenchmarkingResults(benchmark: string, repository: string, branch: string): Observable<any> {
     // return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/benchmark/' + name);
     return this.mockService.getBenchmarkingResults();
+  }
+
+  /**
+   * get all benchmarking results for a specific benchmark
+   * @param benchmarkId the id of the benchmark
+   */
+  public getBenchmarkingResultsForBenchmark(benchmarkId: number): Observable<Commit[]> {
+    return this.http.get<Commit[]>(this.globalService.url + '/results/benchmark/' + benchmarkId);
   }
 
   /**

@@ -17,4 +17,5 @@ mat-form-field {
 
 ul, li {
     list-style-type: none;
+    padding: 0;
 }

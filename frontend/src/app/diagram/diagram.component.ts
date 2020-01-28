@@ -102,30 +102,10 @@ export class DiagramComponent implements OnInit {
       },
     },
     legend: {
-      position: 'left',
-      align: 'start',
-      onClick: (evt, item) => {
-        // FIXME doesn#t work
-        console.log('selected ', item);
-      },
-      labels: {
-        boxWidth: 12
-      },
       display: false
     },
     legendCallback: this.legendCallback,
     onClick: (evt, item) => {
-      console.log('evt: ', evt);
-    //   var index = legendItem.datasetIndex;
-    //   var ci = this.chart;
-    //   var meta = ci.getDatasetMeta(index);
-
-    //   // See controller.isDatasetVisible comment
-    //   meta.hidden = meta.hidden === null ? !ci.data.datasets[index].hidden : null;
-
-    // // We hid a dataset ... rerender the chart
-    // ci.update();
-
       this.deleteLine();
       // if items were selected
       if (item.length !== 0) {
@@ -187,39 +167,19 @@ export class DiagramComponent implements OnInit {
       return;
     }
 
+    this.benchmarkingResultService.getBenchmarkingResultsForBenchmark(this.selectedBenchmark.id).subscribe(
+      data => this.commits = data
+    );
+
     this.deleteLine();
     this.diagramService.selectCommit('');
     this.datasets = [];
 
-    // create datasets for benchmark
-    for (const [repository, benchmarkingResults] of this.repositoryResults) {
-      const dataset = {data: [], code: [], label: repository, fill: false, lineTension: 0};
-      benchmarkingResults.forEach(benchmarkingResult => {
-        benchmarkingResult.groups.forEach(group => {
-          // tslint:disable-next-line:no-shadowed-variable
-          // group.benchmarks.forEach(element => {
-          //   if (element.originalName === this.selectedBenchmark.originalName) {
-          //     dataset.data.push({
-          //         x: benchmarkingResult.commitCommitDate,
-          //         y: element.results[0].mean,
-          //       });
-          //     dataset.code.push({
-          //       sha: benchmarkingResult.commitHash,
-          //       val: element.results[0].mean
-          //     });
-          //   }
-          // });
-        });
-      });
-      // TODO sorting breaks code array, should be externally
-      // dataset.data.sort((a, b) => {
-      //   const x = new Date(a.x);
-      //   const y = new Date(b.x);
-      //   return x > y ? -1 : x < b ? 1 : 0;
-      // });
+    const lines = this.calculateLines();
+    // both is important, otherwise event listening for change of legend gets messed up
+    this.chart.datasets.concat(lines);
+    this.datasets.concat(lines);
 
-      // this.datasets.push(dataset);
-    }
     this.legendData = this.chart.chart.generateLegend();
     this.chart.update();
   }
@@ -261,6 +221,34 @@ export class DiagramComponent implements OnInit {
 
     this.legendData = this.chart.chart.generateLegend();
     this.chart.update();
+  }
+
+  private calculateLines(): any[] {
+    const lines = [];
+    const newestCommit = this.getNewestCommit(this.commits);
+    this.lists = [];
+    const empty = [];
+    if (newestCommit) {
+      this.dfs(newestCommit, empty);
+    }
+    let index = 0;
+    for (const list of this.lists) {
+      this.checked[index] = false;
+      const dataset: Dataset = {data: [], code: [], label: '' + index, fill: false, lineTension: 0, repository: 'test', branch: 'master'};
+      for (const commit of list) {
+        dataset.data.push({
+          x: commit.commitDate,
+          y: commit.result
+        });
+        dataset.code.push({
+          sha: commit.sha,
+          val: commit.result
+        });
+        index++;
+      }
+      lines.push(dataset);
+    }
+    return lines;
   }
 
 
