@@ -51,4 +51,8 @@ export class StringService {
     public getAdminInterfaceStrings(): Observable<any> {
         return this.http.get('./assets/admin-string.json');
     }
+
+    public getAdminRepositoriesStrings(): Observable<any> {
+        return this.http.get('./assets/admin-repositories-string.json');
+    }
 }

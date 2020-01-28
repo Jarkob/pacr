@@ -1,52 +1,35 @@
-<div class="top" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
-    <mat-card fxFlex="70%">
-        <mat-tab-group animationDuration="0ms">
-            <mat-tab label="{{ strings?.tabRepositories }}">
-                <mat-tab-group animationDuration="0ms">
-                    <mat-tab label="{{ strings?.tabRepositoryOverview }}">
+<mat-grid-list cols="100" rowHeight="90%" gutterSize="2em">
+    <mat-grid-tile [colspan]="70">
+        <mat-card fxFill [style.overflow]="'auto'">
+            <mat-tab-group animationDuration="0ms">
+                <mat-tab label="{{ strings?.tabRepositories }}">
+                    <app-admin-repositories></app-admin-repositories>
+                </mat-tab>
+                <mat-tab label="{{ strings?.tabBenchmarks }}">
+                
+                </mat-tab>
+                <mat-tab label="{{ strings?.tabSSH }}">
+                
+                </mat-tab>
+                <mat-tab label="{{ strings?.tabImportExport }}">
+                
+                </mat-tab>            
+                <mat-tab label="{{ strings?.tabDashboards }}" [disabled]="true">
 
-                    </mat-tab>
-                    <mat-tab label="{{ strings?.tabAddRepository }}">
+                </mat-tab>
+            </mat-tab-group>        
+        </mat-card>
+    </mat-grid-tile>
 
-                    </mat-tab>
-                    <mat-tab label="{{ strings?.tabEditRepository }}">
+    <mat-grid-tile [colspan]="30">
+        <app-job-queue fxFill [style.overflow]="'auto'"></app-job-queue>
+    </mat-grid-tile>
 
-                    </mat-tab>
-                </mat-tab-group>
-            </mat-tab>
-            <mat-tab label="{{ strings?.tabBenchmarks }}">
-            
-            </mat-tab>
-            <mat-tab label="{{ strings?.tabSSH }}">
-            
-            </mat-tab>
-            <mat-tab label="{{ strings?.tabImportExport }}">
-            
-            </mat-tab>            
-            <mat-tab label="{{ strings?.tabDashboards }}" [disabled]="true">
-                <form>
-                    <p>
-                        <mat-form-field>
-                            <input matInput type="number" placeholder="Pullinterval" value={{pullInterval}}>
-                        </mat-form-field>
-                    </p>
-                    <p>
-                        <mat-form-field>
-                            <input matInput type="number" placeholder="Deletioninterval" value={{deletionInterval}}>
-                        </mat-form-field>
-                    </p>
-                    <button mat-fab color="primary" (click)="updateIntervals()" matToolTip="save">
-                        <mat-icon>save</mat-icon>
-                    </button>
-                </form>
-            </mat-tab>
-        </mat-tab-group>        
-    </mat-card>
+    <mat-grid-tile [colspan]="70">
+        <app-benchmarker-list fxFill [style.overflow]="'auto'"></app-benchmarker-list>
+    </mat-grid-tile>
 
-    <app-job-queue fxFlex="30%"></app-job-queue>
-</div>
-
-<div class="bottom" fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
-    <app-benchmarker-list fxFlex="70%"></app-benchmarker-list>
-    <app-commit-history fxFlex="30%" (commitSelectedEvent)="openCommitDetailView($event)"></app-commit-history>
-</div>
+    <mat-grid-tile [colspan]="30">
+        <app-commit-history fxFill [style.overflow]="'auto'" (commitSelectedEvent)="openCommitDetailView($event)"></app-commit-history>
+    </mat-grid-tile>
+</mat-grid-list>

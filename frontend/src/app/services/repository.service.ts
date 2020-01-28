@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Branch } from '../classes/branch';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -23,15 +22,14 @@ export class RepositoryService {
    * get all repositories
    */
   public getAllRepositories(): Observable<Repository[]> {
-    return this.http.get<Repository[]>(this.globalService.url + '/repositories');
+    return this.http.get<Repository[]>(this.globalService.url + '/allRepositories');
   }
 
   /**
-   * get all branches from a specific repository
-   * @param repository the repository
+   * get all branches
    */
-  public getBranches(repository: string): Observable<Branch[]> {
-    return this.http.get<Branch[]>(this.globalService.url + '/branches/' + repository);
+  public getAllBranches(pullURL: string): Observable<string[]> {
+    return this.http.get<string[]>(this.globalService.url + '/branches/' + pullURL);
   }
 
 // TODO sensitive methods, require authentication
@@ -40,8 +38,8 @@ export class RepositoryService {
    * add a repository to the watchlist
    * @param repository the repository
    */
-  public addRepository(repository: string): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/repositories', repository, httpOptions);
+  public addRepository(repository: Repository): Observable<{}> {
+    return this.http.post<{}>(this.globalService.url + '/addRepository', repository, httpOptions);
   }
 
   /**
@@ -63,8 +61,8 @@ export class RepositoryService {
    * remove a repository from the watchlist
    * @param repository the repository
    */
-  public removeRepository(repository: string): Observable<{}> {
-    return this.http.delete(this.globalService.url + '/repositories/' + repository);
+  public removeRepository(repository: number): Observable<{}> {
+    return this.http.delete(this.globalService.url + '/deleteRepository/' + repository);
   }
 
   /**

@@ -2,12 +2,10 @@ import { StringService } from './../services/strings.service';
 import { DetailViewMaximizerService } from './../detail-view/detail-view-maximizer.service';
 import { DetailViewMaximizedRef } from './../detail-view/detail-view-maximized-ref';
 import { SystemEnvironment } from './../classes/system-environment';
-import { RepositoryService } from './../services/repository.service';
 import { ImportExportService } from './../services/import-export.service';
 import { BenchmarkService } from './../services/benchmark.service';
 import { Component, OnInit } from '@angular/core';
 import { SchedulerService } from '../services/scheduler.service';
-import { Repository } from '../classes/repository';
 import { Job } from '../classes/job';
 
 /**
@@ -23,7 +21,6 @@ export class AdminComponent implements OnInit {
   constructor(
     private benchmarkService: BenchmarkService,
     private importExportService: ImportExportService,
-    private repositoryService: RepositoryService,
     private schedulerService: SchedulerService,
     private previewDialog: DetailViewMaximizerService,
     private stringService: StringService
@@ -33,7 +30,6 @@ export class AdminComponent implements OnInit {
 
   pullInterval: number;
   deletionInterval: number;
-  repositories: Repository;
   systemEnvironment: SystemEnvironment;
   jobs: Job[];
 

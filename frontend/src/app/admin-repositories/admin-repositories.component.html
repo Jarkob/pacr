@@ -1,0 +1,156 @@
+<mat-tab-group animationDuration="0ms" #repositoryTabs>
+    <mat-tab label="{{ strings?.tabRepositoryOverview }}">
+        <p class="mat-h2" *ngIf="!repositories"> {{ strings?.noRepositories }} </p>
+        <mat-list *ngFor="let repository of repositories; let i = index" [style.overflow]="'auto'">
+            <mat-list-item>
+                <div id="properties">
+                    <p matLine class="mat-h1">
+                        <span class="mat-h1"> {{ repository?.name }} </span>
+                        <span class="mat-h2"> {{ repository?.pullURL | braces }} </span>
+                    </p>                                
+                    <p matLine class="mat-h4">
+                        {{ strings?.observeFromDate }} {{ repository?.observeFromDate | date }}
+                    </p>
+                    <p matLine class="mat-h4">
+                        {{ strings?.hookSet }} {{ repository?.hookSet ? strings?.hookIsSet : strings?.hookIsNotSet }}
+                    </p>
+                    <p matLine class="mat-h4">
+                        {{ strings?.color }} {{ repository?.color }}
+                    </p>
+                    <p matLine class="mat-h4">
+                        {{ strings?.trackMode }} 
+                    <span matTooltip="{{ repository?.trackAllBranches ? strings?.whitelistDescription : strings?.blacklistDescription }}">
+                            {{ repository?.trackAllBranches ? strings?.whitelist : strings?.blacklist }}
+                        </span>
+                    </p>
+                    <p matLine class="mat-h4">
+                        {{ strings?.branches }} {{ repository?.selectedBranches.join(strings?.listSeparator) }}
+                    </p>    
+                </div>
+                <div id="options">                                    
+                    <mat-icon class="optionButton" matTooltip="{{ strings?.edit }}" matTooltipPosition="above"
+                    (click)="selectRepository(repository); repositoryTabs.selectedIndex = 2">edit</mat-icon>
+                    <mat-icon class="optionButton" matTooltip="{{ strings?.delete }}" color="warn"
+                    (click)="deleteRepository(repository)">delete</mat-icon>
+                </div>
+            </mat-list-item>
+            
+            <!-- ngIf necessary to avoid list scrollbar which breaks ease scrolling -->
+            <mat-divider *ngIf="i < repositories?.length - 1"></mat-divider>
+        </mat-list>
+    </mat-tab>
+    <mat-tab label="{{ strings?.tabAddRepository }}">
+        <p class="mat-h2 tabTitle"> {{ strings?.tabAddTitle }} </p>
+        
+        <form [formGroup]="addRepositoryForm" autocomplete="off" novalidate (ngSubmit)="addRepository(addRepositoryForm.value)" fxLayout="column wrap"
+            fxLayoutAlign="center left" fxLayoutGap="10px">
+            <mat-form-field>
+                <input matInput type="text" placeholder="{{ strings?.repositoryName }}" formControlName="name">
+                <mat-error *ngIf="hasError('name', 'required')">{{ strings?.repositoryNameRequired }}</mat-error>
+            </mat-form-field>
+
+            <div class="inlineContainer" fxLayout="row">
+                <mat-form-field>
+                    <input matInput type="text" placeholder="{{ strings?.repositoryPullURL }}" formControlName="pullURL" (change)="onAddPullURLChange()">
+                    <mat-error *ngIf="hasError('pullURL', 'required')">{{ strings?.repositoryPullURLRequired }}</mat-error>
+                </mat-form-field>
+                
+                <div fxLayout="column" id="webHookOption">
+                    <mat-label class="inlineLabel">{{ strings?.repositoryHookSet }}</mat-label>
+                    <mat-radio-group formControlName="webHook">                                                                   
+                        <mat-radio-button [value]="true">{{ strings?.hookIsSet }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{ strings?.hookIsNotSet }}</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                
+            </div>
+
+            <mat-checkbox formControlName="observeAll" #observeAllCheckbox >{{ strings?.repositoryObserveAll }}</mat-checkbox>
+
+            <mat-form-field *ngIf="!observeAllCheckbox.checked">
+                <input matInput [matDatepicker]="picker" placeholder="{{ strings?.repositoryObserveFromDate }}" formControlName="observeFromDate"
+                    readonly (click)="picker.open()">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker ></mat-datepicker>                                    
+            </mat-form-field>
+
+            <div fxLayout="column">
+                <mat-label class="inlineLabel">{{ strings?.repositoryTrackMode }}</mat-label>
+                <mat-radio-group formControlName="trackMode" (change)="onAddTrackModeChange()">                                                                   
+                    <mat-radio-button [value]="false" matTooltip="{{ strings?.whitelistDescription }}">{{ strings?.whitelist }}</mat-radio-button>
+                    <mat-radio-button [value]="true" matTooltip="{{ strings?.blacklistDescription }}">{{ strings?.blacklist }}</mat-radio-button>
+                </mat-radio-group>
+            </div>                                
+
+            <label>{{ strings?.repositoryTrackedBranches }}</label>
+            <mat-selection-list formControlName="trackedBranches">
+                <mat-list-option *ngFor="let branch of allAddBranches" [value]="branch">
+                    {{ branch }}
+                </mat-list-option>
+            </mat-selection-list>
+        </form>
+
+        <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!addRepositoryForm.valid || allAddBranches.length == 0">{{ strings?.add }}</button>
+        <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelAddRepository()">{{ strings?.cancel }}</button>
+    </mat-tab>
+    <mat-tab *ngIf="selectedRepository" label="{{ strings?.tabEditRepository }}">
+        <p class="mat-h2 tabTitle"> {{ strings?.tabEditTitle }} {{ selectedRepository.name }} </p>
+        
+        <form [formGroup]="editRepositoryForm" autocomplete="off" novalidate (ngSubmit)="editRepository(editRepositoryForm.value)" fxLayout="column wrap"
+            fxLayoutAlign="center left" fxLayoutGap="10px">
+            <mat-form-field>
+                <input matInput type="text" placeholder="{{ strings?.repositoryName }}" formControlName="name">
+                <mat-error *ngIf="hasError('name', 'required')">{{ strings?.repositoryNameRequired }}</mat-error>
+            </mat-form-field>
+
+            <div class="inlineContainer" fxLayout="row">
+                <mat-form-field>
+                    <input matInput type="text" placeholder="{{ strings?.repositoryPullURL }}" formControlName="pullURL" (change)="onEditPullURLChange()">
+                    <mat-error *ngIf="hasError('pullURL', 'required')">{{ strings?.repositoryPullURLRequired }}</mat-error>
+                </mat-form-field>
+                
+                <div fxLayout="column" id="webHookOption">
+                    <mat-label class="inlineLabel">{{ strings?.repositoryHookSet }}</mat-label>
+                    <mat-radio-group formControlName="webHook">                                                                   
+                        <mat-radio-button [value]="true">{{ strings?.hookIsSet }}</mat-radio-button>
+                        <mat-radio-button [value]="false">{{ strings?.hookIsNotSet }}</mat-radio-button>
+                    </mat-radio-group>
+                </div>
+                
+            </div>
+
+            <mat-checkbox formControlName="observeAll" #observeAllCheckbox >{{ strings?.repositoryObserveAll }}</mat-checkbox>
+
+            <mat-form-field *ngIf="!observeAllCheckbox.checked">
+                <input matInput [matDatepicker]="picker" placeholder="{{ strings?.repositoryObserveFromDate }}" formControlName="observeFromDate"
+                    readonly (click)="picker.open()">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker ></mat-datepicker>                                    
+            </mat-form-field>
+
+            <mat-form-field id="repositoryColor">
+                <input matInput type="color" placeholder="{{ strings?.repositoryColor }}" formControlName="color">
+                <mat-error *ngIf="hasError('color', 'required')">{{ strings?.repositoryColorRequired }}</mat-error>
+            </mat-form-field>
+
+            <div fxLayout="column">
+                <mat-label class="inlineLabel">{{ strings?.repositoryTrackMode }}</mat-label>
+                <mat-radio-group formControlName="trackMode" (change)="onEditTrackModeChange()">                                                                   
+                    <mat-radio-button [value]="false" matTooltip="{{ strings?.whitelistDescription }}">{{ strings?.whitelist }}</mat-radio-button>
+                    <mat-radio-button [value]="true" matTooltip="{{ strings?.blacklistDescription }}">{{ strings?.blacklist }}</mat-radio-button>
+                </mat-radio-group>
+            </div>                                
+
+            <label>{{ strings?.repositoryTrackedBranches }}</label>
+            <mat-selection-list formControlName="trackedBranches">
+                <mat-list-option *ngFor="let branch of allEditBranches" [value]="branch">
+                    {{ branch }}
+                </mat-list-option>
+            </mat-selection-list>
+        </form>
+
+        <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!editRepositoryForm.valid || allEditBranches.length == 0">{{ strings?.save }}</button>
+        <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelEditRepository()">{{ strings?.cancel }}</button>
+        <button type="button" class="formCancelButton" color="warn" mat-raised-button (click)="deleteRepository()">{{ strings?.delete }}</button>
+    </mat-tab>
+</mat-tab-group>

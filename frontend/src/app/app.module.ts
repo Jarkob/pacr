@@ -1,3 +1,4 @@
+import { AdminRepositoriesComponent } from './admin-repositories/admin-repositories.component';
 import { CommitHistoryMaximizedComponent } from './commit-history-maximized/commit-history-maximized.component';
 import { CommitHistoryMaximizerService } from './commit-history/commit-history-maximizer.service';
 import { ShortenStringPipe } from './pipes/shorten-string-pipe';
@@ -38,6 +39,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, PercentPipe } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -48,6 +50,7 @@ import { CommonModule, PercentPipe } from '@angular/common';
     CommitHistoryComponent,
     CommitHistoryMaximizedComponent,
     AdminComponent,
+    AdminRepositoriesComponent,
     DashboardComponent,
     LoginComponent,
     ToolbarComponent,
@@ -74,7 +77,8 @@ import { CommonModule, PercentPipe } from '@angular/common';
     ChartsModule,
     CommonModule,
     HttpClientModule,
-    FlexLayoutModule
+    FlexLayoutModule,
+    ReactiveFormsModule
   ],
   providers: [
     DetailViewMaximizerService,

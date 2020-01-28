@@ -1,5 +1,5 @@
-import { Branch } from './branch';
 import { Repository } from './repository';
+
 export interface Commit {
     commitHash: string;
     commitDate: Date;
@@ -8,6 +8,6 @@ export interface Commit {
     commitMessage: string;
     labels: string[];
     repository: Repository;
-    branches: Branch[];
+    branches: string[];
     parentHashes: string[];
 }

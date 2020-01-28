@@ -1,14 +1,13 @@
 import { Commit } from './commit';
-import { Branch } from './branch';
 
 export interface Repository {
     id: number;
     trackAllBranches: boolean;
-    selectedBranches: Branch[];
+    selectedBranches: string[];
     pullURL: string;
     name: string;
-    isHookSet: boolean;
-    color: any;
+    hookSet: boolean;
+    color: string;
     observeFromDate: Date;
     commitLinkPrefix: string;
     commits: Commit[];

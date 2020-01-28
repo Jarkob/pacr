@@ -1,27 +1,5 @@
-html, body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-}
-
-:host {
-    flex: 1 1 100%;
-    display: flex;
-    flex-flow: column;
-    padding: 2em;
-}
-
-.top {
-    height: 60%;
-}
-
-.bottom {
-    margin-top: 2em;
-    height: 40%;
-}
-
 #properties {
-    width: 100%;
+    width: 97%;
 }
 
 #options {
@@ -72,6 +50,14 @@ mat-form-field {
 
 .mat-radio-button ~ .mat-radio-button {
     margin-left: 16px;
+}
+
+.formCancelButton {
+    margin-left: 16px;
+}
+
+.formSubmitButton {
+    min-width: 150px;
 }
 
 mat-radio-group {
