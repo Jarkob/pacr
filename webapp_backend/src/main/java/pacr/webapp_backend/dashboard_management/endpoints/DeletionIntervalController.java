@@ -3,9 +3,10 @@ package pacr.webapp_backend.dashboard_management.endpoints;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.dashboard_management.services.DashboardManager;
 import pacr.webapp_backend.shared.IAuthenticator;
@@ -46,7 +47,7 @@ public class DeletionIntervalController {
      * Returns the current dashboard deletion interval.
      * @return the deletion interval in days.
      */
-    @RequestMapping("deletion-interval")
+    @GetMapping("deletion-interval")
     public ResponseEntity<Long> getDeletionInterval() {
         long deletionInterval = dashboardManager.getDeletionInterval();
 
@@ -60,7 +61,7 @@ public class DeletionIntervalController {
      * @param token the http token, with which the request is started.
      * @return a http response, whether the action was successful.
      */
-    @RequestMapping("deletion-interval/{deletionInterval}")
+    @PutMapping("deletion-interval/{deletionInterval}")
     public ResponseEntity<Object> changeDeletionInterval(@PathVariable long deletionInterval,
                                                          @NotNull @RequestHeader(name = "jwt") String token) {
 

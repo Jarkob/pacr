@@ -1,9 +1,7 @@
 package pacr.webapp_backend.dashboard_management.services;
 
-import org.springframework.stereotype.Service;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 
-import javax.persistence.EntityTransaction;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 

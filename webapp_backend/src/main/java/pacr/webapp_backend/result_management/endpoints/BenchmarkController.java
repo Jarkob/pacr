@@ -127,7 +127,7 @@ public class BenchmarkController {
      * @return HTTP code 200 (ok) if the group was updated. HTTP code 404 (not found) if no group with the given id
      *         could be found. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
-    @PostMapping("/benchmark/{groupId}/{name}")
+    @PutMapping("/benchmark/{groupId}/{name}")
     public ResponseEntity<Object> updateGroup(@PathVariable int groupId, @NotNull @PathVariable String name,
                             @NotNull @RequestHeader(name = "jwt") String jwt) {
         if (!StringUtils.hasText(name) || !StringUtils.hasText(jwt)) {

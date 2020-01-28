@@ -3,7 +3,13 @@ package pacr.webapp_backend.dashboard_management;
 
 import org.springframework.util.StringUtils;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
@@ -219,7 +225,7 @@ public class Dashboard {
         Dashboard otherDashboard = (Dashboard) o;
 
 
-        //Are the titles not equal?
+        //Are the titles equal?
         if (this.title != null && !this.title.equals(otherDashboard.title)
                 || otherDashboard.title != null && !otherDashboard.title.equals(this.title)) {
 
@@ -227,7 +233,7 @@ public class Dashboard {
         }
 
 
-        //Are the view keys not equal?
+        //Are the view keys equal?
         if (this.viewKey != null && !this.viewKey.equals(otherDashboard.viewKey)
                 || otherDashboard.viewKey != null && !otherDashboard.viewKey.equals(this.viewKey)) {
 
@@ -235,7 +241,7 @@ public class Dashboard {
         }
 
 
-        //Are the edit keys not equal?
+        //Are the edit keys equal?
         if (this.editKey != null && !this.editKey.equals(otherDashboard.editKey)
                 || otherDashboard.editKey != null && !otherDashboard.editKey.equals(this.editKey)) {
 
@@ -243,13 +249,13 @@ public class Dashboard {
         }
 
 
-        //Are the ids not identical?
+        //Are the ids identical?
         if (this.id != otherDashboard.id) {
             return false;
         }
 
 
-        //Is the last access not equal?
+        //Is the last access equal?
         if (this.lastAccess != null && !this.lastAccess.equals(otherDashboard.lastAccess)
                 || otherDashboard.lastAccess != null && !otherDashboard.lastAccess.equals(this.lastAccess)) {
 
@@ -262,7 +268,7 @@ public class Dashboard {
             return false;
         }
 
-        //Are the modules not equal?
+        //Are the modules equal?
         for (int i = 0; i < this.modules.size(); i++) {
             if (!this.modules.get(i).equals(otherDashboard.modules.get(i))) {
                 return false;

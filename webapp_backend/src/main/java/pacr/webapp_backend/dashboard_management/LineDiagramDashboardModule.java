@@ -1,7 +1,12 @@
 package pacr.webapp_backend.dashboard_management;
 
-import javax.persistence.*;
-import java.util.*;
+import javax.persistence.ElementCollection;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Instances of this class represent line diagram modules on a dashboard.

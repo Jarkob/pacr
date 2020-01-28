@@ -1,12 +1,9 @@
 package pacr.webapp_backend.dashboard_management.endpoints;
 
-import org.apache.coyote.Response;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.services.DashboardManager;
 
@@ -42,7 +39,7 @@ public class ManageDashboardController {
      * @return A {@link ResponseEntity} containing the requested dashboard, if the key is valid;
      * otherwise an exception response.
      */
-    @RequestMapping("dashboard/{key}")
+    @GetMapping("dashboard/{key}")
     public ResponseEntity<Object> getDashboard(@PathVariable @NotNull String key) {
         Objects.requireNonNull(key, "The key must not be null.");
 
@@ -60,8 +57,8 @@ public class ManageDashboardController {
      * @param dashboard the dashboard to be stored.
      * @return HTTP code 200 (ok) if the dashboard was added.
      */
-    @RequestMapping("dashboard/add")
-    public ResponseEntity<Object> addDashboard(@NotNull Dashboard dashboard) {
+    @PutMapping("dashboard/add")
+    public ResponseEntity<Object> addDashboard(@RequestBody @NotNull Dashboard dashboard) {
         Objects.requireNonNull(dashboard);
 
         Pair<String, String> keys;
@@ -82,8 +79,8 @@ public class ManageDashboardController {
      * @return HTTP code 200 (ok) if the dashboard was updated. HTTP code 404 (not found) if no dashboard with the given
      * keys could be found. HTTP code 401 (unauthorized) if the dashboard does not contain a valid edit key.
      */
-    @RequestMapping("dashboard/update")
-    public ResponseEntity<Object> updateDashboard(@NotNull Dashboard dashboard) {
+    @PutMapping("dashboard/update")
+    public ResponseEntity<Object> updateDashboard(@RequestBody @NotNull Dashboard dashboard) {
         try {
             dashboardManager.updateDashboard(dashboard);
         } catch (IllegalAccessException e) {
@@ -101,7 +98,7 @@ public class ManageDashboardController {
      * @return HTTP code 200 (ok) if the dashboard was deleted. HTTP code 404 (not found) if no dashboard with the given
      * key could be found. HTTP code 401 (unauthorized) if the key is not an edit key.
      */
-    @RequestMapping("dashboard/delete/{editKey}")
+    @DeleteMapping("dashboard/delete/{editKey}")
     public ResponseEntity<Object> deleteDashboard(@PathVariable @NotNull String editKey) {
         try {
             dashboardManager.deleteDashboard(editKey);
