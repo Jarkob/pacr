@@ -27,13 +27,21 @@ export class AdminBenchmarksComponent implements OnInit {
   strings: any;
 
   dropped = false;
-  selectedBenchmark: Benchmark;
+
+  public addBenchmarkGroupForm: FormGroup;
+  addGroupNameControl: FormControl;
+
+  public editBenchmarkGroupForm: FormGroup;
+  editGroupNameControl: FormControl;
+
+  selectedBenchmarkGroup: Group;
 
   public editBenchmarkForm: FormGroup;
-
   editNameControl: FormControl;
   editDescriptionControl: FormControl;
   editGroupControl: FormControl;
+
+  selectedBenchmark: Benchmark;
 
   benchmarkGroups: Group[] = [];
 
@@ -47,6 +55,8 @@ export class AdminBenchmarksComponent implements OnInit {
     this.getBenchmarkGroups();
 
     this.initEditFormControls();
+    this.initAddGroupFormControls();
+    this.initEditGroupFormControls();
   }
 
   private async getBenchmarkGroups() {
@@ -85,6 +95,14 @@ export class AdminBenchmarksComponent implements OnInit {
     return this.editBenchmarkForm.controls[controlName].hasError(errorName);
   }
 
+  public hasAddGroupError = (controlName: string, errorName: string) => {
+    return this.addBenchmarkGroupForm.controls[controlName].hasError(errorName);
+  }
+
+  public hasEditGroupError = (controlName: string, errorName: string) => {
+    return this.editBenchmarkGroupForm.controls[controlName].hasError(errorName);
+  }
+
   private initEditFormControls() {
     this.editNameControl = new FormControl('', [Validators.required]);
     this.editDescriptionControl = new FormControl('', [Validators.required]);
@@ -97,14 +115,58 @@ export class AdminBenchmarksComponent implements OnInit {
     });
   }
 
+  public selectBenchmark(benchmark: Benchmark) {
+    this.selectedBenchmark = benchmark;
+    this.loadBenchmarkData(benchmark);
+  }
+
   private loadBenchmarkData(benchmark: Benchmark) {
     this.editNameControl.setValue(benchmark.customName);
     this.editDescriptionControl.setValue(benchmark.description);
     this.editGroupControl.setValue(benchmark.benchmarkGroup.id);
   }
 
+  public editBenchmark(benchmark: Benchmark) {
+    // todo
+  }
+
+  public onCancelEditBenchmark() {
+    this.loadBenchmarkData(this.selectedBenchmark);
+  }
+
+  public selectBenchmarkGroup(group: Group) {
+    this.selectedBenchmarkGroup = group;
+    this.loadBenchmarkGroupData(this.selectedBenchmarkGroup);
+  }
+
+  private initEditGroupFormControls() {
+    this.editGroupNameControl = new FormControl('', [Validators.required]);
+
+    this.editBenchmarkGroupForm = new FormGroup({
+      name: this.editGroupNameControl
+    });
+  }
+
+  private loadBenchmarkGroupData(benchmarkGroup: Group) {
+    this.editGroupNameControl.setValue(benchmarkGroup.name);
+  }
+
+  public editBenchmarkGroup() {
+    // todo
+  }
+
+  public deleteBenchmarkGroup(group: Group) {
+    // todo
+  }
+
+  public onCancelEditBenchmarkGroup() {
+    this.loadBenchmarkGroupData(this.selectedBenchmarkGroup);
+  }
+
+
   public onSaveBenchmarkGroups() {
     this.dropped = false;
+    // todo
   }
 
   public onCancelBenchmarkGroups() {
@@ -112,17 +174,21 @@ export class AdminBenchmarksComponent implements OnInit {
     this.getBenchmarkGroups();
   }
 
-  public selectBenchmark(benchmark: Benchmark) {
-    this.selectedBenchmark = benchmark;
-    this.loadBenchmarkData(benchmark);
+  private initAddGroupFormControls() {
+    this.addGroupNameControl = new FormControl('', [Validators.required]);
+
+    this.addBenchmarkGroupForm = new FormGroup({
+      name: this.addGroupNameControl
+    });
   }
 
-  public editBenchmark(benchmark: Benchmark) {
-
+  public addBenchmarkGroup(group: Group) {
+    // todo
   }
 
-  public onCancelEditBenchmark() {
-    this.loadBenchmarkData(this.selectedBenchmark);
+  public onCancelAddBenchmarkGroup() {
+    this.initAddGroupFormControls();
   }
+
 
 }

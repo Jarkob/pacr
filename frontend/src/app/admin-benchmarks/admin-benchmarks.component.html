@@ -10,7 +10,11 @@
             <div class="benchmarkGroup" id="{{ group.name }}" *ngFor="let group of benchmarkGroups"
              cdkDropList [cdkDropListData]="group.benchmarks" (cdkDropListDropped)="drop($event)">
 
-        <p class="mat-h2 benchmarkGroupTitle">{{ strings?.group }} {{ group.name }} {{ group.benchmarks.length | braces }}</p>
+                <p class="mat-h2 benchmarkGroupTitle">
+                    {{ strings?.group }} {{ group.name }} {{ group.benchmarks.length | braces }}
+                    <mat-icon id="deleteBenchmarkGroupIcon" class="right" color="warn" (click)="deleteBenchmarkGroup(group)">delete</mat-icon>
+                    <mat-icon id="editBenchmarkGroupIcon" class="right" (click)="selectBenchmarkGroup(group); benchmarkTabs.selectedIndex = 3">edit</mat-icon>
+                </p>
 
                 <div class="benchmarkItem" cdkDrag *ngFor="let benchmark of group.benchmarks; let last = last" [ngClass]="{ lastBenchmarkItem: last }"
                     matTooltip="{{ benchmark.description }}">
@@ -21,10 +25,22 @@
         </div>
     </mat-tab>
     <mat-tab label="{{ strings?.tabAddGroup }}">
+        <p class="mat-h2 tabTitle"> {{ strings?.tabAddBenchmarkGroupTitle }} </p>
+        
+        <form [formGroup]="addBenchmarkGroupForm" autocomplete="off" novalidate (ngSubmit)="addBenchmarkGroup(addBenchmarkGroupForm.value)" fxLayout="column wrap"
+            fxLayoutAlign="center left" fxLayoutGap="10px">
+            <mat-form-field>
+                <mat-label>{{ strings?.benchmarkGroupName }}</mat-label>
+                <input matInput type="text" formControlName="name">
+                <mat-error *ngIf="hasAddGroupError('name', 'required')">{{ strings?.benchmarkGroupNameRequired }}</mat-error>
+            </mat-form-field>          
+        </form>
 
+        <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!addBenchmarkGroupForm.valid">{{ strings?.add }}</button>
+        <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelAddBenchmarkGroup()">{{ strings?.cancel }}</button>
     </mat-tab>
-    <mat-tab label="{{ strings?.tabEdit }}" *ngIf="selectedBenchmark">
-        <p class="mat-h2 tabTitle"> {{ strings?.tabEditTitle }} {{ selectedBenchmark.customName }} </p>
+    <mat-tab label="{{ strings?.tabEditBenchmark }}" *ngIf="selectedBenchmark">
+        <p class="mat-h2 tabTitle"> {{ strings?.tabEditBenchmarkTitle }} {{ selectedBenchmark.customName }} </p>
         
         <form [formGroup]="editBenchmarkForm" autocomplete="off" novalidate (ngSubmit)="editBenchmark(editBenchmarkForm.value)" fxLayout="column wrap"
             fxLayoutAlign="center left" fxLayoutGap="10px">
@@ -50,5 +66,21 @@
 
         <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!editBenchmarkForm.valid">{{ strings?.save }}</button>
         <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelEditBenchmark()">{{ strings?.cancel }}</button>
+    </mat-tab>
+    <mat-tab label="{{ strings?.tabEditBenchmarkGroup }}" *ngIf="selectedBenchmarkGroup">
+        <p class="mat-h2 tabTitle"> {{ strings?.tabEditBenchmarkGroupTitle }} {{ selectedBenchmarkGroup.name }} </p>
+        
+        <form [formGroup]="editBenchmarkGroupForm" autocomplete="off" novalidate (ngSubmit)="editBenchmarkGroup(editBenchmarkGroupForm.value)" fxLayout="column wrap"
+            fxLayoutAlign="center left" fxLayoutGap="10px">
+            <mat-form-field>
+                <mat-label>{{ strings?.benchmarkGroupName }}</mat-label>
+                <input matInput type="text" formControlName="name">
+                <mat-error *ngIf="hasEditGroupError('name', 'required')">{{ strings?.benchmarkGroupNameRequired }}</mat-error>
+            </mat-form-field>          
+        </form>
+
+        <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!editBenchmarkGroupForm.valid">{{ strings?.save }}</button>
+        <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelEditBenchmarkGroup()">{{ strings?.cancel }}</button>
+        <button type="button" class="formCancelButton" color="warn" mat-raised-button (click)="deleteBenchmarkGroup(selectedBenchmark)">{{ strings?.delete }}</button> 
     </mat-tab>
 </mat-tab-group>

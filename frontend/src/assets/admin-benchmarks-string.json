@@ -1,15 +1,22 @@
 {
     "tabOverview": "Overview",
     "tabAddGroup": "Add Group",
-    "tabEdit": "Edit",
+    "tabEditBenchmark": "Edit Benchmark",
+    "tabEditBenchmarkGroup": "Edit Group",
     "tabOverviewTitle": "Benchmarks:",
-    "tabEditTitle": "Editing:",
+    "tabEditBenchmarkTitle": "Editing:",
+    "tabEditBenchmarkGroupTitle": "Editing:",
+    "tabAddBenchmarkGroupTitle": "Add a new Benchmark Group:",
     "group": "Group:",
     "save": "Save",
     "cancel": "Cancel",
+    "delete": "Delete",
+    "add": "Add",
     "benchmarkGroup": "Group",
     "benchmarkName": "Name",
     "benchmarkNameRequired": "Name is required.",
     "benchmarkDescription": "Description",
-    "benchmarkDescriptionRequired": "Description is required."
+    "benchmarkDescriptionRequired": "Description is required.",
+    "benchmarkGroupName": "Name",
+    "benchmarkGroupNameRequired": "Name is required."
 }
