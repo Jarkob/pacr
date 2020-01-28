@@ -1,3 +1,4 @@
+import { SshConfigComponent } from './ssh-config/ssh-config.component';
 import { AdminBenchmarksComponent } from './admin-benchmarks/admin-benchmarks.component';
 import { AdminRepositoriesComponent } from './admin-repositories/admin-repositories.component';
 import { CommitHistoryMaximizedComponent } from './commit-history-maximized/commit-history-maximized.component';
@@ -55,6 +56,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     AdminComponent,
     AdminRepositoriesComponent,
     AdminBenchmarksComponent,
+    SshConfigComponent,
     DashboardComponent,
     LoginComponent,
     ToolbarComponent,

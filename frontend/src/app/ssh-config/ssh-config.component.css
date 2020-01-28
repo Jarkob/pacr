@@ -1,0 +1,21 @@
+.tabTitle {
+    margin-top: 20px;
+    width: 100%;
+}
+
+#publicSSHKeyForm {
+    width: 100%;
+}
+
+#publicSSHKeyField {    
+    border: solid 2px rgb(59, 59, 59);
+    padding: 15px;
+}
+
+#copyButton {
+    padding: 8px, 10px;
+}
+
+.right {
+    float: right;
+}

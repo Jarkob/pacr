@@ -59,4 +59,8 @@ export class StringService {
     public getAdminBenchmarksStrings(): Observable<any> {
         return this.http.get('./assets/admin-benchmarks-string.json');
     }
+
+    public getSSHConfigStrings(): Observable<any> {
+        return this.http.get('./assets/ssh-config-string.json');
+    }
 }

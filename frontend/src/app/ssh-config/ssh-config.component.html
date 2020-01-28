@@ -1,0 +1,19 @@
+<p class="mat-h2 tabTitle"> {{ strings?.sshConfigTitle }} </p>
+
+<mat-form-field id="publicSSHKeyForm">
+    <mat-label>{{ strings?.publicSSHKey }}</mat-label>
+    <textarea matInput id="publicSSHKeyField" readonly
+        cdkTextareaAutosize
+        #autosize="cdkTextareaAutosize"
+        cdkAutosizeMinRows="15"
+        cdkAutosizeMaxRows="15" #sshKey >{{ publicSSHKey }}</textarea>
+</mat-form-field>
+
+<button mat-raised-button (click)="copyTextToClipboard(sshKey)">
+    {{ strings?.copyClipboard }}
+</button>
+
+<button mat-raised-button color="primary" class="right" (click)="sendPrivateSSHKey()"
+    matTooltip="{{ strings?.sendPrivateSSHKeyDescription }}" matTooltipPosition="left">
+    {{ strings?.sendPrivateSSHKey }}
+</button>
