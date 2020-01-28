@@ -6,8 +6,11 @@ import pacr.webapp_backend.authentication.services.IAuthenticationAccess;
 
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Objects;
 
@@ -22,6 +25,9 @@ public class AuthenticationStorage implements IAuthenticationAccess {
      * The directory where java was run from.
      */
     public static final String USER_DIR = "user.dir";
+
+    private static final String READ_ERROR = "could not read from file ";
+    private static final String WRITE_ERROR = "could not write to file ";
 
     private File adminPasswordHashFile;
     private File secretFile;
@@ -47,41 +53,46 @@ public class AuthenticationStorage implements IAuthenticationAccess {
 
     @Override
     public String getAdminPasswordHash() {
-        return readFromFile(adminPasswordHashFile);
+        try {
+            return Files.readString(adminPasswordHashFile.toPath());
+        } catch (IOException e) {
+            throw new IllegalStateException(READ_ERROR + adminPasswordHashFile.getPath());
+        }
     }
 
     @Override
-    public String getSecret() {
-        return readFromFile(secretFile);
+    public byte[] getSecret() {
+        try {
+            return Files.readAllBytes(secretFile.toPath());
+        } catch (IOException e) {
+            throw new IllegalStateException(READ_ERROR + secretFile.getPath());
+        }
     }
 
     @Override
     public void setAdminPasswordHash(@NotNull String passwordHash) {
         Objects.requireNonNull(passwordHash);
-        writeToFile(adminPasswordHashFile, passwordHash);
+        try {
+            FileWriter writer = new FileWriter(adminPasswordHashFile, false);
+            writer.write(passwordHash);
+            writer.close();
+        } catch (IOException e) {
+            throw new IllegalStateException(WRITE_ERROR + adminPasswordHashFile.getPath());
+        }
     }
 
     @Override
-    public void setSecret(@NotNull String secret) {
+    public void setSecret(@NotNull byte[] secret) {
         Objects.requireNonNull(secret);
-        writeToFile(secretFile, secret);
-    }
-
-    private String readFromFile(File file) {
         try {
-            return Files.readString(file.toPath());
+            OutputStream os = new FileOutputStream(secretFile);
+            os.write(secret);
+            os.close();
+        } catch (FileNotFoundException e) {
+            throw new IllegalStateException("could not find file " + secretFile.getPath());
         } catch (IOException e) {
-            throw new IllegalStateException("could not read from file " + file.getPath());
+            throw new IllegalStateException(WRITE_ERROR + secretFile.getPath());
         }
     }
 
-    private void writeToFile(File file, String content) {
-        try {
-            FileWriter writer = new FileWriter(file, false);
-            writer.write(content);
-            writer.close();
-        } catch (IOException e) {
-            throw new IllegalStateException("could not write to file " + file.getPath());
-        }
-    }
 }

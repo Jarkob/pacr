@@ -15,7 +15,7 @@ public interface IAuthenticationAccess {
     /**
      * @return Gets the secret for signing JWTs.
      */
-    String getSecret();
+    byte[] getSecret();
 
     /**
      * Sets the hashed password for the admin.
@@ -27,5 +27,5 @@ public interface IAuthenticationAccess {
      * Sets the secret for signing JWTs.
      * @param secret the secret. Cannot be null.
      */
-    void setSecret(@NotNull String secret);
+    void setSecret(@NotNull byte[] secret);
 }

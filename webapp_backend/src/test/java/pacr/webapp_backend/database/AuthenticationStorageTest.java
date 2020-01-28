@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class AuthenticationStorageTest {
 
     private static final String PW_HASH = "hash";
-    private static final String SECRET = "secret";
+    private static final byte[] SECRET = { -128, -55, -1, 0, 1, 55, 127 };
 
     private AuthenticationStorage authenticationStorage;
 
@@ -64,14 +64,13 @@ public class AuthenticationStorageTest {
     }
 
     /**
-     * Tests whether getSecret returns empty string if the file is empty.
+     * Tests whether getSecret returns empty array if the file is empty.
      */
     @Test
     void getSecret_emptyFile_shouldReturnEmptyString() {
-        String secret = authenticationStorage.getSecret();
+        byte[] secret = authenticationStorage.getSecret();
 
-        assertNotNull(secret);
-        assertTrue(secret.isEmpty());
+        assertEquals(0, secret.length);
     }
 
     /**
@@ -96,9 +95,11 @@ public class AuthenticationStorageTest {
     void setSecret_shouldAlterFile() throws IOException {
         authenticationStorage.setSecret(SECRET);
 
-        String fileContent = Files.readString(secretFile.toPath());
+        byte[] fileContent = Files.readAllBytes(secretFile.toPath());
 
-        assertEquals(SECRET, fileContent);
+        for (int i = 0; i < fileContent.length; ++i) {
+            assertEquals(SECRET[i], fileContent[i]);
+        }
     }
 
     /**
@@ -114,14 +115,18 @@ public class AuthenticationStorageTest {
     }
 
     /**
-     * Tests whether getSecret returns the same value that has previously been set.
+     * Tests whether getSecret returns the same value that has previously been set. Even if it was set twice.
      */
     @Test
     void getSecret_hasBeenSet_shouldReturnSetValue() {
         authenticationStorage.setSecret(SECRET);
 
-        String secret = authenticationStorage.getSecret();
+        authenticationStorage.setSecret(SECRET);
 
-        assertEquals(SECRET, secret);
+        byte[] secret = authenticationStorage.getSecret();
+
+        for (int i = 0; i < secret.length; ++i) {
+            assertEquals(SECRET[i], secret[i]);
+        }
     }
 }
