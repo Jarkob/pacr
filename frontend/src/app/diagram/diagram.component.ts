@@ -117,6 +117,22 @@ export class DiagramComponent implements OnInit {
         this.addLine(this.datasets[selected[0]._datasetIndex]
           .code[selected[0]._index].val);
       }
+    },
+    tooltips: {
+      callbacks: {
+        title: (items: any[], data) => {
+          return this.datasets[items[0].datasetIndex].code[items[0].index].sha;
+        },
+        label: (item, data) => {
+          // round label
+          let label = data.datasets[item.datasetIndex].label || '';
+          if (label) {
+              label += ': ';
+          }
+          label += Math.round(item.yLabel * 100) / 100;
+          return label;
+        }
+      }
     }
   };
   labels = [];
