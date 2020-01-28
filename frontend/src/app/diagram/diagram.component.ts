@@ -165,13 +165,20 @@ export class DiagramComponent implements OnInit {
     this.diagramService.selectCommit(sha);
   }
 
+  /**
+   * maximize the diagram component
+   */
   public maximizeDiagram() {
     this.dialogRef = this.previewDialog.open({ selectedBenchmark: this.selectedBenchmark });
   }
 
+  /**
+   * toggle a specific line in the diagram
+   * @param index the index of the legend item
+   */
   public toggleLine(index: number) {
     const datasetIndex = this.legendData[index].datasetIndex;
-    this.chart.datasets[datasetIndex].hidden = this.checked[index];
+    this.chart.datasets[datasetIndex].hidden = !this.checked[index];
     this.chart.update();
   }
 
@@ -200,6 +207,9 @@ export class DiagramComponent implements OnInit {
     this.chart.update();
   }
 
+  /**
+   * load mock data
+   */
   public loadMockData() {
     this.checked = [];
     this.datasets = [];
@@ -326,7 +336,6 @@ export class DiagramComponent implements OnInit {
     const legend: LegendItem[] = [];
     let index = 0;
     for (const dataset of currentChart.data.datasets) {
-      console.log('dataset: ', dataset);
       legend.push({
         repository: dataset.repository,
         branch: dataset.branch,
@@ -341,7 +350,6 @@ export class DiagramComponent implements OnInit {
     this.repositoryService.getAllRepositories().subscribe(
       data => {
         this.repositories = data;
-        // this.getBenchmarkingResults();
       }
     );
   }
