@@ -36,7 +36,7 @@ public class TokenManager implements IAuthenticator {
      * Generates a new token with the current time as the issue time. This token will never expire.
      * @return the jwt.
      */
-    String generateToken() {
+    public String generateToken() {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         byte[] secret = authenticationAccess.getSecret();
