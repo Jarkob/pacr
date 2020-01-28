@@ -21,6 +21,13 @@ form {
     width: 100%;
 }
 
+.colorRectangle {
+    width: 70px;
+    height: 12px;
+    margin-left: 5px;
+    display: inline-block;
+}
+
 .tabTitle {
     margin-top: 20px;
 }

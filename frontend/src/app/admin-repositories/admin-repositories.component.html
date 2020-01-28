@@ -15,7 +15,8 @@
                         {{ strings?.hookSet }} {{ repository?.hookSet ? strings?.hookIsSet : strings?.hookIsNotSet }}
                     </p>
                     <p matLine class="mat-h4">
-                        {{ strings?.color }} {{ repository?.color }}
+                        {{ strings?.color }} 
+                        <span class="colorRectangle" [style.backgroundColor]="repository.color"></span>
                     </p>
                     <p matLine class="mat-h4">
                         {{ strings?.trackMode }} 
