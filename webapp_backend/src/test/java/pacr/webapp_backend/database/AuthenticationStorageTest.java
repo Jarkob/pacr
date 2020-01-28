@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,8 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-public class AuthenticationStorageTest {
+public class AuthenticationStorageTest extends SpringBootTestWithoutShell {
 
     private static final String PW_HASH = "hash";
     private static final byte[] SECRET = { -128, -55, -1, 0, 1, 55, 127 };

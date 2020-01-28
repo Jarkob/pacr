@@ -4,17 +4,17 @@ import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
-import org.springframework.stereotype.Component;
-import pacr.webapp_backend.shared.IPasswordCreator;
+import org.springframework.shell.standard.ShellComponent;
+import org.springframework.shell.standard.ShellMethod;
 
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * Implements the {@link IPasswordCreator} interface.
+ * Creates new passwords.
  */
-@Component
-public class PasswordCreator implements IPasswordCreator {
+@ShellComponent
+public class PasswordCreator {
 
     private static final char[] SPECIAL_CHARS = {'!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', '-', '.', '/',
             ':', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'};
@@ -35,7 +35,11 @@ public class PasswordCreator implements IPasswordCreator {
         this.hashGenerator = hashGenerator;
     }
 
-    @Override
+    /**
+     * Generates a new random admin password and saves its hash.
+     * @return the new password (not hashed).
+     */
+    @ShellMethod("generates a new admin password and saves its hash")
     public String newPassword() {
         String password = generatePassword();
         String passwordHash = hashGenerator.hashPassword(password);

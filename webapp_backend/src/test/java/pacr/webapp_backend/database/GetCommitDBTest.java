@@ -2,7 +2,6 @@ package pacr.webapp_backend.database;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.shared.ICommit;
@@ -12,7 +11,6 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
 public class GetCommitDBTest extends GitTrackingDBTest {
 
     private static final int EXPECTED_NUM_OF_COMMITS_IN_REPOSITORY = 1;

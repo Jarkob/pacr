@@ -5,20 +5,17 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.shared.EventCategory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.mock;
 
-@SpringBootTest
-public class EventDBTest {
+public class EventDBTest extends SpringBootTestWithoutShell {
 
     private static final String EVENT_TITLE = "eventTitle";
     private static final String EVENT_DESCRIPTION = "eventDescription";

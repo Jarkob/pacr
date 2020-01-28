@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.RepositoryDB;
 import pacr.webapp_backend.database.ResultDB;
@@ -28,8 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-public class ResultManagerTest {
+public class ResultManagerTest extends SpringBootTestWithoutShell {
 
     private static final String HASH_TWO = "hash2";
     private static final String MSG = "msg";

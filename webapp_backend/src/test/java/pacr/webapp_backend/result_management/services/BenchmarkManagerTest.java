@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.BenchmarkGroupDB;
 import pacr.webapp_backend.result_management.BenchmarkProperty;
@@ -18,8 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-public class BenchmarkManagerTest {
+public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     private BenchmarkDB benchmarkDB;
     private BenchmarkGroupDB groupDB;
     private BenchmarkManager benchmarkManager;

@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
@@ -24,8 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Pavel Zwerschke
  */
-@SpringBootTest
-public class GitTrackingDBTest {
+public class GitTrackingDBTest extends SpringBootTestWithoutShell {
 
     /**
      * Protected instead of private so subclasses can access these objects.

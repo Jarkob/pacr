@@ -3,7 +3,7 @@ package pacr.webapp_backend.database;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.result_management.BenchmarkProperty;
@@ -13,8 +13,7 @@ import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest
-public class BenchmarkDBTest {
+public class BenchmarkDBTest extends SpringBootTestWithoutShell {
 
     private static final String BENCHMARK_NAME = "benchmark";
     private static final String BENCHMARK_NAME_TWO = "benchmark2";

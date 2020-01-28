@@ -3,7 +3,7 @@ package pacr.webapp_backend.result_management.services;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.ResultDB;
 import pacr.webapp_backend.result_management.Benchmark;
@@ -14,8 +14,7 @@ import pacr.webapp_backend.shared.IBenchmarkProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest
-public class ResultSaverTest {
+public class ResultSaverTest extends SpringBootTestWithoutShell {
 
     private static final String PROPERTY_NAME = SimpleBenchmark.PROPERTY_NAME;
     private static final String PROPERTY_NAME_TWO = "property2";

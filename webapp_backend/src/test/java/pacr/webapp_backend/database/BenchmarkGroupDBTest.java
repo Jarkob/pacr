@@ -1,11 +1,9 @@
 package pacr.webapp_backend.database;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import pacr.webapp_backend.result_management.Benchmark;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 
 import java.util.Collection;
@@ -13,8 +11,7 @@ import java.util.Collection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-@SpringBootTest
-public class BenchmarkGroupDBTest {
+public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
 
     private static final String GROUP_NAME = "group";
     private static final String GROUP_NAME_TWO = "group2";

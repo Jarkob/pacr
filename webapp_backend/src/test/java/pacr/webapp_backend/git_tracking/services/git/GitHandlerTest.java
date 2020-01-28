@@ -10,7 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
@@ -35,8 +35,7 @@ import static org.mockito.Mockito.*;
  *
  * @author Pavel Zwerschke
  */
-@SpringBootTest
-public class GitHandlerTest {
+public class GitHandlerTest extends SpringBootTestWithoutShell {
 
     private static final String PATH_TO_REPOS = "/target/test/repos";
     private static final String ABSOLUTE_PATH_TO_REPOS = System.getProperty("user.dir") + PATH_TO_REPOS;

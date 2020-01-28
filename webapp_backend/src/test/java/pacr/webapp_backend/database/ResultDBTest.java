@@ -3,11 +3,10 @@ package pacr.webapp_backend.database;
 import java.time.temporal.ChronoUnit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.result_management.SystemEnvironment;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
@@ -15,8 +14,6 @@ import pacr.webapp_backend.result_management.BenchmarkResult;
 import pacr.webapp_backend.result_management.CommitResult;
 
 import java.time.LocalDateTime;
-import java.time.temporal.TemporalUnit;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -31,8 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
-public class ResultDBTest {
+public class ResultDBTest extends SpringBootTestWithoutShell {
 
     @Mock
     private SystemEnvironment systemEnvironmentMock;
