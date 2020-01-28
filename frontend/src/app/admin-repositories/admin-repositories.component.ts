@@ -107,8 +107,12 @@ export class AdminRepositoriesComponent implements OnInit {
     this.allAddBranches = [];
   }
 
-  public hasError = (controlName: string, errorName: string) => {
+  public hasEditError = (controlName: string, errorName: string) => {
     return this.editRepositoryForm.controls[controlName].hasError(errorName);
+  }
+
+  public hasAddError = (controlName: string, errorName: string) => {
+    return this.addRepositoryForm.controls[controlName].hasError(errorName);
   }
 
   public onCancelEditRepository() {

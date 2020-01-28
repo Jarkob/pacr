@@ -28,6 +28,7 @@ export class BenchmarkService {
 
   /**
    * get all benchmarks from a specific group
+   * @param id the id of the group
    */
   public getBenchmarksByGroup(id: number): Observable<Benchmark[]> {
     return this.http.get<Benchmark[]>(this.globalService.url + '/benchmarks/' + id);

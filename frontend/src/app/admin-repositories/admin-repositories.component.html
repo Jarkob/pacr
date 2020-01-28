@@ -46,13 +46,13 @@
             fxLayoutAlign="center left" fxLayoutGap="10px">
             <mat-form-field>
                 <input matInput type="text" placeholder="{{ strings?.repositoryName }}" formControlName="name">
-                <mat-error *ngIf="hasError('name', 'required')">{{ strings?.repositoryNameRequired }}</mat-error>
+                <mat-error *ngIf="hasAddError('name', 'required')">{{ strings?.repositoryNameRequired }}</mat-error>
             </mat-form-field>
 
             <div class="inlineContainer" fxLayout="row">
                 <mat-form-field>
                     <input matInput type="text" placeholder="{{ strings?.repositoryPullURL }}" formControlName="pullURL" (change)="onAddPullURLChange()">
-                    <mat-error *ngIf="hasError('pullURL', 'required')">{{ strings?.repositoryPullURLRequired }}</mat-error>
+                    <mat-error *ngIf="hasAddError('pullURL', 'required')">{{ strings?.repositoryPullURLRequired }}</mat-error>
                 </mat-form-field>
                 
                 <div fxLayout="column" id="webHookOption">
@@ -100,13 +100,13 @@
             fxLayoutAlign="center left" fxLayoutGap="10px">
             <mat-form-field>
                 <input matInput type="text" placeholder="{{ strings?.repositoryName }}" formControlName="name">
-                <mat-error *ngIf="hasError('name', 'required')">{{ strings?.repositoryNameRequired }}</mat-error>
+                <mat-error *ngIf="hasEditError('name', 'required')">{{ strings?.repositoryNameRequired }}</mat-error>
             </mat-form-field>
 
             <div class="inlineContainer" fxLayout="row">
                 <mat-form-field>
                     <input matInput type="text" placeholder="{{ strings?.repositoryPullURL }}" formControlName="pullURL" (change)="onEditPullURLChange()">
-                    <mat-error *ngIf="hasError('pullURL', 'required')">{{ strings?.repositoryPullURLRequired }}</mat-error>
+                    <mat-error *ngIf="hasEditError('pullURL', 'required')">{{ strings?.repositoryPullURLRequired }}</mat-error>
                 </mat-form-field>
                 
                 <div fxLayout="column" id="webHookOption">
@@ -130,7 +130,7 @@
 
             <mat-form-field id="repositoryColor">
                 <input matInput type="color" placeholder="{{ strings?.repositoryColor }}" formControlName="color">
-                <mat-error *ngIf="hasError('color', 'required')">{{ strings?.repositoryColorRequired }}</mat-error>
+                <mat-error *ngIf="hasEditError('color', 'required')">{{ strings?.repositoryColorRequired }}</mat-error>
             </mat-form-field>
 
             <div fxLayout="column">

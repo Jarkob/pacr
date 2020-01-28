@@ -1,0 +1,15 @@
+{
+    "tabOverview": "Overview",
+    "tabAddGroup": "Add Group",
+    "tabEdit": "Edit",
+    "tabOverviewTitle": "Benchmarks:",
+    "tabEditTitle": "Editing:",
+    "group": "Group:",
+    "save": "Save",
+    "cancel": "Cancel",
+    "benchmarkGroup": "Group",
+    "benchmarkName": "Name",
+    "benchmarkNameRequired": "Name is required.",
+    "benchmarkDescription": "Description",
+    "benchmarkDescriptionRequired": "Description is required."
+}

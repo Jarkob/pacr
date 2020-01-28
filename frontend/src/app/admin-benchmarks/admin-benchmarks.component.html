@@ -1,0 +1,54 @@
+<mat-tab-group animationDuration="0ms" #benchmarkTabs>
+    <mat-tab label="{{ strings?.tabOverview }}">
+        <p class="mat-h1 tabTitle">
+            {{ strings?.tabOverviewTitle }}
+            <button *ngIf="dropped" mat-raised-button class="formCancelButton right" color="warn" (click)="onCancelBenchmarkGroups()">{{ strings?.cancel }}</button>
+            <button *ngIf="dropped" mat-raised-button class="formSubmitButton right" color="primary" (click)="onSaveBenchmarkGroups()">{{ strings?.save }}</button>            
+        </p>
+
+        <div cdkDropListGroup>
+            <div class="benchmarkGroup" id="{{ group.name }}" *ngFor="let group of benchmarkGroups"
+             cdkDropList [cdkDropListData]="group.benchmarks" (cdkDropListDropped)="drop($event)">
+
+        <p class="mat-h2 benchmarkGroupTitle">{{ strings?.group }} {{ group.name }} {{ group.benchmarks.length | braces }}</p>
+
+                <div class="benchmarkItem" cdkDrag *ngFor="let benchmark of group.benchmarks; let last = last" [ngClass]="{ lastBenchmarkItem: last }"
+                    matTooltip="{{ benchmark.description }}">
+                    {{ benchmark.customName }}
+                    <mat-icon id="editBenchmarkIcon" class="right" (click)="selectBenchmark(benchmark); benchmarkTabs.selectedIndex = 2">edit</mat-icon>
+                </div>
+            </div>            
+        </div>
+    </mat-tab>
+    <mat-tab label="{{ strings?.tabAddGroup }}">
+
+    </mat-tab>
+    <mat-tab label="{{ strings?.tabEdit }}" *ngIf="selectedBenchmark">
+        <p class="mat-h2 tabTitle"> {{ strings?.tabEditTitle }} {{ selectedBenchmark.customName }} </p>
+        
+        <form [formGroup]="editBenchmarkForm" autocomplete="off" novalidate (ngSubmit)="editBenchmark(editBenchmarkForm.value)" fxLayout="column wrap"
+            fxLayoutAlign="center left" fxLayoutGap="10px">
+            <mat-form-field>
+                <mat-label>{{ strings?.benchmarkGroup }}</mat-label>
+                <mat-select formControlName="group">
+                    <mat-option *ngFor="let group of benchmarkGroups" [value]="group.id">
+                        {{ group.name }}
+                    </mat-option>
+                </mat-select>    
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>{{ strings?.benchmarkName }}</mat-label>
+                <input matInput type="text" formControlName="name">
+                <mat-error *ngIf="hasEditError('name', 'required')">{{ strings?.benchmarkNameRequired }}</mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>{{ strings?.benchmarkDescription }}</mat-label>
+                <textarea matInput formControlName="description" cdkTextareaAutosize cdkAutosizeMinRows="4" cdkAutosizeMaxRows="8"></textarea>
+                <mat-error *ngIf="hasEditError('description', 'required')">{{ strings?.benchmarkDescriptionRequired }}</mat-error>
+            </mat-form-field>            
+        </form>
+
+        <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!editBenchmarkForm.valid">{{ strings?.save }}</button>
+        <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelEditBenchmark()">{{ strings?.cancel }}</button>
+    </mat-tab>
+</mat-tab-group>

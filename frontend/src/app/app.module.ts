@@ -1,3 +1,4 @@
+import { AdminBenchmarksComponent } from './admin-benchmarks/admin-benchmarks.component';
 import { AdminRepositoriesComponent } from './admin-repositories/admin-repositories.component';
 import { CommitHistoryMaximizedComponent } from './commit-history-maximized/commit-history-maximized.component';
 import { CommitHistoryMaximizerService } from './commit-history/commit-history-maximizer.service';
@@ -41,6 +42,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule, PercentPipe } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
 
+import { DragDropModule} from '@angular/cdk/drag-drop';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,6 +54,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommitHistoryMaximizedComponent,
     AdminComponent,
     AdminRepositoriesComponent,
+    AdminBenchmarksComponent,
     DashboardComponent,
     LoginComponent,
     ToolbarComponent,
@@ -78,7 +82,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     HttpClientModule,
     FlexLayoutModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    DragDropModule
   ],
   providers: [
     DetailViewMaximizerService,

@@ -1,0 +1,46 @@
+.tabTitle {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.benchmarkItem {
+    padding: 12px 5px;
+    margin-left: 10px;
+    border-bottom: solid 1px #ccc;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    cursor: move;
+}
+
+#editBenchmarkIcon {
+    cursor: pointer;
+}
+
+.lastBenchmarkItem {
+    border-bottom: solid 0px #ccc;
+}
+
+.benchmarkGroup {
+    margin-top: 15px;
+    border: solid 2px rgb(59, 59, 59);
+    padding: 10px;
+}
+
+.benchmarkGroupTitle {
+    border-bottom: solid 1px rgb(119, 119, 119);
+}
+
+.formCancelButton {
+    margin-left: 16px;
+}
+
+.formSubmitButton {
+    min-width: 150px;
+}
+
+.right {
+    float: right;
+}
