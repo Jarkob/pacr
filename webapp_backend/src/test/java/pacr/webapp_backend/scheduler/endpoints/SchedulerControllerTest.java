@@ -34,9 +34,16 @@ public class SchedulerControllerTest {
     @Mock
     private IAuthenticator authenticator;
 
+    @Mock
+    PrioritizeMessage prioritizeMessage;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        when(prioritizeMessage.getGroupTitle()).thenReturn(JOB_GROUP);
+        when(prioritizeMessage.getJobID()).thenReturn(JOB_ID);
+        when(prioritizeMessage.validate()).thenReturn(true);
 
         this.schedulerController = new SchedulerController(scheduler, authenticator);
     }
@@ -88,7 +95,7 @@ public class SchedulerControllerTest {
         when(authenticator.authenticate(jwtToken)).thenReturn(true);
         when(scheduler.givePriorityTo(JOB_GROUP, JOB_ID)).thenReturn(true);
 
-        boolean result = schedulerController.givePriorityTo(JOB_GROUP, JOB_ID, jwtToken);
+        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
 
         verify(authenticator).authenticate(jwtToken);
         verify(scheduler).givePriorityTo(JOB_GROUP, JOB_ID);
@@ -102,7 +109,7 @@ public class SchedulerControllerTest {
         when(authenticator.authenticate(jwtToken)).thenReturn(false);
         when(scheduler.givePriorityTo(JOB_GROUP, JOB_ID)).thenReturn(true);
 
-        boolean result = schedulerController.givePriorityTo(JOB_GROUP, JOB_ID, jwtToken);
+        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
 
         verify(authenticator).authenticate(jwtToken);
         verify(scheduler, never()).givePriorityTo(any(), any());
@@ -116,7 +123,7 @@ public class SchedulerControllerTest {
         when(authenticator.authenticate(jwtToken)).thenReturn(true);
         when(scheduler.givePriorityTo(JOB_GROUP, JOB_ID)).thenReturn(false);
 
-        boolean result = schedulerController.givePriorityTo(JOB_GROUP, JOB_ID, jwtToken);
+        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
 
         verify(authenticator).authenticate(jwtToken);
         verify(scheduler).givePriorityTo(JOB_GROUP, JOB_ID);

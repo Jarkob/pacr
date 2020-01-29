@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IObserver;
 
@@ -21,9 +23,17 @@ public class SchedulerTest {
     final String JOB_GROUP = "jobGroup";
     final String JOB_ID = "jobID";
 
+    @Mock
+    private IJobAccess jobAccess;
+
+    @Mock
+    private IJobGroupAccess jobGroupAccess;
+
     @BeforeEach
     void initialize() {
-        scheduler = new Scheduler();
+        MockitoAnnotations.initMocks(this);
+
+        scheduler = new Scheduler(jobAccess, jobGroupAccess);
     }
 
     @Test

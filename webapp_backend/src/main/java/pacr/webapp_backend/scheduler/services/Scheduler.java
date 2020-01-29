@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -38,16 +39,35 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     private Collection<IObserver> observers;
 
+    private IJobAccess jobAccess;
+    private IJobGroupAccess jobGroupAccess;
+
     /**
      * Creates a new scheduler and sets the used scheduling policy.
+     *
+     * @param jobAccess the access interface to store and retrieve jobs.
+     * @param jobGroupAccess the access interface to retrieve job groups.
      */
-    public Scheduler() {
+    public Scheduler(IJobAccess jobAccess, IJobGroupAccess jobGroupAccess) {
+        this.jobAccess = jobAccess;
+        this.jobGroupAccess = jobGroupAccess;
+
         this.jobs = new DynamicPriorityQueue<>(new AdvancedSchedulingAlgorithm());
         this.prioritized = new DynamicPriorityQueue<Job>(new FIFOSchedulingAlgorithm());
 
         this.groups = new HashMap<>();
 
         this.observers = new ArrayList<>();
+    }
+
+    @PostConstruct
+    private void loadJobsFromStorage() {
+        prioritized.addAll(jobAccess.findAllByPrioritized(true));
+        jobs.addAll(jobAccess.findAllByPrioritized(false));
+
+        for (JobGroup group : jobGroupAccess.findAllJobGroups()) {
+            groups.put(group.getTitle(), group);
+        }
     }
 
     private void addGroup(@NotNull String groupTitle) {
@@ -66,11 +86,18 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     @Override
     public IJob popJob() {
+        Job job;
         if (!prioritized.isEmpty()) {
-            return prioritized.poll();
+            job = prioritized.poll();
+        } else {
+            job = jobs.poll();
         }
 
-        return jobs.poll();
+        if (job != null) {
+            jobAccess.deleteJob(job);
+        }
+
+        return job;
     }
 
     @Override
@@ -103,7 +130,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         Job job = new Job(jobID, getGroup(groupTitle));
 
         jobs.add(job);
-     //todo for test   LOGGER.info("Added new job to the queue: " + job.toString());
+        jobAccess.saveJob(job);
 
         updateAll();
     }
@@ -127,13 +154,17 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             return false;
         }
 
-        Job job = new Job(jobID, groups.get(groupTitle));
+        for (Job job : jobs) {
+            if (job.getJobGroupTitle().equals(groupTitle) && job.getJobID().equals(jobID)) {
+                jobs.remove(job);
+                job.setPrioritized(true);
+                prioritized.add(job);
+                jobAccess.saveJob(job);
 
-        if (jobs.contains(job)) {
-            jobs.remove(job);
-            prioritized.add(job);
+                LOGGER.info(job.getJobGroupTitle() + "/" + job.getJobID() + " was prioritized.");
 
-            return true;
+                return true;
+            }
         }
 
         return false;
@@ -186,6 +217,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         for (JobGroup group : groups.values()) {
             group.resetTimeSheet();
         }
+
+        LOGGER.info("Daily job group reset finished.");
     }
 
     private void removeUnusedGroups() {

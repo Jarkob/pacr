@@ -2,6 +2,12 @@ package pacr.webapp_backend.scheduler.services;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IJob;
@@ -10,11 +16,27 @@ import pacr.webapp_backend.shared.IJob;
  * A job that is identified by an id and belongs to a job group.
  * A job is queued when it is first created.
  */
+@Entity
 public class Job implements IJob {
 
+    @Id
+    @GeneratedValue
+    private int id;
+
+    private boolean prioritized;
     private String jobID;
     private LocalDateTime queued;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private JobGroup group;
+
+    /**
+     * Creates an empty Job.
+     *
+     * Needed for JPA.
+     */
+    public Job() {
+    }
 
     /**
      * Creates a new job and sets its queued date.
@@ -30,6 +52,7 @@ public class Job implements IJob {
         this.jobID = jobID;
         this.group = group;
         this.queued = LocalDateTime.now();
+        this.prioritized = false;
     }
 
     /**
@@ -56,6 +79,15 @@ public class Job implements IJob {
         return group.getTitle();
     }
 
+    /**
+     * Sets the jobs prioritized value. This is needed to retrieve them from storage later.
+     *
+     * @param prioritized whether the commit is prioritized.
+     */
+    public void setPrioritized(boolean prioritized) {
+        this.prioritized = prioritized;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -72,7 +104,7 @@ public class Job implements IJob {
 
     @Override
     public int hashCode() {
-        return Objects.hash(jobID, group);
+        return Objects.hash(jobID, group.getTitle());
     }
 
     @Override

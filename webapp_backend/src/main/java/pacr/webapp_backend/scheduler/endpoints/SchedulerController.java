@@ -4,6 +4,8 @@ import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,28 +44,24 @@ public class SchedulerController {
 
     /**
      * Prioritizes the given job. This method is a secure method.
-     * @param groupTitle the title of the job's group.
-     * @param jobID the id of the job.
+     * @param prioritizeMessage the message containing the relevant data to prioritize a job.
      * @param token a jwt token which is checked before executing the method.
      * @return if the given job was successfully prioritized.
      */
-    @RequestMapping("/prioritize/{groupTitle}/{jobID}")
+    @PutMapping("/prioritize")
     public boolean givePriorityTo(
-            @NotNull @PathVariable String groupTitle, @NotNull @PathVariable String jobID,
+            @NotNull @RequestBody PrioritizeMessage prioritizeMessage,
             @NotNull @RequestHeader(name = "jwt") String token) {
 
         Objects.requireNonNull(token, "The token cannot be null.");
+        Objects.requireNonNull(prioritizeMessage, "The prioritize message cannot be null.");
 
-        if (!StringUtils.hasText(groupTitle)) {
-            throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
-        }
-
-        if (!StringUtils.hasText(jobID)) {
-            throw new IllegalArgumentException("The jobID cannot be null or empty.");
+        if (!prioritizeMessage.validate()) {
+            return false;
         }
 
         if (authenticator.authenticate(token)) {
-            return scheduler.givePriorityTo(groupTitle, jobID);
+            return scheduler.givePriorityTo(prioritizeMessage.getGroupTitle(), prioritizeMessage.getJobID());
         }
 
         return false;

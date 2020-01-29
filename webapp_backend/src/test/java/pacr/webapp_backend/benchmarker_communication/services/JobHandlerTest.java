@@ -7,6 +7,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import pacr.webapp_backend.scheduler.services.IJobAccess;
+import pacr.webapp_backend.scheduler.services.IJobGroupAccess;
 import pacr.webapp_backend.scheduler.services.Scheduler;
 import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IResultSaver;
@@ -44,6 +46,12 @@ public class JobHandlerTest {
 
     @Mock
     private Scheduler jobProvider;
+
+    @Mock
+    private IJobAccess jobAccess;
+
+    @Mock
+    private IJobGroupAccess jobGroupAccess;
 
     @BeforeEach
     void setUp() {
@@ -135,7 +143,7 @@ public class JobHandlerTest {
 
     @Test
     void executeJob_sendingDifficulties_resolved() {
-        Scheduler scheduler = new Scheduler();
+        Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
         BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
@@ -162,7 +170,7 @@ public class JobHandlerTest {
 
     @Test
     void executeJob_sendingDifficulties_notResolved() {
-        Scheduler scheduler = new Scheduler();
+        Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
         BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
@@ -183,7 +191,7 @@ public class JobHandlerTest {
     void executeJob_sendingDifficulties_multipleBenchmarkers() {
         final String ADDRESS_2 = ADDRESS + "Second";
 
-        Scheduler scheduler = new Scheduler();
+        Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
         BenchmarkerPool benchmarkerPool = new BenchmarkerPool();

@@ -1,15 +1,32 @@
 package pacr.webapp_backend.scheduler.services;
 
+import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import org.springframework.util.StringUtils;
 
 /**
  * A job group is used to track the benchmarking time of a repository.
  */
-class JobGroup {
+@Entity
+public class JobGroup {
+
+    @Id
+    @GeneratedValue
+    private int id;
 
     private String title;
-    private long timeSheet;
+    private transient long timeSheet;
+
+    /**
+     * Creates an empty JobGroup.
+     *
+     * Needed for JPA.
+     */
+    public JobGroup() {
+    }
 
     /**
      * Creates a new job group.
@@ -55,6 +72,26 @@ class JobGroup {
      */
     void resetTimeSheet() {
         this.timeSheet = 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        JobGroup jobGroup = (JobGroup) o;
+
+        return Objects.equals(title, jobGroup.title);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title);
     }
 
     @Override
