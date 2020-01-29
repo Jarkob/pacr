@@ -13,6 +13,7 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -46,11 +47,10 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
     @BeforeEach
     public void setUp() {
         // repository
-        Set<GitBranch> selectedBranches = new HashSet<>();
-        selectedBranches.add(new GitBranch("branch1"));
-        selectedBranches.add(new GitBranch("branch2"));
-        repository = new GitRepository(true, selectedBranches, "pullURL", "RepositoryName",
-                new Color(0, 0, 0), LocalDate.now());
+        repository = new GitRepository(true, "pullURL", "RepositoryName",
+                "#000000", LocalDate.now());
+        Set<String> selectedBranches = new HashSet<>(Arrays.asList("branch1", "branch2"));
+        repository.setSelectedBranches(selectedBranches);
 
         // commit
         commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
@@ -142,16 +142,18 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
      * Adds a commit to the database and asserts that the values are being stored in the database.
      */
     @Test
-    public void addCommit() throws NotFoundException {
-        GitRepository repository = new GitRepository(false, new HashSet<>(), "git@github.com:leanprover/lean.git",
-                "testingrepo", new Color(0x00000), null);
+    public void addCommit() {
+        GitRepository repository = new GitRepository(false, "git@github.com:leanprover/lean.git",
+                "testingrepo", "#000000", null);
         String commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
 
         // first add repository to DB
         gitTrackingDB.addRepository(repository);
 
         GitCommit parent = new GitCommit(commitHash,
-                "commited suicide", LocalDateTime.now(), LocalDateTime.now(), repository);
+                "commited", LocalDateTime.now(), LocalDateTime.now(), repository);
+
+        gitTrackingDB.addCommit(parent);
 
         int amountCommits = 3;
         for (int i = 0; i < amountCommits - 1; i++) {
@@ -159,11 +161,10 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
                     repository);
             child.addParent(parent.getCommitHash());
 
+            gitTrackingDB.addCommit(child);
+
             parent = child;
         }
-
-        // then add commit to DB
-        gitTrackingDB.updateRepository(repository);
 
         // getting all commits with repository ID
         Collection<GitCommit> commits = gitTrackingDB.getAllCommits(repository.getId());

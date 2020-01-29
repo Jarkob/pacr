@@ -76,12 +76,12 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
 
     @Override
     public Collection<GitCommit> getAllCommits(int repositoryID) {
-        return commitDB.findCommitsByRepository_Id(repositoryID);
+        return commitDB.findGitCommitsByRepository_Id(repositoryID);
     }
 
     @Override
     public Collection<String> getAllCommitHashes(int repositoryID) {
-        Collection<GitCommit> commits = commitDB.findCommitsByRepository_Id(repositoryID);
+        Collection<GitCommit> commits = commitDB.findGitCommitsByRepository_Id(repositoryID);
 
         Set<String> commitHashes = new HashSet<>();
         for (GitCommit commit : commits) {
@@ -136,9 +136,7 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
 
         LOGGER.info("Deleting commits belonging to repository with ID {}.", repositoryID);
 
-        for (GitCommit commit : getAllCommits(repositoryID)) {
-            removeCommit(commit.getCommitHash());
-        }
+        commitDB.removeGitCommitsByRepository_Id(repositoryID);
 
         LOGGER.info("Deleting repository with ID {}.", repositoryID);
 

@@ -12,7 +12,6 @@ import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Map;
 import java.util.Arrays;
 import java.util.Set;
 import java.util.NoSuchElementException;
@@ -72,7 +71,7 @@ public class GitTracking implements IRepositoryImporter {
      */
     @Override
     public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
-                             @NotNull Map<String, Boolean> branchNames) {
+                             @NotNull Set<String> branchNames) {
         Objects.requireNonNull(repositoryURL);
         Objects.requireNonNull(name);
 
@@ -84,33 +83,7 @@ public class GitTracking implements IRepositoryImporter {
         repository.setSelectedBranches(branchNames);
         repository.setColor(colorPicker.getNextColor());
 
-        String commitLinkPrefix = getCommitLinkPrefix(repositoryURL);
-
-        if (commitLinkPrefix != null) {
-            repository.setCommitLinkPrefix(commitLinkPrefix);
-        }
-
         return gitTrackingAccess.addRepository(repository);
-    }
-
-    private String getCommitLinkPrefix(String pullURL) {
-        List<String> gitPrefixes = Arrays.asList("git@github.com", "git@gitlab.com", "git@git.scc.kit.edu");
-
-        for (String prefix : gitPrefixes) {
-            if (pullURL.startsWith(prefix)) {
-                return getCommitURLPrefix(pullURL, prefix);
-            }
-        }
-        return null;
-    }
-
-    private String getCommitURLPrefix(String pullURL, String gitPrefix) {
-        int startIndex = pullURL.indexOf(':') + 1; // ':' is the separator for host and repository path
-        int endIndex = pullURL.indexOf(".git");
-        String gitHttpsPrefix = "https://" + gitPrefix.substring(4) + "/";
-        String repositoryInfix = pullURL.substring(startIndex, endIndex);
-        String commitSuffix = "/commit/";
-        return gitHttpsPrefix + repositoryInfix + commitSuffix;
     }
 
     /**
@@ -157,6 +130,11 @@ public class GitTracking implements IRepositoryImporter {
             throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
         }
 
+        gitHandler.setBranchesToRepo(gitRepository);
+        gitTrackingAccess.updateRepository(gitRepository);
+
+        gitRepository = gitTrackingAccess.getRepository(repositoryID);
+
         Collection<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
         LOGGER.info("Got {} untracked commits.", untrackedCommitHashes.size());
 
@@ -188,7 +166,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param repository is the repository.
      * @param color is the color of the repository.
      */
-    public void updateColorOfRepository(GitRepository repository, Color color) {
+    public void updateColorOfRepository(GitRepository repository, String color) {
         this.colorPicker.setColorToUnused(repository.getColor());
         this.colorPicker.setColorToUsed(color);
         repository.setColor(color);
@@ -203,5 +181,10 @@ public class GitTracking implements IRepositoryImporter {
      */
     public GitRepository getRepository(int id) {
         return gitTrackingAccess.getRepository(id);
+    }
+
+    public Set<String> getBranches(int repositoryID) {
+        GitRepository gitRepository = gitTrackingAccess.getRepository(repositoryID);
+        return gitHandler.getBranchesOfRepository(gitRepository.getPullURL());
     }
 }

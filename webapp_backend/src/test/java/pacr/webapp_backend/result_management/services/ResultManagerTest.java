@@ -65,15 +65,14 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     public void setUp() {
         // repository
         branch = new GitBranch(BRANCH_NAME);
-        Set<GitBranch> selectedBranches = new HashSet<>();
-        selectedBranches.add(branch);
-        repository = new GitRepository(true, selectedBranches, URL, REPO_NAME,
-                new Color(0, 0, 0), LocalDate.now());
+        repository = new GitRepository(true, URL, REPO_NAME,
+                "#000000", LocalDate.now());
 
         // commit
         commit = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, repository);
 
         gitTrackingAccess.addRepository(repository);
+        gitTrackingAccess.addCommit(commit);
     }
 
     @AfterEach
@@ -138,11 +137,12 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         results.add(resultOne);
         results.add(resultTwo);
 
-        GitRepository repoTwo = new GitRepository(false, new HashSet<>(), URL, REPO_NAME, Color.BLACK,
+        GitRepository repoTwo = new GitRepository(false, URL, REPO_NAME, "#000000",
                 NOW.toLocalDate());
         GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repoTwo);
 
         gitTrackingAccess.addRepository(repoTwo);
+        gitTrackingAccess.addCommit(commitTwo);
 
         resultManager.importBenchmarkingResults(results);
 

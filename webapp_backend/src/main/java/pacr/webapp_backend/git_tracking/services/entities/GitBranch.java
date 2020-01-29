@@ -3,7 +3,6 @@ package pacr.webapp_backend.git_tracking.services.entities;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
@@ -49,16 +48,16 @@ public class GitBranch {
     }
 
     /**
-     * Returns the head of this branch.
-     * @return GitCommit todo
+     * Returns the head hash of this branch.
+     * @return commit hash
      */
     public String getHeadHash() {
         return headHash;
     }
 
     /**
-     * Sets the head of this branch.
-     * @param headHash is the hash of the head. todo
+     * Sets the head hash of this branch.
+     * @param headHash is the hash of the head.
      */
     public void setHeadHash(String headHash) {
         this.headHash = headHash;

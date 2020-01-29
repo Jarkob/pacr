@@ -2,7 +2,7 @@ package pacr.webapp_backend.shared;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.Map;
+import java.util.Set;
 
 /**
  * Can import a repository.
@@ -20,5 +20,5 @@ public interface IRepositoryImporter {
      * @return the ID of the repository.
      */
     int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate,
-                      @NotNull String name, @NotNull Map<String, Boolean> selectedBranches);
+                      @NotNull String name, @NotNull Set<String> selectedBranches);
 }

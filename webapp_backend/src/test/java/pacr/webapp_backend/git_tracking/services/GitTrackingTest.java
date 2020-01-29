@@ -49,16 +49,13 @@ public class GitTrackingTest {
     public void addRepository() {
         int repositoryId = 10;
         when(gitTrackingAccess.addRepository(any())).thenReturn(repositoryId);
-        when(colorPicker.getNextColor()).thenReturn(new Color(0xFF0000));
+        when(colorPicker.getNextColor()).thenReturn("#000000");
 
         ArgumentCaptor<GitRepository> repositoryCaptor = ArgumentCaptor.forClass(GitRepository.class);
 
-        Map<String, Boolean> selectedBranches = new HashMap<>();
-        selectedBranches.put("testBranch1", Boolean.TRUE);
-
         assertEquals(repositoryId,
                 gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr.git", null,
-                        "name", selectedBranches));
+                        "name", new HashSet<>(Arrays.asList("testBranch1"))));
 
         verify(gitTrackingAccess).addRepository(repositoryCaptor.capture());
         assertEquals("https://git.scc.kit.edu/pacr/pacr/commit/",
@@ -157,8 +154,11 @@ public class GitTrackingTest {
         gitTracking.pullFromAllRepositories();
 
         verify(gitTrackingAccess).getAllRepositories();
-        verify(gitTrackingAccess).getRepository(2);
-        verify(gitTrackingAccess).updateRepository(repository2);
+        // one time for setting branches, one time for getting new commits
+        verify(gitTrackingAccess, times(2)).getRepository(2);
+        verify(gitTrackingAccess, times(2)).updateRepository(repository2);
+
+        verify(gitHandler).setBranchesToRepo(repository2);
         verifyNoMoreInteractions(gitTrackingAccess);
     }
 

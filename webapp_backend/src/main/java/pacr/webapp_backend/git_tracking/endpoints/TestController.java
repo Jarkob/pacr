@@ -4,8 +4,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.git_tracking.services.GitTracking;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * TODO delete before deployment.
@@ -23,12 +23,9 @@ public class TestController {
 
     @RequestMapping("/testGitTracking/Lean")
     public void testGitTrackingLean() {
-        Map<String, Boolean> selectedBranches = new HashMap<>();
-        selectedBranches.put("NewParserAttr", Boolean.TRUE);
-        selectedBranches.put("test", Boolean.TRUE);
 
         int repoID = gitTracking.addRepository("git@github.com:leanprover/lean4.git", null, "Lean",
-                selectedBranches);
+                new HashSet<>(Arrays.asList("NewParserAttr", "test")));
 
         gitTracking.pullFromRepository(repoID);
 
@@ -39,7 +36,7 @@ public class TestController {
     public void testGitTrackingMijs() {
 
         int repoID = gitTracking.addRepository("git@git.scc.kit.edu:qa2270/mjis-mirror.git", null, "mijs",
-                new HashMap<>());
+                new HashSet<>());
 
         gitTracking.pullFromRepository(repoID);
         System.out.println("Finished\n\n\n");
@@ -47,11 +44,9 @@ public class TestController {
 
     @RequestMapping("/testGitTracking/Test")
     public void testGitTrackinTest() {
-        HashMap<String, Boolean> selectedBranches = new HashMap<>();
-        selectedBranches.put("testbranch1", Boolean.TRUE);
 
         int repoID = gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr-test-repository.git", null, "pacr test repo",
-                selectedBranches);
+                new HashSet<>(Arrays.asList("testbranch1")));
 
         gitTracking.pullFromRepository(repoID);
         System.out.println("Finished\n\n\n");

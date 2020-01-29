@@ -52,7 +52,7 @@ public class CleanUpCommits implements ICleanUpCommits {
         }
 
         // get branches
-        List<Ref> branches = null;
+        List<Ref> branches;
         try {
             branches = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
         } catch (GitAPIException e) {
@@ -61,8 +61,8 @@ public class CleanUpCommits implements ICleanUpCommits {
         }
         for (Ref branch : branches) {
             // only selected branches must be checked for commits
-            if (gitRepository.isBranchSelected(GitHandler.getNameOfBranch(branch))) {
-                Iterable<RevCommit> commits = null;
+            if (gitRepository.isBranchSelected(GitHandler.getNameOfRef(branch))) {
+                Iterable<RevCommit> commits;
                 try {
                     commits = git.log().add(branch.getObjectId()).call();
                 } catch (MissingObjectException | IncorrectObjectTypeException e) {

@@ -4,7 +4,7 @@ import org.springframework.data.repository.CrudRepository;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
 /**
- * This is an implementation of the IRepositoryAccess interface.
+ * This is a crud repository for GitRepository.
  *
  * @author Pavel Zwerschke
  */

@@ -1,7 +1,6 @@
 package pacr.webapp_backend.git_tracking.services;
 
 import javax.validation.constraints.NotNull;
-import java.awt.Color;
 
 /**
  * Assigns new colors to repositories.
@@ -15,18 +14,18 @@ public interface IColorPicker {
      * Gets the next available color in the color list for repositories.
      * @return next color.
      */
-    Color getNextColor();
+    String getNextColor();
 
     /**
      * Sets a color to unused in the color list for repositories.
      * @param color gets set to unused.
      */
-    void setColorToUnused(@NotNull Color color);
+    void setColorToUnused(@NotNull String color);
 
     /**
      * Sets a color to used in the color list for repositories.
      * @param color gets set to used.
      */
-    void setColorToUsed(@NotNull Color color);
+    void setColorToUsed(@NotNull String color);
 
 }

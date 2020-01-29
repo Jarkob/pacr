@@ -93,7 +93,7 @@ public class OutputBuilderTest {
         resultOne = new CommitResult(new SimpleBenchmarkingResult(), benchmarkResults, REPO_ID, COMPARISON_HASH);
 
         commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW,
-                new GitRepository(false, new HashSet<>(), URL, REPO_NAME, Color.BLACK, NOW.toLocalDate()));
+                new GitRepository(false, URL, REPO_NAME, "#000000", NOW.toLocalDate()));
     }
 
     /**

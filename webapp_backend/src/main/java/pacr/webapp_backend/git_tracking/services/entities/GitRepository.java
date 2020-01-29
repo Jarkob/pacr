@@ -1,7 +1,5 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
-import org.springframework.transaction.annotation.Transactional;
-
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -13,13 +11,13 @@ import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.time.LocalDate;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.Objects;
 import java.util.Collection;
+import java.util.List;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 /**
  * This class represents a repository.
@@ -48,12 +46,12 @@ public class GitRepository {
     private Set<GitBranch> trackedBranches;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private Map<String, Boolean> selectedBranches;
+    private Set<String> selectedBranches;
 
     private String pullURL;
     private String name;
     private boolean isHookSet;
-    private Color color;
+    private String color;
     private LocalDate observeFromDate;
     private String commitLinkPrefix;
 
@@ -62,36 +60,36 @@ public class GitRepository {
      */
     public GitRepository() {
         this.trackedBranches = new HashSet<>();
-        this.selectedBranches = new HashMap<>();
+        this.selectedBranches = new HashSet<>();
         this.commitLinkPrefix = null;
     }
 
     /**
      * Creates a new repository.
      * @param trackAllBranches is whether all branches are being tracked.
-     * @param trackedBranches are the selected branches.
      * @param pullURL is the pull URL of the repository.
      * @param name is the name of the repository.
      * @param color is the color in which the repository is displayed
      * @param observeFromDate is the date from which on the repository is being observed.
      *                        Is null if all commits are being observed.
      */
-    public GitRepository(boolean trackAllBranches, @NotNull Set<GitBranch> trackedBranches,
+    public GitRepository(boolean trackAllBranches,
                          @NotNull String pullURL, @NotNull String name,
-                         @NotNull Color color, LocalDate observeFromDate) {
-        Objects.requireNonNull(trackedBranches);
+                         @NotNull String color, LocalDate observeFromDate) {
         Objects.requireNonNull(pullURL);
         Objects.requireNonNull(name);
         Objects.requireNonNull(color);
 
+        this.selectedBranches = new HashSet<>();
+        this.trackedBranches = new HashSet<>();
+
         this.trackAllBranches = trackAllBranches;
-        this.trackedBranches = trackedBranches;
         this.pullURL = pullURL;
         this.name = name;
         this.isHookSet = false;
         this.color = color;
         this.observeFromDate = observeFromDate;
-        this.commitLinkPrefix = null;
+        setCommitLinkPrefix(pullURL);
     }
 
     /**
@@ -127,14 +125,6 @@ public class GitRepository {
     }
 
     /**
-     * Sets the commit link prefix of the repository.
-     * @param commitLinkPrefix is the prefix of the URL directing to the commit.
-     */
-    public void setCommitLinkPrefix(String commitLinkPrefix) {
-        this.commitLinkPrefix = commitLinkPrefix;
-    }
-
-    /**
      * Returns all selected branches. These are all tracked branches if isTrackAllBranches returns true or
      * all ignored branches if isTrackAllBranches returns false.
      * @return selected Branches
@@ -150,7 +140,28 @@ public class GitRepository {
     public void setPullURL(@NotNull String pullURL) {
         Objects.requireNonNull(pullURL);
 
+        setCommitLinkPrefix(pullURL);
+
         this.pullURL = pullURL;
+    }
+
+    private void setCommitLinkPrefix(String pullURL) {
+        List<String> gitPrefixes = Arrays.asList("git@github.com", "git@gitlab.com", "git@git.scc.kit.edu");
+
+        for (String prefix : gitPrefixes) {
+            if (pullURL.startsWith(prefix)) {
+                this.commitLinkPrefix = getCommitURLPrefix(pullURL, prefix);
+            }
+        }
+    }
+
+    private String getCommitURLPrefix(String pullURL, String gitPrefix) {
+        int startIndex = pullURL.indexOf(':') + 1; // ':' is the separator for host and repository path
+        int endIndex = pullURL.indexOf(".git");
+        String gitHttpsPrefix = "https://" + gitPrefix.substring(4) + "/";
+        String repositoryInfix = pullURL.substring(startIndex, endIndex);
+        String commitSuffix = "/commit/";
+        return gitHttpsPrefix + repositoryInfix + commitSuffix;
     }
 
     /**
@@ -190,7 +201,7 @@ public class GitRepository {
      * Returns the color in which the repository is displayed.
      * @return color
      */
-    public Color getColor() {
+    public String getColor() {
         return color;
     }
 
@@ -257,10 +268,10 @@ public class GitRepository {
         }
 
         if (trackAllBranches) {
-            return !selectedBranches.getOrDefault(branchName, false);
+            return !selectedBranches.contains(branchName);
         }
 
-        return selectedBranches.getOrDefault(branchName, false);
+        return selectedBranches.contains(branchName);
     }
 
     /**
@@ -310,7 +321,7 @@ public class GitRepository {
     /**
      * @param color is the new color of the repository.
      */
-    public void setColor(Color color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
@@ -321,11 +332,11 @@ public class GitRepository {
         this.observeFromDate = observeFromDate;
     }
 
-    public Map<String, Boolean> getSelectedBranches() {
+    public Set<String> getSelectedBranches() {
         return selectedBranches;
     }
 
-    public void setSelectedBranches(Map<String, Boolean> selectedBranches) {
+    public void setSelectedBranches(Set<String> selectedBranches) {
         this.selectedBranches = selectedBranches;
     }
 }
