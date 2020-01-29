@@ -146,7 +146,11 @@ export class AdminRepositoriesComponent implements OnInit {
 
   public addRepository = (addRepositoryFormValue) => {
     if (this.addRepositoryForm.valid) {
-      // TODO
+      // this.repositoryService.addRepository({
+      //   id: null,
+      //   trackAllBranches: true,
+      //   selectedBranches: addRepositoryFormValue
+      // }).subscribe(); TODO
     }
   }
 
@@ -157,7 +161,7 @@ export class AdminRepositoriesComponent implements OnInit {
   }
 
   public deleteRepository(repository: Repository) {
-    this.repositoryService.removeRepository(repository.id); // TODO
+    this.repositoryService.removeRepository(repository.id);
   }
 
   public selectRepository(repository: Repository) {

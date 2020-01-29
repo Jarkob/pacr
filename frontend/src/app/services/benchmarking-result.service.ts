@@ -1,3 +1,4 @@
+import { DiagramOutputResult } from './../classes/diagram-output-result';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { MockService } from './mock.service';
 import { GlobalService } from './global.service';
@@ -19,6 +20,7 @@ export class BenchmarkingResultService {
   ) { }
 
   /**
+   * @deprecated
    * get all benchmarking results from one repository
    * @param repository the repository
    */
@@ -27,6 +29,7 @@ export class BenchmarkingResultService {
   }
 
   /**
+   * @deprecated
    * get all benchmarking results from a specific branch
    * @param repository the repository
    * @param branch the branch
@@ -49,10 +52,9 @@ export class BenchmarkingResultService {
    * @param repository the id of the repository
    * @param branch the branch
    */
-  public getBenchmarkingResults(benchmark: number, repository: number, branch: string): Observable<any> {
-    // return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/benchmark/repo/branch');
-    // TODO add class
-    return this.mockService.getBenchmarkingResults();
+  public getBenchmarkingResults(benchmark: number, repositoryId: number, branch: string): Observable<DiagramOutputResult[]> {
+    return this.http.get<DiagramOutputResult[]>(this.globalService.url + '/results/' + benchmark + '/' + repositoryId + '/' + branch);
+    // return this.mockService.getBenchmarkingResults();
   }
 
   /**
@@ -70,9 +72,12 @@ export class BenchmarkingResultService {
     return this.http.get<CommitBenchmarkingResult[]>(this.globalService.url + '/history');
   }
 
-  // TODO delete
-  // public deleteBenchmarkingResult():
-  // /results/commit/:sha
-
+  /**
+   * delete all benchmarking results for one commit
+   * @param sha the commit hash
+   */
+  public deleteBenchmarkingResult(sha: string): Observable<{}> {
+    return this.http.post<{}>(this.globalService.url + '/results/commit/' + sha, null);
+  }
 
 }

@@ -5,4 +5,3 @@ export interface UpdateBenchmark {
     description: string;
     groupId: number;
 }
-

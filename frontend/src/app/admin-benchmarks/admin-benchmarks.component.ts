@@ -148,29 +148,49 @@ export class AdminBenchmarksComponent implements OnInit {
   }
 
   public editBenchmark(benchmark: Benchmark) {
-    // todo selectedbenchmark
+    this.benchmarkService.updateBenchmark({
+      id: benchmark.id,
+      originalName: benchmark.originalName,
+      customName: benchmark.customName,
+      description: benchmark.description,
+      groupId: benchmark.benchmarkGroup.id
+    }).subscribe();
   }
 
   public addBenchmarkGroup(group: Group) {
-    // todo
+    this.benchmarkService.addGroup(group.name).subscribe();
   }
 
   public editBenchmarkGroup() {
-    // todo only selected
+    this.benchmarkService.updateGroup({
+      id: this.selectedBenchmarkGroup.id,
+      name: this.selectedBenchmarkGroup.name
+    }).subscribe();
   }
 
   public deleteBenchmarkGroup(group: Group) {
-    // todo
+    this.benchmarkService.deleteGroup(group.id);
   }
 
   public onCancelEditBenchmarkGroup() {
     this.loadBenchmarkGroupData(this.selectedBenchmarkGroup);
   }
 
-
   public onSaveBenchmarkGroups() {
     this.dropped = false;
-    // todo all groups
+    for (const group of this.benchmarkGroups) {
+      this.benchmarkService.updateGroup(group).subscribe();
+      for (const benchmark of group.benchmarks) {
+        benchmark.benchmarkGroup = {id: group.id, name: group.name};
+        this.benchmarkService.updateBenchmark({
+          id: benchmark.id,
+          originalName: benchmark.originalName,
+          customName: benchmark.customName,
+          description: benchmark.description,
+          groupId: group.id
+        }).subscribe();
+      }
+    }
   }
 
   public onCancelBenchmarkGroups() {
@@ -186,10 +206,7 @@ export class AdminBenchmarksComponent implements OnInit {
     });
   }
 
-
   public onCancelAddBenchmarkGroup() {
     this.initAddGroupFormControls();
   }
-
-
 }

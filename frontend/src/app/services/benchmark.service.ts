@@ -50,11 +50,21 @@ export class BenchmarkService {
     return this.http.put<Benchmark>(this.globalService.url + '/benchmark', benchmark);
   }
 
-  // public updateGroup(): Observable<BenchmarkGroup> {
+  /**
+   * update a benchmarkgroup
+   * @param benchmarkGroup the benchmarkgroup
+   */
+  public updateGroup(benchmarkGroup: BenchmarkGroup): Observable<BenchmarkGroup> {
+    return this.http.put<BenchmarkGroup>(this.globalService.url + '/group/' + benchmarkGroup.id, benchmarkGroup);
+  }
 
-  // }
-  // TODO
-  // public deleteGroup(): Observable<
+  /**
+   * delete a benchmarkgroup
+   * @param groupId the id of the group
+   */
+  public deleteGroup(groupId: number): Observable<{}> {
+    return this.http.delete<{}>(this.globalService.url + '/group/' + groupId);
+  }
 
   /**
    * add a benchmark group

@@ -74,10 +74,6 @@ mat-radio-group {
     margin: 10px 0;
 }
 
-.pull-interval {
-    /* padding: 1em; */
-}
-
 .pull-interval > * {
     padding: 0.5em;
 }
