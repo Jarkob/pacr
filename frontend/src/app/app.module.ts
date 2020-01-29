@@ -85,6 +85,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     CommonModule,
     HttpClientModule,
     FlexLayoutModule,
+    FormsModule,
     ReactiveFormsModule,
     DragDropModule
   ],

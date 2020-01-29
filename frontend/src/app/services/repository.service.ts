@@ -22,7 +22,7 @@ export class RepositoryService {
    * get all repositories
    */
   public getAllRepositories(): Observable<Repository[]> {
-    return this.http.get<Repository[]>(this.globalService.url + '/allRepositories');
+    return this.http.get<Repository[]>(this.globalService.url + '/repositories');
   }
 
   /**
