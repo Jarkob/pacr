@@ -21,9 +21,7 @@ public class GitBranch {
     private int id;
 
     private String name;
-
-    @ManyToOne
-    private GitCommit localHead;
+    private String headHash;
 
     /**
      * Creates an empty branch. Necessary to be an Entity.
@@ -39,7 +37,7 @@ public class GitBranch {
         Objects.requireNonNull(name);
 
         this.name = name;
-        this.localHead = null;
+        this.headHash = null;
     }
 
     /**
@@ -52,17 +50,17 @@ public class GitBranch {
 
     /**
      * Returns the head of this branch.
-     * @return GitCommit
+     * @return GitCommit todo
      */
-    public GitCommit getLocalHead() {
-        return localHead;
+    public String getHeadHash() {
+        return headHash;
     }
 
     /**
      * Sets the head of this branch.
-     * @param localHead is the head.
+     * @param headHash is the hash of the head. todo
      */
-    public void setLocalHead(GitCommit localHead) {
-        this.localHead = localHead;
+    public void setHeadHash(String headHash) {
+        this.headHash = headHash;
     }
 }

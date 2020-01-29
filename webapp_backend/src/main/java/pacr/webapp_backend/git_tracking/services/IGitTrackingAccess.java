@@ -57,12 +57,20 @@ public interface IGitTrackingAccess {
      */
     void addCommit(@NotNull GitCommit commit);
 
+    void addCommits(@NotNull Set<GitCommit> commits);
+
+    void updateCommit(@NotNull GitCommit commit);
+
+    void updateCommits(@NotNull Set<GitCommit> commits);
+
     /**
      * Returns all commits belonging to a repository.
      * @param repositoryID is the ID of the repository.
      * @return all commits belonging to the repository.
      */
     Collection<GitCommit> getAllCommits(int repositoryID);
+
+    Collection<String> getAllCommitHashes(int repositoryID);
 
     /**
      * Returns a commit.

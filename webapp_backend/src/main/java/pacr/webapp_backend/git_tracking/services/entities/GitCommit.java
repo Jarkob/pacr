@@ -83,7 +83,6 @@ public class GitCommit implements ICommit {
         this.parentHashes = new HashSet<>();
 
         this.repository = repository;
-        repository.addNewCommit(this);
     }
 
     @Override
@@ -155,7 +154,6 @@ public class GitCommit implements ICommit {
             return;
         }
         this.repository = repository;
-        repository.addNewCommit(this);
     }
 
     @Override

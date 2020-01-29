@@ -146,11 +146,13 @@ public class GitHandler {
                 // try again with reset history
                 return pullFromRepository(gitRepository);
             }
+
+
         }
 
         // search for git tags
         LOGGER.info("Searching for Git-Tags.");
-        searchForGitTags(git, gitRepository);
+        searchForGitTags(git);
         gitTrackingAccess.updateRepository(gitRepository);
 
         git.getRepository().close();
@@ -162,20 +164,19 @@ public class GitHandler {
     private void handleForcePush(Git git, GitRepository gitRepository, Ref branch) {
         GitBranch gitBranch = gitRepository.getTrackedBranch(getNameOfBranch(branch));
 
-        gitBranch.setLocalHead(null);
+        gitBranch.setHeadHash(null);
 
-        Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository);
+        Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
 
         for (String commitHash : toDelete) {
             resultDeleter.deleteBenchmarkingResults(commitHash);
 
-            gitRepository.removeCommit(commitHash);
             gitTrackingAccess.removeCommit(commitHash);
         }
         gitTrackingAccess.updateRepository(gitRepository);
     }
 
-    private void searchForGitTags(Git git, GitRepository gitRepository) {
+    private void searchForGitTags(Git git) {
         List<Ref> tags;
         try {
             tags = git.tagList().call();
@@ -186,9 +187,10 @@ public class GitHandler {
 
         for (Ref tag : tags) {
             String taggedHash = tag.getObjectId().getName();
-            GitCommit tagged = gitRepository.getCommit(taggedHash);
+            GitCommit tagged = gitTrackingAccess.getCommit(taggedHash);
 
             tagged.addLabel(getNameOfLabel(tag));
+            gitTrackingAccess.updateCommit(tagged);
         }
     }
 
@@ -316,40 +318,48 @@ public class GitHandler {
                              Set<String> untrackedCommits) throws ForcePushException {
 
         if (gitRepository.isBranchSelected(getNameOfBranch(branch))) {
-            GitBranch gitBranch = gitRepository.getTrackedBranch(getNameOfBranch(branch));
+            String branchName = getNameOfBranch(branch);
+
+            // create GitBranch if not exists
+            gitRepository.createBranchIfNotExists(branchName);
+            gitTrackingAccess.updateRepository(gitRepository);
+
             //LOGGER("HEAD of branch {} is {}.", gitBranch.getName(), gitBranch.getLocalHead().getCommitHash());
 
-            LOGGER.info("Searching for new commits in branch {}.", getNameOfBranch(branch));
+            LOGGER.info("Searching for new commits in branch {}.", branchName);
 
             Set<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository, branch);
 
-            LOGGER.info("Timestamp5 (after searchForNewCommits)");
+
+            LOGGER.info("Adding {} commits to database for branch {}. This may take a while.",
+                    commitsFromBranch.size(), branchName);
+
+            gitTrackingAccess.addCommits(commitsFromBranch);
+
+            LOGGER.info("Added {} commits to the database for branch {}.",
+                    commitsFromBranch.size(), branchName);
 
             for (GitCommit commit : commitsFromBranch) {
                 untrackedCommits.add(commit.getCommitHash());
             }
 
-            LOGGER.info("Adding commits to the database.");
-            // commitsFromBranch were already added to the repository in searchForNewCommits
-
-            LOGGER.info("Added {} commits to the database for branch {}.",
-                    commitsFromBranch.size(), getNameOfBranch(branch));
 
             // update branch head
-            setBranchHead(branch, gitRepository, gitBranch);
+            GitBranch gitBranch = gitRepository.getTrackedBranch(branchName);
+            setBranchHead(branch, gitBranch);
             gitTrackingAccess.updateRepository(gitRepository);
         } else {
             LOGGER.info("Skipping branch {} because it is not selected.", getNameOfBranch(branch));
         }
     }
 
-    private void setBranchHead(Ref branch, GitRepository gitRepository, GitBranch gitBranch) {
+    private void setBranchHead(Ref branch, GitBranch gitBranch) {
 
-        GitCommit head = gitRepository.getCommit(branch.getObjectId().getName());
+        String headHash = branch.getObjectId().getName();
 
-        LOGGER.info("Setting head {} for branch {}.", head.getCommitHash(), gitBranch.getName());
+        LOGGER.info("Setting head {} for branch {}.", headHash, gitBranch.getName());
 
-        gitBranch.setLocalHead(head);
+        gitBranch.setHeadHash(headHash);
     }
 
     private GitCommit getCommitFromSet(String commitHash, Set<GitCommit> commits) {
@@ -392,8 +402,6 @@ public class GitHandler {
         String branchName = getNameOfBranch(branch);
         GitBranch gitBranch = gitRepository.getTrackedBranch(branchName);
 
-        LOGGER.info("Timestamp1 (got branch)");
-
         // iterate over all commits from branch
         Iterable<RevCommit> commitsIterable = null;
         try {
@@ -403,14 +411,10 @@ public class GitHandler {
             return new HashSet<>();
         }
 
-        LOGGER.info("Timestamp2 (after git log)");
-
         // add all new commits to commits ordered by their commit history
         // and check that no force push occurred
         List<RevCommit> commits = getNewCommits(commitsIterable, gitRepository, gitBranch);
         List<GitCommit> commitsToAdd = new ArrayList<>();
-
-        LOGGER.info("Timestamp4 (after getNewCommits)");
 
         for (RevCommit revCommit : commits) {
             if (revCommit.getFullMessage().contains("#pacr-ignore")) {
@@ -455,22 +459,23 @@ public class GitHandler {
             throws ForcePushException {
         List<RevCommit> commits = new ArrayList<>();
 
-        LOGGER.info("Timestamp3 (getNewCommits)");
+        Set<GitCommit> commitsToUpdate = new HashSet<>();
 
         for (RevCommit commit : commitsIterable) {
 
             if (gitTrackingAccess.containsCommit(commit.getName())) {
 
-                GitCommit localHead = branch.getLocalHead();
-                GitCommit alreadyContained = gitRepository.getCommit(commit.getName());
+                String headHash = branch.getHeadHash();
+                GitCommit alreadyContained = gitTrackingAccess.getCommit(commit.getName());
 
-                if (localHead == null || !alreadyContained.getBranchNames().contains(branch.getName())) {
-                    //LOGGER.info("commit {}, localhead {}, alreadycontainedcommitbranches {}.", commit.getName(), localHead,
-                  //          alreadyContained.getBranchNames());
+                if (headHash == null || !alreadyContained.getBranchNames().contains(branch.getName())) {
+                    LOGGER.info("commit {}, localhead {}, alreadycontainedcommitbranches {}.",
+                            commit.getName(), headHash, alreadyContained.getBranchNames());
 
                     alreadyContained.addBranch(branch);
-                } else if (!localHead.getCommitHash().equals(commit.getName())) { // check for force push
-                    LOGGER.info("LOCALHEAD CH: {}", localHead.getCommitHash());
+                    commitsToUpdate.add(alreadyContained);
+                } else if (!headHash.equals(commit.getName())) { // check for force push
+                    LOGGER.info("LOCALHEAD CH: {}", headHash);
                     LOGGER.info("COMMIT HASH {}", commit.getName());
                     LOGGER.info("Force push detected at {}. Deleting unused commits.", commit.getName());
                     throw new ForcePushException();
@@ -482,6 +487,8 @@ public class GitHandler {
                 commits.add(commit);
             }
         }
+
+        gitTrackingAccess.updateCommits(commitsToUpdate);
 
         return commits;
     }
@@ -507,7 +514,8 @@ public class GitHandler {
     public void cloneRepository(@NotNull GitRepository gitRepository) throws GitAPIException {
         Objects.requireNonNull(gitRepository);
 
-        LOGGER.info("Cloning repository {} ({}). URL: {}.", gitRepository.getName(), gitRepository.getId(),
+        LOGGER.info("Cloning repository {} ({}). URL: {}. This may take a while.",
+                gitRepository.getName(), gitRepository.getId(),
                 gitRepository.getPullURL());
 
         Git git = Git.cloneRepository()

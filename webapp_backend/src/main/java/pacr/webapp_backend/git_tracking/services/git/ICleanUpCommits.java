@@ -1,6 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.git;
 
 import org.eclipse.jgit.api.Git;
+import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,7 @@ public interface ICleanUpCommits {
      * @param gitRepository is the GitRepository where the force push happened.
      * @return all commits that are not needed any more.
      */
-    Collection<String> cleanUp(@NotNull Git git, @NotNull GitRepository gitRepository);
+    Collection<String> cleanUp(@NotNull Git git, @NotNull GitRepository gitRepository,
+                               @NotNull IGitTrackingAccess gitTrackingAccess);
 
 }

@@ -11,6 +11,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
+import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
 import javax.validation.constraints.NotNull;
@@ -38,12 +39,13 @@ public class CleanUpCommits implements ICleanUpCommits {
     }
 
     @Override
-    public Collection<String> cleanUp(@NotNull Git git, @NotNull GitRepository gitRepository) {
+    public Collection<String> cleanUp(@NotNull Git git, @NotNull GitRepository gitRepository,
+                                      @NotNull IGitTrackingAccess gitTrackingAccess) {
         Objects.requireNonNull(git);
         Objects.requireNonNull(gitRepository);
 
         // initialize map that stores whether the commit is used or not
-        Collection<String> commitHashes = gitRepository.getAllCommitHashes();
+        Collection<String> commitHashes = gitTrackingAccess.getAllCommitHashes(gitRepository.getId());
         Map<String, Boolean> commitUsed = new HashMap<>();
         for (String commitHash : commitHashes) {
             commitUsed.put(commitHash, Boolean.FALSE);

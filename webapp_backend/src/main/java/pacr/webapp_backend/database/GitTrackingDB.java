@@ -47,8 +47,48 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
+    public void addCommits(@NotNull Set<GitCommit> commits) {
+        Objects.requireNonNull(commits);
+
+        commitDB.saveAll(commits);
+    }
+
+    @Override
+    public void updateCommit(@NotNull GitCommit commit) {
+        Objects.requireNonNull(commit);
+
+        if (!commit.repositoryIsInDatabase()) {
+            throw new RepositoryNotStoredException("The repository of the commit must be stored in the database "
+                    + "before this commit is being stored in the database.");
+        }
+        if (!commitDB.existsById(commit.getCommitHash())) {
+            throw new IllegalArgumentException("Commit doesn't exist.");
+        }
+        commitDB.save(commit);
+    }
+
+    @Override
+    public void updateCommits(@NotNull Set<GitCommit> commits) {
+        Objects.requireNonNull(commits);
+
+        commitDB.saveAll(commits);
+    }
+
+    @Override
     public Collection<GitCommit> getAllCommits(int repositoryID) {
         return commitDB.findCommitsByRepository_Id(repositoryID);
+    }
+
+    @Override
+    public Collection<String> getAllCommitHashes(int repositoryID) {
+        Collection<GitCommit> commits = commitDB.findCommitsByRepository_Id(repositoryID);
+
+        Set<String> commitHashes = new HashSet<>();
+        for (GitCommit commit : commits) {
+            commitHashes.add(commit.getCommitHash());
+        }
+
+        return commitHashes;
     }
 
     @Override

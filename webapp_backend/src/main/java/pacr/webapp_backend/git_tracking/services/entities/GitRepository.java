@@ -50,8 +50,6 @@ public class GitRepository {
     @ElementCollection(fetch = FetchType.EAGER)
     private Map<String, Boolean> selectedBranches;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private Map<String, GitCommit> commits;
     private String pullURL;
     private String name;
     private boolean isHookSet;
@@ -63,7 +61,6 @@ public class GitRepository {
      * Creates an empty repository. Necessary to be an Entity.
      */
     public GitRepository() {
-        this.commits = new HashMap<>();
         this.trackedBranches = new HashSet<>();
         this.selectedBranches = new HashMap<>();
         this.commitLinkPrefix = null;
@@ -89,7 +86,6 @@ public class GitRepository {
 
         this.trackAllBranches = trackAllBranches;
         this.trackedBranches = trackedBranches;
-        this.commits = new HashMap<>();
         this.pullURL = pullURL;
         this.name = name;
         this.isHookSet = false;
@@ -241,30 +237,6 @@ public class GitRepository {
     }
 
     /**
-     * Adds a new commit to this repository.
-     * @param commit is the commit being added.
-     */
-    public void addNewCommit(@NotNull GitCommit commit) {
-        Objects.requireNonNull(commit);
-
-        if (this.commits.containsValue(commit)) {
-            return;
-        }
-        this.commits.put(commit.getCommitHash(), commit);
-        commit.setRepository(this);
-    }
-
-    /**
-     * Removes a commit from the repository.
-     * @param commitHash is the hash of the commit being removed.
-     */
-    public void removeCommit(@NotNull String commitHash) {
-        Objects.requireNonNull(commitHash);
-
-        commits.remove(commitHash);
-    }
-
-    /**
      * Checks if the repository is added to the database. In that case, the ID is not 0 anymore.
      * @return true if it is in the database, false if it isn't.
      */
@@ -296,7 +268,7 @@ public class GitRepository {
      * @param branchName is the name of the branch.
      * @return GitBranch.
      */
-    public GitBranch getTrackedBranch(@NotNull String branchName) throws NoSuchElementException {
+    public GitBranch getTrackedBranch(@NotNull String branchName) {
         Objects.requireNonNull(branchName);
 
         for (GitBranch branch : trackedBranches) {
@@ -305,36 +277,20 @@ public class GitRepository {
             }
         }
 
+    throw new NoSuchElementException("Branch " + branchName + " does not exist.");
+    }
+
+    public void createBranchIfNotExists(@NotNull String branchName) {
+        Objects.requireNonNull(branchName);
+
+        for (GitBranch branch : trackedBranches) {
+            if (branch.getName().equals(branchName)) {
+                return;
+            }
+        }
+
         GitBranch newBranch = new GitBranch(branchName);
         trackedBranches.add(newBranch);
-        return newBranch;
-    }
-
-    /**
-     * Gets a GitCommit from this repository.
-     * @param commitHash is the commit hash.
-     * @return GitCommit.
-     */
-    public GitCommit getCommit(@NotNull String commitHash) {
-        Objects.requireNonNull(commitHash);
-
-        return commits.getOrDefault(commitHash, null);
-    }
-
-    /**
-     * Gets all commits from this repository.
-     * @return commits.
-     */
-    public Collection<GitCommit> getCommits() {
-        return commits.values();
-    }
-
-    /**
-     * Returns all commit hashes of this repository.
-     * @return commit hashes.
-     */
-    public Collection<String> getAllCommitHashes() {
-        return commits.keySet();
     }
 
     /**
