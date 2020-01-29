@@ -24,7 +24,9 @@ export class DiagramMaximizedComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  @HostListener('document:keydown', ['$event']) private handleKeydown(event: KeyboardEvent) {
+  // FIXME @Daniel: Directive DetailViewMaximizedComponent, Property 'handleKeydown' is private
+  // and only accessible within class 'DetailViewMaximizedComponent'.
+  @HostListener('document:keydown', ['$event']) handleKeydown(event: KeyboardEvent) {
     if (event.keyCode === ESCAPE_KEY) {
       this.dialogRef.close();
     }

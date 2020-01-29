@@ -168,8 +168,8 @@ export class AdminBenchmarksComponent implements OnInit {
     }).subscribe();
   }
 
-  public deleteBenchmarkGroup(group: Group) {
-    this.benchmarkService.deleteGroup(group.id);
+  public deleteBenchmarkGroup() {
+    this.benchmarkService.deleteGroup(this.selectedBenchmarkGroup.id);
   }
 
   public onCancelEditBenchmarkGroup() {

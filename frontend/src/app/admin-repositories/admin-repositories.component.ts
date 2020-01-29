@@ -160,8 +160,8 @@ export class AdminRepositoriesComponent implements OnInit {
     }
   }
 
-  public deleteRepository(repository: Repository) {
-    this.repositoryService.removeRepository(repository.id);
+  public deleteRepository() {
+    this.repositoryService.removeRepository(this.selectedRepository.id);
   }
 
   public selectRepository(repository: Repository) {

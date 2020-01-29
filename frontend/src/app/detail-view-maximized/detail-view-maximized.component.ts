@@ -91,7 +91,7 @@ export class DetailViewMaximizedComponent implements OnInit {
     }
 
     if (groupRows.length > 1) {
-      throw "Data row is in more than one group!";
+      throw new Error('Data row is in more than one group!');
     }
 
     const parent = groupRows[0] as Group;
@@ -138,7 +138,7 @@ export class DetailViewMaximizedComponent implements OnInit {
 
     let subGroups = [];
     groups.forEach(group => {
-      const rowsInGroup = data.filter(row => group[currentColumn] === row[currentColumn])
+      const rowsInGroup = data.filter(row => group[currentColumn] === row[currentColumn]);
       const subGroup = this.getSublevel(rowsInGroup, level + 1, groupByColumns, group);
       subGroup.unshift(group);
       subGroups = subGroups.concat(subGroup);
@@ -163,7 +163,7 @@ export class DetailViewMaximizedComponent implements OnInit {
     return item.hadLocalError;
   }
 
-  @HostListener('document:keydown', ['$event']) private handleKeydown(event: KeyboardEvent) {
+  @HostListener('document:keydown', ['$event']) handleKeydown(event: KeyboardEvent) {
     if (event.keyCode === ESCAPE_KEY) {
       this.dialogRef.close();
     }
