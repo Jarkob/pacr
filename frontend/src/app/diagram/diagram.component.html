@@ -8,11 +8,19 @@
                 <mat-label>Benchmark</mat-label>
                 <mat-select [(value)]="selectedBenchmark" (selectionChange)="loadBenchmark()">
                     <mat-optgroup *ngFor="let group of this.benchmarks | keyvalue" [label]="group.key">
-                        <mat-option *ngFor="let benchmark of group.value" [value]="benchmark.originalName">
+                        <mat-option *ngFor="let benchmark of group.value" [value]="benchmark">
                             {{ benchmark.customName }}
                         </mat-option>
                     </mat-optgroup>
-                </mat-select> 
+                </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Property</mat-label>
+                <mat-select [(value)]="selectedBenchmarkProperty" (selectionChange)="loadProperty()">
+                    <mat-option *ngFor="let property of this.selectedBenchmark?.properties" [value]="property">
+                        {{ property.name }}
+                    </mat-option>
+                </mat-select>
             </mat-form-field>
             <button mat-button (click)="loadMockData()">Load Mock</button>
             <ul *ngIf="this.legendData">

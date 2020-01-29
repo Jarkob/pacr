@@ -1,3 +1,4 @@
+import { BenchmarkProperty } from './../classes/benchmark-property';
 import { Dataset } from './../classes/dataset';
 import { DiagramMaximizerService } from './diagram-maximizer.service';
 import { DiagramMaximizedRef } from './diagram-maximized-ref';
@@ -44,6 +45,7 @@ export class DiagramComponent implements OnInit {
   benchmarks: Map<string, Benchmark[]> = new Map<string, Benchmark[]>();
   repositoryResults: Map<string, BenchmarkingResult[]> = new Map<string, BenchmarkingResult[]>();
   selectedBenchmark: Benchmark;
+  selectedBenchmarkProperty: BenchmarkProperty;
 
   // TODO fix types
   commits: any;
@@ -190,20 +192,33 @@ export class DiagramComponent implements OnInit {
       return;
     }
 
-    this.benchmarkingResultService.getBenchmarkingResultsForBenchmark(this.selectedBenchmark.id).subscribe(
-      data => this.commits = data
-    );
+    // FIXME messes up diagram, include later
+    // this.benchmarkingResultService.getBenchmarkingResultsForBenchmark(this.selectedBenchmark.id).subscribe(
+    //   data => this.commits = data
+    // );
 
     this.deleteLine();
     this.diagramService.selectCommit('');
-    this.datasets = [];
+    // this.datasets = []; s. a.
 
-    const lines = this.calculateLines();
+    const lines = this.calculateLines('');
     // both is important, otherwise event listening for change of legend gets messed up
     this.chart.datasets.concat(lines);
     this.datasets.concat(lines);
 
     this.legendData = this.chart.chart.generateLegend();
+    this.chart.update();
+  }
+
+  /**
+   * load the selected benchmark property
+   */
+  public loadProperty() {
+    // change datasets
+    const lines = this.calculateLines(this.selectedBenchmarkProperty.name);
+    this.chart.datasets = lines;
+    this.datasets = lines;
+
     this.chart.update();
   }
 
@@ -249,10 +264,11 @@ export class DiagramComponent implements OnInit {
     this.chart.update();
   }
 
-  private calculateLines(): any[] {
+  private calculateLines(property: string): any[] {
     const lines = [];
     const newestCommit = this.getNewestCommit(this.commits);
     this.lists = [];
+    this.checked = [];
     const empty = [];
     if (newestCommit) {
       this.dfs(newestCommit, empty);
@@ -264,11 +280,11 @@ export class DiagramComponent implements OnInit {
       for (const commit of list) {
         dataset.data.push({
           x: commit.commitDate,
-          y: commit.result
+          y: commit.result// TODO add property
         });
         dataset.code.push({
           sha: commit.sha,
-          val: commit.result
+          val: commit.result// TODO add property
         });
         index++;
       }
@@ -364,7 +380,10 @@ export class DiagramComponent implements OnInit {
   private getBenchmarks(): void {
     this.benchmarkGroups.forEach(group => {
       this.benchmarkService.getBenchmarksByGroup(group.id).subscribe(
-        data => this.benchmarks.set(group.name, data)
+        data => {
+          this.benchmarks.set(group.name, data);
+          console.log(data);
+        }
       );
     });
 
