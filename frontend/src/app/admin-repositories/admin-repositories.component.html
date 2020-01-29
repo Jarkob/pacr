@@ -1,5 +1,13 @@
 <mat-tab-group animationDuration="0ms" #repositoryTabs>
     <mat-tab label="{{ strings?.tabRepositoryOverview }}">
+        <div fxFlex fxFlexAlign="row" class="pull-interval">
+            <mat-form-field fxFlex="15">
+                <input matInput [(ngModel)]="pullInterval" type="number" placeholder="Pullinterval">
+            </mat-form-field>
+            <div fxFlex="10">
+                <button mat-raised-button (click)="savePullInterval()" color="accent">Save</button>
+            </div>
+        </div>
         <p class="mat-h2" *ngIf="!repositories"> {{ strings?.noRepositories }} </p>
         <mat-list *ngFor="let repository of repositories; let i = index" [style.overflow]="'auto'">
             <mat-list-item>

@@ -47,6 +47,8 @@ export class AdminRepositoriesComponent implements OnInit {
 
   selectedRepository: Repository;
 
+  pullInterval: number;
+
   ngOnInit() {
     this.stringService.getAdminRepositoriesStrings().subscribe(
       data => {
@@ -58,6 +60,9 @@ export class AdminRepositoriesComponent implements OnInit {
         this.repositories = data;
       }
     );
+    this.repositoryService.getPullInterval().subscribe(data => {
+      this.pullInterval = data;
+    });
 
     this.initAddFormControls();
     this.initEditFormControls();
@@ -139,10 +144,20 @@ export class AdminRepositoriesComponent implements OnInit {
     );
   }
 
+  public addRepository = (addRepositoryFormValue) => {
+    if (this.addRepositoryForm.valid) {
+      // TODO
+    }
+  }
+
   public editRepository = (editRepositoryFormValue) => {
     if (this.editRepositoryForm.valid) {
-
+      // TODO
     }
+  }
+
+  public deleteRepository(repository: Repository) {
+    this.repositoryService.removeRepository(repository.id); // TODO
   }
 
   public selectRepository(repository: Repository) {
@@ -181,6 +196,10 @@ export class AdminRepositoriesComponent implements OnInit {
     this.addTrackedBranchesControl.setValue(this.invertList(currentSelectedBranches, this.allAddBranches));
   }
 
+  public savePullInterval() {
+    this.repositoryService.setPullInterval(this.pullInterval).subscribe();
+  }
+
   /**
    * Return a list that only contains values which are in compareTo but not in toInvert.
    * @param toInvert string array
@@ -201,9 +220,4 @@ export class AdminRepositoriesComponent implements OnInit {
 
     return newSelectedBranches;
   }
-
-  public deleteRepository(repository: Repository) {
-    this.repositoryService.removeRepository(repository.id);
-  }
-
 }

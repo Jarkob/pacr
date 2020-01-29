@@ -26,7 +26,7 @@ export class EventService {
    * get the events for benchmarking
    */
   public getBenchmarkingEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(this.globalService.url + '/events/benchmarking');
+    return this.http.get<Event[]>(this.globalService.url + '/events/benchmark');
   }
 
   /**

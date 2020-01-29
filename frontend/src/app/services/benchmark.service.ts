@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Benchmark } from '../classes/benchmark';
+import { UpdateBenchmark } from '../classes/update-benchmark';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -45,15 +46,21 @@ export class BenchmarkService {
    * update a benchmark
    * @param benchmark the benchmark to be updated
    */
-  public updateBenchmark(benchmark: Benchmark): Observable<Benchmark> {
-    return this.http.put<Benchmark>(this.globalService.url + '/benchmarks', benchmark);
+  public updateBenchmark(benchmark: UpdateBenchmark): Observable<Benchmark> {
+    return this.http.put<Benchmark>(this.globalService.url + '/benchmark', benchmark);
   }
+
+  // public updateGroup(): Observable<BenchmarkGroup> {
+
+  // }
+  // TODO
+  // public deleteGroup(): Observable<
 
   /**
    * add a benchmark group
    * @param name the name of the group
    */
   public addGroup(name: string): Observable<string> {
-    return this.http.post<string>(this.globalService.url + '/groups', name, httpOptions);
+    return this.http.post<string>(this.globalService.url + '/group', name, httpOptions);
   }
 }

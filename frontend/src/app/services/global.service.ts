@@ -8,6 +8,6 @@ export class GlobalService {
   url: string;
 
   constructor() {
-    this.url = isDevMode() ? 'http://localhost:3100' : 'http://todo.insert.remote.url';
+    this.url = isDevMode() ? 'http://localhost:8080' : 'http://todo.insert.remote.url'; // 3100 for stoplight
   }
 }

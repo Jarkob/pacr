@@ -126,10 +126,6 @@ export class AdminBenchmarksComponent implements OnInit {
     this.editGroupControl.setValue(benchmark.benchmarkGroup.id);
   }
 
-  public editBenchmark(benchmark: Benchmark) {
-    // todo
-  }
-
   public onCancelEditBenchmark() {
     this.loadBenchmarkData(this.selectedBenchmark);
   }
@@ -151,8 +147,16 @@ export class AdminBenchmarksComponent implements OnInit {
     this.editGroupNameControl.setValue(benchmarkGroup.name);
   }
 
-  public editBenchmarkGroup() {
+  public editBenchmark(benchmark: Benchmark) {
+    // todo selectedbenchmark
+  }
+
+  public addBenchmarkGroup(group: Group) {
     // todo
+  }
+
+  public editBenchmarkGroup() {
+    // todo only selected
   }
 
   public deleteBenchmarkGroup(group: Group) {
@@ -166,7 +170,7 @@ export class AdminBenchmarksComponent implements OnInit {
 
   public onSaveBenchmarkGroups() {
     this.dropped = false;
-    // todo
+    // todo all groups
   }
 
   public onCancelBenchmarkGroups() {
@@ -182,9 +186,6 @@ export class AdminBenchmarksComponent implements OnInit {
     });
   }
 
-  public addBenchmarkGroup(group: Group) {
-    // todo
-  }
 
   public onCancelAddBenchmarkGroup() {
     this.initAddGroupFormControls();

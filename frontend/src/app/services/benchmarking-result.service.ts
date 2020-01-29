@@ -46,11 +46,12 @@ export class BenchmarkingResultService {
   /**
    * get all benchmarking results for one benchmark, one repository and one branch
    * @param benchmark the name of the benchmark
-   * @param repository the name of the repository
+   * @param repository the id of the repository
    * @param branch the branch
    */
-  public getBenchmarkingResults(benchmark: string, repository: string, branch: string): Observable<any> {
-    // return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/benchmark/' + name);
+  public getBenchmarkingResults(benchmark: number, repository: number, branch: string): Observable<any> {
+    // return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/benchmark/repo/branch');
+    // TODO add class
     return this.mockService.getBenchmarkingResults();
   }
 
@@ -68,4 +69,10 @@ export class BenchmarkingResultService {
   public getNewBenchmarkingResults(): Observable<CommitBenchmarkingResult[]> {
     return this.http.get<CommitBenchmarkingResult[]>(this.globalService.url + '/history');
   }
+
+  // TODO delete
+  // public deleteBenchmarkingResult():
+  // /results/commit/:sha
+
+
 }
