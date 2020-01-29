@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -7,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
-
+import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
 import java.awt.Color;
 import java.time.LocalDate;
@@ -43,9 +45,12 @@ public class GitRepository {
     private boolean trackAllBranches;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<GitBranch> selectedBranches;
+    private Set<GitBranch> trackedBranches;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Map<String, Boolean> selectedBranches;
+
+    @OneToMany(cascade = CascadeType.ALL)
     private Map<String, GitCommit> commits;
     private String pullURL;
     private String name;
@@ -59,30 +64,31 @@ public class GitRepository {
      */
     public GitRepository() {
         this.commits = new HashMap<>();
-        this.selectedBranches = new HashSet<>();
+        this.trackedBranches = new HashSet<>();
+        this.selectedBranches = new HashMap<>();
         this.commitLinkPrefix = null;
     }
 
     /**
      * Creates a new repository.
      * @param trackAllBranches is whether all branches are being tracked.
-     * @param selectedBranches are the selected branches.
+     * @param trackedBranches are the selected branches.
      * @param pullURL is the pull URL of the repository.
      * @param name is the name of the repository.
      * @param color is the color in which the repository is displayed
      * @param observeFromDate is the date from which on the repository is being observed.
      *                        Is null if all commits are being observed.
      */
-    public GitRepository(boolean trackAllBranches, @NotNull Set<GitBranch> selectedBranches,
+    public GitRepository(boolean trackAllBranches, @NotNull Set<GitBranch> trackedBranches,
                          @NotNull String pullURL, @NotNull String name,
                          @NotNull Color color, LocalDate observeFromDate) {
-        Objects.requireNonNull(selectedBranches);
+        Objects.requireNonNull(trackedBranches);
         Objects.requireNonNull(pullURL);
         Objects.requireNonNull(name);
         Objects.requireNonNull(color);
 
         this.trackAllBranches = trackAllBranches;
-        this.selectedBranches = selectedBranches;
+        this.trackedBranches = trackedBranches;
         this.commits = new HashMap<>();
         this.pullURL = pullURL;
         this.name = name;
@@ -137,8 +143,8 @@ public class GitRepository {
      * all ignored branches if isTrackAllBranches returns false.
      * @return selected Branches
      */
-    public Collection<GitBranch> getSelectedBranches() {
-        return selectedBranches;
+    public Collection<GitBranch> getTrackedBranches() {
+        return trackedBranches;
     }
 
     /**
@@ -221,7 +227,7 @@ public class GitRepository {
     public void addBranchToSelection(@NotNull GitBranch branch) {
         Objects.requireNonNull(branch);
 
-        selectedBranches.add(branch);
+        trackedBranches.add(branch);
     }
 
     /**
@@ -229,9 +235,9 @@ public class GitRepository {
      * @param branch is the branch being removed.
      */
     public void removeBranchFromSelection(@NotNull GitBranch branch) {
-        Objects.requireNonNull(selectedBranches);
+        Objects.requireNonNull(trackedBranches);
 
-        selectedBranches.remove(branch);
+        trackedBranches.remove(branch);
     }
 
     /**
@@ -274,29 +280,34 @@ public class GitRepository {
     public boolean isBranchSelected(@NotNull String branchName) {
         Objects.requireNonNull(branchName);
 
-        for (GitBranch branch : selectedBranches) {
-            if (branch.getName().equals(branchName)) {
-                return true;
-            }
+        if (branchName.equals(MASTER)) {
+            return true;
         }
-        return false;
+
+        if (trackAllBranches) {
+            return !selectedBranches.getOrDefault(branchName, false);
+        }
+
+        return selectedBranches.getOrDefault(branchName, false);
     }
 
     /**
-     * Gets a selected GitBranch of this repository.
+     * Gets a tracked GitBranch of this repository.
      * @param branchName is the name of the branch.
      * @return GitBranch.
-     * @throws NoSuchElementException if the branch was not found.
      */
-    public GitBranch getSelectedBranch(@NotNull String branchName) throws NoSuchElementException {
+    public GitBranch getTrackedBranch(@NotNull String branchName) throws NoSuchElementException {
         Objects.requireNonNull(branchName);
 
-        for (GitBranch branch : selectedBranches) {
+        for (GitBranch branch : trackedBranches) {
             if (branch.getName().equals(branchName)) {
                 return branch;
             }
         }
-        throw new NoSuchElementException("Branch " + branchName + " was not found.");
+
+        GitBranch newBranch = new GitBranch(branchName);
+        trackedBranches.add(newBranch);
+        return newBranch;
     }
 
     /**
@@ -324,5 +335,41 @@ public class GitRepository {
      */
     public Collection<String> getAllCommitHashes() {
         return commits.keySet();
+    }
+
+    /**
+     * @param trackAllBranches is the options whether all branches are tracked or only master branch.
+     */
+    public void setTrackAllBranches(boolean trackAllBranches) {
+        this.trackAllBranches = trackAllBranches;
+    }
+
+    /**
+     * @param hookSet is whether a hook is set for the repository.
+     */
+    public void setIsHookSet(boolean hookSet) {
+        this.isHookSet = hookSet;
+    }
+
+    /**
+     * @param color is the new color of the repository.
+     */
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
+    /**
+     * @param observeFromDate is the date from which on the commits are being tracked.
+     */
+    public void setObserveFromDate(LocalDate observeFromDate) {
+        this.observeFromDate = observeFromDate;
+    }
+
+    public Map<String, Boolean> getSelectedBranches() {
+        return selectedBranches;
+    }
+
+    public void setSelectedBranches(Map<String, Boolean> selectedBranches) {
+        this.selectedBranches = selectedBranches;
     }
 }

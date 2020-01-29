@@ -45,7 +45,7 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
             return null;
         }
 
-        Collection<GitBranch> branches = repository.getSelectedBranches();
+        Collection<GitBranch> branches = repository.getTrackedBranches();
 
         GitBranch match = null;
 

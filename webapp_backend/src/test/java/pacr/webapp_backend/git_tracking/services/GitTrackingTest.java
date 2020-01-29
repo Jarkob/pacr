@@ -13,10 +13,7 @@ import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IResultDeleter;
 
 import java.awt.Color;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -56,9 +53,12 @@ public class GitTrackingTest {
 
         ArgumentCaptor<GitRepository> repositoryCaptor = ArgumentCaptor.forClass(GitRepository.class);
 
+        Map<String, Boolean> selectedBranches = new HashMap<>();
+        selectedBranches.put("testBranch1", Boolean.TRUE);
+
         assertEquals(repositoryId,
                 gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr.git", null,
-                        "name", new HashSet<>(Arrays.asList("master", "testBranch1"))));
+                        "name", selectedBranches));
 
         verify(gitTrackingAccess).addRepository(repositoryCaptor.capture());
         assertEquals("https://git.scc.kit.edu/pacr/pacr/commit/",
@@ -120,18 +120,16 @@ public class GitTrackingTest {
         when(repository.getPullURL()).thenReturn("pull url");
         when(gitTrackingAccess.getRepository(anyInt())).thenReturn(repository);
 
-        GitCommit commit1 = mock(GitCommit.class);
-        when(commit1.getCommitHash()).thenReturn("hash 1");
-        GitCommit commit2 = mock(GitCommit.class);
-        when(commit2.getCommitHash()).thenReturn("hash 2");
+        String hash1 = "hash 1";
+        String hash2 = "hash 2";
 
-        when(gitHandler.pullFromRepository(repository)).thenReturn(Arrays.asList(commit1, commit2));
+        when(gitHandler.pullFromRepository(repository)).thenReturn(new HashSet<>(Arrays.asList(hash1, hash2)));
 
         gitTracking.pullFromRepository(42);
 
         verify(gitHandler).pullFromRepository(repository);
-        verify(jobScheduler).addJob(repository.getPullURL(), commit1.getCommitHash());
-        verify(jobScheduler).addJob(repository.getPullURL(), commit2.getCommitHash());
+        verify(jobScheduler).addJob(repository.getPullURL(), hash1);
+        verify(jobScheduler).addJob(repository.getPullURL(), hash2);
     }
 
     @Test

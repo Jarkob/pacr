@@ -1,7 +1,6 @@
 package pacr.webapp_backend.git_tracking.services;
 
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.git.GitHandler;
@@ -10,8 +9,15 @@ import pacr.webapp_backend.shared.IRepositoryImporter;
 import pacr.webapp_backend.shared.IResultDeleter;
 
 import javax.validation.constraints.NotNull;
+import java.awt.Color;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.Objects;
+import java.util.Map;
+import java.util.Arrays;
+import java.util.Set;
+import java.util.NoSuchElementException;
+import java.util.Collection;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,12 +72,17 @@ public class GitTracking implements IRepositoryImporter {
      */
     @Override
     public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
-                             @NotNull Set<String> branchNames) {
+                             @NotNull Map<String, Boolean> branchNames) {
         Objects.requireNonNull(repositoryURL);
         Objects.requireNonNull(name);
 
-        GitRepository repository = new GitRepository(false, new HashSet<>(),
-                repositoryURL, name, colorPicker.getNextColor(), observeFromDate);
+        GitRepository repository = new GitRepository();
+        repository.setTrackAllBranches(false);
+        repository.setPullURL(repositoryURL);
+        repository.setName(name);
+        repository.setObserveFromDate(observeFromDate);
+        repository.setSelectedBranches(branchNames);
+        repository.setColor(colorPicker.getNextColor());
 
         String commitLinkPrefix = getCommitLinkPrefix(repositoryURL);
 
@@ -79,10 +90,6 @@ public class GitTracking implements IRepositoryImporter {
             repository.setCommitLinkPrefix(commitLinkPrefix);
         }
 
-        for (String branchName : branchNames) {
-            GitBranch branch = new GitBranch(branchName);
-            repository.addBranchToSelection(branch);
-        }
         return gitTrackingAccess.addRepository(repository);
     }
 
@@ -150,14 +157,14 @@ public class GitTracking implements IRepositoryImporter {
             throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
         }
 
-        Collection<GitCommit> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
-        LOGGER.info("Got {} untracked commits.", untrackedCommits.size());
+        Collection<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
+        LOGGER.info("Got {} untracked commits.", untrackedCommitHashes.size());
 
         // automatically adds all new commits to the database
         gitTrackingAccess.updateRepository(gitRepository);
-        for (GitCommit commit : untrackedCommits) {
+        for (String commitHash : untrackedCommitHashes) {
             // add job to queue
-            jobScheduler.addJob(gitRepository.getPullURL(), commit.getCommitHash());
+            jobScheduler.addJob(gitRepository.getPullURL(), commitHash);
         }
 
         LOGGER.info("Finished with pulling from repository {} ({}).", gitRepository.getName(), repositoryID);
@@ -168,9 +175,33 @@ public class GitTracking implements IRepositoryImporter {
      */
     public void pullFromAllRepositories() {
         for (GitRepository repository : gitTrackingAccess.getAllRepositories()) {
+            LOGGER.info("Checking if hook is set for {} ({}).", repository.getName(), repository.getId());
             if (!repository.isHookSet()) {
+                LOGGER.info("Trying to pull from repository {} ({}).", repository.getName(), repository.getId());
                 pullFromRepository(repository.getId());
             }
         }
+    }
+
+    /**
+     * Updates the color of a repository.
+     * @param repository is the repository.
+     * @param color is the color of the repository.
+     */
+    public void updateColorOfRepository(GitRepository repository, Color color) {
+        this.colorPicker.setColorToUnused(repository.getColor());
+        this.colorPicker.setColorToUsed(color);
+        repository.setColor(color);
+
+        gitTrackingAccess.updateRepository(repository);
+    }
+
+    /**
+     * Returns a repository.
+     * @param id is the ID of the repository.
+     * @return repository.
+     */
+    public GitRepository getRepository(int id) {
+        return gitTrackingAccess.getRepository(id);
     }
 }

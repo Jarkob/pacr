@@ -22,7 +22,7 @@ public class WebHookController {
 
     /**
      * Initializes an instance of WebHookController.
-     * @param gitTracking is the needed GitTracking.
+     * @param gitTracking is the needed {@link GitTracking}.
      */
     public WebHookController(GitTracking gitTracking) {
         this.gitTracking = gitTracking;
@@ -31,14 +31,14 @@ public class WebHookController {
     /**
      * Pulls from a repository.
      * @param repositoryID is the ID of the repository.
-     * @return OK (200) when the repository got pulled. INTERNAL_SERVER_ERROR (500) when the repository was not found.
+     * @return OK (200) when the repository got pulled. NOT_FOUND (404) when the repository was not found.
      */
     @RequestMapping(value = "/webhooks/{id}")
     public ResponseEntity<Object> pullFromRepository(@PathVariable("id") int repositoryID) {
         try {
             gitTracking.pullFromRepository(repositoryID);
         } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().build();
 

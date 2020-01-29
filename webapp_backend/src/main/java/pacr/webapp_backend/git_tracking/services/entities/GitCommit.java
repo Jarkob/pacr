@@ -39,6 +39,7 @@ public class GitCommit implements ICommit {
     @Id
     private String commitHash;
 
+    @Column(length = 1000)
     private String commitMessage;
     private LocalDateTime entryDate;
     private LocalDateTime commitDate;

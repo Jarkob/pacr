@@ -1,6 +1,5 @@
 package pacr.webapp_backend.git_tracking.services.git;
 
-import javassist.NotFoundException;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
@@ -97,7 +96,7 @@ public class GitHandler {
      * @param gitRepository is the Repository being updated.
      * @return new commits that need to be added or null if something went wrong.
      */
-    public Collection<GitCommit> pullFromRepository(@NotNull GitRepository gitRepository) {
+    public Set<String> pullFromRepository(@NotNull GitRepository gitRepository) {
         Objects.requireNonNull(gitRepository);
 
         // clone repository if it wasn't cloned already
@@ -121,10 +120,13 @@ public class GitHandler {
             LOGGER.error("Could not fetch repository {} ({}).", gitRepository.getName(), gitRepository.getId());
         }
 
+        // add branches to selectedBranches
+        addBranchesToSelectedBranches(git, gitRepository);
+
         // delete branches that are not in origin anymore
         deleteBranches(git, gitRepository);
 
-        Set<GitCommit> untrackedCommits = new HashSet<>();
+        Set<String> untrackedCommitHashes = new HashSet<>();
 
         // get branches
         List<Ref> branches = getBranches(git);
@@ -137,7 +139,7 @@ public class GitHandler {
         for (Ref branch : branches) {
 
             try {
-                checkBranch(branch, git, gitRepository, untrackedCommits);
+                checkBranch(branch, git, gitRepository, untrackedCommitHashes);
             } catch (ForcePushException e) {
                 handleForcePush(git, gitRepository, branch);
 
@@ -154,11 +156,11 @@ public class GitHandler {
         git.getRepository().close();
         git.close();
 
-        return untrackedCommits;
+        return untrackedCommitHashes;
     }
 
     private void handleForcePush(Git git, GitRepository gitRepository, Ref branch) {
-        GitBranch gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
+        GitBranch gitBranch = gitRepository.getTrackedBranch(getNameOfBranch(branch));
 
         gitBranch.setLocalHead(null);
 
@@ -191,15 +193,32 @@ public class GitHandler {
     }
 
     /**
-     * Deletes branches that are not in origin anymore.
+     * Adds all current origin branch names to selected branches.
      * @param git is the access to origin.
      * @param gitRepository is the git repository with the selected branches.
      */
-    private void deleteBranches(Git git, GitRepository gitRepository) {
+    private void addBranchesToSelectedBranches(Git git, GitRepository gitRepository) {
+        LOGGER.info("Adding new branches to selected branches of the repository.");
 
+        Map<String, Boolean> selectedBranches = gitRepository.getSelectedBranches();
+
+        List<String> branchNames = getBranchNames(git);
+
+        for (String branchName : branchNames) {
+            selectedBranches.put(branchName, gitRepository.isBranchSelected(branchName));
+        }
+    }
+
+    /**
+     * Deletes branches that are not in origin anymore.
+     * @param git is the access to origin.
+     * @param gitRepository is the git repository with the selected and tracked branches.
+     */
+    private void deleteBranches(Git git, GitRepository gitRepository) {
+        // garbage collection for trackedBranches
         Map<String, Boolean> branchNotDeleted = new HashMap<>();
 
-        for (GitBranch branch : gitRepository.getSelectedBranches()) {
+        for (GitBranch branch : gitRepository.getTrackedBranches()) {
             branchNotDeleted.put(branch.getName(), Boolean.FALSE);
         }
 
@@ -211,9 +230,29 @@ public class GitHandler {
 
         for (Map.Entry<String, Boolean> entry : branchNotDeleted.entrySet()) {
             if (!entry.getValue()) {
-                GitBranch branch = gitRepository.getSelectedBranch(entry.getKey());
+                GitBranch branch = gitRepository.getTrackedBranch(entry.getKey());
 
                 gitRepository.removeBranchFromSelection(branch);
+            }
+        }
+
+        // garbage collection for selectedBranches
+        branchNotDeleted = new HashMap<>();
+        Map<String, Boolean> selectedBranches = gitRepository.getSelectedBranches();
+
+        for (String branch : selectedBranches.keySet()) {
+            branchNotDeleted.put(branch, Boolean.FALSE);
+        }
+
+        for (String branchName : getBranchNames(git)) {
+            if (branchNotDeleted.containsKey(branchName)) {
+                branchNotDeleted.put(branchName, Boolean.TRUE);
+            }
+        }
+
+        for (Map.Entry<String, Boolean> entry : branchNotDeleted.entrySet()) {
+            if (!entry.getValue()) {
+                selectedBranches.remove(entry.getKey());
             }
         }
 
@@ -274,45 +313,31 @@ public class GitHandler {
     }
 
     private void checkBranch(Ref branch, Git git, GitRepository gitRepository,
-                             Set<GitCommit> untrackedCommits) throws ForcePushException {
+                             Set<String> untrackedCommits) throws ForcePushException {
 
         if (gitRepository.isBranchSelected(getNameOfBranch(branch))) {
-            GitBranch gitBranch = gitRepository.getSelectedBranch(getNameOfBranch(branch));
+            GitBranch gitBranch = gitRepository.getTrackedBranch(getNameOfBranch(branch));
+            //LOGGER("HEAD of branch {} is {}.", gitBranch.getName(), gitBranch.getLocalHead().getCommitHash());
 
             LOGGER.info("Searching for new commits in branch {}.", getNameOfBranch(branch));
-            // get commits from branch
-            List<String> benchmarkedCommitsNotInBranch = new ArrayList<>();
 
-            Set<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository,
-                        branch, benchmarkedCommitsNotInBranch);
+            Set<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository, branch);
 
-            untrackedCommits.addAll(commitsFromBranch);
+            LOGGER.info("Timestamp5 (after searchForNewCommits)");
 
-            // commitsFromBranch were already added to the repository in searchForNewCommits
-            gitTrackingAccess.updateRepository(gitRepository);
-
-            LOGGER.info("Added {} commits to the system for branch {}.",
-                    commitsFromBranch.size(), getNameOfBranch(branch));
-
-            // check if branch contains commits that are already added to the system
-            if (!benchmarkedCommitsNotInBranch.isEmpty()) {
-
-                for (String commitHash : benchmarkedCommitsNotInBranch) {
-                    // get commits from ram so that there are fewer DB calls and untrackedCommits are up to date
-                    GitCommit commit = getCommitFromSet(commitHash, untrackedCommits);
-                    if (commit == null) { // not found in untrackedCommits
-                        commit = gitRepository.getCommit(commitHash);
-                    }
-                    assert commit != null;
-
-                    commit.addBranch(gitBranch);
-                }
-
-                gitTrackingAccess.updateRepository(gitRepository);
+            for (GitCommit commit : commitsFromBranch) {
+                untrackedCommits.add(commit.getCommitHash());
             }
+
+            LOGGER.info("Adding commits to the database.");
+            // commitsFromBranch were already added to the repository in searchForNewCommits
+
+            LOGGER.info("Added {} commits to the database for branch {}.",
+                    commitsFromBranch.size(), getNameOfBranch(branch));
 
             // update branch head
             setBranchHead(branch, gitRepository, gitBranch);
+            gitTrackingAccess.updateRepository(gitRepository);
         } else {
             LOGGER.info("Skipping branch {} because it is not selected.", getNameOfBranch(branch));
         }
@@ -321,6 +346,8 @@ public class GitHandler {
     private void setBranchHead(Ref branch, GitRepository gitRepository, GitBranch gitBranch) {
 
         GitCommit head = gitRepository.getCommit(branch.getObjectId().getName());
+
+        LOGGER.info("Setting head {} for branch {}.", head.getCommitHash(), gitBranch.getName());
 
         gitBranch.setLocalHead(head);
     }
@@ -355,17 +382,17 @@ public class GitHandler {
         return gitCommit;
     }
 
-    private Set<GitCommit> searchForNewCommitsInBranch(Git git, GitRepository gitRepository, Ref branch,
-                                                              List<String> benchmarkedCommitsNotInBranch)
+    private Set<GitCommit> searchForNewCommitsInBranch(Git git, GitRepository gitRepository, Ref branch)
             throws ForcePushException {
 
         assert git != null;
         assert gitRepository != null;
         assert branch != null;
-        assert benchmarkedCommitsNotInBranch != null;
 
         String branchName = getNameOfBranch(branch);
-        GitBranch gitBranch = gitRepository.getSelectedBranch(branchName);
+        GitBranch gitBranch = gitRepository.getTrackedBranch(branchName);
+
+        LOGGER.info("Timestamp1 (got branch)");
 
         // iterate over all commits from branch
         Iterable<RevCommit> commitsIterable = null;
@@ -376,10 +403,14 @@ public class GitHandler {
             return new HashSet<>();
         }
 
+        LOGGER.info("Timestamp2 (after git log)");
+
         // add all new commits to commits ordered by their commit history
         // and check that no force push occurred
-        List<RevCommit> commits = getNewCommits(commitsIterable, benchmarkedCommitsNotInBranch, gitBranch);
+        List<RevCommit> commits = getNewCommits(commitsIterable, gitRepository, gitBranch);
         List<GitCommit> commitsToAdd = new ArrayList<>();
+
+        LOGGER.info("Timestamp4 (after getNewCommits)");
 
         for (RevCommit revCommit : commits) {
             if (revCommit.getFullMessage().contains("#pacr-ignore")) {
@@ -415,32 +446,36 @@ public class GitHandler {
      * If a commit which is already in the system but does not belong to the branch yet,
      * it is added to benchmarkedCommitsNotInBranch.
      * @param commitsIterable is the output of git log.
+     * @param gitRepository is the repository containing the commits.
      * @param branch is the branch currently looked at.
-     * @param benchmarkedCommitsNotInBranch is the list of commits that are already in the system,
-     *                                      but not in the branch yet.
      * @return list of new commits.
      * @throws ForcePushException if a force push was detected.
      */
-    private List<RevCommit> getNewCommits(Iterable<RevCommit> commitsIterable,
-                                          List<String> benchmarkedCommitsNotInBranch, GitBranch branch)
+    private List<RevCommit> getNewCommits(Iterable<RevCommit> commitsIterable, GitRepository gitRepository, GitBranch branch)
             throws ForcePushException {
         List<RevCommit> commits = new ArrayList<>();
 
+        LOGGER.info("Timestamp3 (getNewCommits)");
+
         for (RevCommit commit : commitsIterable) {
+
             if (gitTrackingAccess.containsCommit(commit.getName())) {
 
                 GitCommit localHead = branch.getLocalHead();
-                GitCommit alreadyContained = gitTrackingAccess.getCommit(commit.getName());
+                GitCommit alreadyContained = gitRepository.getCommit(commit.getName());
 
                 if (localHead == null || !alreadyContained.getBranchNames().contains(branch.getName())) {
-                    // branch doesn't have the commit yet
-                    benchmarkedCommitsNotInBranch.add(commit.getName());
+                    //LOGGER.info("commit {}, localhead {}, alreadycontainedcommitbranches {}.", commit.getName(), localHead,
+                  //          alreadyContained.getBranchNames());
+
+                    alreadyContained.addBranch(branch);
                 } else if (!localHead.getCommitHash().equals(commit.getName())) { // check for force push
                     LOGGER.info("LOCALHEAD CH: {}", localHead.getCommitHash());
                     LOGGER.info("COMMIT HASH {}", commit.getName());
                     LOGGER.info("Force push detected at {}. Deleting unused commits.", commit.getName());
                     throw new ForcePushException();
                 } else { // all new commits from branch found
+                    LOGGER.info("DB contains {}: breaking", commit.getName());
                     break;
                 }
             } else {

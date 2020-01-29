@@ -103,7 +103,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         Job job = new Job(jobID, getGroup(groupTitle));
 
         jobs.add(job);
-        LOGGER.info("Added new job to the queue: " + job.toString());
+     //todo for test   LOGGER.info("Added new job to the queue: " + job.toString());
 
         updateAll();
     }
