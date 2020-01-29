@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.result_management.Benchmark;
@@ -68,25 +69,22 @@ public class BenchmarkController {
 
     /**
      * Updates the benchmark with the given values. This is a privileged method.
-     * @param benchmarkId the id of the benchmark.
-     * @param name the new name of the benchmark. Cannot be null, empty or blank.
-     * @param description the new description of the benchmark. Cannot be null, empty or blank.
-     * @param groupId the group id of the new group of the benchmark. -1 implies this benchmark has not group.
+     * @param benchmark the updated benchmark. Attributes must be valid.
      * @param jwt the json web token for authentication. Cannot be null, empty or blank.
      * @return HTTP code 200 (ok) if the benchmark was updated. HTTP code 404 (not found) if no benchmark and/or no
      *         group with the given id could be found. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
-    @PutMapping("/benchmark/{benchmarkId}/{name}/{description}/{groupId}")
-    public ResponseEntity<Object> updateBenchmark(@PathVariable int benchmarkId, @NotNull @PathVariable String name,
-                                                  @NotNull @PathVariable String description, @PathVariable int groupId,
+    @PutMapping("/benchmark")
+    public ResponseEntity<Object> updateBenchmark(@RequestBody BenchmarkInput benchmark,
                                                   @NotNull @RequestHeader(name = "jwt") String jwt) {
-        if (!StringUtils.hasText(name) || !StringUtils.hasText(description) || !StringUtils.hasText(jwt)) {
-            throw new IllegalArgumentException("name, description and jwt cannot be null, empty or blank");
+        if (!(benchmark.validate() && StringUtils.hasText(jwt))) {
+            throw new IllegalArgumentException("jwt or input of benchmark cannot be null, empty or blank");
         }
 
         if (authenticator.authenticate(jwt)) {
             try {
-                benchmarkManager.updateBenchmark(benchmarkId, name, description, groupId);
+                benchmarkManager.updateBenchmark(benchmark.getId(), benchmark.getCustomName(),
+                        benchmark.getDescription(), benchmark.getGroupId());
             } catch (NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
             }
@@ -103,8 +101,8 @@ public class BenchmarkController {
      * @param jwt the json web token for authentication. Cannot be null, empty or blank.
      * @return HTTP code 200 (ok) if the group was added. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
-    @PostMapping("/benchmark/{name}")
-    public ResponseEntity<Object> addGroup(@NotNull @PathVariable String name,
+    @PostMapping("/group")
+    public ResponseEntity<Object> addGroup(@NotNull @RequestBody String name,
                                            @NotNull @RequestHeader(name = "jwt") String jwt) {
         if (!StringUtils.hasText(name) || !StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("name and jwt cannot be null, empty or blank");
@@ -127,8 +125,8 @@ public class BenchmarkController {
      * @return HTTP code 200 (ok) if the group was updated. HTTP code 404 (not found) if no group with the given id
      *         could be found. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
-    @PutMapping("/benchmark/{groupId}/{name}")
-    public ResponseEntity<Object> updateGroup(@PathVariable int groupId, @NotNull @PathVariable String name,
+    @PutMapping("/group/{groupId}")
+    public ResponseEntity<Object> updateGroup(@PathVariable int groupId, @NotNull @RequestBody String name,
                             @NotNull @RequestHeader(name = "jwt") String jwt) {
         if (!StringUtils.hasText(name) || !StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("name and jwt cannot be null, empty or blank");
@@ -154,7 +152,7 @@ public class BenchmarkController {
      * @return HTTP code 200 (ok) if the group was deleted. HTTP code 404 (not found) if no group with the given id
      *         could be found. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
-    @DeleteMapping("/benchmark/{groupId}")
+    @DeleteMapping("/group/{groupId}")
     public ResponseEntity<Object> deleteGroup(@PathVariable int groupId,
                                               @NotNull @RequestHeader(name = "jwt") String jwt) {
         if (!StringUtils.hasText(jwt)) {

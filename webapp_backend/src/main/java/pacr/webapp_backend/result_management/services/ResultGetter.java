@@ -133,6 +133,22 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     /**
+     * TODO test this?
+     * Gets all benchmarking results for a branch with measurements for a specific benchmark.
+     * @param benchmarkId the id of the benchmark.
+     * @param repositoryId the id of the repository.
+     * @param branch the name of the branch.
+     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
+     *         omitted)
+     */
+    public HashMap<String, DiagramOutputResult> getBenchmarkResults(int benchmarkId, int repositoryId,
+                                                                    @NotNull String branch) {
+        Objects.requireNonNull(branch);
+        Collection<? extends ICommit> commitsFromBranch = commitAccess.getCommitsFromBranch(repositoryId, branch);
+        return commitsToDiagramResults(commitsFromBranch, benchmarkId);
+    }
+
+    /**
      * @return Gets up to 100 of the newest saved results.
      */
     public List<OutputBenchmarkingResult> getNewestResults() {

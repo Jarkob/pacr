@@ -17,6 +17,7 @@ import pacr.webapp_backend.shared.IAuthenticator;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Provides endpoints for getting benchmarking results and deleting them.
@@ -45,6 +46,7 @@ public class ResultController {
      * @param repositoryId the id of the repository.
      * @return the benchmarking results.
      */
+    @Deprecated
     @GetMapping("/results/repository/{repositoryId}")
     public Map<String, DiagramOutputResult> getBenchmarkingResultsFromRepository(@PathVariable int repositoryId) {
         return resultGetter.getRepositoryResults(repositoryId);
@@ -56,6 +58,7 @@ public class ResultController {
      * @param branch the name of the branch. Cannot be null, empty or blank.
      * @return the benchmarking results.
      */
+    @Deprecated
     @GetMapping("/results/repository/{repositoryId}/{branch}")
     public Map<String, DiagramOutputResult> getBenchmarkingResultsFromBranch(
             @PathVariable int repositoryId, @NotNull @PathVariable String branch) {
@@ -100,6 +103,23 @@ public class ResultController {
     public Map<String, DiagramOutputResult> getResultsForRepositoryAndBenchmark(@PathVariable int benchmarkId,
                                                                                     @PathVariable int repositoryId) {
         return resultGetter.getBenchmarkResults(repositoryId, benchmarkId);
+    }
+
+    /**
+     * TODO test this?
+     * Gets the benchmarking results of all commits of a branch, but only for the specified benchmark.
+     * @param benchmarkId the id of the benchmark.
+     * @param repositoryId the id of the repository.
+     * @param branch the name of the branch. Cannot be null.
+     * @return the benchmarking results of one benchmark.
+     */
+    @GetMapping("/results/benchmark/{benchmarkId}/{repositoryId}/{branch}")
+    public Map<String, DiagramOutputResult> getResultsForBranchAndBenchmark(@PathVariable int benchmarkId,
+                                                                            @PathVariable int repositoryId,
+                                                                            @NotNull @PathVariable String branch) {
+        Objects.requireNonNull(branch);
+
+        return resultGetter.getBenchmarkResults(benchmarkId, repositoryId, branch);
     }
 
     /**
