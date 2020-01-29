@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.util.Pair;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.LeaderboardDashboardModule;
 
@@ -13,8 +14,7 @@ import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-public class DashboardManagerTest {
+public class DashboardManagerTest extends SpringBootTestWithoutShell {
 
     private DashboardManager dashboardManager;
 

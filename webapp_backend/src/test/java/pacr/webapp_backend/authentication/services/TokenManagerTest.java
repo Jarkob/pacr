@@ -64,10 +64,10 @@ public class TokenManagerTest {
     }
 
     /**
-     * Tests whether authenticate throws exception if you give it a foreign key.
+     * Tests whether authenticate returns false if you give it a foreign key.
      */
     @Test
-    void authenticate_wrongSignature_shouldThrowException() {
+    void authenticate_wrongSignature_shouldReturnFalse() {
         when(authenticationAccessMock.getSecret()).thenReturn(SECRET);
 
         byte[] foreignSecret = new byte[SECRET.length];
@@ -76,7 +76,7 @@ public class TokenManagerTest {
 
         String foreignToken = generateComparisonToken(foreignSecret, ISSUER, AUDIENCE);
 
-        assertThrows(SignatureException.class, () -> tokenManager.authenticate(foreignToken));
+        assertFalse(tokenManager.authenticate(foreignToken));
     }
 
     /**

@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.Commit;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.dashboard_management.CommitHistoryDashboardModule;
 import pacr.webapp_backend.dashboard_management.Dashboard;
 import pacr.webapp_backend.dashboard_management.LineDiagramDashboardModule;
@@ -20,8 +21,7 @@ import javax.activation.DataHandler;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-public class ManageDashboardControllerTest {
+public class ManageDashboardControllerTest extends SpringBootTestWithoutShell {
 
     ManageDashboardController manageDashboardController;
 

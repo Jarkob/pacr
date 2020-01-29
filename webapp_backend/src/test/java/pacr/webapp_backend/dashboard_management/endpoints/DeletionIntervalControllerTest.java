@@ -7,6 +7,7 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.dashboard_management.services.DashboardManager;
 import pacr.webapp_backend.database.DeletionIntervalDB;
 import pacr.webapp_backend.shared.IAuthenticator;
@@ -15,8 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-public class DeletionIntervalControllerTest {
+public class DeletionIntervalControllerTest extends SpringBootTestWithoutShell {
 
     DeletionIntervalController deletionIntervalController;
 

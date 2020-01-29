@@ -1,9 +1,15 @@
 package pacr.webapp_backend.authentication.services;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IAuthenticator;
 
@@ -17,6 +23,8 @@ import java.util.Date;
  */
 @Component
 public class TokenManager implements IAuthenticator {
+
+    private static final Logger LOGGER = LogManager.getLogger(TokenManager.class);
 
     private static final String ISSUER_PACR = "PACR-Backend";
     private static final String AUDIENCE_ADMIN = "admin";
@@ -60,10 +68,30 @@ public class TokenManager implements IAuthenticator {
 
     @Override
     public boolean authenticate(String token) {
-        // This line will throw an exception if it is not a signed JWS (as expected)
-        Claims claims = Jwts.parser()
-                .setSigningKey(authenticationAccess.getSecret())
-                .parseClaimsJws(token).getBody();
+        byte[] secret = authenticationAccess.getSecret();
+
+        if (secret == null || secret.length == 0) {
+            // no secret has been set, therefore no one has created a token yet that could be authenticated
+            return false;
+        }
+
+        Claims claims = null;
+
+        try {
+            // This line will throw an exception if it is not a signed JWS (as expected)
+            claims = Jwts.parser()
+                    .setSigningKey(secret)
+                    .parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
+                | IllegalArgumentException e) {
+            LOGGER.error("Exception while parsing claims of token.");
+            e.printStackTrace();
+            return false;
+        }
+
+        if (claims == null) {
+            return false;
+        }
 
         return claims.getAudience().equals(AUDIENCE_ADMIN) && claims.getIssuer().equals(ISSUER_PACR);
     }
