@@ -154,7 +154,7 @@ export class DiagramComponent implements OnInit {
     this.getRepositories();
 
     // get mock data
-    this.benchmarkingResultService.getBenchmarkingResults('', '', '').subscribe(data => {
+    this.benchmarkingResultService.getBenchmarkingResults(-1, -1, '').subscribe(data => {
       this.commits = data;
     });
   }
