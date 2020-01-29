@@ -221,7 +221,7 @@ export class DiagramComponent implements OnInit {
     }
     let index = 0;
     for (const list of this.lists) {
-      this.checked[index] = false;
+      this.checked[index] = true;
       const dataset: Dataset = {data: [], code: [], label: '' + index, fill: false, lineTension: 0, repository: 'test', branch: 'master'};
       for (const commit of list) {
         dataset.data.push({
@@ -232,8 +232,8 @@ export class DiagramComponent implements OnInit {
           sha: commit.sha,
           val: commit.result
         });
-        index++;
       }
+      index++;
 
       // both is important, otherwise event listening for change of legend gets messed up
       this.chart.datasets.push(dataset);
