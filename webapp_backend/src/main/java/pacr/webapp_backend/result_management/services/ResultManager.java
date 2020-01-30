@@ -49,10 +49,12 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
 
-        CommitResult result = resultAccess.getResultFromCommit(commitHash);
+        synchronized (CommitResult.class) {
+            CommitResult result = resultAccess.getResultFromCommit(commitHash);
 
-        if (result != null) {
-            resultAccess.deleteResult(result);
+            if (result != null) {
+                resultAccess.deleteResult(result);
+            }
         }
     }
 

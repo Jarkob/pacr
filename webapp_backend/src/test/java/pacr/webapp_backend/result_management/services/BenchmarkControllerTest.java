@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import pacr.webapp_backend.result_management.Benchmark;
 import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.result_management.endpoints.BenchmarkController;
+import pacr.webapp_backend.result_management.endpoints.BenchmarkInput;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import java.util.Collection;
@@ -36,6 +37,8 @@ public class BenchmarkControllerTest {
     @Mock
     private IAuthenticator authenticatorMock;
 
+    private BenchmarkInput benchmarkInput;
+
     private BenchmarkController benchmarkController;
     
     @BeforeEach
@@ -44,6 +47,13 @@ public class BenchmarkControllerTest {
         authenticatorMock = Mockito.mock(IAuthenticator.class);
 
         benchmarkController = new BenchmarkController(authenticatorMock, benchmarkManagerMock);
+
+        benchmarkInput = Mockito.mock(BenchmarkInput.class);
+        when(benchmarkInput.getId()).thenReturn(BENCHMARK_ID);
+        when(benchmarkInput.getCustomName()).thenReturn(BENCHMARK_NAME);
+        when(benchmarkInput.getDescription()).thenReturn(BENCHMARK_DESC);
+        when(benchmarkInput.getGroupId()).thenReturn(GROUP_ID);
+        when(benchmarkInput.validate()).thenReturn(true);
     }
 
     /**
@@ -79,8 +89,7 @@ public class BenchmarkControllerTest {
     void updateBenchmark_authenticationSucceeds_shouldCallUpdateBenchmarkInManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
-        ResponseEntity<Object> response = benchmarkController.updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME,
-                BENCHMARK_DESC, GROUP_ID, TOKEN);
+        ResponseEntity<Object> response = benchmarkController.updateBenchmark(benchmarkInput, TOKEN);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -94,8 +103,7 @@ public class BenchmarkControllerTest {
     void updateBenchmark_authenticationFails_shouldNotUpdateBenchmark() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
-        ResponseEntity<Object> response = benchmarkController.updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME,
-                BENCHMARK_DESC, GROUP_ID, TOKEN);
+        ResponseEntity<Object> response = benchmarkController.updateBenchmark(benchmarkInput, TOKEN);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);

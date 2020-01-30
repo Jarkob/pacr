@@ -44,6 +44,7 @@ abstract class ResultSaver {
      * Saves a benchmarking result and saves associated benchmark metadata that is new to the system. Updates other
      * components depending on the implementation of updateOtherComponents.
      * Any result for the given commit that has already been saved will be replaced by this new result.
+     * Enters Benchmark.class monitor and exits it. Then enters CommitResult.class monitor.
      * @param result the benchmarking result that is saved. Cannot be null.
      * @param commit the commit of the benchmarking result. Cannot be null.
      * @param comparisonCommitHash the hash of the commit that is used for comparison when updating other components.
@@ -54,43 +55,47 @@ abstract class ResultSaver {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 
-        Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
-        Collection<Benchmark> benchmarksFromResult = new HashSet<>();
-
-        CommitResult comparisonResult = null;
-        if (comparisonCommitHash != null) {
-            comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
-        }
-
         Set<BenchmarkResult> benchmarkResultsToSave = new HashSet<>();
 
-        Map<String, ? extends IBenchmark> inputBenchmarkResultsMap = result.getBenchmarks();
+        synchronized (Benchmark.class) {
+            Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
+            Collection<Benchmark> benchmarksFromResult = new HashSet<>();
 
-        Map<String, BenchmarkResult> comparisonBenchmarkResultsMap = new HashMap<>();
-        if (comparisonResult != null) {
-            comparisonBenchmarkResultsMap = comparisonResult.getBenchmarks();
+            CommitResult comparisonResult = null;
+            if (comparisonCommitHash != null) {
+                comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
+            }
+
+            Map<String, ? extends IBenchmark> inputBenchmarkResultsMap = result.getBenchmarks();
+
+            Map<String, BenchmarkResult> comparisonBenchmarkResultsMap = new HashMap<>();
+            if (comparisonResult != null) {
+                comparisonBenchmarkResultsMap = comparisonResult.getBenchmarks();
+            }
+
+            for (String inputBenchmarkName : inputBenchmarkResultsMap.keySet()) {
+                IBenchmark inputBenchmarkResult = inputBenchmarkResultsMap.get(inputBenchmarkName);
+                BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
+
+                Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
+                benchmarksFromResult.add(benchmark);
+
+                Set<BenchmarkPropertyResult> propertyResultsToSave = getPropertyResults(inputBenchmarkResult,
+                        comparisonBenchmarkResult, benchmark);
+                BenchmarkResult benchmarkResultToSave = new BenchmarkResult(propertyResultsToSave, benchmark);
+
+                benchmarkResultsToSave.add(benchmarkResultToSave);
+            }
+
+            updateSavedBenchmarks(benchmarksFromResult);
         }
-
-        for (String inputBenchmarkName : inputBenchmarkResultsMap.keySet()) {
-            IBenchmark inputBenchmarkResult = inputBenchmarkResultsMap.get(inputBenchmarkName);
-            BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
-
-            Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
-            benchmarksFromResult.add(benchmark);
-
-            Set<BenchmarkPropertyResult> propertyResultsToSave = getPropertyResults(inputBenchmarkResult,
-                    comparisonBenchmarkResult, benchmark);
-            BenchmarkResult benchmarkResultToSave = new BenchmarkResult(propertyResultsToSave, benchmark);
-
-            benchmarkResultsToSave.add(benchmarkResultToSave);
-        }
-
-        updateSavedBenchmarks(benchmarksFromResult);
 
         CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID(),
                 comparisonCommitHash);
 
-        resultAccess.saveResult(resultToSave);
+        synchronized (CommitResult.class) {
+            resultAccess.saveResult(resultToSave);
+        }
 
         updateOtherComponents(resultToSave, commit, comparisonCommitHash);
     }
