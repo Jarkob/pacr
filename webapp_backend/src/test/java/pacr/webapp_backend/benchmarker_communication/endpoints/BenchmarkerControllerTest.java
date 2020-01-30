@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -195,10 +196,21 @@ public class BenchmarkerControllerTest {
     @Test
     void sendSSHKey_noError() {
         final String sshKey = "sshKey";
+        final String expectedPath = "/topic/sshKey";
 
         benchmarkerController.sendSSHKey(sshKey);
 
-        verify(template).convertAndSend("/topic/sshKey", sshKey);
+        ArgumentCaptor<SSHKeyMessage> captorMessage = ArgumentCaptor.forClass(SSHKeyMessage.class);
+        ArgumentCaptor<String> captorPath = ArgumentCaptor.forClass(String.class);
+
+        verify(template).convertAndSend(captorPath.capture(), captorMessage.capture());
+
+        String path = captorPath.getValue();
+        assertEquals(expectedPath, path);
+
+        SSHKeyMessage message = captorMessage.getValue();
+        assertNotNull(message);
+        assertEquals(message.getSshKey(), sshKey);
     }
 
     @Test

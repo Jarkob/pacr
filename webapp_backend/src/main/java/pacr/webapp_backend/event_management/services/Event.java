@@ -3,6 +3,7 @@ package pacr.webapp_backend.event_management.services;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -26,7 +27,9 @@ public class Event implements Comparable<Event> {
     @Enumerated(EnumType.STRING)
     private EventCategory category;
 
+    @Column(length = 1000)
     private String title;
+    @Column(length = 1000)
     private String description;
     private LocalDateTime created;
 

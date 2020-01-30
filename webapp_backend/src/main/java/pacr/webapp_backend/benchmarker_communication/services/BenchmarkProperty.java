@@ -2,6 +2,7 @@ package pacr.webapp_backend.benchmarker_communication.services;
 
 import java.util.Collection;
 import java.util.List;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
@@ -40,7 +41,7 @@ public class BenchmarkProperty implements IBenchmarkProperty {
 
     @Override
     public String getError() {
-        if (error.isEmpty() || error.isBlank()) {
+        if (!StringUtils.hasText(error)) {
             return null;
         }
         
