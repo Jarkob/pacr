@@ -13,7 +13,6 @@ import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
-import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 
 import java.awt.Color;

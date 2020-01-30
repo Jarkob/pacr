@@ -2,9 +2,6 @@ package pacr.webapp_backend.result_management.services;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
-import pacr.webapp_backend.result_management.BenchmarkProperty;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;

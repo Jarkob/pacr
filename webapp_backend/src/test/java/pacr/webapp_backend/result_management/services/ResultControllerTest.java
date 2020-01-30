@@ -6,7 +6,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
 import pacr.webapp_backend.result_management.endpoints.ResultController;
 import pacr.webapp_backend.shared.IAuthenticator;
 

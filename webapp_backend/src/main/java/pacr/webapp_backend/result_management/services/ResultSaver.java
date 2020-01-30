@@ -2,11 +2,6 @@ package pacr.webapp_backend.result_management.services;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkProperty;
-import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.IBenchmarkingResult;

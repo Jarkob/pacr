@@ -2,25 +2,14 @@ package pacr.webapp_backend.result_management.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
-import pacr.webapp_backend.result_management.BenchmarkProperty;
-import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
-import pacr.webapp_backend.result_management.OutputBenchmark;
-import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
 import java.awt.Color;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

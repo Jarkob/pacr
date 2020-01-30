@@ -1,8 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
 import org.springframework.lang.Nullable;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
 
 import java.util.Collection;
 

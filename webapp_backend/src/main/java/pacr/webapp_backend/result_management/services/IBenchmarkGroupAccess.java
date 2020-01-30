@@ -1,7 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import pacr.webapp_backend.result_management.BenchmarkGroup;
-
 import java.util.Collection;
 
 /**

@@ -1,13 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
-import pacr.webapp_backend.result_management.OutputBenchmark;
-import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
-import pacr.webapp_backend.result_management.OutputPropertyResult;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;

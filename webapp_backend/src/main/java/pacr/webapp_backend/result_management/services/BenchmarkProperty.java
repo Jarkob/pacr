@@ -1,4 +1,4 @@
-package pacr.webapp_backend.result_management;
+package pacr.webapp_backend.result_management.services;
 
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -6,8 +6,6 @@ import pacr.webapp_backend.shared.ResultInterpretation;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.util.Objects;
 

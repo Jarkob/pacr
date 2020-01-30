@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
+import pacr.webapp_backend.result_management.services.BenchmarkGroup;
 
 import java.util.Collection;
 

@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
-import pacr.webapp_backend.result_management.SystemEnvironment;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
+import pacr.webapp_backend.result_management.services.SystemEnvironment;
+import pacr.webapp_backend.result_management.services.Benchmark;
+import pacr.webapp_backend.result_management.services.BenchmarkPropertyResult;
+import pacr.webapp_backend.result_management.services.BenchmarkResult;
+import pacr.webapp_backend.result_management.services.CommitResult;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

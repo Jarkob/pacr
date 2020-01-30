@@ -1,4 +1,4 @@
-package pacr.webapp_backend.result_management;
+package pacr.webapp_backend.result_management.services;
 
 import pacr.webapp_backend.shared.ISystemEnvironment;
 

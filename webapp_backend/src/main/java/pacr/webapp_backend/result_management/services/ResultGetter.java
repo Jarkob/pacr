@@ -2,9 +2,6 @@ package pacr.webapp_backend.result_management.services;
 
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
-import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;

@@ -22,7 +22,7 @@ public final class StatisticalCalculator {
      * @param values the values.
      * @return the calculated quantile.
      */
-    public static double getQuantile(double p, @NotNull List<Double> values) {
+    static double getQuantile(double p, @NotNull List<Double> values) {
         if (values == null || values.isEmpty() || p < 0 || p > 1) {
             return -1;
         }
@@ -44,7 +44,7 @@ public final class StatisticalCalculator {
      * @param values the values.
      * @return the mean.
      */
-    public static double getMean(@NotNull List<Double> values) {
+    static double getMean(@NotNull List<Double> values) {
         if (values == null || values.size() == 0) {
             return -1;
         }
@@ -61,7 +61,7 @@ public final class StatisticalCalculator {
      * @param values the values.
      * @return the standard deviation.
      */
-    public static double getStandardDeviation(@NotNull List<Double> values) {
+    static double getStandardDeviation(@NotNull List<Double> values) {
         if (values == null || values.size() == 0) {
             return -1;
         }

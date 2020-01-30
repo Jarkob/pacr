@@ -2,16 +2,11 @@ package pacr.webapp_backend.result_management.services;
 
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.IEventHandler;
-import pacr.webapp_backend.shared.ResultInterpretation;
 
 import javax.validation.constraints.NotNull;
-import java.util.Map;
 import java.util.Objects;
 
 /**

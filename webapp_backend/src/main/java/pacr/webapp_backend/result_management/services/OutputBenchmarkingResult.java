@@ -1,4 +1,4 @@
-package pacr.webapp_backend.result_management;
+package pacr.webapp_backend.result_management.services;
 
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
@@ -51,7 +51,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * @param result the result for the commit.
      * @param benchmarks the benchmarks, their properties and their corresponding measurements.
      */
-    public OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
+    OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
                              @NotNull OutputBenchmark[] benchmarks) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
@@ -114,74 +114,10 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     }
 
     /**
-     * Gets the commit message of the benchmarked commit.
-     * @return the commit message.
-     */
-    public String getMessage() {
-        return commitMessage;
-    }
-
-    /**
-     * Gets the author date of the benchmarked commit.
-     * @return the author date.
-     */
-    public String getAuthorDate() {
-        return commitAuthorDate;
-    }
-
-    /**
-     * Gets the commit date of the benchmarked commit.
-     * @return the commit date.
-     */
-    public String getCommitDate() {
-        return commitCommitDate;
-    }
-
-    /**
-     * Gets the entry date of the benchmarked commit (when it was entered into this system).
-     * @return the entry date.
-     */
-    public String getEntryDate() {
-        return commitEntryDate;
-    }
-
-    /**
-     * Gets the id of the repository of the benchmarked commit.
-     * @return the repository id.
-     */
-    public int getRepositoryID() {
-        return commitRepositoryId;
-    }
-
-    /**
-     * Gets the branch name of the benchmarked commit.
-     * @return the branch name.
-     */
-    public Collection<String> getBranchNames() {
-        return commitBranchNames;
-    }
-
-    /**
-     * Gets the label of the benchmarked commit.
-     * @return the label.
-     */
-    public Collection<String> getLabels() {
-        return commitLabels;
-    }
-
-    /**
-     * Gets all commit hashes of parents of the benchmarked commit.
-     * @return the commit hashes.
-     */
-    public Collection<String> getParentHashes() {
-        return commitParentHashes;
-    }
-
-    /**
      * Gets all benchmarks (for output)that were executed on the commit.
      * @return the benchmarks.
      */
-    public List<OutputBenchmark> getBenchmarksList() {
+    List<OutputBenchmark> getBenchmarksList() {
         return Arrays.asList(benchmarks);
     }
 
@@ -189,7 +125,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Indicates whether there was global error while benchmarking the commit.
      * @return true if there was a global error. Otherwise false.
      */
-    public boolean hasGlobalError() {
+    boolean hasGlobalError() {
         return globalError;
     }
 

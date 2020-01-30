@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
+import pacr.webapp_backend.result_management.services.Benchmark;
+import pacr.webapp_backend.result_management.services.BenchmarkGroup;
 import pacr.webapp_backend.result_management.services.BenchmarkManager;
 import pacr.webapp_backend.shared.IAuthenticator;
 

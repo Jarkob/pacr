@@ -1,8 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import pacr.webapp_backend.result_management.BenchmarkPropertyResult;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
@@ -57,44 +54,9 @@ public class DiagramOutputResult {
     }
 
     /**
-     * @return the commit hash.
-     */
-    public String getCommitHash() {
-        return commitHash;
-    }
-
-    /**
-     * @return the commit date.
-     */
-    public String getCommitDate() {
-        return commitDate;
-    }
-
-    /**
-     * @return the author date.
-     */
-    public String getAuthorDate() {
-        return authorDate;
-    }
-
-    /**
      * @return a hash map that maps property names to the measured median (or error message) for that property.
      */
-    public HashMap<String, ResultWithError> getResult() {
+    HashMap<String, ResultWithError> getResult() {
         return result;
-    }
-
-    /**
-     * @return the commit hashes of the parents.
-     */
-    public String[] getParents() {
-        return parents;
-    }
-
-    /**
-     * @return the error message for the global error. Null if there was no global error.
-     */
-    public String getGlobalError() {
-        return globalError;
     }
 }

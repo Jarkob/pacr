@@ -1,7 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import pacr.webapp_backend.result_management.CommitResult;
-
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;

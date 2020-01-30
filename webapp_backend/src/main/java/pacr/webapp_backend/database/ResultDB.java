@@ -2,7 +2,7 @@ package pacr.webapp_backend.database;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.result_management.CommitResult;
+import pacr.webapp_backend.result_management.services.CommitResult;
 import pacr.webapp_backend.result_management.services.IResultAccess;
 
 import java.util.Collection;

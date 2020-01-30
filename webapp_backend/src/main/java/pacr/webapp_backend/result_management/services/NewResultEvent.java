@@ -44,7 +44,7 @@ public class NewResultEvent extends EventTemplate {
      * @param comparisonCommitHash the hash of the commit used for comparison. May be null (in this case it is assumed
      *                             no comparison has taken place and averageImprovementPercentage is ignored).
      */
-    public NewResultEvent(@NotNull EventCategory category, @NotNull String commitHash, @NotNull String repositoryName,
+    NewResultEvent(@NotNull EventCategory category, @NotNull String commitHash, @NotNull String repositoryName,
                           @Nullable String globalError, int averageImprovementPercentage,
                           @Nullable String comparisonCommitHash) {
         super(category);

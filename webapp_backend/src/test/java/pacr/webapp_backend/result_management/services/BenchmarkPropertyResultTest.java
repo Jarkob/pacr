@@ -1,9 +1,11 @@
-package pacr.webapp_backend.result_management;
+package pacr.webapp_backend.result_management.services;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import pacr.webapp_backend.result_management.services.BenchmarkProperty;
+import pacr.webapp_backend.result_management.services.BenchmarkPropertyResult;
 
 import java.util.Arrays;
 

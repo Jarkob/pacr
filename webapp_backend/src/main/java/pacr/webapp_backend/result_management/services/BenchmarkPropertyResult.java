@@ -1,8 +1,7 @@
-package pacr.webapp_backend.result_management;
+package pacr.webapp_backend.result_management.services;
 
 
 import org.springframework.lang.Nullable;
-import pacr.webapp_backend.result_management.services.StatisticalCalculator;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
@@ -109,14 +108,6 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         this.compared = false;
     }
 
-    /**
-     * Gets the unique id of this BenchmarkPropertyResult.
-     * @return the id.
-     */
-    int getId() {
-        return id;
-    }
-
     @Override
     public Collection<Double> getResults() {
         return measurements;
@@ -208,14 +199,6 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      */
     public boolean isCompared() {
         return compared;
-    }
-
-    /**
-     * Gets the property that is associated with this BenchmarkPropertyResult.
-     * @return the property.
-     */
-    BenchmarkProperty getProperty() {
-        return property;
     }
 
     /**

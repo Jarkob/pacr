@@ -23,14 +23,14 @@ public class ResultWithError {
     /**
      * @return gets the result. Null if there was an error.
      */
-    public Double getResult() {
+    Double getResult() {
         return result;
     }
 
     /**
      * @return gets the error message. Null if there was no error.
      */
-    public String getErrorMessage() {
+    String getErrorMessage() {
         return errorMessage;
     }
 }

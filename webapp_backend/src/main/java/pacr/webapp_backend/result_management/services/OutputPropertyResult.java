@@ -1,4 +1,4 @@
-package pacr.webapp_backend.result_management;
+package pacr.webapp_backend.result_management.services;
 
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -33,7 +33,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
      * property.
      * @param result the BenchmarkPropertyResult that this OutputPropertyResult is cloned from. Cannot be null.
      */
-    public OutputPropertyResult(@NotNull BenchmarkPropertyResult result) {
+    OutputPropertyResult(@NotNull BenchmarkPropertyResult result) {
         Objects.requireNonNull(result);
 
         this.name = result.getName();
@@ -85,55 +85,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
      * Gets the name of the property.
      * @return the name
      */
-    public String getName() {
+    String getName() {
         return name;
-    }
-
-    /**
-     * Indicates whether there was an error while measuring this property.
-     * @return {@code true} if there was an error, otherwise {@code false}.
-     */
-    public boolean hadLocalError() {
-        return hadLocalError;
-    }
-
-    /**
-     * Gets the mean of the measurements.
-     * @return the mean.
-     */
-    public double getMean() {
-        return mean;
-    }
-
-    /**
-     * Gets the lower quartile of the measurements.
-     * @return the lower quartile.
-     */
-    public double getLowerQuartile() {
-        return lowerQuartile;
-    }
-
-    /**
-     * Gets the median of the measurements.
-     * @return the median.
-     */
-    public double getMedian() {
-        return median;
-    }
-
-    /**
-     * Gets the upper quartile of the measurements.
-     * @return the upper quartile.
-     */
-    public double getUpperQuartile() {
-        return upperQuartile;
-    }
-
-    /**
-     * Gets the standard deviation of the measurements.
-     * @return the standard deviation.
-     */
-    public double getStandardDeviation() {
-        return standardDeviation;
     }
 }

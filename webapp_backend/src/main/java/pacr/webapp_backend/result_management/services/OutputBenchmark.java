@@ -1,12 +1,10 @@
-package pacr.webapp_backend.result_management;
+package pacr.webapp_backend.result_management.services;
 
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -30,7 +28,7 @@ public class OutputBenchmark implements IBenchmark {
      * @param results the properties with results. Cannot be null.
      * @param benchmark the benchmark that metadata is copied from. Cannot be null.
      */
-    public OutputBenchmark(@NotNull OutputPropertyResult[] results, @NotNull Benchmark benchmark) {
+    OutputBenchmark(@NotNull OutputPropertyResult[] results, @NotNull Benchmark benchmark) {
         Objects.requireNonNull(results);
         Objects.requireNonNull(benchmark);
 
@@ -62,49 +60,17 @@ public class OutputBenchmark implements IBenchmark {
     }
 
     /**
-     * Gets a list of all properties for output of this benchmark.
-     * @return the properties.
-     */
-    public List<OutputPropertyResult> getPropertiesList() {
-        return Arrays.asList(results);
-    }
-
-    /**
-     * Gets the id of the benchmark.
-     * @return the id.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
      * Gets the original name of the benchmark.
      * @return the original name.
      */
-    public String getOriginalName() {
+    String getOriginalName() {
         return originalName;
-    }
-
-    /**
-     * Gets the custom name of the benchmark.
-     * @return the custom name.
-     */
-    public String getCustomName() {
-        return customName;
-    }
-
-    /**
-     * Gets the description of the benchmark.
-     * @return the description.
-     */
-    public String getDescription() {
-        return description;
     }
 
     /**
      * @return Gets the id of the group the benchmark belongs to. -1 if the benchmark belongs to no group.
      */
-    public int getGroupId() {
+    int getGroupId() {
         return groupId;
     }
 }

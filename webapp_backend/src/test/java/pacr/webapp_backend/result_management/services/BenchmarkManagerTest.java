@@ -7,9 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.BenchmarkGroupDB;
-import pacr.webapp_backend.result_management.BenchmarkProperty;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
 import java.util.Collection;

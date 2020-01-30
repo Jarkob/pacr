@@ -8,10 +8,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
-import pacr.webapp_backend.result_management.Benchmark;
-import pacr.webapp_backend.result_management.BenchmarkResult;
-import pacr.webapp_backend.result_management.CommitResult;
-import pacr.webapp_backend.result_management.OutputBenchmarkingResult;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 
 import java.util.Collection;

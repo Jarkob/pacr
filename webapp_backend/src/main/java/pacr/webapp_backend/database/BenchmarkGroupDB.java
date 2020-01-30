@@ -2,7 +2,7 @@ package pacr.webapp_backend.database;
 
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Component;
-import pacr.webapp_backend.result_management.BenchmarkGroup;
+import pacr.webapp_backend.result_management.services.BenchmarkGroup;
 import pacr.webapp_backend.result_management.services.IBenchmarkGroupAccess;
 
 import java.util.Collection;
