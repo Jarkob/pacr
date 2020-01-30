@@ -9,11 +9,16 @@ import org.eclipse.jgit.api.errors.JGitInternalException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * Handles cloning the repositories and checking out the commits.
+ */
 @Component
 public class GitHandler {
 
@@ -24,12 +29,24 @@ public class GitHandler {
 
     private TransportConfigCallback transportConfigCallback;
 
-    public GitHandler() {
-        this.transportConfigCallback = new SSHTransportConfigCallback();
-        relWorkingDir = "repositories";
+    /**
+     * Creates a new instance of GitHandler.
+     * @param relWorkingDir is the relative working directory.
+     * @param transportConfigCallback is the TransportConfigCallback for cloning repositories.
+     */
+    public GitHandler(@NotNull @Value("${repositoryWorkingDir}") String relWorkingDir,
+                      @NotNull TransportConfigCallback transportConfigCallback) {
+        this.transportConfigCallback = transportConfigCallback;
+        this.relWorkingDir = relWorkingDir;
         absWorkingDir = System.getProperty("user.dir") + "/" + relWorkingDir;
     }
 
+    /**
+     * Sets up repositories for the benchmark.
+     * @param repositoryURL is the URL for the repository.
+     * @param commitHash is the hash of the commit.
+     * @return the directory of the repository. NULL if the repository could not be set up.
+     */
     public String setupRepositoryForBenchmark(String repositoryURL, String commitHash) {
 
         // can't use repository as directory name because of special characters

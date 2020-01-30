@@ -40,9 +40,8 @@ public class BenchmarkingResult {
     }
 
     /**
-     * TODO
-     * @param globalError
-     * @return
+     * Sets the global error of the BenchmarkingResult.
+     * @param globalError is the global error.
      */
     public void setGlobalError(String globalError) {
         this.globalError = globalError;

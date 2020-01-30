@@ -4,15 +4,20 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Type;
 
 /**
+ * Handles the registration.
+ * Logs whether the registration was successful.
+ *
  * @author Pavel Zwerschke
  */
+@Component
 public class RegisteredHandler implements StompFrameHandler {
 
-    private Logger logger = LogManager.getLogger(BenchmarkerSessionHandler.class);
+    private static final Logger LOGGER = LogManager.getLogger(BenchmarkerSessionHandler.class);
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
@@ -24,9 +29,9 @@ public class RegisteredHandler implements StompFrameHandler {
         boolean message = (boolean) payload;
 
         if (message) {
-            logger.info("Registration was successful.");
+            LOGGER.info("Registration was successful.");
         } else {
-            logger.error("Registration failed.");
+            LOGGER.error("Registration failed.");
         }
     }
 

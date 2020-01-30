@@ -7,13 +7,18 @@ package pacr.benchmarker.services;
  */
 public class JSONToGSONAdapter {
 
-    public String convertJSONToGSON(String str) {
+    /**
+     * Converts the provided runner JSON String to a correct GSON format.
+     * @param json is the JSON string.
+     * @return the correct GSON format.
+     */
+    public String convertJSONToGSON(String json) {
         // check that there is no "error" on first level of JSON
-        if (errorOnFirstLevel(str)) { // nothing needs to be changed
-            return str;
+        if (errorOnFirstLevel(json)) { // nothing needs to be changed
+            return json;
         }
 
-        StringBuilder sb = new StringBuilder(str);
+        StringBuilder sb = new StringBuilder(json);
 
         // add "benchmarks": { ... }
         int indexForInsertion = sb.indexOf("{");
@@ -47,6 +52,12 @@ public class JSONToGSONAdapter {
         return sb.toString();
     }
 
+    /**
+     * Checks if there is a error on the first level.
+     * Then the JSON string does not need to be modified.
+     * @param str is the JSON string.
+     * @return true if there is an error on the first level, false if there isn't.
+     */
     private boolean errorOnFirstLevel(String str) {
         int indexOfError = str.indexOf("\"error\"");
         if (indexOfError == -1) { // no error at all

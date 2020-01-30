@@ -42,7 +42,7 @@ public class PullIntervalController {
      * @param interval is the pull interval.
      * @return HTTP Response OK (200) if the pull interval was set correctly.
      */
-    @PutMapping("pull-interval/{interval}")
+    @PutMapping("/pull-interval/{interval}")
     public ResponseEntity<Object> setPullInterval(@PathVariable int interval) {
         pullIntervalAccess.setPullInterval(interval);
         LOGGER.info("Changed pull interval to {} seconds.", interval);

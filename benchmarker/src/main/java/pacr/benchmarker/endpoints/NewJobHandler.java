@@ -12,6 +12,8 @@ import pacr.benchmarker.services.JobResult;
 import java.lang.reflect.Type;
 
 /**
+ * Handles new jobs and dispatches them.
+ *
  * @author Pavel Zwerschke
  */
 @Component
@@ -20,10 +22,18 @@ public class NewJobHandler implements StompFrameHandler, IJobResultSender {
     private StompSession session;
     private Benchmarker benchmarker;
 
+    /**
+     * Creates an instance of NewJobHandler.
+     * @param benchmarker will execute jobs.
+     */
     public NewJobHandler(Benchmarker benchmarker) {
         this.benchmarker = benchmarker;
     }
 
+    /**
+     * Sets the StompSession.
+     * @param session is the session being set.
+     */
     public void setSession(StompSession session) {
         this.session = session;
     }
@@ -37,7 +47,7 @@ public class NewJobHandler implements StompFrameHandler, IJobResultSender {
     public void handleFrame(StompHeaders stompHeaders, Object o) {
         JobMessage job = (JobMessage)o;
 
-        benchmarker.executeJob(job.getRepository(), job.getCommitHash(), this);
+        benchmarker.executeJob(job.getRepository(), job.getCommitHash());
     }
 
     @Override

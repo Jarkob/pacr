@@ -17,16 +17,21 @@ import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
- *
+ * This is an implementation of TransportConfigCallback with SSH keys.
  *
  * @author Pavel Zwerschke
  */
 @Component
 public class SSHTransportConfigCallback implements TransportConfigCallback {
 
-    private static final String PATH_TO_PRIVATE_KEY = System.getProperty("user.dir") + "/ssh.key"; // todo autowire
+    private String pathToPrivateKey;
 
-    public SSHTransportConfigCallback() {
+    /**
+     * Creates an instance of SShTransportConfigCallback.
+     * @param pathToPrivateKey is the path (relative from user.dir) to the SSH private key.
+     */
+    public SSHTransportConfigCallback(@Value("${privateKeyPath}") String pathToPrivateKey) {
+        this.pathToPrivateKey = System.getProperty("user.dir") + pathToPrivateKey;
     }
 
     private final SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
@@ -38,7 +43,7 @@ public class SSHTransportConfigCallback implements TransportConfigCallback {
         @Override
         protected JSch createDefaultJSch(FS fs) throws JSchException {
             JSch jSch = super.createDefaultJSch(fs);
-            jSch.addIdentity(PATH_TO_PRIVATE_KEY);
+            jSch.addIdentity(pathToPrivateKey);
             return jSch;
         }
     };

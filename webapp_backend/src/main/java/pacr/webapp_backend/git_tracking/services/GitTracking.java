@@ -9,14 +9,11 @@ import pacr.webapp_backend.shared.IRepositoryImporter;
 import pacr.webapp_backend.shared.IResultDeleter;
 
 import javax.validation.constraints.NotNull;
-import java.awt.Color;
 import java.time.LocalDate;
 import java.util.Objects;
-import java.util.Arrays;
 import java.util.Set;
 import java.util.NoSuchElementException;
 import java.util.Collection;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

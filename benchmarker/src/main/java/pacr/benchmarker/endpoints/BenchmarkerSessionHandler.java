@@ -8,6 +8,8 @@ import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
 
 /**
+ * Handles benchmarker sessions.
+ *
  * @author Pavel Zwerschke
  */
 public class BenchmarkerSessionHandler extends StompSessionHandlerAdapter {

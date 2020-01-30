@@ -44,6 +44,9 @@ public class JobResult implements IBenchmarkingResult {
         return benchmarkingResult.getGlobalError();
     }
 
+    /**
+     * @param benchmarkingResult is the benchmarking result.
+     */
     public void setBenchmarkingResult(BenchmarkingResult benchmarkingResult) {
         this.benchmarkingResult = benchmarkingResult;
     }
@@ -55,6 +58,9 @@ public class JobResult implements IBenchmarkingResult {
         return executionTime;
     }
 
+    /**
+     * @return is the repository pull URL of the job result.
+     */
     public String getRepository() {
         return repository;
     }

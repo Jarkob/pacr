@@ -19,14 +19,16 @@ public class Benchmark implements IBenchmark {
     public Benchmark() {
     }
 
+    /**
+     * @return the benchmark properties.
+     */
     @Override
     public Map<String, ? extends IBenchmarkProperty> getBenchmarkProperties() {
         return properties;
     }
 
     /**
-     * TODO
-     * @param properties
+     * @param properties are the benchmark properties being set.
      */
     public void setProperties(Map<String, BenchmarkProperty> properties) {
         this.properties = properties;

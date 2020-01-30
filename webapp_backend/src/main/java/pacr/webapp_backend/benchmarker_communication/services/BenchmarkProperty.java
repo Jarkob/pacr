@@ -1,7 +1,6 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
 import java.util.Collection;
-import java.util.List;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -49,32 +48,28 @@ public class BenchmarkProperty implements IBenchmarkProperty {
     }
 
     /**
-     * TODO
-     * @param results
+     * @param results are the results.
      */
     public void setResults(Collection<Double> results) {
         this.results = results;
     }
 
     /**
-     * TODO
-     * @param resultInterpretation
+     * @param resultInterpretation is the result interpretation.
      */
     public void setResultInterpretation(ResultInterpretation resultInterpretation) {
         this.resultInterpretation = resultInterpretation;
     }
 
     /**
-     * TODO
-     * @param unit
+     * @param unit is the unit of the benchmark property.
      */
     public void setUnit(String unit) {
         this.unit = unit;
     }
 
     /**
-     * TODO
-     * @param error
+     * @param error is the error message of the benchmark property.
      */
     public void setError(String error) {
         this.error = error;
