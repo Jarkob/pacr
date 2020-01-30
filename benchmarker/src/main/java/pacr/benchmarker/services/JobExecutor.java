@@ -1,5 +1,6 @@
 package pacr.benchmarker.services;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pacr.benchmarker.services.git.GitHandler;
 
@@ -17,15 +18,19 @@ public class JobExecutor implements Runnable {
     private JobDispatcher jobDispatcher;
     private String repository;
     private String commitHash;
+    private String relativePathToWorkingDir;
 
     /**
      * Creates an instance of JobExecutor.
      * @param gitHandler is the git handler used for cloning the repository and for checkouts.
-     * @param resultSender sends the job result to the Web-App.
+     * @param jobDispatcher dispatches the jobs.
+     * @param relativePathToWorkingDir is the relative path from the runner script to the repository working dir.
      */
-    public JobExecutor(GitHandler gitHandler, IJobResultSender resultSender) {
+    public JobExecutor(GitHandler gitHandler, JobDispatcher jobDispatcher,
+                       @Value("${relPathToWorkingDir}") String relativePathToWorkingDir) {
         this.gitHandler = gitHandler;
-        this.resultSender = resultSender;
+        this.jobDispatcher = jobDispatcher;
+        this.relativePathToWorkingDir = relativePathToWorkingDir;
     }
 
     /**
@@ -36,7 +41,13 @@ public class JobExecutor implements Runnable {
     public void init(String repository, String commitHash) {
         this.repository = repository;
         this.commitHash = commitHash;
-        this.jobDispatcher = new JobDispatcher();
+    }
+
+    /**
+     * @param resultSender the result sender being set.
+     */
+    public void setResultSender(IJobResultSender resultSender) {
+        this.resultSender = resultSender;
     }
 
     @Override
@@ -52,6 +63,8 @@ public class JobExecutor implements Runnable {
             benchmarkingResult = new BenchmarkingResult();
             benchmarkingResult.setGlobalError("Could not set up repository for benchmarking.");
         } else {
+            path = relativePathToWorkingDir + path;
+
             // fetch benchmarking result
             benchmarkingResult = jobDispatcher.dispatchJob(path);
             result.setBenchmarkingResult(benchmarkingResult);

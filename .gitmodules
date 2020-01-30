@@ -1,0 +1,3 @@
+[submodule "benchmarker/runner/codespeed-pse"]
+	path = benchmarker/runner/codespeed-pse
+	url = git@git.scc.kit.edu:aaaaaaah/codespeed-pse.git

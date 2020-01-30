@@ -38,4 +38,11 @@ public class Benchmarker {
         executionThread.start();
     }
 
+    /**
+     * @param resultSender is the result sender being set.
+     */
+    public void setResultSender(IJobResultSender resultSender) {
+        this.jobExecutor.setResultSender(resultSender);
+    }
+
 }

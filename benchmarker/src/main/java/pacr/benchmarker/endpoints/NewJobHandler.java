@@ -28,6 +28,7 @@ public class NewJobHandler implements StompFrameHandler, IJobResultSender {
      */
     public NewJobHandler(Benchmarker benchmarker) {
         this.benchmarker = benchmarker;
+        this.benchmarker.setResultSender(this);
     }
 
     /**
