@@ -38,6 +38,12 @@ export class SshConfigComponent implements OnInit, OnDestroy {
         );
       }
     );
+
+    this.sshService.getPublicSSHKey().subscribe(
+      data => {
+        this.publicSSHKey = data;
+      }
+    );
   }
 
   copyTextToClipboard(inputElement) {

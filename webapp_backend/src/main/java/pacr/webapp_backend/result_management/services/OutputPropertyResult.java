@@ -81,6 +81,46 @@ public class OutputPropertyResult implements IBenchmarkProperty {
         return null;
     }
 
+    public ResultInterpretation getInterpretation() {
+        return interpretation;
+    }
+
+    public double getMean() {
+        return mean;
+    }
+
+    public double getLowerQuartile() {
+        return lowerQuartile;
+    }
+
+    public double getMedian() {
+        return median;
+    }
+
+    public double getUpperQuartile() {
+        return upperQuartile;
+    }
+
+    public double getStandardDeviation() {
+        return standardDeviation;
+    }
+
+    public boolean isHadLocalError() {
+        return hadLocalError;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public double getRatioToPreviousCommit() {
+        return ratioToPreviousCommit;
+    }
+
+    public boolean isCompared() {
+        return compared;
+    }
+
     /**
      * Gets the name of the property.
      * @return the name

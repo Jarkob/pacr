@@ -29,7 +29,7 @@ export class RepositoryService {
    * get all branches
    */
   public getAllBranches(pullURL: string): Observable<string[]> {
-    return this.http.get<string[]>(this.globalService.url + '/branches/' + pullURL);
+    return this.http.post<string[]>(this.globalService.url + '/branches', pullURL, httpOptions);
   }
 
 // TODO sensitive methods, require authentication
@@ -47,14 +47,14 @@ export class RepositoryService {
    * @param interval the new pull interval
    */
   public setPullInterval(interval: number): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/interval', interval);
+    return this.http.post<{}>(this.globalService.url + '/pull-interval', interval);
   }
 
   /**
    * get the pull interval
    */
   public getPullInterval(): Observable<number> {
-    return this.http.get<number>(this.globalService.url + '/interval');
+    return this.http.get<number>(this.globalService.url + '/pull-interval');
   }
 
   /**

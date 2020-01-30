@@ -205,7 +205,7 @@ export class DetailViewMaximizedComponent implements OnInit {
 
     benchmarkGroups = await this.benchmarkService.getAllGroups().toPromise();
 
-    benchmarkingResult.benchmarks.forEach(benchmark => {
+    benchmarkingResult.benchmarksList.forEach(benchmark => {
       const groupName = this.findBenchmarkGroupName(benchmark.groupId, benchmarkGroups);
 
       benchmark.results.forEach(benchProperty => {
@@ -223,7 +223,8 @@ export class DetailViewMaximizedComponent implements OnInit {
 
   private findBenchmarkGroupName(id: number, benchmarkGroups: BenchmarkGroup[]): string {
     if (id < 0) {
-      return this.strings.undefinedGroup;
+      // return this.strings.undefinedGroup;
+      return 'Undefined Group';
     }
 
     benchmarkGroups.forEach(group => {
@@ -232,7 +233,8 @@ export class DetailViewMaximizedComponent implements OnInit {
       }
     });
 
-    return this.strings.undefinedGroup;
+    // return this.strings.undefinedGroup;
+    return 'Undefined Group';
   }
 
   close() {

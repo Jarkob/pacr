@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -164,14 +165,14 @@ public class RepositoryManagerController {
 
     /**
      * Gets all branches of a specific repository.
-     * @param repositoryID is the ID of the repository.
+     * @param pullURL is the pull url of the repository.
      * @return all branches of the repository.
      */
-    @RequestMapping(value = "/branches/{id}")
-    public Set<String> getBranchesFromRepository(@PathVariable("id") int repositoryID) {
-        LOGGER.info("Getting branches from repository with ID {}.", repositoryID);
+    @PostMapping(value = "/branches")
+    public Set<String> getBranchesFromRepository(@RequestBody String pullURL) {
+        LOGGER.info("Getting branches from repository with pull url {}.", pullURL);
 
-        return gitTracking.getBranches(repositoryID);
+        return gitTracking.getBranches(pullURL);
     }
 
 }

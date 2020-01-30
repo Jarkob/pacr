@@ -137,7 +137,7 @@
                                 {{ selectedBenchmarkProperty[0].customName }}: {{ selectedBenchmarkProperty[1].name }}
                             </mat-select-trigger>
 
-                            <mat-optgroup *ngFor="let benchmark of benchmarkingResult.benchmarks" [label]="benchmark.customName">
+                            <mat-optgroup *ngFor="let benchmark of benchmarkingResult.benchmarksList" [label]="benchmark.customName">
                                 <mat-option *ngFor="let property of benchmark.results" [value]="[benchmark, property]">
                                     {{property.name}}
                                 </mat-option>

@@ -180,8 +180,7 @@ public class GitTracking implements IRepositoryImporter {
         return gitTrackingAccess.getRepository(id);
     }
 
-    public Set<String> getBranches(int repositoryID) {
-        GitRepository gitRepository = gitTrackingAccess.getRepository(repositoryID);
-        return gitHandler.getBranchesOfRepository(gitRepository.getPullURL());
+    public Set<String> getBranches(String pullURL) {
+        return gitHandler.getBranchesOfRepository(pullURL);
     }
 }

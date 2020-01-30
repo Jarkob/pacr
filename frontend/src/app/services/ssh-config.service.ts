@@ -21,7 +21,7 @@ export class SshConfigService {
      * get the current job queue
      */
     public getPublicSSHKey(): Observable<string> {
-        return this.http.get<string>(this.globalService.url + '/ssh/public-key');
+        return this.http.get(this.globalService.url + '/ssh/public-key', {responseType: 'text'});
     }
 
     /**

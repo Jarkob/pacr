@@ -41,7 +41,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     private Collection<String> commitLabels;
 
     private ISystemEnvironment systemEnvironment;
-    private OutputBenchmark[] benchmarks;
+    private OutputBenchmark[] benchmarksList;
 
     /**
      * Creates an OutputBenchmarkingResult for a commit. Copies system environment and error information from the
@@ -81,7 +81,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.commitLabels = commit.getLabels();
 
         this.systemEnvironment = result.getSystemEnvironment();
-        this.benchmarks = benchmarks;
+        this.benchmarksList = benchmarks;
     }
 
     @Override
@@ -98,7 +98,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     public Map<String, IBenchmark> getBenchmarks() {
         Map<String, IBenchmark> benchmarkMap = new HashMap<>();
 
-        for (OutputBenchmark benchmark : benchmarks) {
+        for (OutputBenchmark benchmark : benchmarksList) {
             benchmarkMap.put(benchmark.getOriginalName(), benchmark);
         }
 
@@ -117,8 +117,8 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Gets all benchmarks (for output)that were executed on the commit.
      * @return the benchmarks.
      */
-    List<OutputBenchmark> getBenchmarksList() {
-        return Arrays.asList(benchmarks);
+    public List<OutputBenchmark> getBenchmarksList() {
+        return Arrays.asList(benchmarksList);
     }
 
     /**
@@ -134,5 +134,57 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
             return commit.getCommitHash().equals(result.getCommitHash());
         }
         return false;
+    }
+
+    public boolean isGlobalError() {
+        return globalError;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public String getCommitMessage() {
+        return commitMessage;
+    }
+
+    public String getCommitURL() {
+        return commitURL;
+    }
+
+    public String getComparisonCommitHash() {
+        return comparisonCommitHash;
+    }
+
+    public String getCommitEntryDate() {
+        return commitEntryDate;
+    }
+
+    public String getCommitCommitDate() {
+        return commitCommitDate;
+    }
+
+    public String getCommitAuthorDate() {
+        return commitAuthorDate;
+    }
+
+    public int getCommitRepositoryId() {
+        return commitRepositoryId;
+    }
+
+    public String getCommitRepositoryName() {
+        return commitRepositoryName;
+    }
+
+    public Collection<String> getCommitBranchNames() {
+        return commitBranchNames;
+    }
+
+    public Collection<String> getCommitParentHashes() {
+        return commitParentHashes;
+    }
+
+    public Collection<String> getCommitLabels() {
+        return commitLabels;
     }
 }

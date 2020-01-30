@@ -70,7 +70,23 @@ public class OutputBenchmark implements IBenchmark {
     /**
      * @return Gets the id of the group the benchmark belongs to. -1 if the benchmark belongs to no group.
      */
-    int getGroupId() {
+    public int getGroupId() {
         return groupId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getCustomName() {
+        return customName;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public OutputPropertyResult[] getResults() {
+        return results;
     }
 }

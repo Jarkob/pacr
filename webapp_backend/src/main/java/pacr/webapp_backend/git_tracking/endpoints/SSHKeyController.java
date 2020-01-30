@@ -39,9 +39,9 @@ public class SSHKeyController {
      * @return SSH Public Key.
      */
     @RequestMapping(value = "/ssh/public-key", method = RequestMethod.GET)
-    public String getSSHPublicKey() {
+    public ResponseEntity<String> getSSHPublicKey() {
         try {
-            return provider.getSSHPublicKey();
+            return ResponseEntity.ok(provider.getSSHPublicKey());
         } catch (IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }

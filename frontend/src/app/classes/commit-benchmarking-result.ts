@@ -9,13 +9,13 @@ export interface CommitBenchmarkingResult {
     commitEntryDate: Date;
     commitCommitDate: Date;
     commitAuthorDate: Date;
-    repositoryId: number;
-    repositoryName: string;
+    commitRepositoryId: number;
+    commitRepositoryName: string;
     commitUrl: string;
     comparisonCommitHash: string;
     commitBranchNames: string[];
     commitParentHashes: string[];
     commitLabels: string[];
     systemEnvironment: SystemEnvironment;
-    benchmarks: OutputBenchmark[];
+    benchmarksList: OutputBenchmark[];
 }
