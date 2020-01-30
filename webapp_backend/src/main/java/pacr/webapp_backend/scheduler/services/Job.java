@@ -107,8 +107,4 @@ public class Job implements IJob {
         return Objects.hash(jobID, group.getTitle());
     }
 
-    @Override
-    public String toString() {
-        return "Job{ jobID='" + jobID + "'" + ", group=" + group + " }";
-    }
 }

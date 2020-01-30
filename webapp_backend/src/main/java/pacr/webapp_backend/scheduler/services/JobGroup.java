@@ -94,8 +94,4 @@ public class JobGroup {
         return Objects.hash(title);
     }
 
-    @Override
-    public String toString() {
-        return "JobGroup{ " + "title='" + title + "'" + ", benchmarkingTime=" + timeSheet + " }";
-    }
 }

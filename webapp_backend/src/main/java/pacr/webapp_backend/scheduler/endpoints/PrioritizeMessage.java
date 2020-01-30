@@ -32,6 +32,9 @@ public class PrioritizeMessage {
         return groupTitle;
     }
 
+    /**
+     * @return whether all attributes are valid inputs.
+     */
     public boolean validate() {
         return StringUtils.hasText(groupTitle) && StringUtils.hasText(jobID);
     }

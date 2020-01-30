@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
 import pacr.webapp_backend.scheduler.services.Job;
 import pacr.webapp_backend.scheduler.services.Scheduler;
 import pacr.webapp_backend.shared.IAuthenticator;
@@ -34,8 +35,8 @@ public class SchedulerControllerTest {
     @Mock
     private IAuthenticator authenticator;
 
-    @Mock
-    PrioritizeMessage prioritizeMessage;
+    @Spy
+    private PrioritizeMessage prioritizeMessage;
 
     @BeforeEach
     void setUp() {
@@ -127,6 +128,18 @@ public class SchedulerControllerTest {
 
         verify(authenticator).authenticate(jwtToken);
         verify(scheduler).givePriorityTo(JOB_GROUP, JOB_ID);
+        assertFalse(result);
+    }
+
+    @Test
+    void givePriorityTo_invalidPrioritizeMessage() {
+        final String jwtToken = "jwt";
+        when(prioritizeMessage.validate()).thenReturn(false);
+
+        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
+
+        verify(authenticator, never()).authenticate(jwtToken);
+        verify(scheduler, never()).givePriorityTo(JOB_GROUP, JOB_ID);
         assertFalse(result);
     }
 }

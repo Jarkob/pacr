@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JobGroupTest {
 
@@ -15,6 +17,31 @@ public class JobGroupTest {
     @BeforeEach
     void initialize() {
         jobGroup = new JobGroup(GROUP_TITLE);
+    }
+
+    @Test
+    void equals_areEqual() {
+        JobGroup otherGroup = new JobGroup(GROUP_TITLE);
+
+        boolean result = otherGroup.equals(jobGroup);
+        assertTrue(result);
+
+        result = jobGroup.equals(jobGroup);
+        assertTrue(result);
+    }
+
+    @Test
+    void equals_areNotEqual() {
+        JobGroup otherGroup = new JobGroup(GROUP_TITLE + 1);
+
+        boolean result = otherGroup.equals(jobGroup);
+        assertFalse(result);
+
+        result = jobGroup.equals(null);
+        assertFalse(result);
+
+        result = jobGroup.equals(new Object());
+        assertFalse(result);
     }
 
     @Test

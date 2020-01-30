@@ -23,6 +23,11 @@ public interface IJobAccess {
      */
     void saveJob(Job job);
 
+    /**
+     * Deletes a job from the storage.
+     *
+     * @param job the job which is deleted.
+     */
     void deleteJob(Job job);
 
 }
