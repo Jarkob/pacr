@@ -1,6 +1,8 @@
 package pacr.webapp_backend.import_export.servies;
 
+import java.util.HashMap;
 import java.util.Map;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
@@ -21,6 +23,23 @@ public class BenchmarkingResult implements IBenchmarkingResult {
      * Needed for Spring to work.
      */
     public BenchmarkingResult() {
+    }
+
+    /**
+     * Creates a BenchmarkingResult from an IBenchmarkingResult interface.
+     *
+     * @param result the IBenchmarkingResult which is used to create the BenchmarkingResult.
+     */
+    public BenchmarkingResult(IBenchmarkingResult result) {
+        this.commitHash = result.getCommitHash();
+        this.globalError = result.getGlobalError();
+        this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
+
+        this.benchmarks = new HashMap<>();
+        Map<String, ? extends IBenchmark> resultBenchmarks = result.getBenchmarks();
+        for (String benchmarkName : resultBenchmarks.keySet()) {
+            this.benchmarks.put(benchmarkName, new Benchmark(resultBenchmarks.get(benchmarkName)));
+        }
     }
 
     @Override
@@ -49,7 +68,7 @@ public class BenchmarkingResult implements IBenchmarkingResult {
      * @return an error message if there was a general error. Null is returned if there was no error.
      */
     public String getGlobalError() {
-        if (globalError.isEmpty() || globalError.isBlank()) {
+        if (!StringUtils.hasText(globalError)) {
             return null;
         }
 

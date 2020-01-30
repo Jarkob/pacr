@@ -12,13 +12,13 @@ import java.util.Set;
 public interface IRepositoryImporter {
 
     /**
-     * Adds a repository.
+     * Imports a repository.
      * @param repositoryURL is the pull URL of the repository.
      * @param observeFromDate is the date from when it should be observed.
      * @param name is the name of the repository.
      * @param selectedBranches are the branches of the repository and whether they are selected or not.
      * @return the ID of the repository.
      */
-    int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate,
-                      @NotNull String name, @NotNull Set<String> selectedBranches);
+    int importRepository(@NotNull String repositoryURL, LocalDate observeFromDate,
+                         @NotNull String name, @NotNull Set<String> selectedBranches);
 }

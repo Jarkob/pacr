@@ -86,6 +86,11 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     }
 
     @Override
+    public int getRepositoryID() {
+        return commitRepositoryId;
+    }
+
+    @Override
     public String getCommitHash() {
         return commitHash;
     }

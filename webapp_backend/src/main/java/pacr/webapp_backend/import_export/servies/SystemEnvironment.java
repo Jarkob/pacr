@@ -24,6 +24,20 @@ public class SystemEnvironment implements ISystemEnvironment {
     public SystemEnvironment() {
     }
 
+    /**
+     * Creates a SystemEnvironment from an ISystemEnvironment interface.
+     *
+     * @param environment the ISystemEnvironment which is used to create the SystemEnvironment.
+     */
+    public SystemEnvironment(ISystemEnvironment environment) {
+        this.cores = environment.getCores();
+        this.computerName = environment.getComputerName();
+        this.os = environment.getOS();
+        this.kernel = environment.getKernel();
+        this.processor = environment.getProcessor();
+        this.ramMemory = environment.getRamMemory();
+    }
+
     @Override
     public String getComputerName() {
         return computerName;

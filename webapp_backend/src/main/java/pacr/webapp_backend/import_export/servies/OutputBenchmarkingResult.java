@@ -1,7 +1,10 @@
 package pacr.webapp_backend.import_export.servies;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 
 /**
@@ -9,7 +12,7 @@ import pacr.webapp_backend.shared.IBenchmarkingResult;
  */
 public class OutputBenchmarkingResult {
 
-    private Collection<IBenchmarkingResult> benchmarkingResults;
+    private Collection<BenchmarkingResult> benchmarkingResults;
     private String repositoryPullUrl;
     private String repositoryName;
 
@@ -33,27 +36,27 @@ public class OutputBenchmarkingResult {
 
         Objects.requireNonNull(benchmarkingResults, "The benchmarkingResults cannot be null.");
 
-        if (!stringIsValid(repositoryPullUrl)) {
+        if (!StringUtils.hasText(repositoryPullUrl)) {
             throw new IllegalArgumentException("The repositoryPullUrl cannot be null.");
         }
 
-        if (!stringIsValid(repositoryName)) {
+        if (!StringUtils.hasText(repositoryName)) {
             throw new IllegalArgumentException("The repositoryName cannot be null.");
         }
 
-        this.benchmarkingResults = benchmarkingResults;
+        this.benchmarkingResults = new ArrayList<>();
+        for (IBenchmarkingResult result : benchmarkingResults) {
+            this.benchmarkingResults.add(new BenchmarkingResult(result));
+        }
+
         this.repositoryPullUrl = repositoryPullUrl;
         this.repositoryName = repositoryName;
-    }
-
-    private boolean stringIsValid(String str) {
-        return str != null && !str.isEmpty() && !str.isBlank();
     }
 
     /**
      * @return the imported benchmarking results.
      */
-    public Collection<IBenchmarkingResult> getBenchmarkingResults() {
+    public Collection<? extends IBenchmarkingResult> getBenchmarkingResults() {
         return benchmarkingResults;
     }
 

@@ -1,7 +1,9 @@
 package pacr.webapp_backend.import_export.servies;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
@@ -23,6 +25,18 @@ public class BenchmarkProperty implements IBenchmarkProperty {
     public BenchmarkProperty() {
     }
 
+    /**
+     * Creates a BenchmarkProperty from an IBenchmarkProperty interface.
+     *
+     * @param property the IBenchmarkProperty which is used to create the BenchmarkProperty.
+     */
+    public BenchmarkProperty(IBenchmarkProperty property) {
+        this.results = new ArrayList<>(property.getResults());
+        this.resultInterpretation = property.getResultInterpretation();
+        this.unit = property.getUnit();
+        this.error = property.getError();
+    }
+
     @Override
     public Collection<Double> getResults() {
         return results;
@@ -40,7 +54,7 @@ public class BenchmarkProperty implements IBenchmarkProperty {
 
     @Override
     public String getError() {
-        if (error.isEmpty() || error.isBlank()) {
+        if (!StringUtils.hasText(error)) {
             return null;
         }
         

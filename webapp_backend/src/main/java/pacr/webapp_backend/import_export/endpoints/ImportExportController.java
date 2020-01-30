@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.import_export.servies.BenchmarkingResultsExporter;
 import pacr.webapp_backend.import_export.servies.BenchmarkingResultsImporter;
 import pacr.webapp_backend.import_export.servies.OutputBenchmarkingResult;
@@ -15,6 +16,7 @@ import pacr.webapp_backend.shared.IAuthenticator;
 /**
  * Handles import and export requests for benchmarking results.
  */
+@RestController
 public class ImportExportController {
 
     private IAuthenticator authenticator;

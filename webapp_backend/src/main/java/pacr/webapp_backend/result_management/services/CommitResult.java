@@ -21,7 +21,7 @@ import java.util.Set;
  * Represents all measured benchmark data for one commit. This entity is saved in the database.
  */
 @Entity(name = "CommitResult")
-@Table(name = "commitResult")
+@Table(name = "commit_result")
 public class CommitResult implements IBenchmarkingResult {
 
     @Id
@@ -102,13 +102,9 @@ public class CommitResult implements IBenchmarkingResult {
         this.comparisonCommitHash = null;
     }
 
-    /**
-     * TODO: @Martin
-     * @return
-     */
     @Override
     public int getRepositoryID() {
-        return -1;
+        return repositoryId;
     }
 
     @Override

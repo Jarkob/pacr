@@ -50,6 +50,11 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
     }
 
     @Override
+    public int getRepositoryID() {
+        return -1; // TODO @Martin
+    }
+
+    @Override
     public String getCommitHash() {
         return commitHash;
     }

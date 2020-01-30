@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.IRepository;
@@ -14,7 +15,7 @@ import pacr.webapp_backend.shared.IResultExporter;
 /**
  * Encapsulates the logic to gather all benchmarking results that are exported.
  */
-@RestController
+@Component
 public class BenchmarkingResultsExporter {
 
     private IExportRepositoryAccess repositoryAccess;

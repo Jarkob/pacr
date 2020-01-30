@@ -26,11 +26,12 @@ import pacr.webapp_backend.shared.IResultDeleter;
 import javax.validation.constraints.NotNull;
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Objects;
 import java.util.Collection;
 import java.util.Set;
@@ -314,8 +315,12 @@ public class GitHandler {
 
             gitTrackingAccess.addCommits(commitsFromBranch);
 
+            LocalDate observeFromDate = gitRepository.getObserveFromDate();
             for (GitCommit commit : commitsFromBranch) {
-                untrackedCommits.add(commit.getCommitHash());
+                // only add commits that are after observeFromDate
+                if (observeFromDate == null || observeFromDate.isBefore(commit.getCommitDate().toLocalDate())) {
+                    untrackedCommits.add(commit.getCommitHash());
+                }
             }
 
             // update branch head

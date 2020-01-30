@@ -12,7 +12,6 @@ import pacr.webapp_backend.git_tracking.services.git.GitHandler;
 import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IResultDeleter;
 
-import java.awt.Color;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

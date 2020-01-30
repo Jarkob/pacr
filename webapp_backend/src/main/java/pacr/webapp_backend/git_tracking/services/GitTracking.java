@@ -68,7 +68,6 @@ public class GitTracking implements IRepositoryImporter {
      * @param name is the name of the repository.
      * @return the ID of the repository.
      */
-    @Override
     public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
                              @NotNull Set<String> branchNames) {
         Objects.requireNonNull(repositoryURL);
@@ -83,6 +82,15 @@ public class GitTracking implements IRepositoryImporter {
         repository.setColor(colorPicker.getNextColor());
 
         return gitTrackingAccess.addRepository(repository);
+    }
+
+    @Override
+    public int importRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
+                                @NotNull Set<String> branchNames) {
+        int id = addRepository(repositoryURL, observeFromDate, name, branchNames);
+        pullFromRepository(id);
+
+        return id;
     }
 
     /**

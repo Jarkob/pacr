@@ -3,6 +3,8 @@ package pacr.webapp_backend.import_export.servies;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.IRepositoryImporter;
 import pacr.webapp_backend.shared.IResultImporter;
@@ -10,6 +12,7 @@ import pacr.webapp_backend.shared.IResultImporter;
 /**
  * Imports benchmarking results into the system.
  */
+@Component
 public class BenchmarkingResultsImporter {
 
     private IResultImporter resultImporter;
@@ -45,7 +48,7 @@ public class BenchmarkingResultsImporter {
         Collection<IBenchmarkingResult> benchmarkingResults = new ArrayList<>();
 
         for (OutputBenchmarkingResult result : results) {
-            repositoryImporter.addRepository(result.getRepositoryPullUrl(), now, result.getRepositoryName());
+            repositoryImporter.importRepository(result.getRepositoryPullUrl(), now, result.getRepositoryName(), new HashSet<>());
 
             benchmarkingResults.addAll(result.getBenchmarkingResults());
         }
