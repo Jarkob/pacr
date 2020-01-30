@@ -139,8 +139,7 @@ public class BenchmarkDBTest extends SpringBootTestWithoutShell {
         Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
         benchmarkDB.saveBenchmark(benchmark);
 
-        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER,
-                benchmark);
+        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
         benchmark.addProperty(property);
 
         benchmarkDB.saveBenchmark(benchmark);

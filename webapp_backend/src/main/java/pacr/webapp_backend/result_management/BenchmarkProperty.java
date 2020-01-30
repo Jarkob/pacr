@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management;
 
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
 import javax.persistence.Entity;
@@ -26,10 +27,6 @@ public class BenchmarkProperty {
     private String unit;
     private ResultInterpretation interpretation;
 
-    @ManyToOne
-    @JoinColumn(name = "benchmark_id")
-    private Benchmark benchmark;
-
     /**
      * Creates empty property. Needed for jpa.
      */
@@ -37,26 +34,22 @@ public class BenchmarkProperty {
     }
 
     /**
-     * Creates a BenchmarkProperty with a name, a unit, an interpretation and the corresponding benchmark.
-     * This constructor does not add this property to the benchmark.
-     * Throws IllegalArgumentException if one of the parameters is null or the name is empty or blank.
+     * Creates a BenchmarkProperty with a name, a unit and an interpretation.
      *
-     * @param name the name;
-     * @param unit the unit;
-     * @param interpretation the interpretation;
-     * @param benchmark the corresponding benchmark;
+     * @param name the name. Cannot be null, empty or blank.
+     * @param unit the unit. Cannot be null.
+     * @param interpretation the interpretation. Cannot be null.
      */
-    public BenchmarkProperty(String name, String unit, ResultInterpretation interpretation, Benchmark benchmark) {
-        if (name == null || name.isEmpty() || name.isBlank()) {
+    public BenchmarkProperty(String name, String unit, ResultInterpretation interpretation) {
+        if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
-        if (unit == null || interpretation == null || benchmark == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
+        Objects.requireNonNull(unit);
+        Objects.requireNonNull(interpretation);
+
         this.name = name;
         this.unit = unit;
         this.interpretation = interpretation;
-        this.benchmark = benchmark;
     }
 
     /**
@@ -100,15 +93,6 @@ public class BenchmarkProperty {
         return interpretation;
     }
 
-    /**
-     * Gets the benchmark that this property is associated with. Does not guarantee that the given benchmark is also
-     * associated with this property.
-     * @return the benchmark.
-     */
-    public Benchmark getBenchmark() {
-        return benchmark;
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj == this) {
@@ -121,12 +105,11 @@ public class BenchmarkProperty {
         return id == property.getId()
                 && Objects.equals(name, property.getName())
                 && Objects.equals(unit, property.getUnit())
-                && interpretation == property.getInterpretation()
-                && Objects.equals(benchmark, property.getBenchmark());
+                && interpretation == property.getInterpretation();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, unit, interpretation, benchmark);
+        return Objects.hash(id, name, unit, interpretation);
     }
 }

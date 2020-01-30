@@ -143,7 +143,7 @@ abstract class ResultSaver {
                                                                      Benchmark benchmark) {
         // new property is created or it is found in the properties of the (saved or newly created) benchmark.
         BenchmarkProperty property = new BenchmarkProperty(propertyName, propertyResult.getUnit(),
-                propertyResult.getResultInterpretation(), benchmark);
+                propertyResult.getResultInterpretation());
 
         for (BenchmarkProperty savedProperty : benchmark.getProperties()) {
             if (savedProperty.getName().equals(propertyName)) {
@@ -158,7 +158,7 @@ abstract class ResultSaver {
         // comparison to previous result
         if (comparisonPropertyResult != null && !propertyResultToSave.isError()
                 && !comparisonPropertyResult.isError()) {
-            propertyResultToSave.setRatio(propertyResultToSave.getMean() / comparisonPropertyResult.getMean());
+            propertyResultToSave.setRatio(propertyResultToSave.getMedian() / comparisonPropertyResult.getMedian());
             propertyResultToSave.setCompared(true);
         }
 

@@ -54,8 +54,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
 
         benchmark = new Benchmark(BENCHMARK_NAME);
 
-        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER,
-                benchmark);
+        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
         benchmark.addProperty(property);
 
         benchmark.setGroup(group);
@@ -92,7 +91,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         benchmarkDB.saveBenchmark(benchmark);
 
         BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
-                ResultInterpretation.LESS_IS_BETTER, benchmark);
+                ResultInterpretation.LESS_IS_BETTER);
 
         benchmark.addProperty(newProperty);
 
@@ -112,7 +111,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         benchmarkManager.createOrUpdateBenchmark(benchmark);
 
         BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
-                ResultInterpretation.LESS_IS_BETTER, benchmark);
+                ResultInterpretation.LESS_IS_BETTER);
 
         benchmark.addProperty(newProperty);
 

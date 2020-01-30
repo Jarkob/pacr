@@ -67,10 +67,10 @@ public class OutputBuilderTest {
         benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
 
         property = new BenchmarkProperty(SimpleBenchmark.PROPERTY_NAME, SimpleBenchmarkProperty.UNIT,
-                ResultInterpretation.LESS_IS_BETTER, benchmark);
+                ResultInterpretation.LESS_IS_BETTER);
 
         propertyTwo = new BenchmarkProperty(PROPERTY_NAME_TWO, SimpleBenchmarkProperty.UNIT,
-                ResultInterpretation.LESS_IS_BETTER, benchmarkTwo);
+                ResultInterpretation.LESS_IS_BETTER);
 
         BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(new SimpleBenchmarkProperty(), property);
 
