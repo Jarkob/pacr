@@ -21,7 +21,6 @@ import java.util.Set;
  * This entity is saved in the database.
  */
 @Entity(name = "Benchmark")
-@Table(name = "benchmark")
 public class Benchmark {
 
     @Id
@@ -41,8 +40,6 @@ public class Benchmark {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "benchmark_properties")
     private Set<BenchmarkProperty> properties;
 
     @ManyToOne

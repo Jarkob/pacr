@@ -77,6 +77,19 @@ export class AdminBenchmarksComponent implements OnInit {
 
       this.benchmarkGroups.push(benchmarkGroup);
     });
+
+    // fetch all benchmarks which don't belong to a group.
+    const undefinedGroupBenchmarks = await this.benchmarkService.getBenchmarksByGroup(-1).toPromise();
+
+    // add a special group if benchmarks without a group exist.
+    if (undefinedGroupBenchmarks && undefinedGroupBenchmarks.length > 0) {
+      const undefinedGroup: Group = new Group();
+      undefinedGroup.id = -1;
+      undefinedGroup.name = 'Undefined Group';
+      undefinedGroup.benchmarks = undefinedGroupBenchmarks;
+
+      this.benchmarkGroups.push(undefinedGroup);
+    }
   }
 
   drop(event: CdkDragDrop<string[]>) {

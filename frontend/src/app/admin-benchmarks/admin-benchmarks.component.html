@@ -11,7 +11,7 @@
              cdkDropList [cdkDropListData]="group.benchmarks" (cdkDropListDropped)="drop($event)">
 
                 <p class="mat-h2 benchmarkGroupTitle">
-                    {{ strings?.group }} {{ group.name }} {{ group.benchmarks.length | braces }}
+                    {{ strings?.group }} {{ group.name }} {{ group.benchmarks?.length | braces }}
                     <mat-icon id="deleteBenchmarkGroupIcon" class="right" color="warn" (click)="deleteBenchmarkGroup()">delete</mat-icon>
                     <mat-icon id="editBenchmarkGroupIcon" class="right" (click)="selectBenchmarkGroup(group); benchmarkTabs.selectedIndex = 3">edit</mat-icon>
                 </p>
