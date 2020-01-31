@@ -168,7 +168,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
                 prioritized.add(job);
                 jobAccess.saveJob(job);
 
-                LOGGER.info(job.getJobGroupTitle() + "/" + job.getJobID() + " was prioritized.");
+                LOGGER.info(job.getJobGroupTitle() + " | " + job.getJobID() + " was prioritized.");
 
                 return true;
             }

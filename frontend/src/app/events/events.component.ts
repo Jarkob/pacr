@@ -1,3 +1,4 @@
+import { Subscription, interval } from 'rxjs';
 import { StringService } from './../services/strings.service';
 import { Event } from './../classes/event';
 import { Component, OnInit } from '@angular/core';
@@ -23,6 +24,9 @@ export class EventsComponent implements OnInit {
   benchmarkingEvents: Event[];
   leaderboardEvents: Event[];
 
+  eventSubscription: Subscription;
+  eventUpdateInterval = 10; // in seconds
+
   ngOnInit() {
     this.stringService.getEventsStrings().subscribe(
       data => {
@@ -30,6 +34,7 @@ export class EventsComponent implements OnInit {
       }
     );
 
+    // perform initial load
     this.eventService.getBenchmarkingEvents().subscribe(
       data => {
         this.benchmarkingEvents = data;
@@ -38,6 +43,21 @@ export class EventsComponent implements OnInit {
     this.eventService.getLeaderboardEvents().subscribe(
       data => {
         this.leaderboardEvents = data;
+      }
+    );
+
+    this.eventSubscription = interval(this.eventUpdateInterval * 1000).subscribe(
+      val => {
+        this.eventService.getBenchmarkingEvents().subscribe(
+          data => {
+            this.benchmarkingEvents = data;
+          }
+        );
+        this.eventService.getLeaderboardEvents().subscribe(
+          data => {
+            this.leaderboardEvents = data;
+          }
+        );
       }
     );
   }

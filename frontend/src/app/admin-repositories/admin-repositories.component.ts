@@ -1,3 +1,4 @@
+import { Subscription, interval } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { StringService } from './../services/strings.service';
 import { RepositoryService } from './../services/repository.service';
@@ -49,12 +50,17 @@ export class AdminRepositoriesComponent implements OnInit {
 
   pullInterval: number;
 
+  repositorySubscription: Subscription;
+  repositoryUpdateInterval = 1;
+
   ngOnInit() {
     this.stringService.getAdminRepositoriesStrings().subscribe(
       data => {
         this.strings = data;
       }
     );
+
+    // initial load
     this.repositoryService.getAllRepositories().subscribe(
       data => {
         this.repositories = data;
@@ -63,6 +69,19 @@ export class AdminRepositoriesComponent implements OnInit {
     this.repositoryService.getPullInterval().subscribe(data => {
       this.pullInterval = data;
     });
+
+    this.repositorySubscription = interval(this.repositoryUpdateInterval * 1000).subscribe(
+      val => {
+        this.repositoryService.getAllRepositories().subscribe(
+          data => {
+            this.repositories = data;
+          }
+        );
+        this.repositoryService.getPullInterval().subscribe(data => {
+          this.pullInterval = data;
+        });
+      }
+    );
 
     this.initAddFormControls();
     this.initEditFormControls();
