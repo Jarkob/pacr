@@ -57,12 +57,26 @@ public interface IGitTrackingAccess {
      * belongs to must already be stored already in the database.
      * @param commit is the commit being stored.
      */
+    @Deprecated
     void addCommit(@NotNull GitCommit commit);
 
+    /**
+     * Stores commits. The repository to which the commits
+     * belong to must already be stored already in the database.
+     * @param commits are the commit being stored.
+     */
     void addCommits(@NotNull Set<GitCommit> commits);
 
+    /**
+     * Updates a commit.
+     * @param commit is the updated commit.
+     */
     void updateCommit(@NotNull GitCommit commit);
 
+    /**
+     * Updates commits.
+     * @param commits are the updated commits.
+     */
     void updateCommits(@NotNull Set<GitCommit> commits);
 
     /**

@@ -214,30 +214,6 @@ public class GitRepository {
     }
 
     /**
-     * Changes the settings of this repository so that all branches are being tracked.
-     */
-    public void trackAllBranches() {
-        trackAllBranches = true;
-    }
-
-    /**
-     * Changes the settings of this repository so that only the master branch is being tracked.
-     */
-    public void trackOnlyMasterBranch() {
-        trackAllBranches = false;
-    }
-
-    /**
-     * Adds a branch to the selected branches.
-     * @param branch is the branch being added.
-     */
-    public void addBranchToSelection(@NotNull GitBranch branch) {
-        Objects.requireNonNull(branch);
-
-        trackedBranches.add(branch);
-    }
-
-    /**
      * Removes a branch from the selected branches.
      * @param branch is the branch being removed.
      */

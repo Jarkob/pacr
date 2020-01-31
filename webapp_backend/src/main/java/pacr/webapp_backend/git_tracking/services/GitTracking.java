@@ -66,6 +66,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param repositoryURL is the pull URL of the repository.
      * @param observeFromDate is the date from when it should be observed.
      * @param name is the name of the repository.
+     * @param branchNames are the names of the selected branches.
      * @return the ID of the repository.
      */
     public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
