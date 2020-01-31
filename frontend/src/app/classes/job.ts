@@ -1,4 +1,5 @@
 export interface Job {
-    id: string;
+    jobID: string;
+    jobGroupTitle: string;
     queued: Date;
 }

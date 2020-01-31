@@ -2,6 +2,7 @@ import { FullJobQueue } from './../classes/full-job-queue';
 import { SchedulerService } from './../services/scheduler.service';
 import { Component, OnInit } from '@angular/core';
 import { Job } from '../classes/job';
+import { Subscription, interval } from 'rxjs';
 
 /**
  * shows the job queue
@@ -18,11 +19,25 @@ export class JobQueueComponent implements OnInit {
   ) { }
 
   fullJobQueue: FullJobQueue;
+  queueSubscription: Subscription;
+
+  queueUpdateInterval = 5; // in seconds
 
   ngOnInit() {
+    // perform initial load operation
     this.schedulerService.getQueue().subscribe(
       data => {
         this.fullJobQueue = data;
+      }
+    );
+
+    this.queueSubscription = interval(this.queueUpdateInterval * 1000).subscribe(
+      val => {
+        this.schedulerService.getQueue().subscribe(
+          data => {
+            this.fullJobQueue = data;
+          }
+        );
       }
     );
   }

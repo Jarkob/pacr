@@ -65,7 +65,7 @@ public class Job implements IJob {
     /**
      * @return the date and time the job was queued.
      */
-    LocalDateTime getQueued() {
+    public LocalDateTime getQueued() {
         return queued;
     }
 
