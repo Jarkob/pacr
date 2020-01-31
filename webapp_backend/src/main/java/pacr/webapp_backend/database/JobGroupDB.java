@@ -13,4 +13,9 @@ public interface JobGroupDB extends CrudRepository<JobGroup, Integer>, IJobGroup
     default Iterable<JobGroup> findAllJobGroups() {
         return this.findAll();
     }
+
+    @Override
+    default void saveJobGroup(JobGroup jobGroup) {
+        this.save(jobGroup);
+    }
 }

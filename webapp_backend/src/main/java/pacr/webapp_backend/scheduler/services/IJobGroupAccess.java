@@ -10,4 +10,11 @@ public interface IJobGroupAccess {
      */
     Iterable<JobGroup> findAllJobGroups();
 
+    /**
+     * Saves the given JobGroup.
+     *
+     * @param jobGroup the job group which is saved.
+     */
+    void saveJobGroup(JobGroup jobGroup);
+
 }

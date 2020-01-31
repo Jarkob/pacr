@@ -27,7 +27,7 @@ public class Job implements IJob {
     private String jobID;
     private LocalDateTime queued;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     private JobGroup group;
 
     /**

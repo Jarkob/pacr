@@ -70,10 +70,17 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         }
     }
 
-    private void addGroup(@NotNull String groupTitle) {
+    private JobGroup addGroup(@NotNull String groupTitle) {
+        JobGroup group;
         if (!containsGroup(groupTitle)) {
-            groups.put(groupTitle, new JobGroup(groupTitle));
+            group = new JobGroup(groupTitle);
+            jobGroupAccess.saveJobGroup(group);
+            groups.put(groupTitle, group);
+        } else {
+            group = groups.get(groupTitle);
         }
+
+        return group;
     }
 
     private boolean containsGroup(@NotNull String groupTitle) {
@@ -126,11 +133,11 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             throw new IllegalArgumentException("The jobID cannot be null.");
         }
 
-        addGroup(groupTitle);
-        Job job = new Job(jobID, getGroup(groupTitle));
+        JobGroup group = addGroup(groupTitle);
+        Job job = new Job(jobID, group);
 
-        jobs.add(job);
         jobAccess.saveJob(job);
+        jobs.add(job);
 
         updateAll();
     }
