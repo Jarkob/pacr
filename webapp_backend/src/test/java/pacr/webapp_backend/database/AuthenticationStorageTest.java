@@ -13,9 +13,14 @@ import java.nio.file.Files;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-public class AuthenticationStorageTest extends SpringBootTestWithoutShell {
+public class AuthenticationStorageTest {
 
+    private static final String ADMIN_PW_HASH_PATH =
+            "/src/test/resources/pacr/webapp_backend/authentication/adminPasswordHash.txt";
+    private static final String SECRET_PATH =
+            "/src/test/resources/pacr/webapp_backend/authentication/secret.txt";
     private static final String PW_HASH = "hash";
     private static final byte[] SECRET = { -128, -55, -1, 0, 1, 55, 127 };
 
@@ -24,14 +29,18 @@ public class AuthenticationStorageTest extends SpringBootTestWithoutShell {
     private File adminPasswordHashFile;
     private File secretFile;
 
-    @Autowired
-    public AuthenticationStorageTest(AuthenticationStorage authenticationStorage,
-                                     @Value("${adminPasswordHashPath}") String adminPasswordHashPath,
-                                     @Value("${secretPath}") String secretPath) {
-        this.authenticationStorage = authenticationStorage;
+    public AuthenticationStorageTest() {
+        try {
+            this.authenticationStorage = new AuthenticationStorage(ADMIN_PW_HASH_PATH, SECRET_PATH);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+
         this.adminPasswordHashFile = new File(System.getProperty(AuthenticationStorage.USER_DIR)
-                + adminPasswordHashPath);
-        this.secretFile = new File(System.getProperty(AuthenticationStorage.USER_DIR) + secretPath);
+                + ADMIN_PW_HASH_PATH);
+
+        this.secretFile = new File(System.getProperty(AuthenticationStorage.USER_DIR) + SECRET_PATH);
     }
 
     @AfterEach
