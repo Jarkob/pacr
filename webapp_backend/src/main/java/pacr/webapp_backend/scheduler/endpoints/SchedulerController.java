@@ -1,12 +1,19 @@
 package pacr.webapp_backend.scheduler.endpoints;
 
+import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pacr.webapp_backend.scheduler.services.Job;
 import pacr.webapp_backend.scheduler.services.Scheduler;
 import pacr.webapp_backend.shared.IAuthenticator;
 
@@ -33,11 +40,35 @@ public class SchedulerController {
     }
 
     /**
+     * Gets a subset of prioritized and normal jobs from the queue.
+     *
+     * @param pageable provides information about which page to load.
      * @return a list of all jobs and prioritized jobs currently in the scheduler.
      */
-    @RequestMapping("/queue")
-    public FullJobQueue getQueue() {
-        return new FullJobQueue(scheduler.getPrioritizedQueue(), scheduler.getJobsQueue());
+    @RequestMapping("/queue/prioritized")
+    public Page<Job> getPrioritizedQueue(@PageableDefault(page = 0, size = 15) Pageable pageable) {
+        List<Job> prioritized = scheduler.getPrioritizedQueue();
+
+        int start = (int) PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()).getOffset();
+        int end = Math.min(start + pageable.getPageSize(), prioritized.size());
+
+        return new PageImpl<>(prioritized.subList(start, end), pageable, prioritized.size());
+    }
+
+    /**
+     * Gets a subset of prioritized and normal jobs from the queue.
+     *
+     * @param pageable provides information about which page to load.
+     * @return a list of all jobs and prioritized jobs currently in the scheduler.
+     */
+    @RequestMapping("/queue/jobs")
+    public Page<Job> getJobsQueue(@PageableDefault(size = 5, page = 0) Pageable pageable) {
+        List<Job> jobs = scheduler.getJobsQueue();
+
+        int start = (int) PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()).getOffset();
+        int end = Math.min(start + pageable.getPageSize(), jobs.size());
+
+        return new PageImpl<>(jobs.subList(start, end), pageable, jobs.size());
     }
 
     /**
@@ -46,7 +77,7 @@ public class SchedulerController {
      * @param token a jwt token which is checked before executing the method.
      * @return if the given job was successfully prioritized.
      */
-    @PutMapping("/prioritize")
+    @PostMapping("/prioritize")
     public boolean givePriorityTo(
             @NotNull @RequestBody PrioritizeMessage prioritizeMessage,
             @NotNull @RequestHeader(name = "jwt") String token) {

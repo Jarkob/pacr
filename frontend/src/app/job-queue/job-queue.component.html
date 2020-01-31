@@ -1,19 +1,34 @@
 <mat-card [style.overflow]="'auto'">
     <mat-list>
-        <h3 mat-subheader>Prioritized Jobs</h3>
-        <div *ngIf="this.fullJobQueue">
-            <mat-list-item *ngFor="let job of this.fullJobQueue.prioritizedJobs; let last = last">
+        <h3 mat-subheader>
+            Prioritized Jobs:            
+        </h3>
+        <mat-paginator [length]="this.prioritizedPage?.totalElements"
+            [pageSize]="this.prioritizedPage?.size"
+            [pageSizeOptions]="this.pageSizeOptions"
+            (page)="this.prioritizedPageEvent = this.getPrioritizedQueue($event)">                    
+        </mat-paginator>  
+        <div *ngIf="this.prioritized && this.prioritized.length > 0">             
+            <mat-list-item *ngFor="let job of this.prioritized; let last = last">
                 <p class="mat-h2" matLine matTooltip="{{ job.jobID }}">{{ job.jobID }}</p>
                 <p matLine class="mat-h3" matTooltip="{{ job.jobGroupTitle }}">{{ job.jobGroupTitle }}</p>
                 <p class="mat-body" matLine>Queued: {{ job.queued | date }}</p>
                 <mat-divider *ngIf="!last"></mat-divider>
             </mat-list-item>
             <mat-divider></mat-divider>
-        </div>        
+        </div> 
+        <p *ngIf="!(this.prioritized && this.prioritized.length > 0)">No jobs available.</p>
         
-        <h3 mat-subheader>Non-Prioritized Jobs</h3>
-        <div *ngIf="this.fullJobQueue">
-            <mat-list-item *ngFor="let job of this.fullJobQueue.jobs; let last = last">
+        <h3 mat-subheader>
+            Non-Prioritized Jobs:            
+        </h3>
+        <mat-paginator [length]="this.jobsPage?.totalElements"
+            [pageSize]="this.jobsPage?.size"
+            [pageSizeOptions]="this.pageSizeOptions"
+            (page)="this.jobsPageEvent = this.getJobsQueue($event)">                    
+        </mat-paginator> 
+        <div *ngIf="this.jobs  && this.jobs.length > 0">                       
+            <mat-list-item *ngFor="let job of this.jobs; let last = last">
                 <button mat-icon-button (click)="prioritize(job)" matTooltip="Prioritize">
                     <mat-icon matListIcon>arrow_upward</mat-icon>
                 </button>
@@ -22,6 +37,7 @@
                 <p class="mat-body" matLine>Queued: {{ job.queued | date }}</p>
                 <mat-divider *ngIf="!last"></mat-divider>
             </mat-list-item>
-        </div>        
+        </div>
+        <p *ngIf="!(this.jobs && this.jobs.length > 0)">No jobs available.</p>
     </mat-list>
 </mat-card>

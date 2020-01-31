@@ -20,7 +20,8 @@ import {
     MatRadioModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatPaginatorModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -45,7 +46,8 @@ import { NgModule } from '@angular/core';
         MatChipsModule,
         MatRadioModule,
         MatDatepickerModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatPaginatorModule
     ],
     exports: [
         MatToolbarModule,
@@ -69,7 +71,8 @@ import { NgModule } from '@angular/core';
         MatRadioModule,
         MatDatepickerModule,
         MatNativeDateModule,
-        MatSnackBarModule
+        MatSnackBarModule,
+        MatPaginatorModule
     ]
 })
 export class MaterialModule { }

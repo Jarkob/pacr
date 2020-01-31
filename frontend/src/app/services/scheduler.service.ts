@@ -20,10 +20,17 @@ export class SchedulerService {
   ) { }
 
   /**
-   * get the current job queue
+   * get the current prioritized queue
    */
-  public getQueue(): Observable<FullJobQueue> {
-    return this.http.get<FullJobQueue>(this.globalService.url + '/queue');
+  public getPrioritizedQueue(page: number, pageSize: number): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/queue/prioritized?page=' + page + '&size=' + pageSize);
+  }
+
+  /**
+   * get the current jobs queue
+   */
+  public getJobsQueue(page: number, pageSize: number): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/queue/jobs?page=' + page + '&size=' + pageSize);
   }
 
   /**
@@ -31,6 +38,6 @@ export class SchedulerService {
    * @param job the job to be prioritized
    */
   public prioritize(job: Job): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/queue', job, httpOptions);
+    return this.http.post<{}>(this.globalService.url + '/prioritize', job, httpOptions);
   }
 }

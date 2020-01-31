@@ -24,6 +24,13 @@ public interface IJobAccess {
     void saveJob(Job job);
 
     /**
+     * Saves all given jobs.
+     *
+     * @param jobs the jobs which are saved.
+     */
+    void saveJobs(Collection<Job> jobs);
+
+    /**
      * Deletes a job from the storage.
      *
      * @param job the job which is deleted.
