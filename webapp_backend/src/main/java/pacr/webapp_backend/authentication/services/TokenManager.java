@@ -84,8 +84,7 @@ public class TokenManager implements IAuthenticator {
                     .parseClaimsJws(token).getBody();
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
                 | IllegalArgumentException e) {
-            LOGGER.error("Exception while parsing claims of token.");
-            e.printStackTrace();
+            LOGGER.error("Exception while parsing claims of token: " + e.getMessage());
             return false;
         }
 
