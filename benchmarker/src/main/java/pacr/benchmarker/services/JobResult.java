@@ -16,6 +16,11 @@ public class JobResult {
      * Initializes an instance of JobResult.
      */
     public JobResult() {
+        this.executionTime = 0;
+        this.repository = "";
+        this.commitHash = "";
+        this.systemEnvironment = null;
+        this.benchmarkingResult = null;
     }
 
     /**

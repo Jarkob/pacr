@@ -67,6 +67,7 @@ public class GitHandler {
                     .setName(commitHash)
                     .call();
         } catch (GitAPIException | JGitInternalException e) {
+            e.printStackTrace();
             LOGGER.error("Could not checkout to commit hash {}.", commitHash);
             return null;
         }
@@ -92,6 +93,7 @@ public class GitHandler {
                 git.close();
                 return git;
             } catch (GitAPIException e) {
+                e.printStackTrace();
                 LOGGER.error("Could not clone repository with URL {}.", repositoryURL);
                 return null;
             }
@@ -108,6 +110,7 @@ public class GitHandler {
             try {
                 git.fetch().setTransportConfigCallback(transportConfigCallback).call();
             } catch (GitAPIException e) {
+                e.printStackTrace();
                 LOGGER.error("Could not fetch repository with URL {}.", repositoryURL);
             }
 

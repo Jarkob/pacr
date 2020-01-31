@@ -25,7 +25,7 @@ export class EventsComponent implements OnInit {
   leaderboardEvents: Event[];
 
   eventSubscription: Subscription;
-  eventUpdateInterval = 10; // in seconds
+  eventUpdateInterval = 120; // in seconds
 
   ngOnInit() {
     this.stringService.getEventsStrings().subscribe(

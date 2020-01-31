@@ -40,6 +40,7 @@ public class Benchmark {
     private String description;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @LazyCollection(LazyCollectionOption.FALSE)
     private Set<BenchmarkProperty> properties;
 
     @ManyToOne

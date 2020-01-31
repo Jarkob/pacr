@@ -21,7 +21,7 @@ export class JobQueueComponent implements OnInit {
   fullJobQueue: FullJobQueue;
   queueSubscription: Subscription;
 
-  queueUpdateInterval = 5; // in seconds
+  queueUpdateInterval = 60; // in seconds
 
   ngOnInit() {
     // perform initial load operation

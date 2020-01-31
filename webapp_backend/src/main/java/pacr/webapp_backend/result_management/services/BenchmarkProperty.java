@@ -14,7 +14,7 @@ import java.util.Objects;
  * This entity is saved in the database.
  */
 @Entity(name = "BenchmarkProperty")
-@Table(name = "benchmarkProperty")
+@Table(name = "benchmark_property")
 public class BenchmarkProperty {
 
     @Id

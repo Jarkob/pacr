@@ -3,6 +3,8 @@ package pacr.webapp_backend.benchmarker_communication.services;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IJobProvider;
@@ -11,6 +13,8 @@ import pacr.webapp_backend.shared.IResultSaver;
 
 @Component
 public class JobHandler implements INewRegistrationListener, IObserver {
+
+    private static final Logger LOGGER = LogManager.getLogger(JobHandler.class);
 
     private IJobSender jobSender;
     private IBenchmarkerPool benchmarkerPool;
@@ -54,6 +58,8 @@ public class JobHandler implements INewRegistrationListener, IObserver {
             if (result != null) {
                 resultSaver.saveBenchmarkingResults(result);
 
+                LOGGER.info("Received job results for {} | {}", job.getJobGroupTitle(), job.getJobID());
+
                 // start a new job for this benchmarker if one is available
                 executeJob();
             } else {
@@ -87,11 +93,13 @@ public class JobHandler implements INewRegistrationListener, IObserver {
             BenchmarkerJob benchmarkerJob = new BenchmarkerJob(address, job.getJobGroupTitle(), job.getJobID());
 
             if (jobSender.sendJob(benchmarkerJob)) {
+                LOGGER.info("Sent job to {}", address);
                 benchmarkerPool.occupyBenchmarker(address);
                 currentJobs.put(address, job);
 
                 resetAttempts(address);
             } else {
+                LOGGER.warn("Failed to send job to {}", address);
                 addAttempt(address);
                 jobProvider.returnJob(job);
             }

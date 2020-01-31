@@ -111,6 +111,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     public void returnJob(@NotNull IJob job) {
         Objects.requireNonNull(job, "The returned job cannot be null.");
 
+        LOGGER.info("Job {} | {} was returned to the queue.", job.getJobGroupTitle(), job.getJobID());
+
         addJob(job.getJobGroupTitle(), job.getJobID());
     }
 

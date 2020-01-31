@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,23 @@ public class JobDispatcher {
     public JobDispatcher(@Value("${runnerFile}") String runnerFile, @Value("${runnerDir}") String runnerDir) {
         this.runnerDir = System.getProperty("user.dir") + "/" + runnerDir;
         this.runnerFile = runnerFile;
+
+        this.runnerDir = sanitizePathToLinux(this.runnerDir);
+    }
+
+    private String sanitizePathToLinux(String windowsPath) {
+        String linuxPath = windowsPath;
+
+        linuxPath = linuxPath.replace("\\", "/");
+
+        int i = linuxPath.indexOf(":");
+        String partition = linuxPath.substring(0, i + 1);
+        String p = linuxPath.substring(0, i).toLowerCase();
+
+        linuxPath = linuxPath.replace(partition, "");
+        linuxPath = "/mnt/" + p + linuxPath;
+
+        return linuxPath;
     }
 
     /**
@@ -42,10 +60,10 @@ public class JobDispatcher {
 
         Process process;
         try {
-            process = new ProcessBuilder(runnerDir + runnerFile, repositoryDir)
-                    .directory(new File(runnerDir))
+            process = new ProcessBuilder("CMD", "/C", "wsl cd " + runnerDir + " ; ./bench " + repositoryDir)
                     .start();
         } catch (IOException e) {
+            e.printStackTrace();
             LOGGER.error("Could not start process.");
             return null;
         }
@@ -76,7 +94,7 @@ public class JobDispatcher {
         try {
             result = g.fromJson(gsonFormat, BenchmarkingResult.class);
         } catch (JsonSyntaxException e) {
-            LOGGER.error("JSON syntax exception.");
+            LOGGER.error("JSON syntax exception for this output: '{}'.", output);
             result = new BenchmarkingResult();
             result.setGlobalError(e.getMessage());
         }

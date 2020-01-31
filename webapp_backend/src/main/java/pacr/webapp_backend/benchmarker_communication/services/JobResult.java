@@ -1,5 +1,6 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
+import java.util.HashMap;
 import java.util.Map;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
@@ -36,11 +37,19 @@ public class JobResult implements IBenchmarkingResult {
 
     @Override
     public Map<String, ? extends IBenchmark> getBenchmarks() {
+        if (benchmarkingResult == null) {
+            return new HashMap<>();
+        }
+
         return benchmarkingResult.getBenchmarks();
     }
 
     @Override
     public String getGlobalError() {
+        if (benchmarkingResult == null) {
+            return null;
+        }
+
         return benchmarkingResult.getGlobalError();
     }
 

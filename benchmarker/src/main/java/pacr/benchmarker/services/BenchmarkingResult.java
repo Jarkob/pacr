@@ -1,5 +1,6 @@
 package pacr.benchmarker.services;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -9,6 +10,11 @@ public class BenchmarkingResult {
 
     private Map<String, Benchmark> benchmarks;
     private String globalError;
+
+    public BenchmarkingResult() {
+        this.benchmarks = new HashMap<>();
+        this.globalError = "";
+    }
 
     /**
      * @return the benchmarks of the result.

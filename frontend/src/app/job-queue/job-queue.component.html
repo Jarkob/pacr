@@ -1,23 +1,27 @@
 <mat-card [style.overflow]="'auto'">
-    <mat-list *ngIf="this.fullJobQueue">
+    <mat-list>
         <h3 mat-subheader>Prioritized Jobs</h3>
-        <mat-list-item *ngFor="let job of this.fullJobQueue.prioritizedJobs; let last = last">
-            <p class="mat-h2" matLine matTooltip="{{ job.jobID }}">{{ job.jobID }}</p>
-            <p matLine class="mat-h3" matTooltip="{{ job.jobGroupTitle }}">{{ job.jobGroupTitle }}</p>
-            <p class="mat-body" matLine>Queued: {{ job.queued | date }}</p>
-            <mat-divider *ngIf="!last"></mat-divider>
-        </mat-list-item>
-        <mat-divider></mat-divider>
+        <div *ngIf="this.fullJobQueue">
+            <mat-list-item *ngFor="let job of this.fullJobQueue.prioritizedJobs; let last = last">
+                <p class="mat-h2" matLine matTooltip="{{ job.jobID }}">{{ job.jobID }}</p>
+                <p matLine class="mat-h3" matTooltip="{{ job.jobGroupTitle }}">{{ job.jobGroupTitle }}</p>
+                <p class="mat-body" matLine>Queued: {{ job.queued | date }}</p>
+                <mat-divider *ngIf="!last"></mat-divider>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+        </div>        
         
         <h3 mat-subheader>Non-Prioritized Jobs</h3>
-        <mat-list-item *ngFor="let job of this.fullJobQueue.jobs; let last = last">
-            <button mat-icon-button (click)="prioritize(job)" matTooltip="Prioritize">
-                <mat-icon matListIcon>arrow_upward</mat-icon>
-            </button>
-            <p class="mat-h2" matLine matTooltip="{{ job.jobID }}">{{ job.jobID }}</p>
-            <p matLine class="mat-h3" matTooltip="{{ job.jobGroupTitle }}">{{ job.jobGroupTitle }}</p>
-            <p class="mat-body" matLine>Queued: {{ job.queued | date }}</p>
-            <mat-divider *ngIf="!last"></mat-divider>
-        </mat-list-item>
+        <div *ngIf="this.fullJobQueue">
+            <mat-list-item *ngFor="let job of this.fullJobQueue.jobs; let last = last">
+                <button mat-icon-button (click)="prioritize(job)" matTooltip="Prioritize">
+                    <mat-icon matListIcon>arrow_upward</mat-icon>
+                </button>
+                <p class="mat-h2" matLine matTooltip="{{ job.jobID }}">{{ job.jobID }}</p>
+                <p matLine class="mat-h3" matTooltip="{{ job.jobGroupTitle }}">{{ job.jobGroupTitle }}</p>
+                <p class="mat-body" matLine>Queued: {{ job.queued | date }}</p>
+                <mat-divider *ngIf="!last"></mat-divider>
+            </mat-list-item>
+        </div>        
     </mat-list>
 </mat-card>

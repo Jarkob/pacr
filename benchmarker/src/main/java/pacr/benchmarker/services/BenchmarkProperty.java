@@ -1,5 +1,6 @@
 package pacr.benchmarker.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -11,6 +12,13 @@ public class BenchmarkProperty {
     private String resultInterpretation;
     private String unit;
     private String error;
+
+    public BenchmarkProperty() {
+        this.results = new ArrayList<>();
+        this.resultInterpretation = "";
+        this.unit = "";
+        this.error = "";
+    }
 
     /**
      * @return the results of this property.
@@ -25,10 +33,10 @@ public class BenchmarkProperty {
     public ResultInterpretation getResultInterpretation() {
         try {
             return ResultInterpretation.valueOf(resultInterpretation);
-        } catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException | NullPointerException e) {
             error = "Unknown result interpretation.";
         }
-        return null;
+        return ResultInterpretation.NEUTRAL;
     }
 
     /**

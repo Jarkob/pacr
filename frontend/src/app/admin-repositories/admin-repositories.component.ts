@@ -51,7 +51,7 @@ export class AdminRepositoriesComponent implements OnInit {
   pullInterval: number;
 
   repositorySubscription: Subscription;
-  repositoryUpdateInterval = 1;
+  repositoryUpdateInterval = 30;
 
   ngOnInit() {
     this.stringService.getAdminRepositoriesStrings().subscribe(
