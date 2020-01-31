@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
+import org.apache.logging.log4j.spi.LoggerRegistry;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.persistence.Entity;
@@ -30,6 +32,7 @@ import java.util.Set;
 @Entity
 public class GitCommit implements ICommit {
 
+    private static final int MAX_STRING_LENGTH = 2000;
     /**
      * Creates an empty commit. Necessary to be an Entity.
      */
@@ -39,7 +42,7 @@ public class GitCommit implements ICommit {
     @Id
     private String commitHash;
 
-    @Column(length = 1000)
+    @Column(length = MAX_STRING_LENGTH)
     private String commitMessage;
     private LocalDateTime entryDate;
     private LocalDateTime commitDate;
@@ -74,7 +77,12 @@ public class GitCommit implements ICommit {
         Objects.requireNonNull(repository);
 
         this.commitHash = commitHash;
+
         this.commitMessage = commitMessage;
+        if (commitMessage.length() > MAX_STRING_LENGTH) {
+            this.commitMessage = commitMessage.substring(0, MAX_STRING_LENGTH);
+        }
+
         this.entryDate = LocalDateTime.now();
         this.commitDate = commitDate;
         this.authorDate = authorDate;

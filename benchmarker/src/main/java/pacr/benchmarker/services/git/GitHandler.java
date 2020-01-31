@@ -1,20 +1,19 @@
 package pacr.benchmarker.services.git;
 
+import java.io.File;
+import java.io.IOException;
+import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.JGitInternalException;
+import org.eclipse.jgit.dircache.InvalidPathException;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.IOException;
 
 /**
  * Handles cloning the repositories and checking out the commits.
@@ -66,9 +65,8 @@ public class GitHandler {
             git.checkout()
                     .setName(commitHash)
                     .call();
-        } catch (GitAPIException | JGitInternalException e) {
-            e.printStackTrace();
-            LOGGER.error("Could not checkout to commit hash {}.", commitHash);
+        } catch (GitAPIException | JGitInternalException | InvalidPathException e) {
+            LOGGER.error("Could not checkout to commit hash {}. Error: {}", commitHash, e.getMessage());
             return null;
         }
 
@@ -93,8 +91,7 @@ public class GitHandler {
                 git.close();
                 return git;
             } catch (GitAPIException e) {
-                e.printStackTrace();
-                LOGGER.error("Could not clone repository with URL {}.", repositoryURL);
+                LOGGER.error("Could not clone repository with URL {}. Error: {}", repositoryURL, e.getMessage());
                 return null;
             }
         } else {
@@ -110,8 +107,7 @@ public class GitHandler {
             try {
                 git.fetch().setTransportConfigCallback(transportConfigCallback).call();
             } catch (GitAPIException e) {
-                e.printStackTrace();
-                LOGGER.error("Could not fetch repository with URL {}.", repositoryURL);
+                LOGGER.error("Could not fetch repository with URL {}. Error: {}", repositoryURL, e.getMessage());
             }
 
             return git;
