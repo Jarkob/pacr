@@ -40,7 +40,7 @@ public class PasswordCreator {
      * @return the new password (not hashed).
      */
     @ShellMethod("generates a new admin password and saves its hash")
-    public String newPassword() {
+    public synchronized String newPassword() {
         String password = generatePassword();
         String passwordHash = hashGenerator.hashPassword(password);
 

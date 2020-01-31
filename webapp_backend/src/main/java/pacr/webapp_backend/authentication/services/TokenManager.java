@@ -42,17 +42,22 @@ public class TokenManager implements IAuthenticator {
 
     /**
      * Generates a new token with the current time as the issue time. This token will never expire.
+     * Enters IAuthenticationAccess monitor.
      * @return the jwt.
      */
     public String generateToken() {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-        byte[] secret = authenticationAccess.getSecret();
+        byte[] secret;
 
-        // generate and save secret if necessary
-        if (secret.length == 0) {
-            secret = generateSecret();
-            authenticationAccess.setSecret(secret);
+        synchronized (IAuthenticationAccess.class) {
+            secret = authenticationAccess.getSecret();
+
+            // generate and save secret if necessary
+            if (secret.length == 0) {
+                secret = generateSecret();
+                authenticationAccess.setSecret(secret);
+            }
         }
 
         Key signingKey = new SecretKeySpec(secret, signatureAlgorithm.getJcaName());
