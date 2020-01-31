@@ -144,6 +144,26 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         updateAll();
     }
 
+    @Override
+    public void addJobs(@NotNull String groupTitle, @NotNull Collection<String> jobIDs) {
+        if (!StringUtils.hasText(groupTitle)) {
+            throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
+        }
+        Objects.requireNonNull(jobIDs, "The jobIds cannot be null.");
+
+        Collection<Job> jobsToAdd = new ArrayList<>();
+        JobGroup group = addGroup(groupTitle);
+
+        for (String jobID : jobIDs) {
+            jobsToAdd.add(new Job(jobID, group));
+        }
+
+        jobs.addAll(jobsToAdd);
+        jobAccess.saveJobs(jobsToAdd);
+
+        LOGGER.info("Added {} jobs to the queue.", jobsToAdd.size());
+    }
+
     /**
      * Moves a job to the manually prioritized jobs queue.
      * @param groupTitle the title of the job.

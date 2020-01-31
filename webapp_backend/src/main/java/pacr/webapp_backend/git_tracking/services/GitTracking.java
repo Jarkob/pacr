@@ -137,10 +137,9 @@ public class GitTracking implements IRepositoryImporter {
 
         // automatically adds all new commits to the database
         gitTrackingAccess.updateRepository(gitRepository);
-        for (String commitHash : untrackedCommitHashes) {
-            // add job to queue
-            jobScheduler.addJob(gitRepository.getPullURL(), commitHash);
-        }
+
+        // add jobs to scheduler
+        jobScheduler.addJobs(gitRepository.getPullURL(), untrackedCommitHashes);
 
         LOGGER.info("Finished with pulling from repository {} ({}).", gitRepository.getName(), repositoryID);
     }

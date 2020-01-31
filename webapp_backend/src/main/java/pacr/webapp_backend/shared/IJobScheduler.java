@@ -1,5 +1,6 @@
 package pacr.webapp_backend.shared;
 
+import java.util.Collection;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -13,5 +14,13 @@ public interface IJobScheduler {
      * @param jobID the id of the job.
      */
     void addJob(@NotNull String groupTitle, @NotNull String jobID);
+
+    /**
+     * Adds all given jobIDs as new jobs. The new jobs are associated with the given group.
+     *
+     * @param groupTitle the title of the group.
+     * @param jobIDs a list of job ids.
+     */
+    void addJobs(@NotNull String groupTitle, @NotNull Collection<String> jobIDs);
 
 }

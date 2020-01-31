@@ -57,24 +57,4 @@ public class TestControllerWebsocket {
         this.jobScheduler = jobScheduler;
     }
 
-    @RequestMapping("/newjob/test")
-    public boolean newJobTest() {
-
-        LOGGER.info("Adding job");
-        commitHashNR = (commitHashNR + 1) % commitsTest.size();
-
-        jobScheduler.addJob("git@git.scc.kit.edu:pacr/pacr-test-repository.git", commitsTest.get(commitHashNR));
-        return true;
-    }
-
-    @RequestMapping("/newjob/lean")
-    public boolean newJobLean() {
-
-        LOGGER.info("Adding job lean.");
-        commitHashNR = (commitHashNR + 1) % commitsLEAN.size();
-
-        jobScheduler.addJob("git@git.scc.kit.edu:qa2270/lean-mirror.git", commitsLEAN.get(commitHashNR));
-        return true;
-    }
-
 }
