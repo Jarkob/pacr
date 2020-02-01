@@ -41,7 +41,7 @@ public class SSHKeyControllerTest {
     public void getSSHKey() throws IOException {
         String key = "privateKey";
         when(sshKeyProvider.getSSHPublicKey()).thenReturn(key);
-        assertEquals(key, sshKeyController.getSSHPublicKey());
+        assertEquals(key, sshKeyController.getSSHPublicKey().getBody());
         verify(sshKeyProvider).getSSHPublicKey();
     }
 
