@@ -63,4 +63,8 @@ export class StringService {
     public getSSHConfigStrings(): Observable<any> {
         return this.http.get('./assets/ssh-config-string.json');
     }
+
+    public getComparisonStrings(): Observable<any> {
+        return this.http.get('./assets/comparison-string.json');
+    }
 }

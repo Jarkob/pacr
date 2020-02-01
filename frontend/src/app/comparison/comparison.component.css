@@ -10,3 +10,7 @@ mat-card {
     display: flex;
     flex-flow: column;
 }
+
+#repositorySelect {
+    max-width: 300px;
+}

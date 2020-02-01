@@ -19,6 +19,13 @@ export class RepositoryService {
   ) { }
 
   /**
+   * get the current jobs queue
+   */
+  public getCommits(repositoryId: number, page: number, pageSize: number): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/commits/' + repositoryId + '?page=' + page + '&size=' + pageSize);
+  }
+
+  /**
    * get all repositories
    */
   public getAllRepositories(): Observable<Repository[]> {

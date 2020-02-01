@@ -1,13 +1,53 @@
 <mat-card [style.overflow]="'auto'">
-    <button mat-button [disabled]="this.selectedCommits.length === 2" (click)="selectCommit('')">Select Commit</button>
-    <button mat-button (click)="clear()">Clear</button>
-    
-    <div fxLayout fxLayoutAlign="center" fxLayoutGap="2em">
-        <div *ngIf="this.selectedCommits.length >= 1">
-            <pre>{{ this.selectedCommits[0] | json }}</pre>
+    <mat-card-actions>
+        <button mat-button [disabled]="!(this.commit1 && this.commit2)" (click)="openCommitComparison()">Compare</button>
+        <button mat-button (click)="clear()">Clear</button>
+        <span class="mat-h2">
+            Compare 
+            <a *ngIf="this.commit1" (click)="openDetailView(this.commit1.commitHash)">{{ this.commit1?.commitHash | shortenString:7 | braces }}</a>
+            <span *ngIf="!this.commit1">{{ "not selected" | braces }}</span>
+            with
+            <a *ngIf="this.commit2" (click)="openDetailView(this.commit1.commitHash)">{{ this.commit2?.commitHash | shortenString:7 | braces }}</a>
+            <span *ngIf="!this.commit2">{{ "not selected" | braces }}</span>
+        </span>
+    </mat-card-actions>
+    <mat-card-content>
+        <div id="tableControls" fxLayout="row">
+            <mat-select (selectionChange)="updateRepository()" id="repositorySelect" [(ngModel)]="this.selectedRepository" [compareWith]="compareRepository">
+                <mat-option *ngFor="let repository of this.repositories" [value]="repository">
+                    {{ repository.name }}
+                </mat-option>
+            </mat-select>
+            <mat-paginator [length]="this.commitsPage?.totalElements"
+                [pageSize]="this.commitsPage?.size"
+                [pageSizeOptions]="this.pageSizeOptions"
+                (page)="this.commitsPageEvent = this.getCommits($event)">                    
+            </mat-paginator>
         </div>
-        <div *ngIf="this.selectedCommits.length == 2">
-            <pre>{{ this.selectedCommits[1] | json }}</pre>
-        </div>
-    </div>
+        
+        <table fxFill mat-table [dataSource]="commits" class="mat-elevation-z8">
+            <ng-container matColumnDef="commitDate">
+                <th mat-header-cell *matHeaderCellDef> {{ this.strings?.commitDate }} </th>
+                <td mat-cell *matCellDef="let element">{{ element.commitDate | date }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="authorDate">
+                <th mat-header-cell *matHeaderCellDef> {{ this.strings?.authorDate }} </th>
+                <td mat-cell *matCellDef="let element">{{ element.authorDate | date }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="commitHash">
+                <th mat-header-cell *matHeaderCellDef> {{ this.strings?.commitHash }} </th>
+                <td mat-cell *matCellDef="let element">{{ element.commitHash | shortenString:7 | braces }}</td>
+            </ng-container>
+        
+            <ng-container matColumnDef="commitMessage">
+                <th mat-header-cell *matHeaderCellDef> {{ this.strings?.commitMessage }} </th>
+                <td mat-cell *matCellDef="let element">{{ element.commitMessage }}</td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+    </mat-card-content>
 </mat-card>
