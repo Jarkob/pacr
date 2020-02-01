@@ -3,11 +3,13 @@ package pacr.webapp_backend.import_export.endpoints;
 import java.util.Collection;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import pacr.webapp_backend.import_export.servies.BenchmarkingResultsExporter;
 import pacr.webapp_backend.import_export.servies.BenchmarkingResultsImporter;
 import pacr.webapp_backend.import_export.servies.OutputBenchmarkingResult;
@@ -56,7 +58,7 @@ public class ImportExportController {
             return resultsExporter.exportBenchmarkingResults();
         }
 
-        return null;
+        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -66,9 +68,11 @@ public class ImportExportController {
      * @param results the results which are imported.
      */
     @PostMapping("/importResults")
-    public void exportBenchmarkingResults(@RequestBody Collection<OutputBenchmarkingResult> results, @RequestHeader(name = "jwt") String token) {
+    public void importBenchmarkingResults(@RequestBody Collection<OutputBenchmarkingResult> results, @RequestHeader(name = "jwt") String token) {
         if (authenticator.authenticate(token)) {
             resultsImporter.importBenchmarkingResults(results);
+        } else {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
     }
 

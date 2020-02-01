@@ -1,5 +1,8 @@
 package pacr.webapp_backend.shared;
 
+/**
+ * An interface for a git repository.
+ */
 public interface IRepository {
 
     /**

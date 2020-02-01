@@ -17,7 +17,7 @@ public class OutputBenchmarkingResult {
     private String repositoryName;
 
     /**
-     * Creates an empty ImportedBenchmarkingResult.
+     * Creates an empty OutputBenchmarkingResult.
      *
      * Needed for Spring to work.
      */

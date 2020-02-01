@@ -11,6 +11,8 @@ import pacr.webapp_backend.shared.ISystemEnvironment;
  */
 public class JobResult implements IBenchmarkingResult {
 
+    private static final String BENCHMARKING_RESULT_MISSING_ERROR = "Results could not be sent to the server.";
+
     private long executionTime;
     private String repository;
     private String commitHash;
@@ -27,7 +29,7 @@ public class JobResult implements IBenchmarkingResult {
 
     @Override
     public int getRepositoryID() {
-        return -1;
+        return -1; // the repository id is unknown at this point.
     }
 
     @Override
@@ -52,7 +54,7 @@ public class JobResult implements IBenchmarkingResult {
     @Override
     public String getGlobalError() {
         if (benchmarkingResult == null) {
-            return null;
+            return BENCHMARKING_RESULT_MISSING_ERROR;
         }
 
         return benchmarkingResult.getGlobalError();

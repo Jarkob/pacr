@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.IRepositoryImporter;
@@ -25,13 +26,8 @@ public class BenchmarkingResultsImporter {
      * @param repositoryImporter the repositoryImporter used to add new repositories.
      */
     public BenchmarkingResultsImporter(IResultImporter resultImporter, IRepositoryImporter repositoryImporter) {
-        if (resultImporter == null) {
-            throw new IllegalArgumentException("The resultImporter cannot be null.");
-        }
-
-        if (repositoryImporter == null) {
-            throw new IllegalArgumentException("The repositoryImporter cannot be null.");
-        }
+        Objects.requireNonNull(resultImporter, "The resultImporter cannot be null.");
+        Objects.requireNonNull(repositoryImporter, "The repositoryImporter cannot be null.");
 
         this.resultImporter = resultImporter;
         this.repositoryImporter = repositoryImporter;

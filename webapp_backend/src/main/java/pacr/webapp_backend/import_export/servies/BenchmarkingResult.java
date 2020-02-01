@@ -65,7 +65,7 @@ public class BenchmarkingResult implements IBenchmarkingResult {
     }
 
     /**
-     * @return an error message if there was a general error. Null is returned if there was no error.
+     * @return an error message if there was a general error. {@code null} is returned if there was no error.
      */
     public String getGlobalError() {
         if (!StringUtils.hasText(globalError)) {
