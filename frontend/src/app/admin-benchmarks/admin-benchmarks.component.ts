@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { BenchmarkGroup } from './../classes/benchmark-group';
 import { Benchmark } from './../classes/benchmark';
@@ -31,8 +32,12 @@ export class AdminBenchmarksComponent implements OnInit {
 
   constructor(
     private benchmarkService: BenchmarkService,
-    private stringService: StringService
+    private stringService: StringService,
+    private snackBar: MatSnackBar
   ) { }
+
+  overviewPageIndex = 0;
+  undefinedGroupId = -1;
 
   strings: any;
 
@@ -64,7 +69,7 @@ export class AdminBenchmarksComponent implements OnInit {
 
     this.getBenchmarkGroups();
 
-    this.initEditFormControls();
+    this.initEditBenchmarkFormControls();
     this.initAddGroupFormControls();
     this.initEditGroupFormControls();
   }
@@ -122,7 +127,7 @@ export class AdminBenchmarksComponent implements OnInit {
     return this.editBenchmarkGroupForm.controls[controlName].hasError(errorName);
   }
 
-  initEditFormControls() {
+  initEditBenchmarkFormControls() {
     this.editNameControl = new FormControl('', [Validators.required]);
     this.editDescriptionControl = new FormControl('', [Validators.required]);
     this.editGroupControl = new FormControl(null, [Validators.required]);
@@ -143,10 +148,13 @@ export class AdminBenchmarksComponent implements OnInit {
     this.loadBenchmarkData(benchmark);
   }
 
-  loadBenchmarkData(benchmark: Benchmark) {
+  loadBenchmarkData(benchmark: any) {
+    console.log(benchmark);
     this.editNameControl.setValue(benchmark.customName);
     this.editDescriptionControl.setValue(benchmark.description);
-    this.editGroupControl.setValue(benchmark.benchmarkGroup.id);
+
+    // I dont know why the group field is called "group" when it should be "benchmarkGroup"
+    this.editGroupControl.setValue(benchmark.group.id);
   }
 
   onCancelEditBenchmark() {
@@ -170,29 +178,65 @@ export class AdminBenchmarksComponent implements OnInit {
     this.editGroupNameControl.setValue(benchmarkGroup.name);
   }
 
-  editBenchmark(benchmark: Benchmark) {
+  editBenchmark(editBenchmarkFormValue: any) {
     this.benchmarkService.updateBenchmark({
-      id: benchmark.id,
-      customName: benchmark.customName,
-      description: benchmark.description,
-      groupId: benchmark.benchmarkGroup.id
-    }).subscribe();
+      id: this.selectedBenchmark.id,
+      customName: editBenchmarkFormValue.name,
+      description: editBenchmarkFormValue.description,
+      groupId: editBenchmarkFormValue.group
+    }).subscribe(
+      data => {
+        this.openSnackBar(this.strings.editSuccess);
+        this.initEditBenchmarkFormControls();
+        this.getBenchmarkGroups();
+      },
+      err => {
+        this.openSnackBar(this.strings.snackBarError);
+      }
+    );
   }
 
   addBenchmarkGroup(form: any) {
-    console.log(form);
-    this.benchmarkService.addGroup(form.name).subscribe();
+    this.benchmarkService.addGroup(form.name).subscribe(
+      data => {
+        this.openSnackBar(this.strings.addSuccess);
+        this.initAddGroupFormControls();
+        this.getBenchmarkGroups();
+      },
+      err => {
+        this.openSnackBar(this.strings.snackBarError);
+      }
+    );
   }
 
-  editBenchmarkGroup() {
+  editBenchmarkGroup(editBenchmarkGroupFormValue: any) {
     this.benchmarkService.updateGroup({
       id: this.selectedBenchmarkGroup.id,
-      name: this.selectedBenchmarkGroup.name
-    }).subscribe();
+      name: editBenchmarkGroupFormValue.name
+    }).subscribe(
+      data => {
+        this.openSnackBar(this.strings.editSuccess);
+        this.initEditGroupFormControls();
+        this.getBenchmarkGroups();
+        this.selectedBenchmarkGroup = null;
+      },
+      err => {
+        this.openSnackBar(this.strings.snackBarError);
+      }
+    );
   }
 
-  deleteBenchmarkGroup() {
-    this.benchmarkService.deleteGroup(this.selectedBenchmarkGroup.id);
+  deleteBenchmarkGroup(id: number) {
+    this.benchmarkService.deleteGroup(id).subscribe(
+      data => {
+        this.openSnackBar(this.strings.deleteSuccess);
+        this.selectedBenchmarkGroup = null;
+        this.getBenchmarkGroups();
+      },
+      err => {
+        this.openSnackBar(this.strings.snackBarError);
+      }
+    );
   }
 
   onCancelEditBenchmarkGroup() {
@@ -212,6 +256,8 @@ export class AdminBenchmarksComponent implements OnInit {
         }).subscribe();
       }
     }
+
+    this.getBenchmarkGroups();
   }
 
   onCancelBenchmarkGroups() {
@@ -229,5 +275,13 @@ export class AdminBenchmarksComponent implements OnInit {
 
   onCancelAddBenchmarkGroup() {
     this.initAddGroupFormControls();
+  }
+
+  openSnackBar(message: string) {
+    const snackBarDuration = 2000;
+
+    this.snackBar.open(message, this.strings.snackBarAction, {
+      duration: snackBarDuration,
+    });
   }
 }

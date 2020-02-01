@@ -18,5 +18,12 @@
     "benchmarkDescription": "Description",
     "benchmarkDescriptionRequired": "Description is required.",
     "benchmarkGroupName": "Name",
-    "benchmarkGroupNameRequired": "Name is required."
+    "benchmarkGroupNameRequired": "Name is required.",
+    "undefinedGroup": "Undefined Group",
+    "snackBarAction": "Close",
+    "savedSuccess": "Successfully saved.",
+    "editSuccess": "Successfully edited.",
+    "addSuccess": "Successfully added.",
+    "deleteSuccess": "Successfully deleted.",
+    "snackBarError": "Something went wrong."
 }

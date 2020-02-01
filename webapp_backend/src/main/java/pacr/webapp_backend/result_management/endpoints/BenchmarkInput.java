@@ -7,7 +7,6 @@ import org.springframework.util.StringUtils;
  */
 public class BenchmarkInput {
     private int id;
-    private String originalName;
     private String customName;
     private String description;
     private int groupId;
@@ -17,10 +16,6 @@ public class BenchmarkInput {
 
     public int getId() {
         return id;
-    }
-
-    public String getOriginalName() {
-        return originalName;
     }
 
     public String getCustomName() {
@@ -36,7 +31,6 @@ public class BenchmarkInput {
     }
 
     public boolean validate() {
-        return !StringUtils.hasText(originalName) || !StringUtils.hasText(customName)
-                || !StringUtils.hasText(description);
+        return StringUtils.hasText(customName) && description != null;
     }
 }

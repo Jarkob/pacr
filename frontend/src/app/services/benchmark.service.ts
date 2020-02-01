@@ -47,7 +47,7 @@ export class BenchmarkService {
    * @param benchmark the benchmark to be updated
    */
   public updateBenchmark(benchmark: UpdateBenchmark): Observable<Benchmark> {
-    return this.http.put<Benchmark>(this.globalService.url + '/benchmark', benchmark);
+    return this.http.put<Benchmark>(this.globalService.url + '/benchmark', benchmark, httpOptions);
   }
 
   /**
@@ -55,7 +55,7 @@ export class BenchmarkService {
    * @param benchmarkGroup the benchmarkgroup
    */
   public updateGroup(benchmarkGroup: BenchmarkGroup): Observable<BenchmarkGroup> {
-    return this.http.put<BenchmarkGroup>(this.globalService.url + '/group/' + benchmarkGroup.id, benchmarkGroup);
+    return this.http.put<BenchmarkGroup>(this.globalService.url + '/group/' + benchmarkGroup.id, benchmarkGroup.name);
   }
 
   /**
@@ -71,7 +71,6 @@ export class BenchmarkService {
    * @param name the name of the group
    */
   public addGroup(name: string): Observable<string> {
-    console.log(name);
     return this.http.post<string>(this.globalService.url + '/group', name, httpOptions);
   }
 }
