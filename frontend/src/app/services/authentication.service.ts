@@ -47,7 +47,7 @@ export class AuthenticationService {
   }
 
   /**
-   * logout user
+   * logs the user out
    */
   public logout(): void {
     sessionStorage.removeItem('token');

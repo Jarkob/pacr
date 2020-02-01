@@ -10,6 +10,14 @@ export class Group {
   id: number;
   name: string;
   benchmarks: Benchmark[];
+
+  constructor(
+    id: number,
+    name: string
+  ) {
+    this.id = id;
+    this.name = name;
+   }
 }
 
 @Component({
@@ -65,9 +73,7 @@ export class AdminBenchmarksComponent implements OnInit {
     const groups: BenchmarkGroup[] = await this.benchmarkService.getAllGroups().toPromise();
 
     groups.forEach(group => {
-      const benchmarkGroup: Group = new Group();
-      benchmarkGroup.id = group.id;
-      benchmarkGroup.name = group.name;
+      const benchmarkGroup: Group = new Group(group.id, group.name);
 
       this.benchmarkService.getBenchmarksByGroup(group.id).subscribe(
         data => {
@@ -83,9 +89,7 @@ export class AdminBenchmarksComponent implements OnInit {
 
     // add a special group if benchmarks without a group exist.
     if (undefinedGroupBenchmarks && undefinedGroupBenchmarks.length > 0) {
-      const undefinedGroup: Group = new Group();
-      undefinedGroup.id = -1;
-      undefinedGroup.name = 'Undefined Group';
+      const undefinedGroup: Group = new Group(-1, 'Undefined Group');
       undefinedGroup.benchmarks = undefinedGroupBenchmarks;
 
       this.benchmarkGroups.push(undefinedGroup);
@@ -163,7 +167,6 @@ export class AdminBenchmarksComponent implements OnInit {
   public editBenchmark(benchmark: Benchmark) {
     this.benchmarkService.updateBenchmark({
       id: benchmark.id,
-      originalName: benchmark.originalName,
       customName: benchmark.customName,
       description: benchmark.description,
       groupId: benchmark.benchmarkGroup.id
@@ -191,13 +194,15 @@ export class AdminBenchmarksComponent implements OnInit {
 
   public onSaveBenchmarkGroups() {
     this.dropped = false;
+
     for (const group of this.benchmarkGroups) {
       this.benchmarkService.updateGroup(group).subscribe();
+
       for (const benchmark of group.benchmarks) {
         benchmark.benchmarkGroup = {id: group.id, name: group.name};
+
         this.benchmarkService.updateBenchmark({
           id: benchmark.id,
-          originalName: benchmark.originalName,
           customName: benchmark.customName,
           description: benchmark.description,
           groupId: group.id
