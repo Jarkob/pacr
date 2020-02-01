@@ -58,11 +58,12 @@ export class BenchmarkingResultService {
   }
 
   /**
-   * get all benchmarking results for a specific benchmark
+   * get all benchmarking results for a specific benchmark from a specific repository
    * @param benchmarkId the id of the benchmark
+   * @param repositoryId the id of the repository
    */
-  public getBenchmarkingResultsForBenchmark(benchmarkId: number): Observable<Commit[]> {
-    return this.http.get<Commit[]>(this.globalService.url + '/results/benchmark/' + benchmarkId);
+  public getForBenchmarkAndRepository(benchmarkId: number, repositoryId: number): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
   }
 
   /**

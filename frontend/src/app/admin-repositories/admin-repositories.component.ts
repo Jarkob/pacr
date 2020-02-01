@@ -165,17 +165,35 @@ export class AdminRepositoriesComponent implements OnInit {
 
   public addRepository = (addRepositoryFormValue) => {
     if (this.addRepositoryForm.valid) {
-      // this.repositoryService.addRepository({
-      //   id: null,
-      //   trackAllBranches: true,
-      //   selectedBranches: addRepositoryFormValue
-      // }).subscribe(); TODO
+      this.repositoryService.addRepository({
+        id: addRepositoryFormValue.id,
+        trackAllBranches: addRepositoryFormValue.trackAllBranches,
+        selectedBranches: addRepositoryFormValue.selectedBranches,
+        pullURL: addRepositoryFormValue.pullURL,
+        name: addRepositoryFormValue.name,
+        hookSet: addRepositoryFormValue.hookSet,
+        color: addRepositoryFormValue.color,
+        observeFromDate: addRepositoryFormValue.observeFromDate,
+        commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
+        commits: []
+      }).subscribe();
     }
   }
 
   public editRepository = (editRepositoryFormValue) => {
     if (this.editRepositoryForm.valid) {
-      // TODO
+      this.repositoryService.updateRepository({
+        id: editRepositoryFormValue.id,
+        trackAllBranches: editRepositoryFormValue.trackAllBranches,
+        selectedBranches: editRepositoryFormValue.selectedBranches,
+        pullURL: editRepositoryFormValue.pullURL,
+        name: editRepositoryFormValue.name,
+        hookSet: editRepositoryFormValue.hookSet,
+        color: editRepositoryFormValue.color,
+        observeFromDate: editRepositoryFormValue.observeFromDate,
+        commitLinkPrefix: editRepositoryFormValue.commitLinkPrefix,
+        commits: []
+      }).subscribe();
     }
   }
 

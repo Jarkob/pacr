@@ -1,1 +1,20 @@
-<p>login works!</p>
+<div fxLayout="row" fxFill fxLayoutAlign="center center">
+    <mat-card fxFlex.lt-sm="100%" fxFlex.gt-sm="50%">
+        <form [formGroup]="form">
+            <h2>Login</h2>
+            <div>
+                <mat-form-field>
+                    <input matInput maxlength="100" required #password name="password" formControlName="password" type="password" placeholder="Password">
+                </mat-form-field>
+            </div>
+            <div class="center">
+                <button [disabled]="loading || !password.value" mat-fab color="accent" (click)="login()" matTooltip="login">
+                    <mat-icon>input</mat-icon>
+                </button>
+            </div>
+            <div class="center">
+                <mat-spinner *ngIf="loading" color="accent" [diameter]="50"></mat-spinner>
+            </div>
+        </form>
+    </mat-card>
+</div>

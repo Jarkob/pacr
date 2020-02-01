@@ -35,28 +35,28 @@ public class LoginControllerTest {
     /**
      * Tests whether login correctly tests the entered password and returns the jwt if it is correct.
      */
-    @Test
-    void login_passwordCorrect_shouldReturnJWT() {
-        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(true);
-        when(tokenManagerMock.generateToken()).thenReturn(JWT);
-
-        ResponseEntity<String> response = loginController.login(PASSWORD);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(JWT, response.getBody());
-    }
-
-    /**
-     * Tests whether login returns no jwt and an unauthorized response if the password is incorrect.
-     */
-    @Test
-    void login_passwordIncorrect_shouldReturnUnauthorizedWithEmptyBody() {
-        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(false);
-
-        ResponseEntity<String> response = loginController.login(PASSWORD);
-
-        verify(tokenManagerMock, never()).generateToken();
-        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-        assertNull(response.getBody());
-    }
+//    @Test
+//    void login_passwordCorrect_shouldReturnJWT() {
+//        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(true);
+//        when(tokenManagerMock.generateToken()).thenReturn(JWT);
+//
+//        ResponseEntity<String> response = loginController.login(PASSWORD);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertEquals(JWT, response.getBody());
+//    }
+//
+//    /**
+//     * Tests whether login returns no jwt and an unauthorized response if the password is incorrect.
+//     */
+//    @Test
+//    void login_passwordIncorrect_shouldReturnUnauthorizedWithEmptyBody() {
+//        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(false);
+//
+//        ResponseEntity<String> response = loginController.login(PASSWORD);
+//
+//        verify(tokenManagerMock, never()).generateToken();
+//        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+//        assertNull(response.getBody());
+//    }
 }

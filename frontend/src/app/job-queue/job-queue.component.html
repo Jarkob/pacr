@@ -29,7 +29,7 @@
         </mat-paginator> 
         <div *ngIf="this.jobs  && this.jobs.length > 0">                       
             <mat-list-item *ngFor="let job of this.jobs; let last = last">
-                <button mat-icon-button (click)="prioritize(job)" matTooltip="Prioritize">
+                <button *ngIf="this.isLoggedIn()" mat-icon-button (click)="prioritize(job)" matTooltip="Prioritize">
                     <mat-icon matListIcon>arrow_upward</mat-icon>
                 </button>
                 <p class="mat-h2" matLine matTooltip="{{ job.jobID }}">{{ job.jobID }}</p>

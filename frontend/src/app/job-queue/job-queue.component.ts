@@ -1,3 +1,4 @@
+import { AuthenticationService } from './../services/authentication.service';
 import { FullJobQueue } from './../classes/full-job-queue';
 import { SchedulerService } from './../services/scheduler.service';
 import { Component, OnInit } from '@angular/core';
@@ -16,7 +17,8 @@ import { PageEvent } from '@angular/material';
 export class JobQueueComponent implements OnInit {
 
   constructor(
-    private schedulerService: SchedulerService
+    private schedulerService: SchedulerService,
+    private authenticationService: AuthenticationService
   ) { }
 
   jobsPage: any;
@@ -40,6 +42,10 @@ export class JobQueueComponent implements OnInit {
         this.getQueue();
       }
     );
+  }
+
+  public isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
   }
 
   private getQueue() {

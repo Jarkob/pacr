@@ -10,5 +10,6 @@
     <span fxFlex></span>
     <img class="center" width="80" src="assets/logo.png">
     <span fxFlex></span>
-    <a mat-button [routerLink]="['/admin']" [routerLinkActive]="'active'" matTooltip="Admin-Interface">Admin-Interface</a>
+    <a *ngIf="this.isLoggedIn()" mat-button [routerLink]="['/admin']" [routerLinkActive]="'active'" matTooltip="Admin-Interface">Admin-Interface</a>
+    <a *ngIf="!this.isLoggedIn()" mat-button [routerLink]="['/login']" [routerLinkActive]="'active'" matTooltip="Login">Login</a>
 </mat-toolbar>

@@ -42,6 +42,8 @@ public class PasswordCreator {
     @ShellMethod("generates a new admin password and saves its hash")
     public synchronized String newPassword() {
         String password = generatePassword();
+        // FIXME remove
+        password = "password";
         String passwordHash = hashGenerator.hashPassword(password);
 
         authenticationAccess.setAdminPasswordHash(passwordHash);

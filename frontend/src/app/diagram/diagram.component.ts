@@ -43,12 +43,14 @@ export class DiagramComponent implements OnInit {
   repositories: Repository[];
   benchmarkGroups: BenchmarkGroup[];
   benchmarks: Map<string, Benchmark[]> = new Map<string, Benchmark[]>();
-  repositoryResults: Map<string, BenchmarkingResult[]> = new Map<string, BenchmarkingResult[]>();
+
+  repositoryResults: Map<number, Map<string, any>> = new Map<number, Map<string, any>>();
+
   selectedBenchmark: Benchmark;
   selectedBenchmarkProperty: BenchmarkProperty;
 
   // TODO fix types
-  commits: any;
+  commits: any[] = [];
   // the lines that show up in the diagram
   lists: any[];
   // if a list should show up in the diagram
@@ -150,13 +152,8 @@ export class DiagramComponent implements OnInit {
       this.selectedBenchmark = this.inSelectedBenchmark;
     }
 
-    this.getBenchmarkGroups();
     this.getRepositories();
-
-    // get mock data
-    this.benchmarkingResultService.getBenchmarkingResults(-1, -1, '').subscribe(data => {
-      this.commits = data;
-    });
+    this.getBenchmarkGroups();
   }
 
   /**
@@ -192,87 +189,91 @@ export class DiagramComponent implements OnInit {
       return;
     }
 
-    // FIXME messes up diagram, include later
-    // this.benchmarkingResultService.getBenchmarkingResultsForBenchmark(this.selectedBenchmark.id).subscribe(
-    //   data => this.commits = data
-    // );
+    for (const repo of this.repositories) {
+      this.benchmarkingResultService.getForBenchmarkAndRepository(this.selectedBenchmark.id, repo.id).subscribe(
+        data => {
+          console.log('results: ', data);
+          this.repositoryResults.set(repo.id, data);
+          const lines = this.calculateLines(repo.id);
+          // both is important, otherwise event listening for change of legend gets messed up
+          this.chart.datasets.concat(lines);
+          this.datasets.concat(lines);
+        }
+      );
+    }
 
     this.deleteLine();
-    this.diagramService.selectCommit('');
-    // this.datasets = []; s. a.
-
-    const lines = this.calculateLines('');
-    // both is important, otherwise event listening for change of legend gets messed up
-    this.chart.datasets.concat(lines);
-    this.datasets.concat(lines);
-
-    this.legendData = this.chart.chart.generateLegend();
-    this.chart.update();
   }
 
   /**
    * load the selected benchmark property
    */
   public loadProperty() {
-    // change datasets
-    const lines = this.calculateLines(this.selectedBenchmarkProperty.name);
-    this.chart.datasets = lines;
-    this.datasets = lines;
-
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < this.datasets.length; i++) {
+      for (let j = 0; j < this.datasets[i].data.length; j++) {
+        this.datasets[i].data[j].y = this.datasets[i].code[j][this.selectedBenchmarkProperty.name];
+      }
+    }
+    this.legendData = this.chart.chart.generateLegend();
     this.chart.update();
   }
 
   /**
    * load mock data
    */
-  public loadMockData() {
-    this.checked = [];
-    this.datasets = [];
-    const newestCommit = this.getNewestCommit(this.commits);
-    this.lists = [];
-    const empty = [];
-    if (newestCommit) {
-      this.dfs(newestCommit, empty);
-    }
-    let index = 0;
-    for (const list of this.lists) {
-      this.checked[index] = true;
-      const dataset: Dataset = {data: [], code: [], label: '' + index, fill: false, lineTension: 0, repository: 'test', branch: 'master'};
-      for (const commit of list) {
-        dataset.data.push({
-          x: commit.commitDate,
-          y: commit.result
-        });
-        dataset.code.push({
-          sha: commit.sha,
-          val: commit.result
-        });
-      }
-      index++;
+  // public loadMockData() {
+  //   this.checked = [];
+  //   this.datasets = [];
+  //   const newestCommit = this.getNewestCommit(this.commits);
+  //   this.lists = [];
+  //   const empty = [];
+  //   if (newestCommit) {
+  //     this.dfs(newestCommit, empty);
+  //   }
+  //   let index = 0;
+  //   for (const list of this.lists) {
+  //     this.checked[index] = true;
+  //     const dataset: Dataset = {
+  //  data: [], code: [], label: '' + index, fill: false, lineTension: 0, repository: 'test', branch: 'master'};
+  //     for (const commit of list) {
+  //       dataset.data.push({
+  //         x: commit.commitDate,
+  //         y: commit.result
+  //       });
+  //       dataset.code.push({
+  //         sha: commit.sha,
+  //         val: commit.result
+  //       });
+  //     }
+  //     index++;
 
-      // both is important, otherwise event listening for change of legend gets messed up
-      this.chart.datasets.push(dataset);
-      this.datasets.push(dataset);
-    }
+  //     // both is important, otherwise event listening for change of legend gets messed up
+  //     this.chart.datasets.push(dataset);
+  //     this.datasets.push(dataset);
+  //   }
 
-    // has to remove empty dataset, otherwise legend does not work
-    if (this.chart.datasets.length > this.lists.length) {
-      this.chart.datasets.splice(0, 1);
-    }
+  //   // has to remove empty dataset, otherwise legend does not work
+  //   if (this.chart.datasets.length > this.lists.length) {
+  //     this.chart.datasets.splice(0, 1);
+  //   }
 
-    this.legendData = this.chart.chart.generateLegend();
-    this.chart.update();
-  }
+  //   this.legendData = this.chart.chart.generateLegend();
+  //   this.chart.update();
+  // }
 
-  private calculateLines(property: string): any[] {
+  private calculateLines(repositoryId: number): any[] {
     const lines = [];
-    const newestCommit = this.getNewestCommit(this.commits);
+    const newestCommit = this.getNewestCommit(this.repositoryResults.get(repositoryId));
     this.lists = [];
     this.checked = [];
     const empty = [];
     if (newestCommit) {
       this.dfs(newestCommit, empty);
+    } else {
+      console.error('No newest commit found');
     }
+    console.log('lists: ', this.lists);
     let index = 0;
     for (const list of this.lists) {
       this.checked[index] = false;
@@ -280,7 +281,7 @@ export class DiagramComponent implements OnInit {
       for (const commit of list) {
         dataset.data.push({
           x: commit.commitDate,
-          y: commit.result// TODO add property
+          // y: commit.result// TODO add property
         });
         dataset.code.push({
           sha: commit.sha,
@@ -290,6 +291,7 @@ export class DiagramComponent implements OnInit {
       }
       lines.push(dataset);
     }
+    console.log(lines);
     return lines;
   }
 
@@ -308,13 +310,14 @@ export class DiagramComponent implements OnInit {
     }
   }
 
-  private getNewestCommit(commits: any): any {
+  private getNewestCommit(results: Map<string, any>): any {
+    console.log('results: ', results);
     let newestDate: Date = new Date('1950-01-01');
     let newest = null;
-    for (const sha in commits) {
-      if (new Date(commits[sha].commitDate) > newestDate) {
-        newestDate = new Date(commits[sha].commitDate);
-        newest = commits[sha];
+    for (const [sha, result] of Object.entries(results)) {
+      if (new Date(result.commitDate) > newestDate) {
+        newestDate = new Date(result.commitDate);
+        newest = sha;
       }
     }
     return newest;
@@ -382,7 +385,6 @@ export class DiagramComponent implements OnInit {
       this.benchmarkService.getBenchmarksByGroup(group.id).subscribe(
         data => {
           this.benchmarks.set(group.name, data);
-          console.log(data);
         }
       );
     });

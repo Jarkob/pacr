@@ -21,7 +21,8 @@ import {
     MatDatepickerModule,
     MatNativeDateModule,
     MatSnackBarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -47,7 +48,8 @@ import { NgModule } from '@angular/core';
         MatRadioModule,
         MatDatepickerModule,
         MatSnackBarModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatProgressSpinnerModule,
     ],
     exports: [
         MatToolbarModule,
@@ -72,7 +74,8 @@ import { NgModule } from '@angular/core';
         MatDatepickerModule,
         MatNativeDateModule,
         MatSnackBarModule,
-        MatPaginatorModule
+        MatPaginatorModule,
+        MatProgressSpinnerModule,
     ]
 })
 export class MaterialModule { }

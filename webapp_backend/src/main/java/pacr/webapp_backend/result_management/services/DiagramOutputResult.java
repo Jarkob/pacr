@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
@@ -17,6 +18,50 @@ public class DiagramOutputResult {
     private HashMap<String, ResultWithError> result;
     private String[] parents;
     private String globalError;
+
+    public String getCommitHash() {
+        return commitHash;
+    }
+
+    public void setCommitHash(String commitHash) {
+        this.commitHash = commitHash;
+    }
+
+    public String getCommitDate() {
+        return commitDate;
+    }
+
+    public void setCommitDate(String commitDate) {
+        this.commitDate = commitDate;
+    }
+
+    public String getAuthorDate() {
+        return authorDate;
+    }
+
+    public void setAuthorDate(String authorDate) {
+        this.authorDate = authorDate;
+    }
+
+    public void setResult(HashMap<String, ResultWithError> result) {
+        this.result = result;
+    }
+
+    public String[] getParents() {
+        return parents;
+    }
+
+    public void setParents(String[] parents) {
+        this.parents = parents;
+    }
+
+    public String getGlobalError() {
+        return globalError;
+    }
+
+    public void setGlobalError(String globalError) {
+        this.globalError = globalError;
+    }
 
     /**
      * Creates a DiagramOutputResult from a commit result and its commit. The result and commit must belong to the same
@@ -56,7 +101,7 @@ public class DiagramOutputResult {
     /**
      * @return a hash map that maps property names to the measured median (or error message) for that property.
      */
-    HashMap<String, ResultWithError> getResult() {
+    public HashMap<String, ResultWithError> getResult() {
         return result;
     }
 }

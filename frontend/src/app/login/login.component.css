@@ -1,0 +1,23 @@
+:host {
+    height: 100%;
+}
+
+mat-card {
+    margin: 1em;
+}
+
+form {
+    padding: 1em;
+}
+
+mat-form-field, form input, form textarea {
+    width: 100%;
+}
+
+.center {
+    text-align: center;
+}
+
+mat-spinner {
+    margin: 1em auto;
+}

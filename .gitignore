@@ -11,3 +11,5 @@ webapp_backend/spring-shell.log
 
 
 webapp_backend/repositories/
+
+benchmarker/runner/codespeed-pse

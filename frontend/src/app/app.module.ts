@@ -1,3 +1,4 @@
+import { AuthenticationInterceptor } from './services/authentication.interceptor';
 import { SshConfigComponent } from './ssh-config/ssh-config.component';
 import { AdminBenchmarksComponent } from './admin-benchmarks/admin-benchmarks.component';
 import { AdminRepositoriesComponent } from './admin-repositories/admin-repositories.component';
@@ -39,7 +40,7 @@ import { ChartsModule } from 'ng2-charts';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule, PercentPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
@@ -99,7 +100,12 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     ImportExportService,
     RepositoryService,
     SchedulerService,
-    GlobalService
+    GlobalService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthenticationInterceptor,
+      multi: true
+    }
   ],
   exports: [
     BrachesPipe,

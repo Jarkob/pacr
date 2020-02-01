@@ -204,7 +204,11 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
             ICommit commitForResult = hashToCommit.get(result.getCommitHash());
             DiagramOutputResult outputResult = outputBuilder.buildDiagramOutput(commitForResult, result);
             outputResults.put(result.getCommitHash(), outputResult);
+            for (Map.Entry<String, ResultWithError> entry : outputResult.getResult().entrySet()) {
+                System.out.println(entry.getKey() + ": " + entry.getValue().getResult());
+            }
         }
+
 
         return outputResults;
     }
@@ -218,15 +222,20 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         if (benchmarkIdToKeep != KEEP_ALL_BENCHMARK_DATA) {
             for (CommitResult result : results) {
                 List<CommitResult> resultsWithoutOtherBenchmarks = new LinkedList<>();
+                List<BenchmarkResult> benchmarksToRemove = new LinkedList<>();
 
                 for (BenchmarkResult benchmarkResult : result.getBenchmarksIterable()) {
                     if (benchmarkResult.getBenchmark().getId() == benchmarkIdToKeep) {
                         resultsWithoutOtherBenchmarks.add(result);
                     } else {
-                        // don't worry
-                        // this does not alter the result in the database
-                        result.removeBenchmarkResult(benchmarkResult);
+                        benchmarksToRemove.add(benchmarkResult);
                     }
+                }
+
+                for (BenchmarkResult benchmarkToRemove : benchmarksToRemove) {
+                    // don't worry
+                    // this does not alter the result in the database
+                    result.removeBenchmarkResult(benchmarkToRemove);
                 }
 
                 results = resultsWithoutOtherBenchmarks;

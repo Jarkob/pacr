@@ -1,3 +1,5 @@
+import { LoginComponent } from './login/login.component';
+import { AuthenticationGuardService } from './services/authentication-guard.service';
 import { AcademicDashboardComponent } from './academic-dashboard/academic-dashboard.component';
 import { CompetitiveDashboardComponent } from './competitive-dashboard/competitive-dashboard.component';
 import { AdminComponent } from './admin/admin.component';
@@ -8,9 +10,10 @@ import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
   { path: '', component: DashboardComponent },
-  { path: 'admin', component: AdminComponent },
+  { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuardService] },
   { path: 'competitive', component: CompetitiveDashboardComponent },
-  { path: 'academic', component: AcademicDashboardComponent }
+  { path: 'academic', component: AcademicDashboardComponent },
+  { path: 'login', component: LoginComponent }
 ];
 
 @NgModule({

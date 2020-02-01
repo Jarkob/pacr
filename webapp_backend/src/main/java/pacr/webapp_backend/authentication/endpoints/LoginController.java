@@ -3,10 +3,10 @@ package pacr.webapp_backend.authentication.endpoints;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import pacr.webapp_backend.authentication.services.Password;
 import pacr.webapp_backend.authentication.services.PasswordChecker;
+import pacr.webapp_backend.authentication.services.Token;
 import pacr.webapp_backend.authentication.services.TokenManager;
 
 import javax.validation.constraints.NotNull;
@@ -36,14 +36,14 @@ public class LoginController {
      * @return HTTP code 200 (ok) with the token as body if the password was correct. Otherwise HTTP code 401
      * (unauthorized) with empty body is returned.
      */
-    @GetMapping("/login")
-    public ResponseEntity<String> login(@NotNull @RequestHeader(name = "password") String password) {
-        if (!StringUtils.hasText(password)) {
+    @PostMapping("/login")
+    public ResponseEntity<Token> login(@NotNull @RequestBody Password password) {
+        if (!StringUtils.hasText(password.getPassword())) {
             throw new IllegalArgumentException("password cannot be null, empty or blank");
         }
 
-        if (passwordChecker.checkPassword(password)) {
-            return ResponseEntity.ok().body(tokenManager.generateToken());
+        if (passwordChecker.checkPassword(password.getPassword())) {
+            return ResponseEntity.ok().body(new Token(tokenManager.generateToken()));
         }
 
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
