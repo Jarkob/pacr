@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
@@ -70,6 +72,13 @@ public interface IGitTrackingAccess {
      */
     Collection<GitCommit> getAllCommits(int repositoryID);
 
+    Page<GitCommit> getAllCommits(int repositoryID, Pageable pageable);
+
+    /**
+     * Returns all commit hashes of commits belonging to a repository.
+     * @param repositoryID is the ID of the repository.
+     * @return all commit hashes of commits belonging to the repository.
+     */
     Collection<String> getAllCommitHashes(int repositoryID);
 
     /**

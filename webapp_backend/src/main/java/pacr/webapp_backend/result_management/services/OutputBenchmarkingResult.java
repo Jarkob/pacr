@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
@@ -19,7 +20,7 @@ import java.util.Objects;
  */
 public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
-    private boolean globalError;
+    private boolean hasGlobalError;
     private String errorMessage;
 
     private String commitHash;
@@ -60,11 +61,11 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         if (!belongToSameCommit(commit, result)) {
             throw new IllegalArgumentException("commit and result must belong to same commit hash");
         }
-        this.globalError = result.hasGlobalError();
+        this.hasGlobalError = result.hasGlobalError();
         this.errorMessage = result.getGlobalError();
         this.commitHash = commit.getCommitHash();
         this.commitURL = commit.getCommitURL();
-        this.commitMessage = commit.getMessage();
+        this.commitMessage = commit.getCommitMessage();
         this.comparisonCommitHash = result.getComparisonCommitHash();
 
         this.commitEntryDate = commit.getEntryDate().toString();
@@ -94,7 +95,7 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         return systemEnvironment;
     }
 
-    @Override
+    @Override @JsonIgnore
     public Map<String, IBenchmark> getBenchmarks() {
         Map<String, IBenchmark> benchmarkMap = new HashMap<>();
 
@@ -105,9 +106,9 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         return benchmarkMap;
     }
 
-    @Override
+    @Override @JsonIgnore
     public String getGlobalError() {
-        if (hasGlobalError()) {
+        if (getHasGlobalError()) {
             return errorMessage;
         }
         return null;
@@ -125,8 +126,8 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
      * Indicates whether there was global error while benchmarking the commit.
      * @return true if there was a global error. Otherwise false.
      */
-    boolean hasGlobalError() {
-        return globalError;
+    public boolean getHasGlobalError() {
+        return hasGlobalError;
     }
 
     private boolean belongToSameCommit(ICommit commit, CommitResult result) {
@@ -134,10 +135,6 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
             return commit.getCommitHash().equals(result.getCommitHash());
         }
         return false;
-    }
-
-    public boolean isGlobalError() {
-        return globalError;
     }
 
     public String getErrorMessage() {

@@ -2,6 +2,10 @@ package pacr.webapp_backend.git_tracking.endpoints;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import pacr.webapp_backend.git_tracking.services.GitTracking;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
+import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.shared.IAuthenticator;
 
@@ -78,6 +83,12 @@ public class RepositoryManagerController {
         }
 
         return transferRepositories;
+    }
+
+    @RequestMapping(value = "/commits/{repositoryID}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
+    public Page<GitCommit> getAllCommits(@PageableDefault(size = 50, page = 0, sort = {"commitDate"},
+            direction = Sort.Direction.ASC) Pageable pageable, @PathVariable("repositoryID") int repositoryID) {
+        return gitTracking.getAllCommits(repositoryID, pageable);
     }
 
     /**

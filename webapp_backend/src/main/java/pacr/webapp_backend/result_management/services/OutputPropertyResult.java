@@ -125,7 +125,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
      * Gets the name of the property.
      * @return the name
      */
-    String getName() {
+    public String getName() {
         return name;
     }
 }

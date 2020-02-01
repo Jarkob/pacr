@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
@@ -81,6 +83,16 @@ public class GitTracking implements IRepositoryImporter {
         repository.setColor(colorPicker.getNextColor());
 
         return gitTrackingAccess.addRepository(repository);
+    }
+
+    /**
+     * Gets all commits belonging to the repository in pages.
+     * @param pageable contains information about the page.
+     * @param repositoryID the id of the repository.
+     * @return a page of commits.
+     */
+    public Page<GitCommit> getAllCommits(int repositoryID, Pageable pageable) {
+        return gitTrackingAccess.getAllCommits(repositoryID, pageable);
     }
 
     /**

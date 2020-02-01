@@ -3,6 +3,8 @@ package pacr.webapp_backend.database;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
@@ -77,6 +79,11 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     @Override
     public Collection<GitCommit> getAllCommits(int repositoryID) {
         return commitDB.findGitCommitsByRepository_Id(repositoryID);
+    }
+
+    @Override
+    public Page<GitCommit> getAllCommits(int repositoryID, Pageable pageable) {
+        return commitDB.findAllByRepository_Id(repositoryID, pageable);
     }
 
     @Override

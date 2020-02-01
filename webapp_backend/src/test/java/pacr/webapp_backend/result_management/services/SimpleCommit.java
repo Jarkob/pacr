@@ -23,7 +23,7 @@ public class SimpleCommit implements ICommit {
     }
 
     @Override
-    public String getMessage() {
+    public String getCommitMessage() {
         return null;
     }
 

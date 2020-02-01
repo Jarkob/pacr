@@ -27,7 +27,7 @@ public interface ICommit {
      * Returns the commit message for this commit.
      * @return commit message
      */
-    String getMessage();
+    String getCommitMessage();
 
     /**
      * Returns the date when the commit got entered into the system.

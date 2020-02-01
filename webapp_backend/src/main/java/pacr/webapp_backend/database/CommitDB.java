@@ -1,6 +1,9 @@
 package pacr.webapp_backend.database;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
@@ -14,7 +17,7 @@ import java.util.Collection;
  * @author Pavel Zwerschke
  */
 @Component
-public interface CommitDB extends CrudRepository<GitCommit, String> {
+public interface CommitDB extends PagingAndSortingRepository<GitCommit, String> {
 
     Collection<GitCommit> findGitCommitsByRepository_Id(int repositoryID);
 
@@ -23,4 +26,5 @@ public interface CommitDB extends CrudRepository<GitCommit, String> {
 
     Collection<GitCommit> findGitCommitsByRepository_IdAndBranches(int repositoryID, GitBranch branch);
 
+    Page<GitCommit> findAllByRepository_Id(int repositoryID, Pageable pageable);
 }

@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 
@@ -48,7 +49,7 @@ public class OutputBenchmark implements IBenchmark {
         }
     }
 
-    @Override
+    @Override @JsonIgnore
     public Map<String, IBenchmarkProperty> getBenchmarkProperties() {
         Map<String, IBenchmarkProperty> properties = new HashMap<>();
 

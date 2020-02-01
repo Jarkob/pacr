@@ -99,7 +99,7 @@ public class GitCommit implements ICommit {
     }
 
     @Override
-    public String getMessage() {
+    public String getCommitMessage() {
         return commitMessage;
     }
 

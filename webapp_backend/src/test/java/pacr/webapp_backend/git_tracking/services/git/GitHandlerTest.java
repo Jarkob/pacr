@@ -19,7 +19,6 @@ import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -207,7 +206,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         assertCommit(getCommitWithHash(HASH_E68151, untrackedCommits),
                 1, Arrays.asList(masterBranch, testBranch1));
         assertEquals("Add new file",
-                Objects.requireNonNull(getCommitWithHash(HASH_E68151, untrackedCommits)).getMessage());
+                Objects.requireNonNull(getCommitWithHash(HASH_E68151, untrackedCommits)).getCommitMessage());
         assertCommit(getCommitWithHash(HASH_9C8C86, untrackedCommits),
                 1, Arrays.asList(masterBranch, testBranch1));
         // first commit
@@ -336,7 +335,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         assertNotNull(commit.getCommitDate());
         assertNotNull(commit.getAuthorDate());
         assertNotNull(commit.getEntryDate());
-        assertNotNull(commit.getMessage());
+        assertNotNull(commit.getCommitMessage());
         assertNotNull(commit.getLabels());
 
         assertEquals(gitRepository.getId(), commit.getRepositoryID());
