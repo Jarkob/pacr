@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,6 +20,7 @@ public class BenchmarkGroup {
     @GeneratedValue
     private int id;
 
+    @Column(length = 500)
     private String name;
 
     /**

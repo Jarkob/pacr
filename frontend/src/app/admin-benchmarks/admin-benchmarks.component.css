@@ -15,6 +15,12 @@
     cursor: move;
 }
 
+#expandIcon {
+    height: 26px;
+    vertical-align: bottom;
+    cursor: pointer;
+}
+
 #deleteBenchmarkGroupIcon {
     margin-left: 8px;
     cursor: pointer;

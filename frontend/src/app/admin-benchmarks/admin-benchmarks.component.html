@@ -11,16 +11,21 @@
              cdkDropList [cdkDropListData]="group.benchmarks" (cdkDropListDropped)="drop($event)">
 
                 <p class="mat-h2 benchmarkGroupTitle">
+                    <mat-icon id="expandIcon" *ngIf="group.expanded" (click)="toggleGroup(group)">expand_less</mat-icon>
+                    <mat-icon id="expandIcon" *ngIf="!group.expanded" (click)="toggleGroup(group)">expand_more</mat-icon>
                     {{ strings?.group }} {{ group.name }} {{ group.benchmarks?.length | braces }}
                     <mat-icon id="deleteBenchmarkGroupIcon" class="right" color="warn" (click)="deleteBenchmarkGroup()">delete</mat-icon>
                     <mat-icon id="editBenchmarkGroupIcon" class="right" (click)="selectBenchmarkGroup(group); benchmarkTabs.selectedIndex = 3">edit</mat-icon>
                 </p>
 
-                <div class="benchmarkItem" cdkDrag *ngFor="let benchmark of group.benchmarks; let last = last" [ngClass]="{ lastBenchmarkItem: last }"
-                    matTooltip="{{ benchmark.description }}">
-                    {{ benchmark.customName }}
-                    <mat-icon id="editBenchmarkIcon" class="right" (click)="selectBenchmark(benchmark); benchmarkTabs.selectedIndex = 2">edit</mat-icon>
+                <div *ngIf="group.expanded">
+                    <div class="benchmarkItem" cdkDrag *ngFor="let benchmark of group.benchmarks; let last = last" [ngClass]="{ lastBenchmarkItem: last }"
+                        matTooltip="{{ benchmark.description }}">
+                        {{ benchmark.customName }}
+                        <mat-icon id="editBenchmarkIcon" class="right" (click)="selectBenchmark(benchmark); benchmarkTabs.selectedIndex = 2">edit</mat-icon>
+                    </div>
                 </div>
+                
             </div>            
         </div>
     </mat-tab>

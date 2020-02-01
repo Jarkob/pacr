@@ -10,6 +10,7 @@ export class Group {
   id: number;
   name: string;
   benchmarks: Benchmark[];
+  expanded: boolean;
 
   constructor(
     id: number,
@@ -17,6 +18,7 @@ export class Group {
   ) {
     this.id = id;
     this.name = name;
+    this.expanded = false;
    }
 }
 
@@ -67,7 +69,7 @@ export class AdminBenchmarksComponent implements OnInit {
     this.initEditGroupFormControls();
   }
 
-  private async getBenchmarkGroups() {
+  async getBenchmarkGroups() {
     this.benchmarkGroups = [];
 
     const groups: BenchmarkGroup[] = await this.benchmarkService.getAllGroups().toPromise();
@@ -108,19 +110,19 @@ export class AdminBenchmarksComponent implements OnInit {
     }
   }
 
-  public hasEditError = (controlName: string, errorName: string) => {
+  hasEditError = (controlName: string, errorName: string) => {
     return this.editBenchmarkForm.controls[controlName].hasError(errorName);
   }
 
-  public hasAddGroupError = (controlName: string, errorName: string) => {
+  hasAddGroupError = (controlName: string, errorName: string) => {
     return this.addBenchmarkGroupForm.controls[controlName].hasError(errorName);
   }
 
-  public hasEditGroupError = (controlName: string, errorName: string) => {
+  hasEditGroupError = (controlName: string, errorName: string) => {
     return this.editBenchmarkGroupForm.controls[controlName].hasError(errorName);
   }
 
-  private initEditFormControls() {
+  initEditFormControls() {
     this.editNameControl = new FormControl('', [Validators.required]);
     this.editDescriptionControl = new FormControl('', [Validators.required]);
     this.editGroupControl = new FormControl(null, [Validators.required]);
@@ -132,27 +134,31 @@ export class AdminBenchmarksComponent implements OnInit {
     });
   }
 
-  public selectBenchmark(benchmark: Benchmark) {
+  toggleGroup(group: Group) {
+    group.expanded = !group.expanded;
+  }
+
+  selectBenchmark(benchmark: Benchmark) {
     this.selectedBenchmark = benchmark;
     this.loadBenchmarkData(benchmark);
   }
 
-  private loadBenchmarkData(benchmark: Benchmark) {
+  loadBenchmarkData(benchmark: Benchmark) {
     this.editNameControl.setValue(benchmark.customName);
     this.editDescriptionControl.setValue(benchmark.description);
     this.editGroupControl.setValue(benchmark.benchmarkGroup.id);
   }
 
-  public onCancelEditBenchmark() {
+  onCancelEditBenchmark() {
     this.loadBenchmarkData(this.selectedBenchmark);
   }
 
-  public selectBenchmarkGroup(group: Group) {
+  selectBenchmarkGroup(group: Group) {
     this.selectedBenchmarkGroup = group;
     this.loadBenchmarkGroupData(this.selectedBenchmarkGroup);
   }
 
-  private initEditGroupFormControls() {
+  initEditGroupFormControls() {
     this.editGroupNameControl = new FormControl('', [Validators.required]);
 
     this.editBenchmarkGroupForm = new FormGroup({
@@ -160,11 +166,11 @@ export class AdminBenchmarksComponent implements OnInit {
     });
   }
 
-  private loadBenchmarkGroupData(benchmarkGroup: Group) {
+  loadBenchmarkGroupData(benchmarkGroup: Group) {
     this.editGroupNameControl.setValue(benchmarkGroup.name);
   }
 
-  public editBenchmark(benchmark: Benchmark) {
+  editBenchmark(benchmark: Benchmark) {
     this.benchmarkService.updateBenchmark({
       id: benchmark.id,
       customName: benchmark.customName,
@@ -173,35 +179,31 @@ export class AdminBenchmarksComponent implements OnInit {
     }).subscribe();
   }
 
-  public addBenchmarkGroup(form: any) {
+  addBenchmarkGroup(form: any) {
     console.log(form);
     this.benchmarkService.addGroup(form.name).subscribe();
   }
 
-  public editBenchmarkGroup() {
+  editBenchmarkGroup() {
     this.benchmarkService.updateGroup({
       id: this.selectedBenchmarkGroup.id,
       name: this.selectedBenchmarkGroup.name
     }).subscribe();
   }
 
-  public deleteBenchmarkGroup() {
+  deleteBenchmarkGroup() {
     this.benchmarkService.deleteGroup(this.selectedBenchmarkGroup.id);
   }
 
-  public onCancelEditBenchmarkGroup() {
+  onCancelEditBenchmarkGroup() {
     this.loadBenchmarkGroupData(this.selectedBenchmarkGroup);
   }
 
-  public onSaveBenchmarkGroups() {
+  onSaveBenchmarkGroups() {
     this.dropped = false;
 
     for (const group of this.benchmarkGroups) {
-      this.benchmarkService.updateGroup(group).subscribe();
-
       for (const benchmark of group.benchmarks) {
-        benchmark.benchmarkGroup = {id: group.id, name: group.name};
-
         this.benchmarkService.updateBenchmark({
           id: benchmark.id,
           customName: benchmark.customName,
@@ -212,12 +214,12 @@ export class AdminBenchmarksComponent implements OnInit {
     }
   }
 
-  public onCancelBenchmarkGroups() {
+  onCancelBenchmarkGroups() {
     this.dropped = false;
     this.getBenchmarkGroups();
   }
 
-  private initAddGroupFormControls() {
+  initAddGroupFormControls() {
     this.addGroupNameControl = new FormControl('', [Validators.required]);
 
     this.addBenchmarkGroupForm = new FormGroup({
@@ -225,7 +227,7 @@ export class AdminBenchmarksComponent implements OnInit {
     });
   }
 
-  public onCancelAddBenchmarkGroup() {
+  onCancelAddBenchmarkGroup() {
     this.initAddGroupFormControls();
   }
 }

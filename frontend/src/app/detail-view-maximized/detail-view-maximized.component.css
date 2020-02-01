@@ -16,6 +16,7 @@ table {
 #expandIcon {
     height: 26px;
     vertical-align: bottom;
+    cursor: pointer;
 }
 
 .sectionHeading {
