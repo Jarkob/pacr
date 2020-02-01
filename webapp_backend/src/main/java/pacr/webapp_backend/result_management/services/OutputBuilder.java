@@ -35,6 +35,17 @@ public class OutputBuilder {
     }
 
     /**
+     * Creates OutputBenchmarkingResult based on a commit that has no result.
+     * @param commit the commit. Cannot be null.
+     * @return an {@link OutputBenchmarkingResult} copied from the commit and with no result data.
+     */
+    OutputBenchmarkingResult buildDetailOutput(@NotNull ICommit commit) {
+        Objects.requireNonNull(commit);
+
+        return new OutputBenchmarkingResult(commit);
+    }
+
+    /**
      * Creates DiagramOutputResult based on a commit and its result. The result must belong to the commit (which means
      * they refer to the same commit hash).
      * @param commit the commit. Cannot be null.

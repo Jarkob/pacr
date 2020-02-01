@@ -82,7 +82,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     /**
      * Gets the benchmarking result of a commit.
      * @param commitHash the hash of the commit. Cannot be null, empty or blank.
-     * @return the benchmarking result.
+     * @return the benchmarking result (or just the commit data if no result was found for the commit).
      */
     public OutputBenchmarkingResult getCommitResult(@NotNull String commitHash) {
         if (!StringUtils.hasText(commitHash)) {
@@ -98,7 +98,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         CommitResult result = resultAccess.getResultFromCommit(commitHash);
 
         if (result == null) {
-            throw new NoSuchElementException("no result for commit with hash " + commitHash + " was found");
+            return outputBuilder.buildDetailOutput(commit);
         }
 
         return outputBuilder.buildDetailOutput(commit, result);

@@ -96,16 +96,17 @@ public class ResultGetterTest {
     }
 
     /**
-     * Tests whether getCommitResult properly throws exception if the result could not be found.
+     * Tests whether getCommitResult returns a result without result data if no such data could be found.
      */
     @Test
-    void getCommitResult_noResultFound_shouldThrowNoSuchElement() {
+    void getCommitResult_noResultFound_shouldReturnCommitData() {
         when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(null);
+        when(outputBuilderMock.buildDetailOutput(commitMock)).thenReturn(outputResultMock);
 
-        Assertions.assertThrows(NoSuchElementException.class,  () -> {
-            resultGetter.getCommitResult(HASH);
-        });
+        OutputBenchmarkingResult output = resultGetter.getCommitResult(HASH);
+
+        assertEquals(outputResultMock, output);
     }
 
     /**

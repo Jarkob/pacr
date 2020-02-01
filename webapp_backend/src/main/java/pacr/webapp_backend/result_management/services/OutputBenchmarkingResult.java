@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -83,6 +84,38 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
 
         this.systemEnvironment = result.getSystemEnvironment();
         this.benchmarksList = benchmarks;
+    }
+
+    /**
+     * Creates an OutputBenchmarkingResult for a commit without a result. Copies data from the commit and adds an
+     * error message because no result data is present. The system environment and comparisonCommitHash remains null
+     * and the benchmarksList is empty.
+     * @param commit the commit. Cannot be null.
+     */
+    OutputBenchmarkingResult(@NotNull ICommit commit) {
+        Objects.requireNonNull(commit);
+
+        this.hasGlobalError = true;
+        this.errorMessage = "no result data for this commit";
+
+        this.commitHash = commit.getCommitHash();
+        this.commitURL = commit.getCommitURL();
+        this.commitMessage = commit.getCommitMessage();
+
+        this.commitEntryDate = commit.getEntryDate().toString();
+        this.commitCommitDate = commit.getCommitDate().toString();
+        this.commitAuthorDate = commit.getAuthorDate().toString();
+
+        this.commitRepositoryId = commit.getRepositoryID();
+        this.commitRepositoryName = commit.getRepositoryName();
+
+        this.commitBranchNames = commit.getBranchNames();
+
+        this.commitParentHashes = commit.getParentHashes();
+
+        this.commitLabels = commit.getLabels();
+
+        this.benchmarksList = new OutputBenchmark[0];
     }
 
     @Override
