@@ -30,8 +30,9 @@ export class ComparisonComponent implements OnInit {
 
   pageSizeOptions = [5, 10, 15, 20];
 
-  commit1: Commit;
-  commit2: Commit;
+  commitHash1: string;
+  commitHash2: string;
+  replaceCommitHash1 = true;
 
   commitsPage: any;
   commits: Commit[] = [];
@@ -63,13 +64,14 @@ export class ComparisonComponent implements OnInit {
     this.commitSelectedEvent.emit(commitHash);
   }
 
-  selectCommit(sha: string) {
-    this.benchmarkingResultService.getBenchmarkingResultsForCommit(sha)
-    .subscribe(
-      data => {
-        // todo
-      }
-    );
+  selectForComparison(row: any) {
+    if (this.replaceCommitHash1) {
+      this.commitHash1 = row.commitHash;
+    } else {
+      this.commitHash2 = row.commitHash;
+    }
+
+    this.replaceCommitHash1 = !this.replaceCommitHash1;
   }
 
   compareRepository(o1: any, o2: any): boolean {
@@ -99,7 +101,8 @@ export class ComparisonComponent implements OnInit {
   }
 
   clear() {
-    this.commit1 = null;
-    this.commit2 = null;
+    this.commitHash1 = null;
+    this.commitHash2 = null;
+    this.replaceCommitHash1 = true;
   }
 }

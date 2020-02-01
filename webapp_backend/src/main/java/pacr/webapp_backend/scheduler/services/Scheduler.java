@@ -162,6 +162,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         jobAccess.saveJobs(jobsToAdd);
 
         LOGGER.info("Added {} jobs to the queue.", jobsToAdd.size());
+
+        updateAll();
     }
 
     /**

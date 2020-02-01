@@ -232,7 +232,7 @@ export class DiagramComponent implements OnInit {
       afterUpdate: (chart) => {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < chart.config.data.datasets.length; i++) {
-          const dataset = chart.config.data.datasets[i];
+          const dataset: any = chart.config.data.datasets[i];
           // Ignore errors, those properties do exist!!!
           for (let j = 0; j < dataset._meta[2].data.length; j++) {
             const element = dataset._meta[2].data[j];

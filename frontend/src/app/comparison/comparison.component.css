@@ -14,3 +14,10 @@ mat-card {
 #repositorySelect {
     max-width: 300px;
 }
+
+#stickyHeader {
+    top: 0;
+    position: sticky;
+    z-index: 999;
+    background: inherit;
+}
