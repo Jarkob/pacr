@@ -55,8 +55,10 @@ export class SshConfigComponent implements OnInit, OnDestroy {
   }
 
   openSnackBar(message: string, action: string) {
+    const snackBarDuration = 2000;
+
     this.snackBar.open(message, action, {
-      duration: 2000,
+      duration: snackBarDuration,
     });
   }
 

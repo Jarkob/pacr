@@ -16,6 +16,17 @@ export class Group {
   level = 0;
   parent: Group;
   expanded = false;
+
+  constructor(
+    level: number,
+    parent: Group,
+    expanded: boolean
+  ) {
+    this.level = level;
+    this.parent = parent;
+    this.expanded = expanded;
+  }
+
   get visible(): boolean {
     return !this.parent || (this.parent.visible && this.parent.expanded);
   }
@@ -105,9 +116,7 @@ export class DetailViewMaximizedComponent implements OnInit {
   }
 
   addGroups(data: any[], groupByColumns: string[]): any[] {
-    const rootGroup = new Group();
-    rootGroup.parent = null;
-    rootGroup.expanded = true;
+    const rootGroup = new Group(-1, null, true);
 
     return this.getSublevel(data, 0, groupByColumns, rootGroup);
   }
@@ -121,9 +130,7 @@ export class DetailViewMaximizedComponent implements OnInit {
     const groups = this.uniqueBy(
       data.map(
         row => {
-          const result = new Group();
-          result.level = level + 1;
-          result.parent = parent;
+          const result = new Group(level + 1, parent, level === 1);
 
           for (let i = 0; i <= level; i++) {
             result[groupByColumns[i]] = row[groupByColumns[i]];
