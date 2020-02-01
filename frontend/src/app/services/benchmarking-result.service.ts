@@ -20,25 +20,6 @@ export class BenchmarkingResultService {
   ) { }
 
   /**
-   * @deprecated
-   * get all benchmarking results from one repository
-   * @param repository the repository
-   */
-  public getBenchmarkingResultsFromRepository(repository: string): Observable<BenchmarkingResult[]> {
-    return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/repository/' + repository);
-  }
-
-  /**
-   * @deprecated
-   * get all benchmarking results from a specific branch
-   * @param repository the repository
-   * @param branch the branch
-   */
-  public getBenchmarkingResultsFromBranch(repository: string, branch: string): Observable<BenchmarkingResult[]> {
-    return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/results/repository/' + repository + '/' + branch);
-  }
-
-  /**
    * get all benchmarking results for one commit
    * @param sha the commit hash
    */
