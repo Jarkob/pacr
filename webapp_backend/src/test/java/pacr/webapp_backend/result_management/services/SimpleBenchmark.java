@@ -45,4 +45,8 @@ public class SimpleBenchmark implements IBenchmark {
     public void addProperty(String name, IBenchmarkProperty property) {
         benchmarkProperties.put(name, property);
     }
+
+    public SimpleBenchmarkProperty getProperty(String name) {
+        return (SimpleBenchmarkProperty) benchmarkProperties.get(name);
+    }
 }

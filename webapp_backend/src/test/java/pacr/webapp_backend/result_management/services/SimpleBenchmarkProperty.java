@@ -74,4 +74,8 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
     public void setError(@Nullable String error) {
         this.error = error;
     }
+
+    public void setResults(Collection<Double> results) {
+        this.results = results;
+    }
 }
