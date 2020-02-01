@@ -13,7 +13,7 @@ export class AuthenticationInterceptor implements HttpInterceptor {
 
         if (token) {
             const clonedRequest = request.clone({
-                headers: request.headers.set('authorization', token)
+                headers: request.headers.set('jwt', token)
             });
 
             return next.handle(clonedRequest);

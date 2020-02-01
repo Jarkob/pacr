@@ -36,7 +36,7 @@ export class AuthenticationService {
    * check if a user is logged in
    */
   public isLoggedIn(): boolean {
-    return sessionStorage.getItem('token') != null && this.loggedIn;
+    return sessionStorage.getItem('token') != null;
   }
 
   /**
