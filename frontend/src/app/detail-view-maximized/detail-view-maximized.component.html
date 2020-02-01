@@ -2,17 +2,17 @@
     <mat-card-header>
         <mat-card-title>
             <span>{{ strings?.cardTitle }}</span>
-            <a class="mat-h2" *ngIf="benchmarkingResult?.commitUrl" href="{{ benchmarkingResult?.commitUrl }}" 
+            <a target="_blank" rel="noopener noreferrer" class="mat-h2" *ngIf="benchmarkingResult?.commitURL" href="{{ benchmarkingResult?.commitURL }}" 
                 matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
                 {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
             </a>
-            <span class="mat-h2" *ngIf="!benchmarkingResult?.commitUrl"
+            <span class="mat-h2" *ngIf="!benchmarkingResult?.commitURL"
                 matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
                 {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
             </span>
             <div class="labelContainer">
                 <mat-chip-list>
-                    <mat-chip *ngIf="benchmarkingResult?.globalError" selected selectable="false" color="warn" class="label"
+                    <mat-chip *ngIf="benchmarkingResult?.hasGlobalError" selected selectable="false" color="warn" class="label"
                         matTooltip="{{ strings?.globalErrorLabelTooltip }}">
                         {{ strings?.globalErrorLabel }}
                     </mat-chip>
@@ -52,11 +52,11 @@
                                 {{ strings?.repository }}
                             </mat-panel-title>
                             <mat-panel-description>
-                                {{ benchmarkingResult?.repositoryName }}
+                                {{ benchmarkingResult?.commitRepositoryName }}
                             </mat-panel-description>
                         </mat-expansion-panel-header>
                     
-                        {{ benchmarkingResult?.repositoryName }}
+                        {{ benchmarkingResult?.commitRepositoryName }}
                     </mat-expansion-panel>
                     <mat-expansion-panel hideToggle>
                         <mat-expansion-panel-header>
@@ -106,7 +106,7 @@
 
                         {{ benchmarkingResult?.commitEntryDate | date }}
                     </mat-expansion-panel>
-                    <mat-expansion-panel *ngIf="benchmarkingResult?.globalError" hideToggle>
+                    <mat-expansion-panel *ngIf="benchmarkingResult?.hasGlobalError" hideToggle>
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ strings?.globalError }}
@@ -197,7 +197,7 @@
                     </mat-expansion-panel>          
                 </mat-accordion>
             </mat-tab>
-        <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.globalError">
+        <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.hasGlobalError">
                 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">                
                     <ng-container matColumnDef="benchmarkGroup">
                         <th mat-header-cell *matHeaderCellDef> {{ this.strings?.benchmarkGroup }} </th>

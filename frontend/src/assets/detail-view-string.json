@@ -20,6 +20,7 @@
     "interpretation": "Interpretation:",
     "property": "Property",
     "localError": "Error Message:",
+    "noBenchmarkProperty": "No benchmarks available.",
     
     "benchmarkGroup": "Group:",
     "benchmark": "Benchmark:",

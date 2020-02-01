@@ -32,7 +32,7 @@ export class JobQueueComponent implements OnInit {
   pageSizeOptions = [5, 10, 15, 20];
 
   queueSubscription: Subscription;
-  queueUpdateInterval = 60; // in seconds
+  queueUpdateInterval = 20; // in seconds
 
   ngOnInit() {
     this.getQueue();
@@ -53,7 +53,7 @@ export class JobQueueComponent implements OnInit {
     this.getPrioritizedQueue(this.priotitizedPageEvent);
   }
 
-  private getJobsQueue(event: any) {
+  private getJobsQueue(event: any): any {
     this.schedulerService.getJobsQueue(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.jobsPage = data;

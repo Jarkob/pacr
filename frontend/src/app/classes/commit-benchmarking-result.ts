@@ -2,7 +2,7 @@ import { OutputBenchmark } from './output-benchmark';
 import { SystemEnvironment } from './system-environment';
 export interface CommitBenchmarkingResult {
     id: number;
-    globalError: boolean;
+    hasGlobalError: boolean;
     errorMessage: string;
     commitHash: string;
     commitMessage: string;
@@ -11,7 +11,7 @@ export interface CommitBenchmarkingResult {
     commitAuthorDate: Date;
     commitRepositoryId: number;
     commitRepositoryName: string;
-    commitUrl: string;
+    commitURL: string;
     comparisonCommitHash: string;
     commitBranchNames: string[];
     commitParentHashes: string[];

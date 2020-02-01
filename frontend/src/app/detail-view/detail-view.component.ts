@@ -49,6 +49,10 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     );
   }
 
+  public compareBenchmarkProperty(o1: any, o2: any): boolean {
+    return o1[0].id === o2[0].id && o1[1].name === o2[1].name;
+  }
+
   public selectCommit(commitHash: string): void {
     if (commitHash === null || commitHash === '') {
       return;
@@ -57,7 +61,18 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     this.benchmarkingResultService.getBenchmarkingResultsForCommit(commitHash).subscribe(
       data => {
         this.benchmarkingResult = data;
+
         this.selected = true;
+
+        this.selectedBenchmarkProperty = null;
+        // preselect the first benchmark property
+        if (this.benchmarkingResult.benchmarksList && this.benchmarkingResult.benchmarksList.length > 0) {
+          const benchmark = this.benchmarkingResult.benchmarksList[0];
+
+          if (benchmark.results && benchmark.results.length > 0) {
+            this.selectedBenchmarkProperty = [benchmark, benchmark.results[0]];
+          }
+        }
       }
     );
   }
