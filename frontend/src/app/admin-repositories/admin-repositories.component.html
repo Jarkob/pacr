@@ -2,7 +2,7 @@
     <mat-tab label="{{ strings?.tabRepositoryOverview }}">
         <div fxFlex fxFlexAlign="row" class="pull-interval">
             <mat-form-field fxFlex="15">
-                <input matInput [(ngModel)]="pullInterval" type="number" placeholder="Pullinterval">
+                <input matInput [(ngModel)]="this.pullInterval" type="number" placeholder="Pullinterval">
             </mat-form-field>
             <div fxFlex="10">
                 <button mat-raised-button (click)="savePullInterval()" color="accent">Save</button>
@@ -17,7 +17,9 @@
                         <span class="mat-h2"> {{ repository?.pullURL | braces }} </span>
                     </p>                                
                     <p matLine class="mat-h4">
-                        {{ strings?.observeFromDate }} {{ repository?.observeFromDate | date }}
+                        {{ strings?.observeFromDate }}
+                        <span *ngIf="repository?.observeFromDate">{{ repository?.observeFromDate | date }}</span>
+                        <span *ngIf="!repository?.observeFromDate">{{ strings?.everythingTracked }}</span>
                     </p>
                     <p matLine class="mat-h4">
                         {{ strings?.hookSet }} {{ repository?.hookSet ? strings?.hookIsSet : strings?.hookIsNotSet }}
@@ -97,10 +99,10 @@
                     {{ branch }}
                 </mat-list-option>
             </mat-selection-list>
-        </form>
 
-        <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!addRepositoryForm.valid || allAddBranches.length == 0">{{ strings?.add }}</button>
-        <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelAddRepository()">{{ strings?.cancel }}</button>
+            <button mat-raised-button type="submit" color="primary" [disabled]="!addRepositoryForm.valid || allAddBranches.length == 0">{{ strings?.add }}</button>
+            <button type="button" mat-raised-button (click)="onCancelAddRepository()">{{ strings?.cancel }}</button>
+        </form>
     </mat-tab>
     <mat-tab *ngIf="selectedRepository" label="{{ strings?.tabEditRepository }}">
         <p class="mat-h2 tabTitle"> {{ strings?.tabEditTitle }} {{ selectedRepository.name }} </p>
@@ -156,10 +158,10 @@
                     {{ branch }}
                 </mat-list-option>
             </mat-selection-list>
-        </form>
 
-        <button mat-raised-button class="formSubmitButton" color="primary" [disabled]="!editRepositoryForm.valid || allEditBranches.length == 0">{{ strings?.save }}</button>
-        <button type="button" class="formCancelButton" mat-raised-button (click)="onCancelEditRepository()">{{ strings?.cancel }}</button>
-        <button type="button" class="formCancelButton" color="warn" mat-raised-button (click)="deleteRepository()">{{ strings?.delete }}</button>
+            <button mat-raised-button type="submit" color="primary" [disabled]="!editRepositoryForm.valid || allEditBranches.length == 0">{{ strings?.save }}</button>
+            <button type="button" mat-raised-button (click)="onCancelEditRepository()">{{ strings?.cancel }}</button>
+            <button type="button" color="warn" mat-raised-button (click)="deleteRepository()">{{ strings?.delete }}</button>
+        </form>
     </mat-tab>
 </mat-tab-group>

@@ -46,7 +46,7 @@ export class RepositoryService {
    * @param repository the repository
    */
   public addRepository(repository: Repository): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/addRepository', repository, httpOptions);
+    return this.http.post<{}>(this.globalService.url + '/add-repository', repository, httpOptions);
   }
 
   /**
@@ -54,7 +54,7 @@ export class RepositoryService {
    * @param interval the new pull interval
    */
   public setPullInterval(interval: number): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/pull-interval', interval);
+    return this.http.put<{}>(this.globalService.url + '/pull-interval/' + interval, httpOptions);
   }
 
   /**
@@ -77,6 +77,7 @@ export class RepositoryService {
    * @param repository the repository
    */
   public updateRepository(repository: Repository): Observable<Repository> {
-    return this.http.put<Repository>(this.globalService.url + '/repositories', repository);
+    console.log(repository);
+    return this.http.post<Repository>(this.globalService.url + '/update-repository', repository, httpOptions);
   }
 }

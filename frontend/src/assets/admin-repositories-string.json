@@ -16,7 +16,7 @@
     "branches": "Selected Branches:",
     "listSeparator": ", ",
     "edit": "Edit Repository",
-    "delete": "Delete Repository",
+    "everythingTracked": "everything is tracked",
 
     "tabAddTitle": "Add a new Repository:",
 

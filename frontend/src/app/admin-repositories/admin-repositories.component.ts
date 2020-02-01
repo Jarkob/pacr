@@ -167,13 +167,13 @@ export class AdminRepositoriesComponent implements OnInit {
     if (this.addRepositoryForm.valid) {
       this.repositoryService.addRepository({
         id: addRepositoryFormValue.id,
-        trackAllBranches: addRepositoryFormValue.trackAllBranches,
-        selectedBranches: addRepositoryFormValue.selectedBranches,
+        trackAllBranches: addRepositoryFormValue.trackMode,
+        selectedBranches: addRepositoryFormValue.trackedBranches,
         pullURL: addRepositoryFormValue.pullURL,
         name: addRepositoryFormValue.name,
-        hookSet: addRepositoryFormValue.hookSet,
+        hookSet: addRepositoryFormValue.webHook,
         color: addRepositoryFormValue.color,
-        observeFromDate: addRepositoryFormValue.observeFromDate,
+        observeFromDate: addRepositoryFormValue.observeAll ? null : addRepositoryFormValue.observeFromDate,
         commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
         commits: []
       }).subscribe();
@@ -183,15 +183,15 @@ export class AdminRepositoriesComponent implements OnInit {
   public editRepository = (editRepositoryFormValue) => {
     if (this.editRepositoryForm.valid) {
       this.repositoryService.updateRepository({
-        id: editRepositoryFormValue.id,
-        trackAllBranches: editRepositoryFormValue.trackAllBranches,
-        selectedBranches: editRepositoryFormValue.selectedBranches,
+        id: this.selectedRepository.id,
+        trackAllBranches: editRepositoryFormValue.trackMode,
+        selectedBranches: editRepositoryFormValue.trackedBranches,
         pullURL: editRepositoryFormValue.pullURL,
         name: editRepositoryFormValue.name,
-        hookSet: editRepositoryFormValue.hookSet,
+        hookSet: editRepositoryFormValue.webHook,
         color: editRepositoryFormValue.color,
-        observeFromDate: editRepositoryFormValue.observeFromDate,
-        commitLinkPrefix: editRepositoryFormValue.commitLinkPrefix,
+        observeFromDate: editRepositoryFormValue.observeAll ? null : editRepositoryFormValue.observeFromDate,
+        commitLinkPrefix: this.selectedRepository.commitLinkPrefix,
         commits: []
       }).subscribe();
     }

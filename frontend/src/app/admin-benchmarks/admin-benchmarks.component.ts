@@ -173,8 +173,9 @@ export class AdminBenchmarksComponent implements OnInit {
     }).subscribe();
   }
 
-  public addBenchmarkGroup(group: Group) {
-    this.benchmarkService.addGroup(group.name).subscribe();
+  public addBenchmarkGroup(form: any) {
+    console.log(form);
+    this.benchmarkService.addGroup(form.name).subscribe();
   }
 
   public editBenchmarkGroup() {

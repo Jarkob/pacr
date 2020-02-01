@@ -71,6 +71,7 @@ export class BenchmarkService {
    * @param name the name of the group
    */
   public addGroup(name: string): Observable<string> {
+    console.log(name);
     return this.http.post<string>(this.globalService.url + '/group', name, httpOptions);
   }
 }
