@@ -9,6 +9,11 @@ const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
 
+export interface PrioritizeMessage {
+  jobID: string;
+  groupTitle: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -37,7 +42,7 @@ export class SchedulerService {
    * prioritize a specific job
    * @param job the job to be prioritized
    */
-  public prioritize(job: Job): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/prioritize', job, httpOptions);
+  public prioritize(message: PrioritizeMessage): Observable<{}> {
+    return this.http.post<{}>(this.globalService.url + '/prioritize', message, httpOptions);
   }
 }

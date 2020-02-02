@@ -76,7 +76,7 @@ export class JobQueueComponent implements OnInit {
   }
 
   public prioritize(job: Job) {
-    this.schedulerService.prioritize(job).subscribe(
+    this.schedulerService.prioritize({jobID: job.jobID, groupTitle: job.jobGroupTitle}).subscribe(
       data => {
         this.getQueue();
       }
