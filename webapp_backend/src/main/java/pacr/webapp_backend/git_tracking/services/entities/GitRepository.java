@@ -315,5 +315,10 @@ public class GitRepository {
 
     public void setSelectedBranches(Set<String> selectedBranches) {
         this.selectedBranches = selectedBranches;
+
+        this.trackedBranches.clear();
+        for (String branch : selectedBranches) {
+            createBranchIfNotExists(branch);
+        }
     }
 }
