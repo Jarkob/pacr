@@ -32,6 +32,12 @@ PACR analyzes commits in repositories.
 8. ?
 9. Profit
 
+### Benchmarker
+
+1. Install python3.8
+2. Install Java 13
+3. Start BenchmarkerApplication
+
 ## Deploy
 
 ### Database
