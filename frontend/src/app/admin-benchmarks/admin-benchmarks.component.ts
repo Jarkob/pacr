@@ -149,7 +149,6 @@ export class AdminBenchmarksComponent implements OnInit {
   }
 
   loadBenchmarkData(benchmark: any) {
-    console.log(benchmark);
     this.editNameControl.setValue(benchmark.customName);
     this.editDescriptionControl.setValue(benchmark.description);
 

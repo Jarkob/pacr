@@ -69,7 +69,7 @@ export class RepositoryService {
    * @param repository the repository
    */
   public removeRepository(repository: number): Observable<{}> {
-    return this.http.delete(this.globalService.url + '/deleteRepository/' + repository);
+    return this.http.delete(this.globalService.url + '/delete-repository/' + repository);
   }
 
   /**

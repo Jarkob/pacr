@@ -1,3 +1,4 @@
+import { MatSnackBar } from '@angular/material';
 import { Subscription, interval } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { StringService } from './../services/strings.service';
@@ -14,7 +15,8 @@ export class AdminRepositoriesComponent implements OnInit {
 
   constructor(
     private stringService: StringService,
-    private repositoryService: RepositoryService
+    private repositoryService: RepositoryService,
+    private snackBar: MatSnackBar
   ) { }
 
   public editRepositoryForm: FormGroup;
@@ -61,22 +63,14 @@ export class AdminRepositoriesComponent implements OnInit {
     );
 
     // initial load
-    this.repositoryService.getAllRepositories().subscribe(
-      data => {
-        this.repositories = data;
-      }
-    );
+    this.getRepositories();
     this.repositoryService.getPullInterval().subscribe(data => {
       this.pullInterval = data;
     });
 
     this.repositorySubscription = interval(this.repositoryUpdateInterval * 1000).subscribe(
       val => {
-        this.repositoryService.getAllRepositories().subscribe(
-          data => {
-            this.repositories = data;
-          }
-        );
+        this.getRepositories();
         this.repositoryService.getPullInterval().subscribe(data => {
           this.pullInterval = data;
         });
@@ -85,6 +79,14 @@ export class AdminRepositoriesComponent implements OnInit {
 
     this.initAddFormControls();
     this.initEditFormControls();
+  }
+
+  getRepositories() {
+    this.repositoryService.getAllRepositories().subscribe(
+      data => {
+        this.repositories = data;
+      }
+    );
   }
 
   private initEditFormControls() {
@@ -176,7 +178,16 @@ export class AdminRepositoriesComponent implements OnInit {
         observeFromDate: addRepositoryFormValue.observeAll ? null : addRepositoryFormValue.observeFromDate,
         commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
         commits: []
-      }).subscribe();
+      }).subscribe(
+        data => {
+          this.openSnackBar(this.strings.addSuccess);
+          this.initAddFormControls();
+          this.getRepositories();
+        },
+        err => {
+          this.openSnackBar(this.strings.snackBarError);
+        }
+      );
     }
   }
 
@@ -193,12 +204,30 @@ export class AdminRepositoriesComponent implements OnInit {
         observeFromDate: editRepositoryFormValue.observeAll ? null : editRepositoryFormValue.observeFromDate,
         commitLinkPrefix: this.selectedRepository.commitLinkPrefix,
         commits: []
-      }).subscribe();
+      }).subscribe(
+        data => {
+          this.openSnackBar(this.strings.editSuccess);
+          this.selectedRepository = null;
+          this.getRepositories();
+        },
+        err => {
+          this.openSnackBar(this.strings.snackBarError);
+        }
+      );
     }
   }
 
-  public deleteRepository() {
-    this.repositoryService.removeRepository(this.selectedRepository.id);
+  public deleteRepository(repository: Repository) {
+    this.repositoryService.removeRepository(repository.id).subscribe(
+      data => {
+        this.openSnackBar(this.strings.deleteSuccess);
+        this.selectedRepository = null;
+        this.getRepositories();
+      },
+      err => {
+        this.openSnackBar(this.strings.snackBarError);
+      }
+    );
   }
 
   public selectRepository(repository: Repository) {
@@ -260,5 +289,13 @@ export class AdminRepositoriesComponent implements OnInit {
     });
 
     return newSelectedBranches;
+  }
+
+  openSnackBar(message: string) {
+    const snackBarDuration = 2000;
+
+    this.snackBar.open(message, this.strings.snackBarAction, {
+      duration: snackBarDuration,
+    });
   }
 }

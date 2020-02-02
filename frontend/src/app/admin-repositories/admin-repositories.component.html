@@ -42,7 +42,7 @@
                     <mat-icon class="optionButton" matTooltip="{{ strings?.edit }}" matTooltipPosition="above"
                     (click)="selectRepository(repository); repositoryTabs.selectedIndex = 2">edit</mat-icon>
                     <mat-icon class="optionButton" matTooltip="{{ strings?.delete }}" color="warn"
-                    (click)="deleteRepository()">delete</mat-icon>
+                    (click)="deleteRepository(repository)">delete</mat-icon>
                 </div>
             </mat-list-item>
             
@@ -53,7 +53,8 @@
     <mat-tab label="{{ strings?.tabAddRepository }}">
         <p class="mat-h2 tabTitle"> {{ strings?.tabAddTitle }} </p>
         
-        <form [formGroup]="addRepositoryForm" autocomplete="off" novalidate (ngSubmit)="addRepository(addRepositoryForm.value)" fxLayout="column wrap"
+        <form [formGroup]="addRepositoryForm" autocomplete="off" novalidate 
+            (ngSubmit)="addRepository(addRepositoryForm.value); repositoryTabs.selectedIndex = 0" fxLayout="column wrap"
             fxLayoutAlign="center left" fxLayoutGap="10px">
             <mat-form-field>
                 <input matInput type="text" placeholder="{{ strings?.repositoryName }}" formControlName="name">
@@ -107,7 +108,8 @@
     <mat-tab *ngIf="selectedRepository" label="{{ strings?.tabEditRepository }}">
         <p class="mat-h2 tabTitle"> {{ strings?.tabEditTitle }} {{ selectedRepository.name }} </p>
         
-        <form [formGroup]="editRepositoryForm" autocomplete="off" novalidate (ngSubmit)="editRepository(editRepositoryForm.value)" fxLayout="column wrap"
+        <form [formGroup]="editRepositoryForm" autocomplete="off" novalidate 
+            (ngSubmit)="editRepository(editRepositoryForm.value); repositoryTabs.selectedIndex = 0" fxLayout="column wrap"
             fxLayoutAlign="center left" fxLayoutGap="10px">
             <mat-form-field>
                 <input matInput type="text" placeholder="{{ strings?.repositoryName }}" formControlName="name">
@@ -161,7 +163,8 @@
 
             <button mat-raised-button type="submit" color="primary" [disabled]="!editRepositoryForm.valid || allEditBranches.length == 0">{{ strings?.save }}</button>
             <button type="button" mat-raised-button (click)="onCancelEditRepository()">{{ strings?.cancel }}</button>
-            <button type="button" color="warn" mat-raised-button (click)="deleteRepository()">{{ strings?.delete }}</button>
+            <button type="button" color="warn" mat-raised-button 
+                (click)="deleteRepository(this.selectedRepository); repositoryTabs.selectedIndex = 0">{{ strings?.delete }}</button>
         </form>
     </mat-tab>
 </mat-tab-group>

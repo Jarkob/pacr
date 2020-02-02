@@ -36,5 +36,12 @@
     "add": "Add",
     "save": "Save",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+
+    "snackBarAction": "Close",
+    "savedSuccess": "Successfully saved.",
+    "editSuccess": "Successfully edited.",
+    "addSuccess": "Successfully added.",
+    "deleteSuccess": "Successfully deleted.",
+    "snackBarError": "Something went wrong."
 }
