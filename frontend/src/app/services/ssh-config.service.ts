@@ -28,7 +28,7 @@ export class SshConfigService {
      * prioritize a specific job
      * @param job the job to be prioritized
      */
-    public sendPrivateSSHKeyToBenchmarkers() {
-        this.http.get<{}>(this.globalService.url + '/ssh/send-to-benchmarkers');
+    public sendPrivateSSHKeyToBenchmarkers(): Observable<any> {
+        return this.http.get<any>(this.globalService.url + '/ssh/send-to-benchmarkers');
     }
 }

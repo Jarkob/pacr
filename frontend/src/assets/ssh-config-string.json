@@ -5,5 +5,7 @@
     "sendPrivateSSHKey": "Send Private SSH Key",
     "sendPrivateSSHKeyDescription": "Sends the current private SSH Key to all online benchmarkers. This is necessary if the private key was changed.",
     "copiedToClipboard": "Successfully copied",
-    "closeSnackbar": "Close"
+    "snackBarAction": "Close",
+    "sendSuccess": "Successfully sent.",
+    "snackBarError": "Something went wrong."
 }

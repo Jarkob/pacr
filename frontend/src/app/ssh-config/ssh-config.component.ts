@@ -51,19 +51,26 @@ export class SshConfigComponent implements OnInit, OnDestroy {
     document.execCommand('copy');
     inputElement.setSelectionRange(0, 0);
 
-    this.openSnackBar(this.strings.copiedToClipboard, this.strings.closeSnackbar);
+    this.openSnackBar(this.strings.copiedToClipboard);
   }
 
-  openSnackBar(message: string, action: string) {
+  openSnackBar(message: string) {
     const snackBarDuration = 2000;
 
-    this.snackBar.open(message, action, {
+    this.snackBar.open(message, this.strings.snackBarAction, {
       duration: snackBarDuration,
     });
   }
 
   public sendPrivateSSHKey() {
-    // todo
+    this.sshService.sendPrivateSSHKeyToBenchmarkers().subscribe(
+      data => {
+        this.openSnackBar(this.strings.sendSuccess);
+      },
+      err => {
+        this.openSnackBar(this.strings.snackBarError);
+      }
+    );
   }
 
   ngOnDestroy() {

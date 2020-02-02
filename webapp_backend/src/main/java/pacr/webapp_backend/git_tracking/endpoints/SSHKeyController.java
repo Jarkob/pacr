@@ -1,15 +1,13 @@
 package pacr.webapp_backend.git_tracking.endpoints;
 
+import java.io.IOException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import pacr.webapp_backend.git_tracking.services.SSHKeyProvider;
-
-import java.io.IOException;
 
 /**
  * This class represents the SSH-Key Controller.
@@ -52,8 +50,7 @@ public class SSHKeyController {
      * @return OK (200) if the key was sent successfully,
      *         INTERNAL_SERVER_ERROR (500) when an exception occurred.
      */
-    @RequestMapping("/ssh/send-to-benchmarker")
-    @ResponseBody
+    @RequestMapping("/ssh/send-to-benchmarkers")
     public ResponseEntity<Object> sendPrivateKeyToBenchmarker() {
         try {
             provider.sendPrivateKeyToBenchmarker();
