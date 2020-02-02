@@ -2,7 +2,9 @@ import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-resul
 import { EventService } from './../services/event.service';
 import { StringService } from './../services/strings.service';
 import { CommitHistoryMaximizedRef } from './../commit-history/commit-history-maximized-ref';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
+
+const ESCAPE_KEY = 27;
 
 @Component({
   selector: 'app-commit-history-maximized',
@@ -31,6 +33,12 @@ export class CommitHistoryMaximizedComponent implements OnInit {
         this.commits = data;
       }
     );
+  }
+
+  @HostListener('document:keydown', ['$event']) handleKeydown(event: KeyboardEvent) {
+    if (event.keyCode === ESCAPE_KEY) {
+      this.dialogRef.close();
+    }
   }
 
   public selectCommit(commitHash: string) {

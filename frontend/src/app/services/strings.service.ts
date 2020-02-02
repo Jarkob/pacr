@@ -67,4 +67,8 @@ export class StringService {
     public getComparisonStrings(): Observable<any> {
         return this.http.get('./assets/comparison-string.json');
     }
+
+    public getCommitComparisonStrings() : Observable<any> {
+        return this.http.get('./assets/commit-comparison-string.json');
+    }
 }

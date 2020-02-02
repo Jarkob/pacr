@@ -1,3 +1,5 @@
+import { CommitComparisonService } from './comparison/commit-comparison.service';
+import { CommitComparisonComponent } from './commit-comparison/commit-comparison.component';
 import { AuthenticationInterceptor } from './services/authentication.interceptor';
 import { SshConfigComponent } from './ssh-config/ssh-config.component';
 import { AdminBenchmarksComponent } from './admin-benchmarks/admin-benchmarks.component';
@@ -71,11 +73,13 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     BenchmarkerListComponent,
     BrachesPipe,
     ShortenStringPipe,
+    CommitComparisonComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
     DiagramMaximizedComponent,
-    CommitHistoryMaximizedComponent
+    CommitHistoryMaximizedComponent,
+    CommitComparisonComponent
   ],
   imports: [
     BrowserModule,
@@ -94,6 +98,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     DetailViewMaximizerService,
     CommitHistoryMaximizerService,
     DiagramMaximizerService,
+    CommitComparisonService,
     BenchmarkingResultService,
     BenchmarkService,
     EventService,

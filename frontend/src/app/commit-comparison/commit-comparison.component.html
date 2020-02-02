@@ -1,0 +1,33 @@
+<mat-card class="maximized" [style.overflow]="'auto'">
+    <mat-card-header>
+        <mat-card-title>
+            <span>{{ strings?.comparing }}</span>
+            <a target="_blank" rel="noopener noreferrer" class="mat-h2" *ngIf="benchmarkingResult1?.commitURL" href="{{ benchmarkingResult1?.commitURL }}" 
+                matTooltip="{{ benchmarkingResult1?.commitHash }}" matTooltipPosition="right"> 
+                {{ benchmarkingResult1?.commitHash  | shortenString:7 | braces}}
+            </a>
+            <span class="mat-h2" *ngIf="!benchmarkingResult1?.commitURL"
+                matTooltip="{{ benchmarkingResult1?.commitHash }}" matTooltipPosition="right"> 
+                {{ benchmarkingResult1?.commitHash  | shortenString:7 | braces}}
+            </span>
+            <span>{{ strings?.with }}</span>
+            <a target="_blank" rel="noopener noreferrer" class="mat-h2" *ngIf="benchmarkingResult2?.commitURL" href="{{ benchmarkingResult2?.commitURL }}" 
+                matTooltip="{{ benchmarkingResult2?.commitHash }}" matTooltipPosition="right"> 
+                {{ benchmarkingResult2?.commitHash  | shortenString:7 | braces}}
+            </a>
+            <span class="mat-h2" *ngIf="!benchmarkingResult2?.commitURL"
+                matTooltip="{{ benchmarkingResult2?.commitHash }}" matTooltipPosition="right"> 
+                {{ benchmarkingResult2?.commitHash  | shortenString:7 | braces}}
+            </span>
+        </mat-card-title>
+        <div fxFlex></div>
+        <button mat-mini-fab (click)="close()">
+            <mat-icon>fullscreen_exit</mat-icon>
+        </button>
+    </mat-card-header>
+    
+    <mat-card-content>
+        
+    </mat-card-content>
+    
+</mat-card>

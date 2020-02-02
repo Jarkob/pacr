@@ -1,9 +1,10 @@
+import { CommitComparisonService } from './commit-comparison.service';
+import { CommitComparisonRef } from './commit-comparison-ref';
 import { StringService } from './../services/strings.service';
 import { Repository } from './../classes/repository';
 import { RepositoryService } from './../services/repository.service';
 import { PageEvent } from '@angular/material';
 import { Commit } from './../classes/commit';
-import { BenchmarkingResultService } from './../services/benchmarking-result.service';
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 /**
@@ -17,9 +18,9 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 export class ComparisonComponent implements OnInit {
 
   constructor(
+    private previewDialog: CommitComparisonService,
     private stringService: StringService,
-    private repositoryService: RepositoryService,
-    private benchmarkingResultService: BenchmarkingResultService
+    private repositoryService: RepositoryService
   ) { }
 
   @Output() commitSelectedEvent = new EventEmitter();
@@ -65,6 +66,11 @@ export class ComparisonComponent implements OnInit {
   }
 
   selectForComparison(row: any) {
+    // don't compare a commit with itself
+    if (this.commitHash1 === row.commitHash || this.commitHash2 === row.commitHash) {
+      return;
+    }
+
     if (this.replaceCommitHash1) {
       this.commitHash1 = row.commitHash;
     } else {
@@ -79,7 +85,6 @@ export class ComparisonComponent implements OnInit {
   }
 
   updateRepository() {
-    console.log(this.selectedRepository);
     this.getCommits(new PageEvent());
   }
 
@@ -97,7 +102,10 @@ export class ComparisonComponent implements OnInit {
   }
 
   openCommitComparison() {
-
+    const dialogRef: CommitComparisonRef = this.previewDialog.open({
+      commitHash1: this.commitHash1,
+      commitHash2: this.commitHash2
+    });
   }
 
   clear() {
