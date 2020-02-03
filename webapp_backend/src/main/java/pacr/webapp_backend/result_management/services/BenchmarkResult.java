@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Set;
  * Represents all measured data of properties for a benchmark. This entity is saved in the database.
  */
 @Entity
+@Table(name = "benchmark_result")
 public class BenchmarkResult implements IBenchmark {
 
     @Id

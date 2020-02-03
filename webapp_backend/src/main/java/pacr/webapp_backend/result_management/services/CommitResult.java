@@ -185,4 +185,18 @@ public class CommitResult implements IBenchmarkingResult {
     public void removeBenchmarkResult(BenchmarkResult benchmarkResult) {
         benchmarkResults.remove(benchmarkResult);
     }
+
+    /**
+     * @param error {@code true} if there was an error with this result, otherwise {@code false}
+     */
+    public void setError(boolean error) {
+        this.error = error;
+    }
+
+    /**
+     * @param errorMessage the error message if there was an error with this result
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }

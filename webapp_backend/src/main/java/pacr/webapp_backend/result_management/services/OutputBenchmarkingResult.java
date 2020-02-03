@@ -10,7 +10,6 @@ import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -168,58 +167,94 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         return hasGlobalError;
     }
 
+    /**
+     * @return the global error message of this result.
+     */
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    /**
+     * @return the message of the commit of this result.
+     */
+    public String getCommitMessage() {
+        return commitMessage;
+    }
+
+    /**
+     * @return the url of the commit of this result.
+     */
+    public String getCommitURL() {
+        return commitURL;
+    }
+
+    /**
+     * @return the hash of the commit this result was compared to. May be null if no comparison was done.
+     */
+    public String getComparisonCommitHash() {
+        return comparisonCommitHash;
+    }
+
+    /**
+     * @return the entry date of the commit of this result into the database.
+     */
+    public String getCommitEntryDate() {
+        return commitEntryDate;
+    }
+
+    /**
+     * @return the commit date of the commit of this result.
+     */
+    public String getCommitCommitDate() {
+        return commitCommitDate;
+    }
+
+    /**
+     * @return the author date of the commit of this result.
+     */
+    public String getCommitAuthorDate() {
+        return commitAuthorDate;
+    }
+
+    /**
+     * @return the id of the repository of the commit of this result.
+     */
+    public int getCommitRepositoryId() {
+        return commitRepositoryId;
+    }
+
+    /**
+     * @return the name of the repository of the commit of this result.
+     */
+    public String getCommitRepositoryName() {
+        return commitRepositoryName;
+    }
+
+    /**
+     * @return the names of the branches of the commit of this result.
+     */
+    public Collection<String> getCommitBranchNames() {
+        return commitBranchNames;
+    }
+
+    /**
+     * @return the hashes of the parents of the commit of this result.
+     */
+    public Collection<String> getCommitParentHashes() {
+        return commitParentHashes;
+    }
+
+    /**
+     * @return the labels of the commit of this result.
+     */
+    public Collection<String> getCommitLabels() {
+        return commitLabels;
+    }
+
     private boolean belongToSameCommit(ICommit commit, CommitResult result) {
         if (commit != null && result != null) {
             return commit.getCommitHash().equals(result.getCommitHash());
         }
         return false;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public String getCommitMessage() {
-        return commitMessage;
-    }
-
-    public String getCommitURL() {
-        return commitURL;
-    }
-
-    public String getComparisonCommitHash() {
-        return comparisonCommitHash;
-    }
-
-    public String getCommitEntryDate() {
-        return commitEntryDate;
-    }
-
-    public String getCommitCommitDate() {
-        return commitCommitDate;
-    }
-
-    public String getCommitAuthorDate() {
-        return commitAuthorDate;
-    }
-
-    public int getCommitRepositoryId() {
-        return commitRepositoryId;
-    }
-
-    public String getCommitRepositoryName() {
-        return commitRepositoryName;
-    }
-
-    public Collection<String> getCommitBranchNames() {
-        return commitBranchNames;
-    }
-
-    public Collection<String> getCommitParentHashes() {
-        return commitParentHashes;
-    }
-
-    public Collection<String> getCommitLabels() {
-        return commitLabels;
     }
 }

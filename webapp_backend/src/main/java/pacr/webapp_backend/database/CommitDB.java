@@ -26,5 +26,7 @@ public interface CommitDB extends PagingAndSortingRepository<GitCommit, String> 
 
     Collection<GitCommit> findGitCommitsByRepository_IdAndBranches(int repositoryID, GitBranch branch);
 
+    Page<GitCommit> findGitCommitsByRepository_IdAndBranches(int repositoryID, GitBranch branch, Pageable pageable);
+
     Page<GitCommit> findAllByRepository_Id(int repositoryID, Pageable pageable);
 }

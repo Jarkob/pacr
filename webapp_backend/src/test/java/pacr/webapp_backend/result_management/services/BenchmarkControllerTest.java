@@ -46,12 +46,7 @@ public class BenchmarkControllerTest {
 
         benchmarkController = new BenchmarkController(authenticatorMock, benchmarkManagerMock);
 
-        benchmarkInput = Mockito.mock(BenchmarkInput.class);
-        when(benchmarkInput.getId()).thenReturn(BENCHMARK_ID);
-        when(benchmarkInput.getCustomName()).thenReturn(BENCHMARK_NAME);
-        when(benchmarkInput.getDescription()).thenReturn(BENCHMARK_DESC);
-        when(benchmarkInput.getGroupId()).thenReturn(GROUP_ID);
-        when(benchmarkInput.validate()).thenReturn(true);
+        benchmarkInput = new BenchmarkInput(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
     }
 
     /**

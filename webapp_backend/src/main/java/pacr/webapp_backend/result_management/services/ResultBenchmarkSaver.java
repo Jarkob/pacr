@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.IEventHandler;
+import pacr.webapp_backend.shared.INewestResult;
 
 import javax.validation.constraints.NotNull;
 import java.util.Objects;

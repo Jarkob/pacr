@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import pacr.webapp_backend.result_management.endpoints.ResultController;
@@ -26,6 +28,8 @@ public class ResultControllerTest {
     public static final String HASH = "hash";
     public static final int BENCHMARK_ID = 1;
     public static final String TOKEN = "token";
+    public static final int PAGE_NUM = 0;
+    public static final int PAGE_SIZE = 200;
 
     @Mock
     private IAuthenticator authenticatorMock;
@@ -126,6 +130,39 @@ public class ResultControllerTest {
         List<OutputBenchmarkingResult> testOutput = resultController.getNewBenchmarkingResults();
 
         verify(resultGetterMock).getNewestResults();
+        assertEquals(getterOutput, testOutput);
+    }
+
+    /**
+     * Tests whether getResultsForBranchAndBenchmark correctly calls the ResultGetter.
+     */
+    @Test
+    void getResultsForBranchAndBenchmark_shouldCallResultGetter() {
+        HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
+        when(resultGetterMock.getBenchmarkResults(BENCHMARK_ID, REPO_ID, BRANCH_NAME)).thenReturn(getterOutput);
+
+        Map<String, DiagramOutputResult> testOutput = resultController.getResultsForBranchAndBenchmark(BENCHMARK_ID,
+                REPO_ID, BRANCH_NAME);
+
+        verify(resultGetterMock).getBenchmarkResults(BENCHMARK_ID, REPO_ID, BRANCH_NAME);
+        assertEquals(getterOutput, testOutput);
+    }
+
+    /**
+     * Tests whether getResultPageForBranchAndBenchmark correctly calls the ResultGetter.
+     */
+    @Test
+    void getResultPageForBranchAndBenchmark_shouldCallResultGetter() {
+        Pageable pageRequestInput = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+
+        HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
+        when(resultGetterMock.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE))
+                .thenReturn(getterOutput);
+
+        Map<String, DiagramOutputResult> testOutput = resultController.getResultPageForBranchAndBenchmark(BENCHMARK_ID,
+                REPO_ID, BRANCH_NAME, pageRequestInput);
+
+        verify(resultGetterMock).getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE);
         assertEquals(getterOutput, testOutput);
     }
 

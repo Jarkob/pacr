@@ -7,8 +7,11 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
+import pacr.webapp_backend.shared.ICommit;
+import pacr.webapp_backend.shared.IObserver;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -37,6 +40,9 @@ public class ResultGetterTest {
     public static final int EXPECTED_NUM_OF_RESULTS = 1;
     public static final int EXPECTED_NUM_OF_ALL_RESULTS = 1;
     public static final int EXPECTED_NUM_OF_NEW_RESULTS = 2;
+    public static final int PAGE_NUM = 0;
+    public static final int PAGE_SIZE = 200;
+    public static final int REMOVE_NO_BENCHMARK = -1;
 
     @Mock
     private IGetCommitAccess commitAccessMock;
@@ -55,7 +61,6 @@ public class ResultGetterTest {
 
     private ResultGetter resultGetter;
 
-    @Autowired
     public ResultGetterTest() {
         commitAccessMock = Mockito.mock(IGetCommitAccess.class);
         resultAccessMock = Mockito.mock(IResultAccess.class);
@@ -322,6 +327,76 @@ public class ResultGetterTest {
     }
 
     /**
+     * Tests whether getBenchmarkResults properly builds output objects.
+     */
+    @Test
+    void getBenchmarkResults_forBranch_shouldBuildOutputObjects() {
+        Collection<GitCommit> commits = new LinkedList<>();
+        commits.add(commitMock);
+
+        when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME)).thenAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) {
+                return commits;
+            }
+        });
+
+        when(commitMock.getCommitHash()).thenReturn(HASH);
+
+        Collection<CommitResult> results = new LinkedList<>();
+        results.add(resultMock);
+
+        when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
+        when(resultMock.getCommitHash()).thenReturn(HASH);
+        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
+
+        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResults(REMOVE_NO_BENCHMARK, REPO_ID,
+                BRANCH_NAME);
+
+        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(diagramOutputMock, outputs.get(HASH));
+    }
+
+    /**
+     * Tests whether getBenchmarkResultsSubset properly builds output objects.
+     */
+    @Test
+    void getBenchmarkResultsSubset_shouldBuildOutputObjects() {
+        Collection<GitCommit> commits = new LinkedList<>();
+        commits.add(commitMock);
+
+        Page<? extends ICommit> page = Mockito.mock(Page.class);
+        when(page.getContent()).thenAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) {
+                return commits;
+            }
+        });
+
+        when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE)).thenAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) {
+                return page;
+            }
+        });
+
+        when(commitMock.getCommitHash()).thenReturn(HASH);
+
+        Collection<CommitResult> results = new LinkedList<>();
+        results.add(resultMock);
+
+        when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
+        when(resultMock.getCommitHash()).thenReturn(HASH);
+        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
+
+        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResultsSubset(REMOVE_NO_BENCHMARK,
+                REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE);
+
+        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(diagramOutputMock, outputs.get(HASH));
+    }
+
+    /**
      * Tests whether isCommitBenchmarked returns false if the commit does not have a result.
      */
     @Test
@@ -337,5 +412,34 @@ public class ResultGetterTest {
     void isCommitBenchmarked_isBenchmarked_shouldReturnTrue() {
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
         assertTrue(resultGetter.isCommitBenchmarked(HASH));
+    }
+
+    /**
+     * Tests whether a subscribed observer receives updates.
+     */
+    @Test
+    void subscribe_updateObservers_shouldUpdateSubscriber() {
+        IObserver observer = Mockito.mock(IObserver.class);
+
+        resultGetter.subscribe(observer);
+        resultGetter.updateAll();
+
+        verify(observer).update();
+
+        resultGetter.unsubscribe(observer);
+    }
+
+    /**
+     * Tests whether an unsubscribed does not receive updates.
+     */
+    @Test
+    void unsubscribe_updateObservers_shouldNotUpdateUnsubscribed() {
+        IObserver observer = Mockito.mock(IObserver.class);
+
+        resultGetter.subscribe(observer);
+        resultGetter.unsubscribe(observer);
+        resultGetter.updateAll();
+
+        verify(observer, never()).update();
     }
 }

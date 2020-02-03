@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.data.domain.Page;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,17 @@ public interface IGetCommitAccess {
      * @return the commits of the branch.
      */
     Collection<? extends ICommit> getCommitsFromBranch(int id, @NotNull String branch);
+
+    /**
+     * Gets a subset of the saved commits from a branch of a repository. Returns null if no such repository or branch
+     * exists.
+     * @param repositoryId the repository id.
+     * @param branchName the branch name. Cannot be null.
+     * @param page the requested page number.
+     * @param size the size of the page.
+     * @return a page with the requested commits.
+     */
+    Page<? extends ICommit> getCommitsFromBranch(int repositoryId, @NotNull String branchName, int page, int size);
 
     /**
      * Gets all saved commits. Returns null if no commits are saved.

@@ -28,6 +28,8 @@ import java.util.Objects;
 @RestController
 public class ResultController {
 
+    private static final int PAGE_SIZE = 200;
+
     private IAuthenticator authenticator;
     private ResultGetter resultGetter;
     private ResultManager resultManager;
@@ -109,7 +111,6 @@ public class ResultController {
     }
 
     /**
-     * TODO test this?
      * Gets the benchmarking results of all commits of a branch, but only for the specified benchmark.
      * @param benchmarkId the id of the benchmark.
      * @param repositoryId the id of the repository.
@@ -129,6 +130,26 @@ public class ResultController {
     public Page<OutputBenchmarkingResult> getResultsForRepository(@PathVariable int repositoryId,
                                               @PageableDefault(size = 10, page = 0, sort = {"commitDate"}) Pageable pageable) {
         return resultGetter.getFullRepositoryResults(repositoryId, pageable);
+    }
+
+    /**
+     * Gets a page with a specified amount of benchmarking results of a branch (sorted descending by commit date),
+     * but only for the specified benchmark.
+     * @param benchmarkId the id of the benchmark.
+     * @param repositoryId the id of the repository.
+     * @param branch the name of the branch. Cannot be {@code null}.
+     * @param pageable the requested page. Default page is 0 and default size is 200.
+     * @return the benchmarking results of one benchmark.
+     */
+    @GetMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{branch}")
+    public Map<String, DiagramOutputResult> getResultPageForBranchAndBenchmark(@PathVariable int benchmarkId,
+                                                   @PathVariable int repositoryId,
+                                                   @NotNull @PathVariable String branch,
+                                                   @PageableDefault(size = PAGE_SIZE, page = 0) Pageable pageable) {
+        Objects.requireNonNull(branch);
+
+        return resultGetter.getBenchmarkResultsSubset(benchmarkId, repositoryId, branch,
+                pageable.getPageNumber(), pageable.getPageSize());
     }
 
     /**

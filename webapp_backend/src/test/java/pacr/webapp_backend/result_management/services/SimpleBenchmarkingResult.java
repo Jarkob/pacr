@@ -51,7 +51,7 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
 
     @Override
     public int getRepositoryID() {
-        return -1; // TODO @Martin
+        return -1;
     }
 
     @Override

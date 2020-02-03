@@ -75,18 +75,30 @@ public class OutputBenchmark implements IBenchmark {
         return groupId;
     }
 
+    /**
+     * @return the unique id of the benchmark.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * @return the custom name of the benchmark.
+     */
     public String getCustomName() {
         return customName;
     }
 
+    /**
+     * @return the description of the benchmark.
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * @return the properties with results of this benchmark.
+     */
     public OutputPropertyResult[] getResults() {
         return results;
     }

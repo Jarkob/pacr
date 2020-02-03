@@ -13,7 +13,7 @@ import java.util.Objects;
  * This entity is saved in the database.
  */
 @Entity(name = "BenchmarkGroup")
-@Table(name = "benchmarkGroup")
+@Table(name = "benchmark_group")
 public class BenchmarkGroup {
 
     @Id

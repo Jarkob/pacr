@@ -21,6 +21,9 @@ import java.util.Set;
 @Component
 abstract class ResultSaver {
 
+    private static final String NO_RESULT_ERROR = "PACR received no benchmarking result for this commit";
+    private static final String NO_PROPERTY_RESULT_ERROR = "PACR received no measurements for this property";
+
     protected IResultAccess resultAccess;
     private BenchmarkManager benchmarkManager;
 
@@ -88,6 +91,12 @@ abstract class ResultSaver {
         CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID(),
                 commit.getCommitDate(), comparisonCommitHash);
 
+        // set error if it has not been set yet but there are no benchmark results in the given IBenchmarkingResult
+        if (benchmarkResultsToSave.isEmpty() && !resultToSave.hasGlobalError()) {
+            resultToSave.setError(true);
+            resultToSave.setErrorMessage(NO_RESULT_ERROR);
+        }
+
         synchronized (CommitResult.class) {
             resultAccess.saveResult(resultToSave);
         }
@@ -149,6 +158,12 @@ abstract class ResultSaver {
         benchmark.addProperty(property);
 
         BenchmarkPropertyResult propertyResultToSave =  new BenchmarkPropertyResult(propertyResult, property);
+
+        // set error if it has not been set yet but there are no results for this property
+        if (propertyResult.getResults().isEmpty() && !propertyResultToSave.isError()) {
+            propertyResultToSave.setError(true);
+            propertyResultToSave.setErrorMessage(NO_PROPERTY_RESULT_ERROR);
+        }
 
         // comparison to previous result
         if (comparisonPropertyResult != null && !propertyResultToSave.isError()

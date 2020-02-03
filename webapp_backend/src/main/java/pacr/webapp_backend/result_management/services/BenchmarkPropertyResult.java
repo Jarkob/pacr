@@ -216,4 +216,18 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     public void setCompared(boolean compared) {
         this.compared = compared;
     }
+
+    /**
+     * @param error {@code true} if there was an error measuring this property, otherwise {@code false}.
+     */
+    public void setError(boolean error) {
+        this.error = error;
+    }
+
+    /**
+     * @param errorMessage the error message if there was an error.
+     */
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 }

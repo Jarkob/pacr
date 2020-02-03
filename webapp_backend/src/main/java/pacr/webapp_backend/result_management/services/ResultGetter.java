@@ -147,11 +147,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     /**
-     * TODO test this?
      * Gets all benchmarking results for a branch with measurements for a specific benchmark.
      * @param benchmarkId the id of the benchmark.
      * @param repositoryId the id of the repository.
-     * @param branch the name of the branch.
+     * @param branch the name of the branch. Cannot be null.
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
      *         omitted)
      */
@@ -159,6 +158,27 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
                                                                     @NotNull String branch) {
         Objects.requireNonNull(branch);
         Collection<? extends ICommit> commitsFromBranch = commitAccess.getCommitsFromBranch(repositoryId, branch);
+        return commitsToDiagramResults(commitsFromBranch, benchmarkId);
+    }
+
+    /**
+     * Gets a subset of the benchmarking results for a branch with measurements for a specific benchmark.
+     * @param benchmarkId the id of the benchmark.
+     * @param repositoryId the id of the repository.
+     * @param branch the name of the branch. Cannot be null.
+     * @param page the number of the requested page.
+     * @param size the size of the page.
+     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
+     *         omitted).
+     */
+    public HashMap<String, DiagramOutputResult> getBenchmarkResultsSubset(int benchmarkId, int repositoryId,
+                                                                    @NotNull String branch, int page, int size) {
+        Objects.requireNonNull(branch);
+
+        Page<? extends ICommit> commitsFromBranchPage =
+                commitAccess.getCommitsFromBranch(repositoryId, branch, page, size);
+        List<? extends ICommit> commitsFromBranch = commitsFromBranchPage.getContent();
+
         return commitsToDiagramResults(commitsFromBranch, benchmarkId);
     }
 

@@ -81,42 +81,73 @@ public class OutputPropertyResult implements IBenchmarkProperty {
         return null;
     }
 
+    /**
+     * @return the interpretation of the measurements.
+     */
     public ResultInterpretation getInterpretation() {
         return interpretation;
     }
 
+    /**
+     * @return the mean of the measurements.
+     */
     public double getMean() {
         return mean;
     }
 
+    /**
+     * @return the lower quartile of the measurements.
+     */
     public double getLowerQuartile() {
         return lowerQuartile;
     }
 
+    /**
+     * @return the median of the measurements.
+     */
     public double getMedian() {
         return median;
     }
 
+    /**
+     * @return the upper quartile of the measurements.
+     */
     public double getUpperQuartile() {
         return upperQuartile;
     }
 
+    /**
+     * @return the standard deviation of the measurements.
+     */
     public double getStandardDeviation() {
         return standardDeviation;
     }
 
+    /**
+     * @return {@code true} if there was an error measuring this property, otherwise {@code false}.
+     */
     public boolean isHadLocalError() {
         return hadLocalError;
     }
 
+    /**
+     * @return the error message if there was an error.
+     */
     public String getErrorMessage() {
         return errorMessage;
     }
 
+    /**
+     * @return the ratio of the median with the median of the comparison commit.
+     */
     public double getRatioToPreviousCommit() {
         return ratioToPreviousCommit;
     }
 
+    /**
+     * @return {@code true} if a comparison to a parent commit was done and ratio has been properly set, otherwise
+     * {@code false}.
+     */
     public boolean isCompared() {
         return compared;
     }
