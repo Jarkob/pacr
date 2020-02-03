@@ -1,7 +1,7 @@
+import { OutputBenchmark } from './../classes/output-benchmark';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { COMMIT_HASH_1_DATA, COMMIT_HASH_2_DATA } from './../comparison/commit-comparison.tokens';
 import { CommitComparisonRef } from './../comparison/commit-comparison-ref';
-import { BenchmarkService } from './../services/benchmark.service';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
 import { StringService } from './../services/strings.service';
 import { Component, OnInit, Inject, HostListener } from '@angular/core';
@@ -20,14 +20,16 @@ export class CommitComparisonComponent implements OnInit {
     @Inject(COMMIT_HASH_2_DATA) public commitHash2: string,
     public dialogRef: CommitComparisonRef,
     private stringService: StringService,
-    private resultService: BenchmarkingResultService,
-    private benchmarkService: BenchmarkService
+    private resultService: BenchmarkingResultService
   ) { }
 
   strings: any;
 
   benchmarkingResult1: CommitBenchmarkingResult;
   benchmarkingResult2: CommitBenchmarkingResult;
+
+  // contains a list of [benchmark1, benchmark2] where benchmark1 and benchmark2 have the same id
+  compareableBenchmarks: OutputBenchmark[][] = [];
 
   ngOnInit() {
     this.stringService.getCommitComparisonStrings().subscribe(
@@ -37,7 +39,6 @@ export class CommitComparisonComponent implements OnInit {
     );
 
     this.getBenchmarkingResults();
-
   }
 
   @HostListener('document:keydown', ['$event']) handleKeydown(event: KeyboardEvent) {
@@ -50,18 +51,32 @@ export class CommitComparisonComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  getBenchmarkingResults() {
-    this.resultService.getBenchmarkingResultsForCommit(this.commitHash1).subscribe(
-      data => {
-        this.benchmarkingResult1 = data;
-      }
-    );
+  async getBenchmarkingResults() {
+    this.benchmarkingResult1 = await this.resultService.getBenchmarkingResultsForCommit(this.commitHash1).toPromise();
 
-    this.resultService.getBenchmarkingResultsForCommit(this.commitHash2).subscribe(
-      data => {
-        this.benchmarkingResult2 = data;
+    this.benchmarkingResult2 = await this.resultService.getBenchmarkingResultsForCommit(this.commitHash2).toPromise();
+
+    this.compareBenchmarkingResults();
+  }
+
+  compareBenchmarkingResults() {
+    const benchmarks = new Map();
+
+    console.log(this.benchmarkingResult1);
+
+    this.benchmarkingResult1.benchmarksList.forEach(bench => {
+      benchmarks.set(bench.id, bench);
+    });
+
+    console.log(benchmarks);
+
+    this.benchmarkingResult2.benchmarksList.forEach(bench => {
+      if (benchmarks.has(bench.id)) {
+        this.compareableBenchmarks.push([benchmarks.get(bench.id), bench]);
       }
-    );
+    });
+
+    console.log(this.compareableBenchmarks);
   }
 
 }

@@ -3,20 +3,20 @@
         <mat-card-title>
             <span>{{ strings?.comparing }}</span>
             <a target="_blank" rel="noopener noreferrer" class="mat-h2" *ngIf="benchmarkingResult1?.commitURL" href="{{ benchmarkingResult1?.commitURL }}" 
-                matTooltip="{{ benchmarkingResult1?.commitHash }}" matTooltipPosition="right"> 
+                matTooltip="{{ benchmarkingResult1?.commitHash }}" matTooltipPosition="below"> 
                 {{ benchmarkingResult1?.commitHash  | shortenString:7 | braces}}
             </a>
             <span class="mat-h2" *ngIf="!benchmarkingResult1?.commitURL"
-                matTooltip="{{ benchmarkingResult1?.commitHash }}" matTooltipPosition="right"> 
+                matTooltip="{{ benchmarkingResult1?.commitHash }}" matTooltipPosition="below"> 
                 {{ benchmarkingResult1?.commitHash  | shortenString:7 | braces}}
             </span>
             <span>{{ strings?.with }}</span>
             <a target="_blank" rel="noopener noreferrer" class="mat-h2" *ngIf="benchmarkingResult2?.commitURL" href="{{ benchmarkingResult2?.commitURL }}" 
-                matTooltip="{{ benchmarkingResult2?.commitHash }}" matTooltipPosition="right"> 
+                matTooltip="{{ benchmarkingResult2?.commitHash }}" matTooltipPosition="below"> 
                 {{ benchmarkingResult2?.commitHash  | shortenString:7 | braces}}
             </a>
             <span class="mat-h2" *ngIf="!benchmarkingResult2?.commitURL"
-                matTooltip="{{ benchmarkingResult2?.commitHash }}" matTooltipPosition="right"> 
+                matTooltip="{{ benchmarkingResult2?.commitHash }}" matTooltipPosition="below"> 
                 {{ benchmarkingResult2?.commitHash  | shortenString:7 | braces}}
             </span>
         </mat-card-title>

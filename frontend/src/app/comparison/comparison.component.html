@@ -39,7 +39,7 @@
 
             <ng-container matColumnDef="commitHash">
                 <th mat-header-cell *matHeaderCellDef> {{ this.strings?.commitHash }} </th>
-                <td mat-cell *matCellDef="let element">{{ element.commitHash | shortenString:7 | braces }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.commitHash | shortenString:7 }}</td>
             </ng-container>
         
             <ng-container matColumnDef="commitMessage">
