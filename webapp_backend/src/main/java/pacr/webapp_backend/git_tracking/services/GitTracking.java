@@ -10,6 +10,7 @@ import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IRepositoryImporter;
 import pacr.webapp_backend.shared.IResultDeleter;
 
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -59,6 +60,18 @@ public class GitTracking implements IRepositoryImporter {
         this.resultDeleter = resultDeleter;
         this.jobScheduler = jobScheduler;
         this.colorPicker = colorPicker;
+    }
+
+    /**
+     * Sets all colors of the repositories to used.
+     */
+    @PostConstruct
+    private void initializeColorPicker() {
+        Set<GitRepository> repositories = gitTrackingAccess.getAllRepositories();
+
+        for (GitRepository repository : repositories) {
+            colorPicker.setColorToUsed(repository.getColor());
+        }
     }
 
     /**
