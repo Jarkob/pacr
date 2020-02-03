@@ -33,7 +33,6 @@ import net.lingala.zip4j.core.ZipFile;
 import pacr.webapp_backend.shared.IResultDeleter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -158,17 +157,6 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         }
         gitTrackingAccess.addCommit(commit);
         return commit;
-    }
-
-    /**
-     * Clones a repository.
-     * @throws GitAPIException when there was an exception.
-     */
-    @Test
-    public void cloneRepository() throws GitAPIException {
-        gitHandler.cloneRepository(gitRepository);
-        File fileInRepository = new File(ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId() + "/README.md");
-        assertTrue(fileInRepository.exists());
     }
 
     /**

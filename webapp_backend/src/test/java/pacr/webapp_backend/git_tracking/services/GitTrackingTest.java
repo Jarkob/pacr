@@ -54,7 +54,7 @@ public class GitTrackingTest {
 
         assertEquals(repositoryId,
                 gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr.git", null,
-                        "name", new HashSet<>(Arrays.asList("testBranch1"))));
+                        "name", new HashSet<>(Arrays.asList("testBranch1")), false, false));
 
         verify(gitTrackingAccess).addRepository(repositoryCaptor.capture());
         assertEquals("https://git.scc.kit.edu/pacr/pacr/commit/",

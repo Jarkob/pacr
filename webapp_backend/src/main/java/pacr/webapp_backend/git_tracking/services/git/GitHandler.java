@@ -491,7 +491,7 @@ public class GitHandler {
 
     private File getRepositoryWorkingDir(GitRepository repository) {
         assert repository != null;
-        String repositoryFolderPath = pathToWorkingDir + "/" + repository.getId();
+        String repositoryFolderPath = pathToWorkingDir + "/" + repository.getPullURL().hashCode();
         return new File(repositoryFolderPath);
     }
 
