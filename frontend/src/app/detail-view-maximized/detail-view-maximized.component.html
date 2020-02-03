@@ -258,7 +258,7 @@
                 
                     <!-- Group header -->
                     <ng-container matColumnDef="groupHeader">
-                        <td colspan="5" mat-cell *matCellDef="let group">
+                        <td colspan="999" mat-cell *matCellDef="let group">
                             <mat-icon id="expandIcon" *ngIf="group.expanded">expand_less</mat-icon>
                             <mat-icon id="expandIcon" *ngIf="!group.expanded">expand_more</mat-icon>
                             <span class="mat-h2" *ngIf="group.level === 1">{{ strings?.benchmarkGroup }} {{ group[groupByColumns[group.level - 1]] }}</span>
@@ -268,7 +268,7 @@
 
                     <!-- LocalError header -->
                     <ng-container matColumnDef="localErrorHeader">
-                        <td colspan="5" mat-cell *matCellDef="let element">
+                        <td colspan="999" mat-cell *matCellDef="let element">
                             {{ strings?.localError }} {{ element.errorMessage }}
                         </td>
                     </ng-container>

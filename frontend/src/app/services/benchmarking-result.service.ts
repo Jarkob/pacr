@@ -4,9 +4,7 @@ import { MockService } from './mock.service';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BenchmarkingResult } from '../classes/benchmarking-result';
 import { Observable } from 'rxjs';
-import { Commit } from '../classes/commit';
 
 @Injectable({
   providedIn: 'root'
@@ -43,8 +41,9 @@ export class BenchmarkingResultService {
    * @param repositoryId the id of the repository
    */
   public getForBenchmarkAndRepository(benchmarkId: number, repositoryId: number): Observable<any> {
+    console.log(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
     // tslint:disable-next-line:jsdoc-format
-    return this.http.get<any>(/**this.globalService.url**/'http://localhost:3100/results/benchmark/' + benchmarkId + '/' + repositoryId);
+    return this.http.get<any>(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
   }
 
   /**

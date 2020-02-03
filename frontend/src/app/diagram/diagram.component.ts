@@ -51,7 +51,7 @@ export class DiagramComponent implements OnInit {
   // the lines that show up in the diagram
   lists: any[];
   // if a list should show up in the diagram
-  checked: boolean[];
+  checked: boolean[] = [];
 
 
   @Input() maximized: boolean;
