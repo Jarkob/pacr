@@ -8,7 +8,10 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class AuthenticationInterceptor implements HttpInterceptor {
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    /**
+     * add the jwt to the request
+     */
+    public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         const token = sessionStorage.getItem('token');
 
         if (token) {

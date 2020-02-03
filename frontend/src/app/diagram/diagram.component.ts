@@ -58,7 +58,7 @@ export class DiagramComponent implements OnInit {
   dialogRef: DiagramMaximizedRef;
 
   /**
-   * diagram stuff
+   * diagram configuration
    */
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
   options = {
@@ -233,7 +233,6 @@ export class DiagramComponent implements OnInit {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < chart.config.data.datasets.length; i++) {
           const dataset: any = chart.config.data.datasets[i];
-          // Ignore errors, those properties do exist!!!
           for (let j = 0; j < dataset._meta[2].data.length; j++) {
             const element = dataset._meta[2].data[j];
             if (dataset.code[j].globalError) {
@@ -339,7 +338,7 @@ export class DiagramComponent implements OnInit {
       legend.push({
         repository: dataset.repository,
         branch: dataset.branch,
-        datasetIndex: index // FIXME highly likely to cause issues
+        datasetIndex: index // FIXME: highly likely to cause issues
       });
       index++;
     }
@@ -369,11 +368,6 @@ export class DiagramComponent implements OnInit {
         }
       );
     });
-
-    // if (this.benchmarks.length > 0 && this.selectedBenchmark == null) {
-    //   this.selectedBenchmark = this.benchmarks[0];
-    // }
-    // this.loadBenchmark();
   }
 
 }
