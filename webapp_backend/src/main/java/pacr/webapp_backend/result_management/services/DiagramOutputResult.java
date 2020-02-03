@@ -11,6 +11,8 @@ import java.util.Objects;
  */
 public class DiagramOutputResult {
 
+    private static final String NO_RESULT_ERROR = "no result data for this commit";
+
     private String commitHash;
     private String commitDate;
     private String authorDate;
@@ -53,7 +55,22 @@ public class DiagramOutputResult {
         this.globalError = commitResult.getGlobalError();
     }
 
+    /**
+     * Creates a DiagramOutputResult for a commit that has no results. Adds a global error due to this.
+     * @param commit the commit. Cannot be null.
+     */
+    DiagramOutputResult(@NotNull ICommit commit) {
+        Objects.requireNonNull(commit);
 
+        this.commitHash = commit.getCommitHash();
+        this.commitDate = commit.getCommitDate().toString();
+        this.authorDate = commit.getAuthorDate().toString();
+
+        this.result = null;
+
+        this.parents = commit.getParentHashes().toArray(new String[0]);
+        this.globalError = NO_RESULT_ERROR;
+    }
 
 
     /**

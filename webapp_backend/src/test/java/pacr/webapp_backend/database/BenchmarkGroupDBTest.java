@@ -62,7 +62,7 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
      * Tests whether a group can be properly deleted.
      */
     @Test
-    public void  deleteGroup_groupSaved_shouldRemoveGroup() {
+    public void deleteGroup_groupSaved_shouldRemoveGroup() {
         BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         groupDB.saveBenchmarkGroup(group);
         int id = group.getId();
@@ -72,5 +72,24 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
         BenchmarkGroup deletedGroup = groupDB.getBenchmarkGroup(id);
 
         assertNull(deletedGroup);
+    }
+
+    /**
+     * Tests whether only the standard group is returned by getStandardGroup.
+     */
+    @Test
+    public void getStandardGroup_shouldReturnStandardGroup() {
+        BenchmarkGroup standard = new BenchmarkGroup(GROUP_NAME);
+        standard.setToStandardGroup();
+        BenchmarkGroup normal = new BenchmarkGroup(GROUP_NAME_TWO);
+        BenchmarkGroup normalTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+
+        groupDB.saveBenchmarkGroup(normal);
+        groupDB.saveBenchmarkGroup(standard);
+        groupDB.saveBenchmarkGroup(normalTwo);
+
+        BenchmarkGroup standardOutput = groupDB.getStandardGroup();
+
+        assertEquals(standard.getId(), standardOutput.getId());
     }
 }

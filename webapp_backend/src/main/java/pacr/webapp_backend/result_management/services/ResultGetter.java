@@ -231,39 +231,48 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
     private HashMap<String, DiagramOutputResult> commitsToDiagramResults(Collection<? extends ICommit> commits,
                                                               int benchmarkIdToKeep) {
-        Map<String, ICommit> hashToCommit = getHashToCommitMap(commits);
+        Collection<String> hashes = new LinkedList<>();
+        for (ICommit commit : commits) {
+            hashes.add(commit.getCommitHash());
+        }
 
-        Collection<CommitResult> results = getResultsAndRemoveOtherBenchmarks(hashToCommit.keySet(), benchmarkIdToKeep);
+        Map<String, CommitResult> results = getResultsAndRemoveOtherBenchmarks(hashes, benchmarkIdToKeep);
 
         HashMap<String, DiagramOutputResult> outputResults = new HashMap<>();
 
-        for (CommitResult result : results) {
-            ICommit commitForResult = hashToCommit.get(result.getCommitHash());
-            DiagramOutputResult outputResult = outputBuilder.buildDiagramOutput(commitForResult, result);
-            outputResults.put(result.getCommitHash(), outputResult);
-            for (Map.Entry<String, ResultWithError> entry : outputResult.getResult().entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue().getResult());
-            }
-        }
+        for (ICommit commit : commits) {
+            CommitResult resultForCommit = results.get(commit.getCommitHash());
 
+            DiagramOutputResult outputResult = null;
+
+            if (resultForCommit != null) {
+                outputResult = outputBuilder.buildDiagramOutput(commit, resultForCommit);
+            } else {
+                outputResult = outputBuilder.buildDiagramOutput(commit);
+            }
+
+            outputResults.put(commit.getCommitHash(), outputResult);
+        }
 
         return outputResults;
     }
 
-    private Collection<CommitResult> getResultsAndRemoveOtherBenchmarks(Collection<String> commitHashes,
+    private Map<String, CommitResult> getResultsAndRemoveOtherBenchmarks(Collection<String> commitHashes,
                                                                         int benchmarkIdToKeep) {
         // if any of the hashes in commitHashes have no saved results, they will be omitted in the output
         Collection<CommitResult> results = resultAccess.getResultsFromCommits(commitHashes);
+        Map<String, CommitResult> resultsMap = new HashMap<>();
 
-        // remove unwanted benchmarks if benchmarkIdToKeep is not -1
-        if (benchmarkIdToKeep != KEEP_ALL_BENCHMARK_DATA) {
-            for (CommitResult result : results) {
-                List<CommitResult> resultsWithoutOtherBenchmarks = new LinkedList<>();
+        for (CommitResult result : results) {
+            if (benchmarkIdToKeep == KEEP_ALL_BENCHMARK_DATA) {
+                resultsMap.put(result.getCommitHash(), result);
+            } else {
+                // remove unwanted benchmarks if benchmarkIdToKeep is not -1
                 List<BenchmarkResult> benchmarksToRemove = new LinkedList<>();
 
                 for (BenchmarkResult benchmarkResult : result.getBenchmarksIterable()) {
                     if (benchmarkResult.getBenchmark().getId() == benchmarkIdToKeep) {
-                        resultsWithoutOtherBenchmarks.add(result);
+                        resultsMap.put(result.getCommitHash(), result);
                     } else {
                         benchmarksToRemove.add(benchmarkResult);
                     }
@@ -274,12 +283,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
                     // this does not alter the result in the database
                     result.removeBenchmarkResult(benchmarkToRemove);
                 }
-
-                results = resultsWithoutOtherBenchmarks;
             }
         }
 
-        return results;
+        return resultsMap;
     }
 
     private Map<String, ICommit> getHashToCommitMap(Collection<? extends ICommit> commits) {

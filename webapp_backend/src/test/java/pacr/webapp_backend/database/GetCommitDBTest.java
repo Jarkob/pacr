@@ -9,11 +9,14 @@ import pacr.webapp_backend.shared.ICommit;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class GetCommitDBTest extends GitTrackingDBTest {
 
@@ -56,10 +59,25 @@ public class GetCommitDBTest extends GitTrackingDBTest {
     @Test
     public void getCommitsFromBranch_branchWithCommits_shouldReturnAllCommitsOnBranch() {
 
-        GitBranch branch = new GitBranch(BRANCH_NAME);
-        GitBranch branch2 = new GitBranch(BRANCH_NAME_TWO);
-        repository.addBranchToSelection(branch);
-        repository.addBranchToSelection(branch2);
+        GitBranch branch = null;
+        GitBranch branchTwo = null;
+
+        Set<String> branches = new HashSet<>();
+        branches.add(BRANCH_NAME);
+        branches.add(BRANCH_NAME_TWO);
+
+        repository.setSelectedBranches(branches);
+
+        Collection<GitBranch> trackedBranches = repository.getTrackedBranches();
+        for (GitBranch trackedBranch : trackedBranches) {
+            if (trackedBranch.getName().equals(BRANCH_NAME)) {
+                branch = trackedBranch;
+            } else if (trackedBranch.getName().equals(BRANCH_NAME_TWO)) {
+                branchTwo = trackedBranch;
+            } else {
+                fail("unknown branch");
+            }
+        }
 
         super.gitTrackingDB.addRepository(repository);
 
@@ -67,7 +85,7 @@ public class GetCommitDBTest extends GitTrackingDBTest {
         commit.addBranch(branch);
 
         GitCommit commit2 = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), repository);
-        commit2.addBranch(branch2);
+        commit2.addBranch(branchTwo);
 
         super.gitTrackingDB.updateRepository(repository);
         super.gitTrackingDB.addCommit(commit);
@@ -96,8 +114,11 @@ public class GetCommitDBTest extends GitTrackingDBTest {
      */
     @Test
     public void getCommitsFromBranch_pageable_shouldOnlyReturnOnePage() {
-        GitBranch branch = new GitBranch(BRANCH_NAME);
-        repository.addBranchToSelection(branch);
+        Set<String> branches = new HashSet<>();
+        branches.add(BRANCH_NAME);
+        repository.setSelectedBranches(branches);
+
+        GitBranch branch = repository.getTrackedBranch(BRANCH_NAME);
 
         gitTrackingDB.addRepository(repository);
 
@@ -122,14 +143,14 @@ public class GetCommitDBTest extends GitTrackingDBTest {
 
         boolean firstPageContainsFirstCommit = false;
 
-        LocalDateTime previousTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(PAGE_SIZE);
+        LocalDateTime previousTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(PAGE_SIZE + 1);
 
         for (ICommit commit : commits) {
             if (commit.getCommitHash().equals(HASH_TWO + 0)) {
                 firstPageContainsFirstCommit = true;
             }
             LocalDateTime currentTime = commit.getCommitDate();
-            assertTrue(currentTime.isBefore(previousTime) ||currentTime.equals(previousTime),
+            assertTrue(currentTime.isBefore(previousTime) || currentTime.equals(previousTime),
                     "commit " + commit.getCommitHash() + ": " + currentTime.toString() + " is not before "
                             + previousTime.toString());
             previousTime = currentTime;

@@ -22,15 +22,13 @@ public class BenchmarkInput {
     /**
      * Creates a new BenchmarkInput.
      * @param id the id of the benchmark.
-     * @param originalName the original name.
      * @param customName the custom name.
      * @param description the description.
      * @param groupId the id of the group of the benchmark. -1 indicates this benchmark has no group.
      */
-    public BenchmarkInput(int id, @NotNull String originalName, @NotNull String customName, @NotNull String description,
+    public BenchmarkInput(int id, @NotNull String customName, @NotNull String description,
                           int groupId) {
         this.id = id;
-        this.originalName = originalName;
         this.customName = customName;
         this.description = description;
         this.groupId = groupId;
@@ -45,13 +43,6 @@ public class BenchmarkInput {
      */
     public int getId() {
         return id;
-    }
-
-    /**
-     * @return the original name of the benchmark.
-     */
-    public String getOriginalName() {
-        return originalName;
     }
 
     /**

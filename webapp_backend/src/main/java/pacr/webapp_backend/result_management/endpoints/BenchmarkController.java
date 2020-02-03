@@ -49,8 +49,8 @@ public class BenchmarkController {
     }
 
     /**
-     * Gets all benchmarks of a group. Gets all benchmarks with no group if the given id is -1.
-     * @param groupId the id of the group of -1.
+     * Gets all benchmarks of a group.
+     * @param groupId the id of the group.
      * @return the benchmarks of the group or with no group.
      */
     @GetMapping("/benchmarks/{groupId}")
@@ -164,6 +164,8 @@ public class BenchmarkController {
                 benchmarkManager.deleteGroup(groupId);
             } catch (NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
+            } catch (IllegalAccessException e) {
+                return ResponseEntity.badRequest().body(e.getMessage());
             }
 
             return ResponseEntity.ok().build();

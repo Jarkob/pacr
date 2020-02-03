@@ -46,7 +46,7 @@ public class BenchmarkControllerTest {
 
         benchmarkController = new BenchmarkController(authenticatorMock, benchmarkManagerMock);
 
-        benchmarkInput = new BenchmarkInput(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
+        benchmarkInput = new BenchmarkInput(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
     }
 
     /**
@@ -163,7 +163,7 @@ public class BenchmarkControllerTest {
      * Tests whether deleteGroup deletes it on the benchmark manager and if it authenticates the token correctly.
      */
     @Test
-    void deleteGroup_authenticationSucceeds_shouldCallDeleteGroupInManager() {
+    void deleteGroup_authenticationSucceeds_shouldCallDeleteGroupInManager() throws IllegalAccessException {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
         ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
@@ -177,7 +177,7 @@ public class BenchmarkControllerTest {
      * Tests whether deleteGroup doesn't delete it on the benchmark manager if authentication fails.
      */
     @Test
-    void deleteGroup_authenticationFails_shouldNotDeleteGroup() {
+    void deleteGroup_authenticationFails_shouldNotDeleteGroup() throws IllegalAccessException {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
         ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);

@@ -32,4 +32,9 @@ public interface IBenchmarkGroupAccess {
      * @param group the group.
      */
     void deleteGroup(BenchmarkGroup group);
+
+    /**
+     * @return the standard group.
+     */
+    BenchmarkGroup getStandardGroup();
 }

@@ -9,11 +9,8 @@ import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.BenchmarkGroupDB;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
-import java.util.Collection;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     private BenchmarkDB benchmarkDB;
@@ -29,11 +26,9 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     private static final String PROPERTY_NAME_TWO = "propertyTwo";
     private static final String UNIT = "unit";
     private static final int EXPECTED_NUM_OF_PROPERTIES = 2;
-    private static final int EXPECTED_NUM_OF_GROUPS = 2;
-    private static final int EXPECTED_NUM_OF_GROUPS_AFTER_DEL = 0;
+    private static final int EXPECTED_NUM_OF_GROUPS = 3;
+    private static final int EXPECTED_NUM_OF_GROUPS_AFTER_DEL = 1;
     private static final int NO_ID = 0;
-    private static final int NO_GROUP_ID = -1;
-    private static final int EXPECTED_NUM_OF_BENCHMARKS = 1;
 
     private Benchmark benchmark;
     private BenchmarkGroup group;
@@ -63,6 +58,8 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     public void cleanUp() {
         benchmarkDB.deleteAll();
         groupDB.deleteAll();
+
+        this.benchmarkManager = new BenchmarkManager(benchmarkDB, groupDB);
     }
 
     /**
@@ -166,11 +163,11 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         benchmarkDB.saveBenchmark(benchmark);
 
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME, BENCHMARK_DESCRIPTION,
-                BenchmarkManager.GROUP_ID_NO_GROUP);
+                BenchmarkManager.getStandardGroupId());
 
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
-        assertNull(savedBenchmark.getGroup());
+        assertEquals(BenchmarkManager.getStandardGroupId(), savedBenchmark.getGroup().getId());
     }
 
     /**
@@ -199,7 +196,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
      * Tests whether deleteGroup removes the group from the database.
      */
     @Test
-    public void deleteGroup_shouldRemoveGroupFromDatabase() {
+    public void deleteGroup_shouldRemoveGroupFromDatabase() throws IllegalAccessException {
         benchmarkManager.deleteGroup(group.getId());
 
         assertEquals(EXPECTED_NUM_OF_GROUPS_AFTER_DEL, groupDB.count());
@@ -209,27 +206,13 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
      * Tests whether deleteGroup also removes the group from an associated benchmark.
      */
     @Test
-    public void deleteGroup_benchmarkHasGroup_shouldRemoveGroupFromBenchmark() {
+    public void deleteGroup_benchmarkHasGroup_shouldRemoveGroupFromBenchmark() throws IllegalAccessException {
         benchmarkDB.saveBenchmark(benchmark);
 
         benchmarkManager.deleteGroup(group.getId());
 
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
-        assertNull(savedBenchmark.getGroup());
-    }
-
-    /**
-     * Tests whether getBenchmarksByGroup gets benchmarks with no group if given -1.
-     */
-    @Test
-    public void getBenchmarksByGroup_parameterMinusOne_shouldReturnBenchmarksWithNoGroup() {
-        benchmark.setGroup(null);
-        benchmarkDB.saveBenchmark(benchmark);
-
-        Collection<Benchmark> savedBenchmarksWithNoGroup = benchmarkManager.getBenchmarksByGroup(NO_GROUP_ID);
-
-        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, savedBenchmarksWithNoGroup.size());
-        assertEquals(BENCHMARK_NAME, savedBenchmarksWithNoGroup.iterator().next().getOriginalName());
+        assertEquals(BenchmarkManager.getStandardGroupId(), savedBenchmark.getGroup().getId());
     }
 }

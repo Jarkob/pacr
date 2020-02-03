@@ -12,9 +12,9 @@ import org.springframework.util.StringUtils;
 @Component
 public class BenchmarkManager {
     /**
-     * The id that needs to be passed in order to communicate that a benchmark has no group.
+     * The BenchmarkGroup object that represents no group.
      */
-    public static final int GROUP_ID_NO_GROUP = -1;
+    private static BenchmarkGroup standardGroup;
 
     private IBenchmarkAccess benchmarkAccess;
     private IBenchmarkGroupAccess groupAccess;
@@ -27,6 +27,20 @@ public class BenchmarkManager {
     public BenchmarkManager(IBenchmarkAccess benchmarkAccess, IBenchmarkGroupAccess groupAccess) {
         this.benchmarkAccess = benchmarkAccess;
         this.groupAccess = groupAccess;
+
+        standardGroup = groupAccess.getStandardGroup();
+        if (standardGroup == null) {
+            standardGroup = new BenchmarkGroup(BenchmarkGroup.STANDARD_GROUP_NAME);
+            standardGroup.setToStandardGroup();
+            groupAccess.saveBenchmarkGroup(standardGroup);
+        }
+    }
+
+    /**
+     * @return the id of the standard group.
+     */
+    static int getStandardGroupId() {
+        return standardGroup.getId();
     }
 
     /**
@@ -37,15 +51,12 @@ public class BenchmarkManager {
     }
 
     /**
-     * Gets all benchmarks of a group. Gets all benchmarks with no group if the given id is -1.
+     * Gets all benchmarks of a group.
      * @param groupId the id of the group.
-     * @return the benchmarks of the group or of no group.
+     * @return the benchmarks of the group.
      */
     public Collection<Benchmark> getBenchmarksByGroup(int groupId) {
-        BenchmarkGroup group = null;
-        if (groupId != GROUP_ID_NO_GROUP) {
-            group = groupAccess.getBenchmarkGroup(groupId);
-        }
+        BenchmarkGroup group = groupAccess.getBenchmarkGroup(groupId);
 
         return benchmarkAccess.getBenchmarksOfGroup(group);
     }
@@ -60,12 +71,17 @@ public class BenchmarkManager {
     /**
      * Updates the given benchmark in the database (or creates it if it hasn't been saved yet).
      * Also updates associated benchmark properties but not associated groups.
-     * Enters Benchmark.class monitor
+     * If the benchmark has no group (null), it is added to the standard group.
+     * Enters Benchmark.class monitor.
      * @param benchmark the benchmark. Throws IllegalArgumentException if this is null.
      */
     void createOrUpdateBenchmark(@NotNull Benchmark benchmark) {
         if (benchmark == null) {
             throw new IllegalArgumentException("benchmark cannot be null");
+        }
+
+        if (benchmark.getGroup() == null) {
+            benchmark.setGroup(standardGroup);
         }
 
         synchronized (Benchmark.class) {
@@ -93,7 +109,7 @@ public class BenchmarkManager {
      * @param benchmarkID the id of the benchmark.
      * @param name the new custom name. Throws IllegalArgumentException if it is null, empty or blank.
      * @param description The new description. Throws IllegalArgumentException if it is null.
-     * @param groupID the id of the new group. -1 causes this benchmark not to be associated with any group.
+     * @param groupID the id of the new group.
      */
     public void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID) {
         if (!StringUtils.hasText(name)) {
@@ -109,20 +125,12 @@ public class BenchmarkManager {
                 throw new NoSuchElementException("no benchmark with id " + benchmarkID);
             }
 
-            BenchmarkGroup group = null;
-
-            // get new group from database unless groupID is set to GROUP_ID_NO_GROUP (in that case the group of the
-            // benchmark will be set to null)
-            if (groupID != GROUP_ID_NO_GROUP) {
-                group = this.groupAccess.getBenchmarkGroup(groupID);
-                if (group == null) {
-                    throw new NoSuchElementException("no group with id " + groupID);
-                }
+            BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(groupID);
+            if (group == null) {
+                throw new NoSuchElementException("no group with id " + groupID);
             }
 
-            // add benchmark to new group (or sets group to null if groupID was set to GROUP_ID_NO_GROUP)
             benchmark.setGroup(group);
-
             benchmark.setCustomName(name);
             benchmark.setDescription(description);
 
@@ -175,8 +183,13 @@ public class BenchmarkManager {
      * Deletes the group. Benchmarks that are still associated with this group now belong to no group.
      * Enters Benchmark.class monitor.
      * @param id the id of the group.
+     * @throws IllegalAccessException if it is attempted to delete the standard group.
      */
-    public void deleteGroup(int id) {
+    public void deleteGroup(int id) throws IllegalAccessException {
+        if (standardGroup.getId() == id) {
+            throw new IllegalAccessException("the standard group cannot be deleted");
+        }
+
         synchronized (Benchmark.class) {
             BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
 
@@ -186,7 +199,7 @@ public class BenchmarkManager {
 
             for (Benchmark benchmark : this.getAllBenchmarks()) {
                 if (group.equals(benchmark.getGroup())) {
-                    benchmark.setGroup(null);
+                    benchmark.setGroup(standardGroup);
                     this.benchmarkAccess.saveBenchmark(benchmark);
                 }
             }

@@ -3,6 +3,7 @@ package pacr.webapp_backend.result_management.services;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -16,9 +17,16 @@ import java.util.Objects;
 @Table(name = "benchmark_group")
 public class BenchmarkGroup {
 
+    /**
+     * the name of the standard group.
+     */
+    public static final String STANDARD_GROUP_NAME = "Other";
+
     @Id
     @GeneratedValue
     private int id;
+
+    private boolean standardGroup;
 
     @Column(length = 500)
     private String name;
@@ -46,6 +54,13 @@ public class BenchmarkGroup {
      */
     public int getId() {
         return id;
+    }
+
+    /**
+     * Sets this to the standard group.
+     */
+    public void setToStandardGroup() {
+        this.standardGroup = true;
     }
 
     /**

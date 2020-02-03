@@ -137,11 +137,11 @@ public class Benchmark {
     }
 
     /**
-     * Sets the group that this benchmark belongs to to a new group. The new group may be null if this benchmark
-     * belongs to no group.
-     * @param group the new group
+     * Sets the group that this benchmark belongs to to a new group.
+     * @param group the new group. Cannot be null.
      */
-    public void setGroup(BenchmarkGroup group) {
+    public void setGroup(@NotNull BenchmarkGroup group) {
+        Objects.requireNonNull(group);
         this.group = group;
     }
 

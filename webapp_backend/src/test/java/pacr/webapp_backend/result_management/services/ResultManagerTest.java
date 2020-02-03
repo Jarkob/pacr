@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
+import pacr.webapp_backend.database.BenchmarkGroupDB;
 import pacr.webapp_backend.database.RepositoryDB;
 import pacr.webapp_backend.database.ResultDB;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
@@ -38,6 +39,8 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     private IGitTrackingAccess gitTrackingAccess;
     private RepositoryDB repositoryDB;
     private BenchmarkDB benchmarkDB;
+    private BenchmarkGroupDB groupDB;
+    private BenchmarkManager benchmarkManager;
 
     private GitRepository repository;
     private GitBranch branch;
@@ -45,12 +48,14 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
 
     @Autowired
     public ResultManagerTest(ResultManager resultManager, ResultDB resultDB, IGitTrackingAccess gitTrackingAccess,
-                             RepositoryDB repositoryDB, BenchmarkDB benchmarkDB) {
+                             RepositoryDB repositoryDB, BenchmarkDB benchmarkDB, BenchmarkGroupDB groupDB) {
         this.resultManager = resultManager;
         this.resultDB = resultDB;
         this.gitTrackingAccess = gitTrackingAccess;
         this.repositoryDB = repositoryDB;
         this.benchmarkDB = benchmarkDB;
+        this.groupDB = groupDB;
+        benchmarkManager = new BenchmarkManager(benchmarkDB, groupDB);
     }
 
 
@@ -73,11 +78,12 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
 
     @AfterEach
     public void cleanUp() throws NotFoundException {
-
         gitTrackingAccess.removeRepository(repository.getId());
         repositoryDB.deleteAll();
         resultDB.deleteAll();
         benchmarkDB.deleteAll();
+        groupDB.deleteAll();
+        benchmarkManager = new BenchmarkManager(benchmarkDB, groupDB);
     }
 
     /**

@@ -37,4 +37,11 @@ public interface BenchmarkGroupDB extends CrudRepository<BenchmarkGroup, Integer
     default void deleteGroup(BenchmarkGroup group) {
         this.delete(group);
     }
+
+    @Override
+    default BenchmarkGroup getStandardGroup() {
+        return findBenchmarkGroupByStandardGroup(true);
+    }
+
+    BenchmarkGroup findBenchmarkGroupByStandardGroup(boolean standardGroup);
 }

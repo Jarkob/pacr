@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import jdk.jshell.Diag;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.ICommit;
 
@@ -57,6 +58,17 @@ public class OutputBuilder {
         Objects.requireNonNull(result);
 
         return new DiagramOutputResult(result, commit);
+    }
+
+    /**
+     * Creates DiagramOutputResult based on a commit that has no result.
+     * @param commit the commit. Cannot be null.
+     * @return a {@link DiagramOutputResult} copied from the commit and with no result data.
+     */
+    DiagramOutputResult buildDiagramOutput(@NotNull ICommit commit) {
+        Objects.requireNonNull(commit);
+
+        return new DiagramOutputResult(commit);
     }
 
     private List<OutputBenchmark> buildOutputBenchmarks(CommitResult result) {

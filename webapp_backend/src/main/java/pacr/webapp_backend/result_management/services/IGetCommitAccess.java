@@ -27,10 +27,10 @@ public interface IGetCommitAccess {
     Collection<? extends ICommit> getCommitsFromBranch(int id, @NotNull String branch);
 
     /**
-     * Gets a subset of the saved commits from a branch of a repository. Returns null if no such repository or branch
+     * Gets a subset of the saved commits from a branch of a repository. Returns {@code null} if no such repository or branch
      * exists.
      * @param repositoryId the repository id.
-     * @param branchName the branch name. Cannot be null.
+     * @param branchName the branch name. Cannot be {@code null}.
      * @param page the requested page number.
      * @param size the size of the page.
      * @return a page with the requested commits.
