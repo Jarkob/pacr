@@ -34,7 +34,7 @@ public class SimpleCommit implements ICommit {
 
     @Override
     public LocalDateTime getCommitDate() {
-        return null;
+        return LocalDateTime.now();
     }
 
     @Override
