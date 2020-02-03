@@ -189,7 +189,7 @@ export class AdminBenchmarksComponent implements OnInit {
    * edit a single benchmark
    * @param benchmark the benchmark to be edited
    */
-  public editBenchmark(benchmark: Benchmark) {
+  public editBenchmark(editBenchmarkFormValue: any) {
     this.benchmarkService.updateBenchmark({
       id: this.selectedBenchmark.id,
       customName: editBenchmarkFormValue.name,
@@ -210,7 +210,7 @@ export class AdminBenchmarksComponent implements OnInit {
   /**
    * add a group of benchmarks
    */
-  public addBenchmarkGroup(group: Group) {
+  public addBenchmarkGroup(form: any) {
     this.benchmarkService.addGroup(form.name).subscribe(
       data => {
         this.openSnackBar(this.strings.addSuccess);
