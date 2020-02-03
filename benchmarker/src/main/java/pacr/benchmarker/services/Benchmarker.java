@@ -31,11 +31,7 @@ public class Benchmarker {
 
         LOGGER.info("Executing job at repository {} and commit {}.", repository, commitHash);
 
-        jobExecutor.init(repository, commitHash);
-
-        Thread executionThread = new Thread(jobExecutor);
-
-        executionThread.start();
+        jobExecutor.executeJob(repository, commitHash);
     }
 
     /**

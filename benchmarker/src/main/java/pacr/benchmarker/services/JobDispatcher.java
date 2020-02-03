@@ -31,23 +31,6 @@ public class JobDispatcher {
     public JobDispatcher(@Value("${runnerFile}") String runnerFile, @Value("${runnerDir}") String runnerDir) {
         this.runnerDir = System.getProperty("user.dir") + "/" + runnerDir;
         this.runnerFile = runnerFile;
-
-        this.runnerDir = sanitizePathToLinux(this.runnerDir);
-    }
-
-    private String sanitizePathToLinux(String windowsPath) {
-        String linuxPath = windowsPath;
-
-        linuxPath = linuxPath.replace("\\", "/");
-
-        int i = linuxPath.indexOf(":");
-        String partition = linuxPath.substring(0, i + 1);
-        String p = linuxPath.substring(0, i).toLowerCase();
-
-        linuxPath = linuxPath.replace(partition, "");
-        linuxPath = "/mnt/" + p + linuxPath;
-
-        return linuxPath;
     }
 
     /**
@@ -60,7 +43,8 @@ public class JobDispatcher {
 
         Process process;
         try {
-            process = new ProcessBuilder("CMD", "/C", "wsl cd " + runnerDir + " ; ./bench " + repositoryDir)
+            process = new ProcessBuilder("./" + runnerFile, repositoryDir)
+                    .directory(new File(runnerDir))
                     .start();
         } catch (IOException e) {
             e.printStackTrace();

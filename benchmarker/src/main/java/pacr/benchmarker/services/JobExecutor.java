@@ -4,20 +4,20 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pacr.benchmarker.services.git.GitHandler;
 
+import javax.validation.constraints.NotNull;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * Executes jobs.
  */
 @Component
-public class JobExecutor implements Runnable {
+public class JobExecutor {
 
     private IJobResultSender resultSender;
     private GitHandler gitHandler;
     private JobDispatcher jobDispatcher;
-    private String repository;
-    private String commitHash;
     private String relativePathToWorkingDir;
 
     /**
@@ -26,22 +26,16 @@ public class JobExecutor implements Runnable {
      * @param jobDispatcher dispatches the jobs.
      * @param relativePathToWorkingDir is the relative path from the runner script to the repository working dir.
      */
-    public JobExecutor(GitHandler gitHandler, JobDispatcher jobDispatcher,
-                       @Value("${relPathToWorkingDir}") String relativePathToWorkingDir) {
+    public JobExecutor(@NotNull GitHandler gitHandler, @NotNull JobDispatcher jobDispatcher,
+                       @NotNull @Value("${relPathToWorkingDir}") String relativePathToWorkingDir) {
+        Objects.requireNonNull(gitHandler);
+        Objects.requireNonNull(jobDispatcher);
+        Objects.requireNonNull(relativePathToWorkingDir);
         this.gitHandler = gitHandler;
         this.jobDispatcher = jobDispatcher;
         this.relativePathToWorkingDir = relativePathToWorkingDir;
     }
 
-    /**
-     * Initializes the JobExecutor.
-     * @param repository is the repository pull URL.
-     * @param commitHash is the commit hash.
-     */
-    public void init(String repository, String commitHash) {
-        this.repository = repository;
-        this.commitHash = commitHash;
-    }
 
     /**
      * @param resultSender the result sender being set.
@@ -50,13 +44,17 @@ public class JobExecutor implements Runnable {
         this.resultSender = resultSender;
     }
 
-    @Override
-    public void run() {
+    /**
+     * Executes a job.
+     * @param repositoryURL is the repository URL.
+     * @param commitHash is the commit hash.
+     */
+    public void executeJob(String repositoryURL, String commitHash) {
         Instant start = Instant.now();
 
-        String path = gitHandler.setupRepositoryForBenchmark(repository, commitHash);
+        String path = gitHandler.setupRepositoryForBenchmark(repositoryURL, commitHash);
 
-        JobResult result = new JobResult(repository, commitHash);
+        JobResult result = new JobResult(repositoryURL, commitHash);
 
         BenchmarkingResult benchmarkingResult;
         if (path == null) { // cloning didn't work

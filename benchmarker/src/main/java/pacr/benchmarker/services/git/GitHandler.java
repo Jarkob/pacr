@@ -95,10 +95,11 @@ public class GitHandler {
                 return null;
             }
         } else {
-            Repository repository = null;
+            Repository repository;
             try {
                 repository = getRepository(directory.getAbsolutePath());
             } catch (IOException e) {
+                LOGGER.error("Could not get repository.");
                 return null;
             }
 

@@ -7,6 +7,9 @@ import oshi.hardware.HardwareAbstractionLayer;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Represents the system environment of the benchmarker.
@@ -56,9 +59,8 @@ public class SystemEnvironment {
         ramMemory = Math.round(hardwareAbstractionLayer.getMemory().getTotal() / Math.pow(2, 30)); // in GiB
         processor = hardwareAbstractionLayer.getProcessor().getProcessorIdentifier().getName();
         cores = hardwareAbstractionLayer.getProcessor().getLogicalProcessorCount();
-
-        kernel = System.getenv("PROCESSOR_ARCHITECTURE");
-        os = System.getProperty("os.name");
+        os = systemInfo.getOperatingSystem().getFamily();
+        kernel = System.getProperty("os.arch");
     }
 
     /**

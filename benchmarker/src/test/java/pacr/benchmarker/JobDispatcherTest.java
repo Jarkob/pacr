@@ -1,12 +1,13 @@
 package pacr.benchmarker;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pacr.benchmarker.services.BenchmarkingResult;
 import pacr.benchmarker.services.JobDispatcher;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Tests for JobDispatcher.
@@ -19,18 +20,32 @@ public class JobDispatcherTest {
     private static final String RELATIVE_TEST_REPO_PATH = "repositories/pacr-test-repository";
 
     private JobDispatcher jobDispatcher;
+    private static String runnerScript;
+
+    @BeforeAll
+    public static void getOS() {
+        String os = System.getProperty("os.name").toLowerCase();
+
+        if (os.contains("win")) {
+            runnerScript = "test.bat";
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            runnerScript = "test.sh";
+        }
+    }
 
     @BeforeEach
     public void setUp() {
-        jobDispatcher = new JobDispatcher("test.bat", RUNNER_DIR);
+        jobDispatcher = new JobDispatcher(runnerScript, RUNNER_DIR);
     }
 
-    // TODO: Pavel mach mal richtig!!
-    @Test @Disabled
+    @Test
     public void testRunner() {
         BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
 
-        assertNull(result.getGlobalError());
+        assertEquals("", result.getGlobalError());
+        assertEquals(2, result.getBenchmarks().size());
+        assertTrue(result.getBenchmarks().containsKey("TheBenchmark"));
+        assertTrue(result.getBenchmarks().containsKey("TheOtherBenchmark"));
     }
 
     @Test
