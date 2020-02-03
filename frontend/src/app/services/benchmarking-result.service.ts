@@ -33,9 +33,8 @@ export class BenchmarkingResultService {
    * @param repository the id of the repository
    * @param branch the branch
    */
-  public getBenchmarkingResults(benchmark: number, repositoryId: number, branch: string): Observable<DiagramOutputResult[]> {
-    return this.http.get<DiagramOutputResult[]>(this.globalService.url + '/results/' + benchmark + '/' + repositoryId + '/' + branch);
-    // return this.mockService.getBenchmarkingResults();
+  public getBenchmarkingResults(benchmark: number, repositoryId: number, branch: string): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/results/' + benchmark + '/' + repositoryId + '/' + branch);
   }
 
   /**
