@@ -40,7 +40,7 @@ export class BenchmarkerListComponent implements OnInit {
     );
 
     this.benchmarkerSubscription = interval(this.benchmarkerUpdateInterval * 1000).subscribe(
-      val => {
+      () => {
         this.benchmarkerService.getOnlineBenchmarkers().subscribe(
           data => {
             this.benchmarkers = data;

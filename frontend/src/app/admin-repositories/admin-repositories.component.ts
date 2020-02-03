@@ -165,6 +165,9 @@ export class AdminRepositoriesComponent implements OnInit {
     );
   }
 
+  /**
+   * add a new repository
+   */
   public addRepository = (addRepositoryFormValue) => {
     if (this.addRepositoryForm.valid) {
       this.repositoryService.addRepository({
@@ -191,6 +194,9 @@ export class AdminRepositoriesComponent implements OnInit {
     }
   }
 
+  /**
+   * update the repository, which is currently selected for editing
+   */
   public editRepository = (editRepositoryFormValue) => {
     if (this.editRepositoryForm.valid) {
       this.repositoryService.updateRepository({
@@ -217,6 +223,9 @@ export class AdminRepositoriesComponent implements OnInit {
     }
   }
 
+  /**
+   * delete the selected repository
+   */
   public deleteRepository(repository: Repository) {
     this.repositoryService.removeRepository(repository.id).subscribe(
       data => {
@@ -230,6 +239,10 @@ export class AdminRepositoriesComponent implements OnInit {
     );
   }
 
+  /**
+   * select a repository
+   * @param repository the repository
+   */
   public selectRepository(repository: Repository) {
     this.selectedRepository = repository;
     this.allEditBranches = [];
@@ -266,6 +279,9 @@ export class AdminRepositoriesComponent implements OnInit {
     this.addTrackedBranchesControl.setValue(this.invertList(currentSelectedBranches, this.allAddBranches));
   }
 
+  /**
+   * save the new pull interval
+   */
   public savePullInterval() {
     this.repositoryService.setPullInterval(this.pullInterval).subscribe();
   }

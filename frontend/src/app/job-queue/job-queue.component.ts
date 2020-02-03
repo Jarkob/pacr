@@ -44,6 +44,9 @@ export class JobQueueComponent implements OnInit {
     );
   }
 
+  /**
+   * check if the user is logged in
+   */
   public isLoggedIn(): boolean {
     return this.authenticationService.isLoggedIn();
   }
@@ -75,6 +78,10 @@ export class JobQueueComponent implements OnInit {
     return event;
   }
 
+  /**
+   * prioritize a selected job
+   * @param job the job to be prioritized
+   */
   public prioritize(job: Job) {
     this.schedulerService.prioritize({jobID: job.jobID, groupTitle: job.jobGroupTitle}).subscribe(
       data => {

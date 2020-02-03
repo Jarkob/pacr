@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
   }
 
   /**
-   * login a user
+   * log a user in
    */
   public login(): void {
     this.loading = true;

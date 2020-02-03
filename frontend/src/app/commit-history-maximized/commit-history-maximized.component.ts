@@ -35,6 +35,10 @@ export class CommitHistoryMaximizedComponent implements OnInit {
     );
   }
 
+  /**
+   * select a commit
+   * @param commitHash the hash of the commit
+   */
   @HostListener('document:keydown', ['$event']) handleKeydown(event: KeyboardEvent) {
     if (event.keyCode === ESCAPE_KEY) {
       this.dialogRef.close();
@@ -46,6 +50,9 @@ export class CommitHistoryMaximizedComponent implements OnInit {
     this.close();
   }
 
+  /**
+   * close the maximized component
+   */
   public close() {
     this.dialogRef.close();
   }

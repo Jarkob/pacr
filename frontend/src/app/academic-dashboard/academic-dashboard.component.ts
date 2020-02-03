@@ -19,6 +19,10 @@ export class AcademicDashboardComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * open the detail view of a selected commit
+   * @param hash the hash of the selected commit
+   */
   public openCommitDetailView(hash: string) {
     const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
       commitHash: hash

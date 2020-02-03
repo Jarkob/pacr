@@ -20,12 +20,13 @@ export class DiagramMaximizedComponent implements OnInit {
   ngOnInit() {
   }
 
-  close() {
+  /**
+   * close the maximized view
+   */
+  public close() {
     this.dialogRef.close();
   }
 
-  // FIXME @Daniel: Directive DetailViewMaximizedComponent, Property 'handleKeydown' is private
-  // and only accessible within class 'DetailViewMaximizedComponent'.
   @HostListener('document:keydown', ['$event']) handleKeydown(event: KeyboardEvent) {
     if (event.keyCode === ESCAPE_KEY) {
       this.dialogRef.close();

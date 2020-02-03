@@ -1,6 +1,4 @@
-import { ResultInterpretation } from './../classes/result-interpretation';
 import { BenchmarkGroup } from './../classes/benchmark-group';
-import { BenchmarkingResult } from './../classes/benchmarking-result';
 import { BenchmarkService } from './../services/benchmark.service';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
@@ -244,7 +242,10 @@ export class DetailViewMaximizedComponent implements OnInit {
     return 'Undefined Group';
   }
 
-  close() {
+  /**
+   * close the maximized view
+   */
+  public close() {
     this.dialogRef.close();
   }
 }

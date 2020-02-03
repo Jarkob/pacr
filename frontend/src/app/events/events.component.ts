@@ -47,7 +47,7 @@ export class EventsComponent implements OnInit {
     );
 
     this.eventSubscription = interval(this.eventUpdateInterval * 1000).subscribe(
-      val => {
+      () => {
         this.eventService.getBenchmarkingEvents().subscribe(
           data => {
             this.benchmarkingEvents = data;

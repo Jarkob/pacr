@@ -49,10 +49,19 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * compare 2 benchmark properties
+   * @param o1 the first property
+   * @param o2 the second property
+   */
   public compareBenchmarkProperty(o1: any, o2: any): boolean {
     return o1[0].id === o2[0].id && o1[1].name === o2[1].name;
   }
 
+  /**
+   * select a commit for the detail view
+   * @param commitHash the hash of the commit
+   */
   public selectCommit(commitHash: string): void {
     if (commitHash === null || commitHash === '') {
       return;
@@ -77,8 +86,10 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     );
   }
 
-  // https://blog.thoughtram.io/angular/2017/11/20/custom-overlays-with-angulars-cdk.html
-  // https://blog.thoughtram.io/angular/2017/11/27/custom-overlays-with-angulars-cdk-part-two.html
+  /**
+   * maximize the detail view
+   * https://blog.thoughtram.io/angular/2017/11/20/custom-overlays-with-angulars-cdk.html
+   */
   public maximizeDetailView() {
     const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
       commitHash: this.benchmarkingResult.commitHash

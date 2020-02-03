@@ -26,6 +26,10 @@ export class CommitHistoryComponent implements OnInit {
   commits: CommitBenchmarkingResult[];
 
 
+  /**
+   * select a commit
+   * @param commitHash the hash of the commit to be selected
+   */
   public selectCommit(commitHash: string) {
     this.commitSelectedEvent.emit(commitHash);
   }
@@ -43,8 +47,10 @@ export class CommitHistoryComponent implements OnInit {
     );
   }
 
+  /**
+   * maximize the commit history component
+   */
   public maximizeCommitHistory() {
     const dialogRef: CommitHistoryMaximizedRef = this.previewDialog.open(this);
   }
-
 }

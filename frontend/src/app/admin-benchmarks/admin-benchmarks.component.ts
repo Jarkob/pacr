@@ -103,7 +103,7 @@ export class AdminBenchmarksComponent implements OnInit {
     }
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  public drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -143,7 +143,11 @@ export class AdminBenchmarksComponent implements OnInit {
     group.expanded = !group.expanded;
   }
 
-  selectBenchmark(benchmark: Benchmark) {
+  /**
+   * select a benchmark
+   * @param benchmark the benchmark
+   */
+  public selectBenchmark(benchmark: Benchmark) {
     this.selectedBenchmark = benchmark;
     this.loadBenchmarkData(benchmark);
   }
@@ -160,7 +164,11 @@ export class AdminBenchmarksComponent implements OnInit {
     this.loadBenchmarkData(this.selectedBenchmark);
   }
 
-  selectBenchmarkGroup(group: Group) {
+  /**
+   * select a group of benchmarks
+   * @param group the group of benchmarks
+   */
+  public selectBenchmarkGroup(group: Group) {
     this.selectedBenchmarkGroup = group;
     this.loadBenchmarkGroupData(this.selectedBenchmarkGroup);
   }
@@ -177,7 +185,11 @@ export class AdminBenchmarksComponent implements OnInit {
     this.editGroupNameControl.setValue(benchmarkGroup.name);
   }
 
-  editBenchmark(editBenchmarkFormValue: any) {
+  /**
+   * edit a single benchmark
+   * @param benchmark the benchmark to be edited
+   */
+  public editBenchmark(benchmark: Benchmark) {
     this.benchmarkService.updateBenchmark({
       id: this.selectedBenchmark.id,
       customName: editBenchmarkFormValue.name,
@@ -195,7 +207,10 @@ export class AdminBenchmarksComponent implements OnInit {
     );
   }
 
-  addBenchmarkGroup(form: any) {
+  /**
+   * add a group of benchmarks
+   */
+  public addBenchmarkGroup(group: Group) {
     this.benchmarkService.addGroup(form.name).subscribe(
       data => {
         this.openSnackBar(this.strings.addSuccess);
@@ -208,7 +223,10 @@ export class AdminBenchmarksComponent implements OnInit {
     );
   }
 
-  editBenchmarkGroup(editBenchmarkGroupFormValue: any) {
+  /**
+   * edit a group of benchmarks
+   */
+  public editBenchmarkGroup(editBenchmarkGroupFormValue: any) {
     this.benchmarkService.updateGroup({
       id: this.selectedBenchmarkGroup.id,
       name: editBenchmarkGroupFormValue.name
@@ -225,7 +243,10 @@ export class AdminBenchmarksComponent implements OnInit {
     );
   }
 
-  deleteBenchmarkGroup(id: number) {
+  /**
+   * delete a group of benchmarks
+   */
+  public deleteBenchmarkGroup(id: number) {
     this.benchmarkService.deleteGroup(id).subscribe(
       data => {
         this.openSnackBar(this.strings.deleteSuccess);
