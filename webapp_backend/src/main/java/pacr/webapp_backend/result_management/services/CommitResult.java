@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import java.util.Objects;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
@@ -38,6 +39,7 @@ public class CommitResult implements IBenchmarkingResult {
     private Set<BenchmarkResult> benchmarkResults;
 
     private LocalDateTime entryDate;
+    private LocalDateTime commitDate;
     private String comparisonCommitHash;
 
     /**
@@ -53,14 +55,16 @@ public class CommitResult implements IBenchmarkingResult {
      * @param result the IBenchmarkingResult.
      * @param benchmarkResults the measured data for each benchmark. May be empty.
      * @param repositoryId id of the repository of the commit.
+     * @param commitDate the commit date of the commit. Cannot be null.
      * @param comparisonCommitHash the hash of the commit this result was compared to. May be null (in this case it is
      *                             implied that no comparison has taken place).
      */
     public CommitResult(@NotNull IBenchmarkingResult result, @NotNull Set<BenchmarkResult> benchmarkResults,
-                        int repositoryId, @Nullable String comparisonCommitHash) {
-        if (result == null || benchmarkResults == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
+                        int repositoryId, @NotNull LocalDateTime commitDate, @Nullable String comparisonCommitHash) {
+        Objects.requireNonNull(result);
+        Objects.requireNonNull(benchmarkResults);
+        Objects.requireNonNull(commitDate);
+
         if (result.getGlobalError() != null) {
             this.error = true;
             this.errorMessage = result.getGlobalError();
@@ -73,6 +77,7 @@ public class CommitResult implements IBenchmarkingResult {
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
+        this.commitDate = commitDate;
         this.comparisonCommitHash = comparisonCommitHash;
     }
 

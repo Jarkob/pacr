@@ -3,6 +3,8 @@ package pacr.webapp_backend.result_management.services;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 /**
  * Saves result related objects in the database and retrieves them.
@@ -21,6 +23,8 @@ public interface IResultAccess {
      * @return the newest saved commit.
      */
     CommitResult getNewestResult(int repositoryId);
+
+    Page<CommitResult> getFullRepositoryResults(int repositoryId, Pageable pageable);
 
     /**
      * Gets all saved results for the given commit hashes.

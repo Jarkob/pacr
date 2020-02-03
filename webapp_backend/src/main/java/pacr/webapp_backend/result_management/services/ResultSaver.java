@@ -86,7 +86,7 @@ abstract class ResultSaver {
         }
 
         CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID(),
-                comparisonCommitHash);
+                commit.getCommitDate(), comparisonCommitHash);
 
         synchronized (CommitResult.class) {
             resultAccess.saveResult(resultToSave);

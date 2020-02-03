@@ -1,5 +1,8 @@
 package pacr.webapp_backend.result_management.endpoints;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -120,6 +123,12 @@ public class ResultController {
         Objects.requireNonNull(branch);
 
         return resultGetter.getBenchmarkResults(benchmarkId, repositoryId, branch);
+    }
+
+    @GetMapping("/results/pageable/repository/{repositoryId}")
+    public Page<OutputBenchmarkingResult> getResultsForRepository(@PathVariable int repositoryId,
+                                              @PageableDefault(size = 10, page = 0, sort = {"commitDate"}) Pageable pageable) {
+        return resultGetter.getFullRepositoryResults(repositoryId, pageable);
     }
 
     /**

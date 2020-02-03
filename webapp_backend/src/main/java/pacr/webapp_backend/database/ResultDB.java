@@ -1,6 +1,9 @@
 package pacr.webapp_backend.database;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.result_management.services.CommitResult;
 import pacr.webapp_backend.result_management.services.IResultAccess;
@@ -14,7 +17,7 @@ import java.util.Objects;
  * This is a default implementation of the IResultAccess interface.
  */
 @Component
-public interface ResultDB extends CrudRepository<CommitResult, String>, IResultAccess {
+public interface ResultDB extends PagingAndSortingRepository<CommitResult, String>, IResultAccess {
     @Override
     default List<CommitResult> getNewestResults() {
         return this.findFirst100ByOrderByEntryDateDesc();
@@ -61,6 +64,13 @@ public interface ResultDB extends CrudRepository<CommitResult, String>, IResultA
 
         return results;
     }
+
+    @Override
+    default Page<CommitResult> getFullRepositoryResults(int repositoryId, Pageable pageable) {
+        return findAllByRepositoryId(repositoryId, pageable);
+    }
+
+    Page<CommitResult> findAllByRepositoryId(int repositoryId, Pageable pageable);
 
     /**
      * This is a method that is automatically created by jpa based on its method name.

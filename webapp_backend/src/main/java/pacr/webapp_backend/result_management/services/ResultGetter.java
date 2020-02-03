@@ -1,5 +1,8 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
@@ -102,6 +105,20 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         }
 
         return outputBuilder.buildDetailOutput(commit, result);
+    }
+
+    public Page<OutputBenchmarkingResult> getFullRepositoryResults(int repositoryId, Pageable pageable) {
+        Page<CommitResult> results = resultAccess.getFullRepositoryResults(repositoryId, pageable);
+
+        List<OutputBenchmarkingResult> outputBenchmarkingResults = new LinkedList<>();
+
+        for (CommitResult result : results) {
+            ICommit commit = commitAccess.getCommit(result.getCommitHash());
+            OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commit, result);
+            outputBenchmarkingResults.add(outputResult);
+        }
+
+        return new PageImpl<>(outputBenchmarkingResults, pageable, results.getTotalElements());
     }
 
     /**
