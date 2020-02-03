@@ -25,12 +25,15 @@ PACR analyzes commits in repositories.
 2. Install the [angular-cli](https://cli.angular.io)
 2. Clone project
 3. Open terminal
-4. Navigate to frontend folder
+4. Navigate to `frontend` directory
 5. Run `npm install`
 6. Run `ng serve`
 7. Open `localhost:4200` in browser
-8. ?
-9. Profit
+ 
+Optional: (currently required for diagrams)
+1. Clone prototypes
+2. Navigate to directory `rest`
+3. Run `node main.js` in terminal 
 
 ### Benchmarker
 
@@ -51,6 +54,6 @@ TODO
 ### Frontend
 
 1. Follow steps 1-6 from setup frontend
-2. Run `ng build`
+2. Run `ng build --prod --aot`
 3. Deploy contents of `frontend/dist` to desired location on webserver
 4. Configure webserver to redirect missing pages to `ìndex.html`
