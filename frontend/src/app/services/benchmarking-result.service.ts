@@ -42,7 +42,8 @@ export class BenchmarkingResultService {
    */
   public getForBenchmarkAndRepository(benchmarkId: number, repositoryId: number): Observable<any> {
     // tslint:disable-next-line:jsdoc-format
-    return this.http.get<any>(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
+    // return this.http.get<any>(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
+    return this.http.get<any>('http://localhost:3100/results/benchmark/' + benchmarkId + '/' + repositoryId);
   }
 
   /**

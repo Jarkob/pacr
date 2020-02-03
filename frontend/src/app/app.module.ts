@@ -1,3 +1,4 @@
+import { FooterComponent } from './footer/footer.component';
 import { CommitComparisonTableComponent } from './commit-comparison-table/commit-comparison-table.component';
 import { BenchmarkingResultTableComponent } from './benchmarking-result-table/benchmarking-result-table.component';
 import { SystemEnvironmentDisplayComponent } from './system-environment-display/system-environment-display.component';
@@ -75,6 +76,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     BenchmarkerListComponent,
     BrachesPipe,
     ShortenStringPipe,
+    FooterComponent
     CommitComparisonComponent,
     CommitDetailsComponent,
     SystemEnvironmentDisplayComponent,
