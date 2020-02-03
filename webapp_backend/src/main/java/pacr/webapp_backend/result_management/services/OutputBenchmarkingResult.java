@@ -94,8 +94,8 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
     OutputBenchmarkingResult(@NotNull ICommit commit) {
         Objects.requireNonNull(commit);
 
-        this.hasGlobalError = true;
-        this.errorMessage = "no result data for this commit";
+        this.hasGlobalError = false;
+        this.errorMessage = null;
 
         this.commitHash = commit.getCommitHash();
         this.commitURL = commit.getCommitURL();

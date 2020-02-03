@@ -11,8 +11,6 @@ import java.util.Objects;
  */
 public class DiagramOutputResult {
 
-    private static final String NO_RESULT_ERROR = "no result data for this commit";
-
     private String commitHash;
     private String commitDate;
     private String authorDate;
@@ -69,7 +67,7 @@ public class DiagramOutputResult {
         this.result = null;
 
         this.parents = commit.getParentHashes().toArray(new String[0]);
-        this.globalError = NO_RESULT_ERROR;
+        this.globalError = null;
     }
 
 
