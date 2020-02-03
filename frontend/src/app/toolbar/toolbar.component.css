@@ -1,7 +1,7 @@
-.center {
-    align-self: center;
+mat-toolbar {
+    padding-left: 0;
 }
 
 .active {
-    background-color: rgb(231, 121, 147);
+    background-color: rgb(202, 87, 114);
 }
