@@ -67,10 +67,12 @@ public class GitTracking implements IRepositoryImporter {
      * @param observeFromDate is the date from when it should be observed.
      * @param name is the name of the repository.
      * @param branchNames are the names of the selected branches.
+     * @param trackAllBranches whether all branches are being tracked or just master branch.
+     * @param isHookSet whether a hook is set.
      * @return the ID of the repository.
      */
     public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
-                             @NotNull Set<String> branchNames) {
+                             @NotNull Set<String> branchNames, boolean trackAllBranches, boolean isHookSet) {
         Objects.requireNonNull(repositoryURL);
         Objects.requireNonNull(name);
 
@@ -81,6 +83,8 @@ public class GitTracking implements IRepositoryImporter {
         repository.setObserveFromDate(observeFromDate);
         repository.setSelectedBranches(branchNames);
         repository.setColor(colorPicker.getNextColor());
+        repository.setTrackAllBranches(trackAllBranches);
+        repository.setIsHookSet(isHookSet);
 
         return gitTrackingAccess.addRepository(repository);
     }
@@ -88,7 +92,7 @@ public class GitTracking implements IRepositoryImporter {
     @Override
     public int importRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
                                 @NotNull Set<String> branchNames) {
-        int id = addRepository(repositoryURL, observeFromDate, name, branchNames);
+        int id = addRepository(repositoryURL, observeFromDate, name, branchNames, false, false);
         pullFromRepository(id);
 
         return id;

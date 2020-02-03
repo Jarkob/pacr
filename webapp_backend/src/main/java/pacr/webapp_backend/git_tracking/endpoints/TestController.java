@@ -25,7 +25,7 @@ public class TestController {
     public void testGitTrackingLean() {
 
         int repoID = gitTracking.addRepository("git@github.com:leanprover/lean4.git", null, "Lean",
-                new HashSet<>(Arrays.asList("NewParserAttr", "test")));
+                new HashSet<>(Arrays.asList("NewParserAttr", "test")), false, false);
 
         gitTracking.pullFromRepository(repoID);
 
@@ -36,7 +36,7 @@ public class TestController {
     public void testGitTrackingMijs() {
 
         int repoID = gitTracking.addRepository("git@git.scc.kit.edu:qa2270/mjis-mirror.git", null, "mijs",
-                new HashSet<>());
+                new HashSet<>(), false, false);
 
         gitTracking.pullFromRepository(repoID);
         System.out.println("Finished\n\n\n");
@@ -46,7 +46,7 @@ public class TestController {
     public void testGitTrackinTest() {
 
         int repoID = gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr-test-repository.git", null, "pacr test repo",
-                new HashSet<>(Arrays.asList("testbranch1")));
+                new HashSet<>(Arrays.asList("testbranch1")), false, false);
 
         gitTracking.pullFromRepository(repoID);
         System.out.println("Finished\n\n\n");

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -111,7 +110,8 @@ public class RepositoryManagerController {
                 transferRepository.getPullURL());
 
         return gitTracking.addRepository(transferRepository.getPullURL(), transferRepository.getObserveFromDate(),
-                transferRepository.getName(), transferRepository.getSelectedBranches());
+                transferRepository.getName(), transferRepository.getSelectedBranches(),
+                transferRepository.isTrackAllBranches(), transferRepository.isHookSet());
     }
 
     /**

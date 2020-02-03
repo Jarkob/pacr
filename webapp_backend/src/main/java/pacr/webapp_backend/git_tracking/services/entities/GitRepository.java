@@ -73,6 +73,7 @@ public class GitRepository {
      * @param observeFromDate is the date from which on the repository is being observed.
      *                        Is null if all commits are being observed.
      */
+    @Deprecated
     public GitRepository(boolean trackAllBranches,
                          @NotNull String pullURL, @NotNull String name,
                          @NotNull String color, LocalDate observeFromDate) {

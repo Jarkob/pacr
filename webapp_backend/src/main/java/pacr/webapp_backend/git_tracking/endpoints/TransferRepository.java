@@ -10,6 +10,8 @@ import java.util.Set;
  */
 public class TransferRepository {
 
+    private static final String WEBHOOK_PREFIX = "/webhooks/";
+
     private int id;
     private boolean trackAllBranches;
     private Set<String> selectedBranches;
@@ -19,6 +21,7 @@ public class TransferRepository {
     private String color;
     private LocalDate observeFromDate;
     private String commitLinkPrefix;
+    private String webHookURL;
 
     /**
      * Creates a new instance of TransferRepository.
@@ -44,6 +47,7 @@ public class TransferRepository {
         this.color = color;
         this.observeFromDate = observeFromDate;
         this.commitLinkPrefix = commitLinkPrefix;
+        this.webHookURL = WEBHOOK_PREFIX + id;
     }
 
     /**
@@ -124,6 +128,13 @@ public class TransferRepository {
     }
 
     /**
+     * @return the web hook URL.
+     */
+    public String getWebHookURL() {
+        return webHookURL;
+    }
+
+    /**
      * @param color is the color of this repository.
      */
     public void setColor(String color) {
@@ -157,6 +168,7 @@ public class TransferRepository {
     public void setCommitLinkPrefix(String commitLinkPrefix) {
         this.commitLinkPrefix = commitLinkPrefix;
     }
+
 
     /**
      * @return the ID for this repository.
