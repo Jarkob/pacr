@@ -112,11 +112,11 @@ export class DiagramComponent implements OnInit {
       if (item.length !== 0) {
         const selected: any[] = this.chart.chart.getElementAtEvent(evt);
         this.selectCommit(this.datasets[selected[0]._datasetIndex]
-          .code[selected[0]._index].sha);
+          .code[selected[0]._index].commitHash);
 
         // draw horizontal line
         this.addLine(this.datasets[selected[0]._datasetIndex]
-          .code[selected[0]._index].val);
+          .code[selected[0]._index].result[this.selectedBenchmarkProperty.name].result);
       }
     },
     tooltips: {
@@ -126,6 +126,9 @@ export class DiagramComponent implements OnInit {
         },
         label: (item, data) => {
           // if there is an error, show it
+          if (!this.datasets[item.datasetIndex].code[item.index].result) {
+            return 'Not yet benchmarked';
+          }
           if (this.datasets[item.datasetIndex].code[item.index].globalError) {
             return 'Global Error: ' + this.datasets[item.datasetIndex].code[item.index];
           }
@@ -194,7 +197,7 @@ export class DiagramComponent implements OnInit {
     }
 
     for (const repo of this.repositories) {
-      this.benchmarkingResultService.getForBenchmarkAndRepository(this.selectedBenchmark.id, repo.id).subscribe(
+      this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, repo.id, 'master').subscribe(
         data => {
           this.repositoryResults.set(repo.id, data);
           const lines = this.calculateLines(repo.id);
@@ -215,7 +218,9 @@ export class DiagramComponent implements OnInit {
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.datasets.length; i++) {
       for (let j = 0; j < this.datasets[i].data.length; j++) {
-        if (this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].errorMessage && j > 0) {
+        if (!this.datasets[i].code[j].result) {
+          this.datasets[i].data[j].y = 50; // FIXME
+        } else if (this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].errorMessage && j > 0) {
           this.datasets[i].data[j].y = this.datasets[i].data[j - 1].y;
         } else {
           this.datasets[i].data[j].y = this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].result;
@@ -235,7 +240,9 @@ export class DiagramComponent implements OnInit {
           const dataset: any = chart.config.data.datasets[i];
           for (let j = 0; j < dataset._meta[2].data.length; j++) {
             const element = dataset._meta[2].data[j];
-            if (dataset.code[j].globalError) {
+            if (!dataset.code[j].result) {
+              element._model.pointStyle = globalErrorImage; // TODO other image
+            } else if (dataset.code[j].globalError) {
               element._model.pointStyle = globalErrorImage;
             } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
               element._model.pointStyle = errorImage;
@@ -252,9 +259,13 @@ export class DiagramComponent implements OnInit {
   private calculateLines(repositoryId: number): any[] {
     const lines = [];
     const newestCommit = this.getNewestCommit(this.repositoryResults.get(repositoryId));
+    console.log('newest commit', newestCommit);
     this.lists = [];
     this.checked = [];
     const empty = [];
+    for (const [, commit] of Object.entries(this.repositoryResults.get(repositoryId))) {
+      commit.marked = false;
+    }
     if (newestCommit) {
       this.dfs(repositoryId, this.repositoryResults.get(repositoryId)[newestCommit], empty);
     } else {
@@ -278,8 +289,12 @@ export class DiagramComponent implements OnInit {
   }
 
   private dfs(repositoryId: number, current: any, list: any[]) {
+    if (!current) {
+      this.lists.push(list);
+      return;
+    }
     list.push(this.repositoryResults.get(repositoryId)[current.commitHash]);
-    if (current.parents.length === 0 || current.marked === true) {
+    if (current.parents.length === 0 || current.marked === true || !this.repositoryResults.get(repositoryId)[current.commitHash]) {
       current.marked = true;
       this.lists.push(list);
       return;
@@ -302,6 +317,7 @@ export class DiagramComponent implements OnInit {
     }
     return newest;
   }
+
 
   private addLine(y: number) {
     Chart.helpers.each(Chart.instances, (instance) => {

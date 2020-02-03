@@ -32,7 +32,7 @@ export class BenchmarkingResultService {
    * @param branch the branch
    */
   public getBenchmarkingResults(benchmark: number, repositoryId: number, branch: string): Observable<any> {
-    return this.http.get<any>(this.globalService.url + '/results/' + benchmark + '/' + repositoryId + '/' + branch);
+    return this.http.get<any>(this.globalService.url + '/results/pageable/benchmark/' + benchmark + '/' + repositoryId + '/' + branch);
   }
 
   /**
@@ -42,8 +42,7 @@ export class BenchmarkingResultService {
    */
   public getForBenchmarkAndRepository(benchmarkId: number, repositoryId: number): Observable<any> {
     // tslint:disable-next-line:jsdoc-format
-    // return this.http.get<any>(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
-    return this.http.get<any>('http://localhost:3100/results/benchmark/' + benchmarkId + '/' + repositoryId);
+    return this.http.get<any>(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
   }
 
   /**
