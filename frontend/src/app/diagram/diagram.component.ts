@@ -121,8 +121,9 @@ export class DiagramComponent implements OnInit {
     },
     tooltips: {
       callbacks: {
-        title: (items: any[], data) => {
-          return this.datasets[items[0].datasetIndex].code[items[0].index].commitHash;
+        title: (items: any[], ) => {
+          return this.datasets[items[0].datasetIndex].repositoryName + ': '
+          + this.datasets[items[0].datasetIndex].code[items[0].index].commitHash.substring(0, 8);
         },
         label: (item, data) => {
           // if there is an error, show it
@@ -135,13 +136,8 @@ export class DiagramComponent implements OnInit {
           if (this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage) {
             return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
           }
-          // round label
-          let label = data.datasets[item.datasetIndex].label || '';
-          if (label) {
-              label += ': ';
-          }
-          label += Math.round(item.yLabel * 100) / 100;
-          return label;
+          const label = Math.round(item.yLabel * 100) / 100;
+          return label + ' ' + this.selectedBenchmarkProperty.unit;
         }
       }
     }
@@ -198,7 +194,7 @@ export class DiagramComponent implements OnInit {
       return;
     }
 
-    for (const [repositoryId, repository] of this.repositories) {
+    for (const [repositoryId, ] of this.repositories) {
       this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, repositoryId, 'master').subscribe(
         data => {
           this.repositoryResults.set(repositoryId, data);
@@ -206,6 +202,7 @@ export class DiagramComponent implements OnInit {
           // both is important, otherwise event listening for change of legend gets messed up
           this.chart.datasets.concat(lines);
           this.datasets = lines;
+
         }
       );
     }
@@ -239,7 +236,6 @@ export class DiagramComponent implements OnInit {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < chart.config.data.datasets.length; i++) {
           const dataset: any = chart.config.data.datasets[i];
-          console.log(dataset);
           for (let j = 0; j < dataset._meta[2].data.length; j++) {
             const element = dataset._meta[2].data[j];
             if (!dataset.code[j].result) {
@@ -261,7 +257,6 @@ export class DiagramComponent implements OnInit {
   private calculateLines(repositoryId: number): any[] {
     const lines = [];
     const newestCommit = this.getNewestCommit(this.repositoryResults.get(repositoryId));
-    console.log('newest commit', newestCommit);
     this.lists = [];
     this.checked = [];
     const empty = [];
