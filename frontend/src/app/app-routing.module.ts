@@ -10,8 +10,8 @@ import { Routes, RouterModule } from '@angular/router';
 const routes: Routes = [
   { path: '', redirectTo: 'competitive', pathMatch: 'full' },
   { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuardService] },
-  { path: 'competitive', component: CompetitiveDashboardComponent },
-  { path: 'academic', component: AcademicDashboardComponent },
+  { path: 'dashboard1', component: CompetitiveDashboardComponent },
+  { path: 'dashboard2', component: AcademicDashboardComponent },
   { path: 'login', component: LoginComponent }
 ];
 

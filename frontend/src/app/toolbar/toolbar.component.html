@@ -7,8 +7,8 @@
         <mat-icon>arrow_forward_ios</mat-icon>
     </a>
     <span fxFlex></span>
-    <a mat-button [routerLink]="['/competitive']" [routerLinkActive]="'active'">Competitive Dashboard</a>
-    <a mat-button [routerLink]="['/academic']" [routerLinkActive]="'active'">Academic Dashboard</a>
+    <a mat-button [routerLink]="['/dashboard1']" [routerLinkActive]="'active'">Dashboard 1</a>
+    <a mat-button [routerLink]="['/dashboard2']" [routerLinkActive]="'active'">Dashboard 2</a>
     <a *ngIf="this.isLoggedIn()" mat-button [routerLink]="['/admin']" [routerLinkActive]="'active'" matTooltip="Admin-Interface">Admin-Interface</a>
     <a *ngIf="!this.isLoggedIn()" mat-button [routerLink]="['/login']" [routerLinkActive]="'active'">Login</a>
 </mat-toolbar>
