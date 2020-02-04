@@ -78,6 +78,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     ShortenStringPipe,
     FooterComponent
     CommitComparisonComponent,
+    FooterComponent,
     CommitDetailsComponent,
     SystemEnvironmentDisplayComponent,
     BenchmarkingResultTableComponent,

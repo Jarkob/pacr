@@ -24,7 +24,7 @@
             </mat-form-field>
             <ul *ngIf="this.legendData">
                 <li *ngFor="let legendItem of this.legendData; let i = index">
-                    <mat-checkbox [(ngModel)]="this.checked[i]" (change)="toggleLine(i)">{{ legendItem.repository }}/{{ legendItem.branch }}</mat-checkbox>
+                    <mat-checkbox [(ngModel)]="this.checked[i]" (change)="toggleLine(i)">{{ legendItem.repositoryName }}/{{ legendItem.branch }}</mat-checkbox>
                 </li>
             </ul>
 

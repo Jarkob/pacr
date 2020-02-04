@@ -39,7 +39,7 @@ export class DiagramComponent implements OnInit {
   /**
    * data
    */
-  repositories: Repository[];
+  repositories: Map<number, Repository> = new Map<number, Repository>();
   benchmarkGroups: BenchmarkGroup[];
   benchmarks: Map<string, Benchmark[]> = new Map<string, Benchmark[]>();
 
@@ -68,7 +68,7 @@ export class DiagramComponent implements OnInit {
       xAxes: [{
           type: 'time',
           time: {
-              parser: 'YYYY-MM-DD',
+              parser: 'YYYY-MM-DDTHH:mm:ss',
               tooltipFormat: 'll'
           },
           scaleLabel: {
@@ -79,7 +79,7 @@ export class DiagramComponent implements OnInit {
       yAxes: [{
           scaleLabel: {
               display: true,
-              labelString: 'value'
+              labelString: this.selectedBenchmarkProperty ? this.selectedBenchmarkProperty.name : 'value' // FIXME doesn't work
           },
           ticks: {
             beginAtZero: true,
@@ -149,7 +149,9 @@ export class DiagramComponent implements OnInit {
   labels = [];
   type = 'line';
   legend = true;
-  datasets: Dataset[] = [{data: [], code: [], label: 'no data', fill: false, lineTension: 0, branch: '', repository: 0}];
+  datasets: Dataset[] = [
+    {data: [], code: [], label: 'no data', fill: false, lineTension: 0, branch: '', repositoryId: 0, repositoryName: ''}
+  ];
   plugins = [ChartAnnotation];
   legendData: any;
 
@@ -196,15 +198,14 @@ export class DiagramComponent implements OnInit {
       return;
     }
 
-    for (const repo of this.repositories) {
-      this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, repo.id, 'master').subscribe(
+    for (const [repositoryId, repository] of this.repositories) {
+      this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, repositoryId, 'master').subscribe(
         data => {
-          this.repositoryResults.set(repo.id, data);
-          const lines = this.calculateLines(repo.id);
+          this.repositoryResults.set(repositoryId, data);
+          const lines = this.calculateLines(repositoryId);
           // both is important, otherwise event listening for change of legend gets messed up
           this.chart.datasets.concat(lines);
           this.datasets = lines;
-          console.log('datasets: ', this.datasets);
         }
       );
     }
@@ -221,7 +222,7 @@ export class DiagramComponent implements OnInit {
         if (!this.datasets[i].code[j].result) {
           this.datasets[i].data[j].y = 50; // FIXME
         } else if (this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].errorMessage && j > 0) {
-          this.datasets[i].data[j].y = this.datasets[i].data[j - 1].y;
+          this.datasets[i].data[j].y = this.datasets[i].data[j - 1].y; // FIXME: won't work
         } else {
           this.datasets[i].data[j].y = this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].result;
         }
@@ -238,6 +239,7 @@ export class DiagramComponent implements OnInit {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < chart.config.data.datasets.length; i++) {
           const dataset: any = chart.config.data.datasets[i];
+          console.log(dataset);
           for (let j = 0; j < dataset._meta[2].data.length; j++) {
             const element = dataset._meta[2].data[j];
             if (!dataset.code[j].result) {
@@ -275,7 +277,14 @@ export class DiagramComponent implements OnInit {
     for (const list of this.lists) {
       this.checked[index] = true;
       const dataset: Dataset = {
-        data: [], code: [], label: '' + index, fill: false, lineTension: 0, repository: repositoryId, branch: 'master'};
+        data: [],
+        code: [],
+        label: '' + index,
+        fill: false,
+        lineTension: 0,
+        repositoryId,
+        repositoryName: this.repositories.get(repositoryId).name,
+        branch: 'master'};
       for (const commit of list) {
         dataset.data.push({
           x: commit.commitDate,
@@ -352,7 +361,8 @@ export class DiagramComponent implements OnInit {
     let index = 0;
     for (const dataset of currentChart.data.datasets) {
       legend.push({
-        repository: dataset.repository,
+        repositoryId: dataset.repositoryId,
+        repositoryName: dataset.repositoryName,
         branch: dataset.branch,
         datasetIndex: index // FIXME: highly likely to cause issues
       });
@@ -364,7 +374,9 @@ export class DiagramComponent implements OnInit {
   private getRepositories(): void {
     this.repositoryService.getAllRepositories().subscribe(
       data => {
-        this.repositories = data;
+        data.forEach(repo => {
+          this.repositories.set(repo.id, repo);
+        });
       }
     );
   }

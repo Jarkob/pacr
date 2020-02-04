@@ -1,5 +1,6 @@
 export interface LegendItem {
-    repository: string;
+    repositoryId: number;
+    repositoryName: string;
     branch: string;
     datasetIndex: number;
 }

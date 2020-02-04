@@ -4,6 +4,7 @@ export interface Dataset {
     label: string;
     fill: boolean;
     lineTension: number;
-    repository: number;
+    repositoryId: number;
+    repositoryName: string;
     branch: string;
 }
