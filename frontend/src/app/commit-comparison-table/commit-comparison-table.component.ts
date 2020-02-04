@@ -1,7 +1,8 @@
-import { BenchmarkingResultService } from './../services/benchmarking-result.service';
 import { BenchmarkService } from './../services/benchmark.service';
 import { BenchmarkGroup } from './../classes/benchmark-group';
 import { StringService } from './../services/strings.service';
+import { BenchmarkingResultService } from './../services/benchmarking-result.service';
+import { OutputBenchmark } from './../classes/output-benchmark';
 import { MatTableDataSource } from '@angular/material';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { Component, OnInit, Input } from '@angular/core';
@@ -32,69 +33,80 @@ export interface Result {
   property: string;
   unit: string;
   interpretation: string;
-  median: number;
-  lowerQuartile: number;
-  upperQuartile: number;
-  standardDeviation: number;
-  mean: number;
-  hadLocalError: boolean;
-  errorMessage: string;
-  ratioToPreviousCommit: number;
-  compared: boolean;
+  result1: number;
+  result2: number;
+  ratio1: number;
+  ratio2: number;
 }
 
 @Component({
-  selector: 'app-benchmarking-result-table',
-  templateUrl: './benchmarking-result-table.component.html',
-  styleUrls: ['./benchmarking-result-table.component.css']
+  selector: 'app-commit-comparison-table',
+  templateUrl: './commit-comparison-table.component.html',
+  styleUrls: ['./commit-comparison-table.component.css']
 })
-export class BenchmarkingResultTableComponent implements OnInit {
+export class CommitComparisonTableComponent implements OnInit {
 
   constructor(
+    private resultService: BenchmarkingResultService,
     private stringService: StringService,
-    private benchmarkService: BenchmarkService,
-    private benchmarkingResultService: BenchmarkingResultService
+    private benchmarkService: BenchmarkService
   ) { }
 
-  @Input() commitHash: string;
+  @Input() commitHash1: string;
+  @Input() commitHash2: string;
 
   strings: any;
-  benchmarkingResult: CommitBenchmarkingResult;
 
-  displayedColumns: string[] = ['property', 'median', 'lowerQuartile', 'upperQuartile', 'standardDeviation', 'mean', 'interpretation'];
+  benchmarkingResult1: CommitBenchmarkingResult;
+  benchmarkingResult2: CommitBenchmarkingResult;
+
+  // contains a list of [benchmark1, benchmark2] where benchmark1 and benchmark2 have the same id
+  comparableBenchmarks: OutputBenchmark[][] = [];
+
+  displayedColumns: string[] = ['property', 'result1', 'result2', 'interpretation'];
 
   groupByColumns: string[] = ['benchmarkGroup', 'benchmark'];
 
   public dataSource = new MatTableDataSource<Result | Group>([]);
 
   ngOnInit() {
-    this.stringService.getBenchmarkingResultTableStrings().subscribe(
+    this.stringService.getCommitComparisonTableStrings().subscribe(
       data => {
         this.strings = data;
       }
     );
 
     this.dataSource.filterPredicate = this.customFilterPredicate.bind(this);
-    this.selectCommit(this.commitHash);
+    this.getBenchmarkingResults();
     this.dataSource.filter = performance.now().toString(); // trigger filter update
   }
 
-  public selectCommit(commitHash: string): void {
-    if (commitHash === null || commitHash === '') {
-      return;
-    }
+  compareBenchmarkingResults() {
+    const benchmarks = new Map();
 
-    this.benchmarkingResultService.getBenchmarkingResultsForCommit(commitHash).subscribe(
-      data => {
-        this.benchmarkingResult = data;
+    this.benchmarkingResult1.benchmarksList.forEach(bench => {
+      benchmarks.set(bench.id, bench);
+    });
 
-        const resultArray = this.buildResultArray(this.benchmarkingResult);
-
-        resultArray.then(value => {
-          this.dataSource.data = this.addGroups(value, this.groupByColumns);
-        });
+    this.benchmarkingResult2.benchmarksList.forEach(bench => {
+      if (benchmarks.has(bench.id)) {
+        this.comparableBenchmarks.push([benchmarks.get(bench.id), bench]);
       }
-    );
+    });
+
+    const resultArray = this.buildResultArray();
+
+    resultArray.then(value => {
+      this.dataSource.data = this.addGroups(value, this.groupByColumns);
+    });
+  }
+
+  async getBenchmarkingResults() {
+    this.benchmarkingResult1 = await this.resultService.getBenchmarkingResultsForCommit(this.commitHash1).toPromise();
+
+    this.benchmarkingResult2 = await this.resultService.getBenchmarkingResultsForCommit(this.commitHash2).toPromise();
+
+    this.compareBenchmarkingResults();
   }
 
   customFilterPredicate(data: Result | Group, filter: string): boolean {
@@ -190,27 +202,30 @@ export class BenchmarkingResultTableComponent implements OnInit {
     return item.level;
   }
 
-  hadLocalError(index, item): boolean {
-    return item.hadLocalError;
-  }
-
-  async buildResultArray(benchmarkingResult: CommitBenchmarkingResult): Promise<Result[]> {
+  async buildResultArray(): Promise<Result[]> {
     const resultData: Result[] = [];
     let benchmarkGroups: BenchmarkGroup[];
 
     benchmarkGroups = await this.benchmarkService.getAllGroups().toPromise();
 
-    benchmarkingResult.benchmarksList.forEach(benchmark => {
-      const groupName = this.findBenchmarkGroupName(benchmark.groupId, benchmarkGroups);
+    this.comparableBenchmarks.forEach(benchmarkPair => {
+      const bench = benchmarkPair[0];
 
-      benchmark.results.forEach(benchProperty => {
-        resultData.push({benchmarkGroup: groupName, benchmark: benchmark.customName, property: benchProperty.name,
-          median: benchProperty.median, mean: benchProperty.mean, lowerQuartile: benchProperty.lowerQuartile,
-          upperQuartile: benchProperty.upperQuartile, standardDeviation: benchProperty.standardDeviation,
-          unit: benchProperty.unit, interpretation: benchProperty.interpretation, hadLocalError: benchProperty.hadLocalError,
-          errorMessage: benchProperty.errorMessage, ratioToPreviousCommit: benchProperty.ratioToPreviousCommit,
-          compared: benchProperty.compared});
-      });
+      const groupName = this.findBenchmarkGroupName(bench.groupId, benchmarkGroups);
+
+      for (let i = 0; i < bench.results.length; i++) {
+        const benchProperty = bench.results[i];
+
+        const median1 = benchmarkPair[0].results[i].median;
+        const median2 = benchmarkPair[1].results[i].median;
+
+        const medianRatio1 = median1 / median2;
+        const medianRatio2 = median2 / median1;
+
+        resultData.push({benchmarkGroup: groupName, benchmark: bench.customName, property: benchProperty.name,
+          unit: benchProperty.unit, result1: median1, result2: median2,
+          interpretation: benchProperty.interpretation, ratio1: medianRatio1, ratio2: medianRatio2});
+      }
     });
 
     return resultData;

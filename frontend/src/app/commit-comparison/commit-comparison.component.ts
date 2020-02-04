@@ -28,9 +28,6 @@ export class CommitComparisonComponent implements OnInit {
   benchmarkingResult1: CommitBenchmarkingResult;
   benchmarkingResult2: CommitBenchmarkingResult;
 
-  // contains a list of [benchmark1, benchmark2] where benchmark1 and benchmark2 have the same id
-  compareableBenchmarks: OutputBenchmark[][] = [];
-
   ngOnInit() {
     this.stringService.getCommitComparisonStrings().subscribe(
       data => {
@@ -51,32 +48,18 @@ export class CommitComparisonComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  async getBenchmarkingResults() {
-    this.benchmarkingResult1 = await this.resultService.getBenchmarkingResultsForCommit(this.commitHash1).toPromise();
-
-    this.benchmarkingResult2 = await this.resultService.getBenchmarkingResultsForCommit(this.commitHash2).toPromise();
-
-    this.compareBenchmarkingResults();
-  }
-
-  compareBenchmarkingResults() {
-    const benchmarks = new Map();
-
-    console.log(this.benchmarkingResult1);
-
-    this.benchmarkingResult1.benchmarksList.forEach(bench => {
-      benchmarks.set(bench.id, bench);
-    });
-
-    console.log(benchmarks);
-
-    this.benchmarkingResult2.benchmarksList.forEach(bench => {
-      if (benchmarks.has(bench.id)) {
-        this.compareableBenchmarks.push([benchmarks.get(bench.id), bench]);
+  getBenchmarkingResults() {
+    this.resultService.getBenchmarkingResultsForCommit(this.commitHash1).subscribe(
+      data => {
+        this.benchmarkingResult1 = data;
       }
-    });
+    );
 
-    console.log(this.compareableBenchmarks);
+    this.resultService.getBenchmarkingResultsForCommit(this.commitHash2).subscribe(
+      data => {
+        this.benchmarkingResult2 = data;
+      }
+    );
   }
 
 }

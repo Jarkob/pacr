@@ -6,5 +6,7 @@
     "tableMean": "Mean",
     "benchmarkGroup": "Group:",
     "benchmark": "Benchmark:",
+    "property": "Property",
+    "interpretation": "Interpretation",
     "localError": "Error Message:"
 }

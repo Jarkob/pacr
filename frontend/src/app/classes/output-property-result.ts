@@ -1,7 +1,7 @@
 export interface OutputPropertyResult {
     name: string;
     unit: string;
-    interpreation: string;
+    interpretation: string;
     mean: number;
     lowerQuartile: number;
     upperQuartile: number;

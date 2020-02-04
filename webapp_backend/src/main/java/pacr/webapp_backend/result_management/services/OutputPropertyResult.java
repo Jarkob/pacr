@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
@@ -63,7 +64,7 @@ public class OutputPropertyResult implements IBenchmarkProperty {
         return Arrays.asList(results);
     }
 
-    @Override
+    @Override @JsonIgnore
     public ResultInterpretation getResultInterpretation() {
         return interpretation;
     }

@@ -83,4 +83,8 @@ export class StringService {
     public getBenchmarkingResultTableStrings(): Observable<any> {
         return this.http.get('./assets/benchmarking-result-table-string.json');
     }
+
+    public getCommitComparisonTableStrings(): Observable<any> {
+        return this.http.get('./assets/commit-comparison-table-string.json');
+    }
 }

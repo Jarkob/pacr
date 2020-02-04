@@ -44,13 +44,13 @@
                 </div>
             </mat-tab>
             <mat-tab label="{{ strings?.tabComparison }}">
-
+                <app-commit-comparison-table [commitHash1]="commitHash1" [commitHash2]="commitHash2"></app-commit-comparison-table>
             </mat-tab>
             <mat-tab label="{{ strings?.tabBenchmarkingResults }} {{ benchmarkingResult1.commitHash | shortenString:7 }}">
-                <app-benchmarking-result-table [commitHash]="benchmarkingResult1.commitHash"></app-benchmarking-result-table>
+                <app-benchmarking-result-table [commitHash]="commitHash1"></app-benchmarking-result-table>
             </mat-tab>
             <mat-tab label="{{ strings?.tabBenchmarkingResults }} {{ benchmarkingResult2.commitHash | shortenString:7 }}">
-                <app-benchmarking-result-table [commitHash]="benchmarkingResult2.commitHash"></app-benchmarking-result-table>
+                <app-benchmarking-result-table [commitHash]="commitHash2"></app-benchmarking-result-table>
             </mat-tab>
         </mat-tab-group>
     </mat-card-content>

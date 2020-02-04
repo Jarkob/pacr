@@ -1,0 +1,68 @@
+<p *ngIf="!(comparableBenchmarks && comparableBenchmarks.length > 0)" class="mat-h1">Nothing found to compare.</p>
+
+<table *ngIf="comparableBenchmarks && comparableBenchmarks.length > 0" mat-table [dataSource]="dataSource" class="mat-elevation-z8">                
+    <ng-container matColumnDef="benchmarkGroup">
+        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.benchmarkGroup }} </th>
+        <td mat-cell *matCellDef="let element"> {{element.benchmarkGroup }} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="benchmark">
+        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.benchmark }} </th>
+        <td mat-cell *matCellDef="let element"> {{element.benchmark}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="property">
+        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.property }} </th>
+        <td mat-cell *matCellDef="let element">
+            <mat-icon class="errorIcon" *ngIf="element.hadLocalError" color="warn">error_outline</mat-icon>
+            {{element.property}}
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="result1">
+        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.result }} {{ benchmarkingResult1.commitHash | shortenString:7 }} </th>
+        <td mat-cell *matCellDef="let element">
+            <span id="medianValue">
+                {{element.result1 | number:'1.4' }} {{ element.unit }}
+            </span>
+            
+            <span *ngIf="element.ratio1 > 1" id="compareRation" class="green">
+                + {{ element.ratio1 - 1 | percent:'1.0-2' }}
+            </span>                           
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="result2">
+        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.result }} {{ benchmarkingResult2.commitHash | shortenString:7 }} </th>
+        <td mat-cell *matCellDef="let element">
+            <span id="medianValue">
+                {{element.result2 | number:'1.4' }} {{ element.unit }}
+            </span>
+            
+            <span *ngIf="element.ratio2 > 1" id="compareRation" class="green">
+                + {{ element.ratio2 - 1 | percent:'1.0-2' }}
+            </span>                           
+        </td>
+    </ng-container>
+
+    <ng-container matColumnDef="interpretation">
+        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.interpretation }} </th>
+        <td mat-cell *matCellDef="let element"> {{element.interpretation}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <!-- Group header -->
+    <ng-container matColumnDef="groupHeader">
+        <td colspan="999" mat-cell *matCellDef="let group">
+            <mat-icon id="expandIcon" *ngIf="group.expanded">expand_less</mat-icon>
+            <mat-icon id="expandIcon" *ngIf="!group.expanded">expand_more</mat-icon>
+            <span class="mat-h2" *ngIf="group.level === 1">{{ strings?.benchmarkGroup }} {{ group[groupByColumns[group.level - 1]] }}</span>
+            <span class="mat-h3" *ngIf="group.level === 2">{{ strings?.benchmark }} {{ group[groupByColumns[group.level - 1]] }}</span> 
+        </td>
+    </ng-container>
+
+  <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup" (click)="groupHeaderClick(row)"> </tr>
+
+</table>
