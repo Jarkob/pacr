@@ -46,11 +46,11 @@ public class SchedulerController {
      * @return a list of all jobs and prioritized jobs currently in the scheduler.
      */
     @RequestMapping("/queue/prioritized")
-    public Page<Job> getPrioritizedQueue(@PageableDefault(page = 0, size = 15) Pageable pageable) {
+    public Page<Job> getPrioritizedQueue(@PageableDefault(size = 15) Pageable pageable) {
         List<Job> prioritized = scheduler.getPrioritizedQueue();
 
-        int start = (int) PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()).getOffset();
-        int end = Math.min(start + pageable.getPageSize(), prioritized.size());
+        int start = Math.min(pageable.getPageNumber() * pageable.getPageSize(), prioritized.size());
+        int end = Math.min(start + pageable.getPageSize() - 1, prioritized.size());
 
         return new PageImpl<>(prioritized.subList(start, end), pageable, prioritized.size());
     }
@@ -62,11 +62,11 @@ public class SchedulerController {
      * @return a list of all jobs and prioritized jobs currently in the scheduler.
      */
     @RequestMapping("/queue/jobs")
-    public Page<Job> getJobsQueue(@PageableDefault(size = 5, page = 0) Pageable pageable) {
+    public Page<Job> getJobsQueue(@PageableDefault(size = 5) Pageable pageable) {
         List<Job> jobs = scheduler.getJobsQueue();
 
-        int start = (int) PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()).getOffset();
-        int end = Math.min(start + pageable.getPageSize(), jobs.size());
+        int start = Math.min(pageable.getPageNumber() * pageable.getPageSize(), jobs.size());
+        int end = Math.min(start + pageable.getPageSize() - 1, jobs.size());
 
         return new PageImpl<>(jobs.subList(start, end), pageable, jobs.size());
     }
