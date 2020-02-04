@@ -49,7 +49,7 @@ public class JobDispatcher {
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.error("Could not start process.");
-            return null;
+            return createBenchmarkingResult(e.getMessage());
         }
 
         String output = readInputBuffer(process);
@@ -69,6 +69,8 @@ public class JobDispatcher {
             return createBenchmarkingResult("Exit code " + exitCode);
         }
 
+        LOGGER.info("Got {} as result.", output);
+
         JSONToGSONAdapter adapter = new JSONToGSONAdapter();
         String gsonFormat = adapter.convertJSONToGSON(output);
 
@@ -82,6 +84,8 @@ public class JobDispatcher {
             result = new BenchmarkingResult();
             result.setGlobalError(e.getMessage());
         }
+
+        LOGGER.info(result.getBenchmarks());
 
         return result;
     }

@@ -176,6 +176,8 @@ public class GitTracking implements IRepositoryImporter {
         // automatically adds all new commits to the database
         gitTrackingAccess.updateRepository(gitRepository);
 
+        LOGGER.info("Adding jobs for {} untracked commits.", untrackedCommitHashes.size());
+
         // add jobs to scheduler
         jobScheduler.addJobs(gitRepository.getPullURL(), untrackedCommitHashes);
 

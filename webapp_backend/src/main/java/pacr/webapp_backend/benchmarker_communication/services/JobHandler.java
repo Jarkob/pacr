@@ -58,7 +58,7 @@ public class JobHandler implements INewRegistrationListener, IObserver {
             if (result != null) {
                 resultSaver.saveBenchmarkingResults(result);
 
-                LOGGER.info("Received job results for {} | {}", job.getJobGroupTitle(), job.getJobID());
+                LOGGER.info("Received job results for {} | {}.", job.getJobGroupTitle(), job.getJobID());
 
                 // start a new job for this benchmarker if one is available
                 executeJob();
@@ -93,13 +93,13 @@ public class JobHandler implements INewRegistrationListener, IObserver {
             BenchmarkerJob benchmarkerJob = new BenchmarkerJob(address, job.getJobGroupTitle(), job.getJobID());
 
             if (jobSender.sendJob(benchmarkerJob)) {
-                LOGGER.info("Sent job to {}", address);
+                LOGGER.info("Sent job to {}.", address);
                 benchmarkerPool.occupyBenchmarker(address);
                 currentJobs.put(address, job);
 
                 resetAttempts(address);
             } else {
-                LOGGER.warn("Failed to send job to {}", address);
+                LOGGER.warn("Failed to send job to {}.", address);
                 addAttempt(address);
                 jobProvider.returnJob(job);
             }

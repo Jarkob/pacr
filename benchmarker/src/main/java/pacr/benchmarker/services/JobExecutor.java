@@ -10,7 +10,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * Executes jobs.
+ * Executes jobs. Sets the repository up and then dispatches the job.
  */
 @Component
 public class JobExecutor {
