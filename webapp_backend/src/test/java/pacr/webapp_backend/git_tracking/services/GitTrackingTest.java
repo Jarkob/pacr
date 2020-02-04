@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.git.GitHandler;
+import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
 import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IResultDeleter;
 
@@ -37,11 +38,14 @@ public class GitTrackingTest {
     private IJobScheduler jobScheduler;
     @Mock
     private IColorPicker colorPicker;
+    @Mock
+    private ICommitBenchmarkedChecker commitBenchmarkedChecker;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        gitTracking = new GitTracking(gitTrackingAccess, gitHandler, resultDeleter, jobScheduler, colorPicker);
+        gitTracking = new GitTracking(gitTrackingAccess, gitHandler, resultDeleter,
+                jobScheduler, colorPicker, commitBenchmarkedChecker);
     }
 
     @Test

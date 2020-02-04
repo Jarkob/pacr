@@ -24,6 +24,7 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
 import java.util.NoSuchElementException;
@@ -160,7 +161,17 @@ public class RepositoryManagerController {
         String oldColor = gitRepository.getColor();
         String newColor = transferRepository.getColor();
         if (!oldColor.equals(newColor)) {
+            LOGGER.info("Changing color from {} zo {}.", oldColor, newColor);
             gitTracking.updateColorOfRepository(gitRepository, newColor);
+        }
+
+        LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
+        LocalDate newObserveFromDate = transferRepository.getObserveFromDate();
+        if ((oldObserveFromDate == null && newObserveFromDate != null)
+                || (oldObserveFromDate != null && newObserveFromDate == null)
+                || (oldObserveFromDate != null && !oldObserveFromDate.isEqual(newObserveFromDate))) {
+            LOGGER.info("Changing observeFromDate from {} to {}.", oldObserveFromDate, newObserveFromDate);
+            gitTracking.updateObserveFromDateOfRepository(gitRepository, newObserveFromDate);
         }
 
         gitRepository.setSelectedBranches(transferRepository.getSelectedBranches());

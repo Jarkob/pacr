@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.git.GitHandler;
+import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
 import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IRepositoryImporter;
 import pacr.webapp_backend.shared.IResultDeleter;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Collection;
 
@@ -37,6 +39,7 @@ public class GitTracking implements IRepositoryImporter {
     private IJobScheduler jobScheduler;
     private IColorPicker colorPicker;
     private GitHandler gitHandler;
+    private ICommitBenchmarkedChecker commitBenchmarkedChecker;
 
     /**
      * Initiates an instance of GitTracking.
@@ -45,21 +48,24 @@ public class GitTracking implements IRepositoryImporter {
      * @param resultDeleter is the interface that deletes benchmarking results.
      * @param jobScheduler is the interface that adds job to the benchmarking queue.
      * @param colorPicker is the algorithm that assigns new colors to repositories.
+     * @param commitBenchmarkedChecker checks whether a commit is already benchmarked or not.
      */
     public GitTracking(@NotNull IGitTrackingAccess gitTrackingAccess, @NotNull GitHandler gitHandler,
                        @NotNull IResultDeleter resultDeleter, @NotNull IJobScheduler jobScheduler,
-                       @NotNull IColorPicker colorPicker) {
+                       @NotNull IColorPicker colorPicker, @NotNull ICommitBenchmarkedChecker commitBenchmarkedChecker) {
         Objects.requireNonNull(gitTrackingAccess);
         Objects.requireNonNull(gitHandler);
         Objects.requireNonNull(resultDeleter);
         Objects.requireNonNull(jobScheduler);
         Objects.requireNonNull(colorPicker);
+        Objects.requireNonNull(commitBenchmarkedChecker);
 
         this.gitTrackingAccess = gitTrackingAccess;
         this.gitHandler = gitHandler;
         this.resultDeleter = resultDeleter;
         this.jobScheduler = jobScheduler;
         this.colorPicker = colorPicker;
+        this.commitBenchmarkedChecker = commitBenchmarkedChecker;
     }
 
     /**
@@ -136,8 +142,10 @@ public class GitTracking implements IRepositoryImporter {
      */
     public void removeRepository(int repositoryID) throws NoSuchElementException {
         LOGGER.info("Removing repository with ID {}.", repositoryID);
-        for (GitCommit commit : gitTrackingAccess.getAllCommits(repositoryID)) {
-            resultDeleter.deleteBenchmarkingResults(commit.getCommitHash());
+
+        Collection<String> commitHashes = gitTrackingAccess.getAllCommitHashes(repositoryID);
+        for (String commit : commitHashes) {
+            resultDeleter.deleteBenchmarkingResults(commit);
         }
 
         gitTrackingAccess.removeRepository(repositoryID);
@@ -219,7 +227,53 @@ public class GitTracking implements IRepositoryImporter {
         return gitTrackingAccess.getRepository(id);
     }
 
+    /**
+     * @param pullURL the pull URL of the repository.
+     * @return all branches of the repository.
+     */
     public Set<String> getBranches(String pullURL) {
         return gitHandler.getBranchesOfRepository(pullURL);
+    }
+
+    /**
+     * Updates observeFromDate of a repository.
+     * Removes all commit benchmarks that are not in the scope anymore
+     * and adds jobs for all commits that are new in the scope.
+     * @param gitRepository is the repository.
+     * @param newObserveFromDate is the new observeFromDate.
+     */
+    public void updateObserveFromDateOfRepository(GitRepository gitRepository, LocalDate newObserveFromDate) {
+
+        Collection<GitCommit> commits = gitTrackingAccess.getAllCommits(gitRepository.getId());
+
+        Set<String> commitsToBenchmark = new HashSet<>();
+        Set<String> commitsToRemove = new HashSet<>();
+
+        for (GitCommit commit : commits) {
+            if (newObserveFromDate.isBefore(commit.getCommitDate().toLocalDate())) {
+                // add job if commit is not already benchmarked
+                if (!commitBenchmarkedChecker.isCommitBenchmarked(commit.getCommitHash())) {
+                    commitsToBenchmark.add(commit.getCommitHash());
+                }
+            } else {
+                // remove commit if it is already benchmarked
+                if (commitBenchmarkedChecker.isCommitBenchmarked(commit.getCommitHash())) {
+                    commitsToRemove.add(commit.getCommitHash());
+                }
+            }
+        }
+
+
+        LOGGER.info("Adding {} new jobs.", commitsToBenchmark.size());
+        jobScheduler.addJobs(gitRepository.getPullURL(), commitsToBenchmark);
+
+        LOGGER.info("Removing {} benchmarks that are out of scope.", commitsToRemove.size());
+        for (String commitHash : commitsToRemove) {
+            resultDeleter.deleteBenchmarkingResults(commitHash);
+        }
+
+        gitRepository.setObserveFromDate(newObserveFromDate);
+        gitTrackingAccess.updateRepository(gitRepository);
+
     }
 }
