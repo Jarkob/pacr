@@ -41,7 +41,6 @@ export class BenchmarkingResultService {
    * @param repositoryId the id of the repository
    */
   public getForBenchmarkAndRepository(benchmarkId: number, repositoryId: number): Observable<any> {
-    console.log(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
     // tslint:disable-next-line:jsdoc-format
     return this.http.get<any>(this.globalService.url + '/results/benchmark/' + benchmarkId + '/' + repositoryId);
   }
@@ -59,6 +58,14 @@ export class BenchmarkingResultService {
    */
   public deleteBenchmarkingResult(sha: string): Observable<{}> {
     return this.http.post<{}>(this.globalService.url + '/results/commit/' + sha, null);
+  }
+
+  /**
+   * get all benchmarking results for one repository
+   * @param repository the id of the repository
+   */
+  public getBenchmarkingResultsForRepository(repositoryId: number, page: number, size: number): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/results/pageable/repository/' + repositoryId + '?page=' + page + '&size=' + size);
   }
 
 }

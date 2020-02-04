@@ -67,7 +67,7 @@ export class EventsComponent implements OnInit {
   }
 
   private getLeaderboardEvents(event: any): any {
-    this.eventService.getBenchmarkingEvents(event.pageIndex, event.pageSize).subscribe(
+    this.eventService.getLeaderboardEvents(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.leaderboardPage = data;
         this.leaderboardEvents = data.content;

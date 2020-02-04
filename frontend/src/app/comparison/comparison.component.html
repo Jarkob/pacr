@@ -29,17 +29,20 @@
         <table fxFill mat-table [dataSource]="commits" class="mat-elevation-z8">
             <ng-container matColumnDef="commitDate">
                 <th mat-header-cell *matHeaderCellDef> {{ this.strings?.commitDate }} </th>
-                <td mat-cell *matCellDef="let element">{{ element.commitDate | date }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.commitCommitDate | date }}</td>
             </ng-container>
 
             <ng-container matColumnDef="authorDate">
                 <th mat-header-cell *matHeaderCellDef> {{ this.strings?.authorDate }} </th>
-                <td mat-cell *matCellDef="let element">{{ element.authorDate | date }}</td>
+                <td mat-cell *matCellDef="let element">{{ element.commitAuthorDate | date }}</td>
             </ng-container>
 
             <ng-container matColumnDef="commitHash">
                 <th mat-header-cell *matHeaderCellDef> {{ this.strings?.commitHash }} </th>
-                <td mat-cell *matCellDef="let element">{{ element.commitHash | shortenString:7 }}</td>
+                <td mat-cell *matCellDef="let element">
+                    <mat-icon class="errorIcon" *ngIf="element.hasGlobalError" color="warn">error_outline</mat-icon>
+                    {{ element.commitHash | shortenString:7 }}
+                </td>
             </ng-container>
         
             <ng-container matColumnDef="commitMessage">

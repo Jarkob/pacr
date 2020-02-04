@@ -32,7 +32,7 @@ export class JobQueueComponent implements OnInit {
   pageSizeOptions = [5, 10, 15, 20];
 
   queueSubscription: Subscription;
-  queueUpdateInterval = 20; // in seconds
+  queueUpdateInterval = 5; // in seconds
 
   ngOnInit() {
     this.getQueue();

@@ -1,3 +1,5 @@
+import { BenchmarkingResultService } from './../services/benchmarking-result.service';
+import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { CommitComparisonService } from './commit-comparison.service';
 import { CommitComparisonRef } from './commit-comparison-ref';
 import { StringService } from './../services/strings.service';
@@ -20,7 +22,8 @@ export class ComparisonComponent implements OnInit {
   constructor(
     private previewDialog: CommitComparisonService,
     private stringService: StringService,
-    private repositoryService: RepositoryService
+    private repositoryService: RepositoryService,
+    private resultService: BenchmarkingResultService
   ) { }
 
   @Output() commitSelectedEvent = new EventEmitter();
@@ -36,7 +39,7 @@ export class ComparisonComponent implements OnInit {
   replaceCommitHash1 = true;
 
   commitsPage: any;
-  commits: Commit[] = [];
+  commits: CommitBenchmarkingResult[] = [];
   commitsPageEvent: PageEvent = new PageEvent();
 
   repositories: Repository[];
@@ -91,7 +94,7 @@ export class ComparisonComponent implements OnInit {
   getCommits(event: any): any {
     this.commits = [];
 
-    this.repositoryService.getCommits(this.selectedRepository.id, event.pageIndex, event.pageSize).subscribe(
+    this.resultService.getBenchmarkingResultsForRepository(this.selectedRepository.id, event.pageIndex, event.pageSize).subscribe(
       data => {
         this.commitsPage = data;
         this.commits = data.content;

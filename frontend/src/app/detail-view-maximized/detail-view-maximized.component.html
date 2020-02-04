@@ -212,7 +212,7 @@
                     <ng-container matColumnDef="property">
                         <th mat-header-cell *matHeaderCellDef> {{ this.strings?.property }} </th>
                         <td mat-cell *matCellDef="let element">
-                            <mat-icon id="localErrorIcon" *ngIf="element.hadLocalError" color="warn">error_outline</mat-icon>
+                            <mat-icon class="errorIcon" *ngIf="element.hadLocalError" color="warn">error_outline</mat-icon>
                             {{element.property}}
                         </td>
                     </ng-container>
