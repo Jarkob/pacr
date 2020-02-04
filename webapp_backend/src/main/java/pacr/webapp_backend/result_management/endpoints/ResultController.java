@@ -18,6 +18,8 @@ import pacr.webapp_backend.result_management.services.ResultManager;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -176,7 +178,7 @@ public class ResultController {
         }
 
         if (authenticator.authenticate(jwt)) {
-            resultManager.deleteBenchmarkingResults(commitHash);
+            resultManager.deleteBenchmarkingResults(Arrays.asList(commitHash));
 
             return ResponseEntity.ok().build();
         }

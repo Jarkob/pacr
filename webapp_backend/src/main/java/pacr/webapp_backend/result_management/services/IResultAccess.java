@@ -52,8 +52,8 @@ public interface IResultAccess {
     void saveResult(@NotNull CommitResult result);
 
     /**
-     * Deletes the given result.
-     * @param result the result.
+     * Deletes the results for the given hashes.
+     * @param commitHashes the hashes of the commits whose results will be deleted.
      */
-    void deleteResult(CommitResult result);
+    void deleteResults(Collection<String> commitHashes);
 }

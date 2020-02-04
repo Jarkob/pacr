@@ -18,6 +18,7 @@ import pacr.webapp_backend.shared.IBenchmarkingResult;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 
@@ -166,7 +167,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     void deleteBenchmarkingResults_shouldRemoveFromDB() {
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 
-        resultManager.deleteBenchmarkingResults(SimpleBenchmarkingResult.COMMIT_HASH);
+        resultManager.deleteBenchmarkingResults(Arrays.asList(SimpleBenchmarkingResult.COMMIT_HASH));
 
         CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
 

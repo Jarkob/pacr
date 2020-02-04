@@ -288,7 +288,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         assertFalse(commitHashes.contains(HASH_8926F7));
 
         verify(cleanUpCommits).cleanUp(any(), eq(gitRepository), eq(gitTrackingAccess));
-        verify(resultDeleter).deleteBenchmarkingResults(HASH_8926F7);
+        verify(resultDeleter).deleteBenchmarkingResults(Arrays.asList(HASH_8926F7));
     }
 
     /**

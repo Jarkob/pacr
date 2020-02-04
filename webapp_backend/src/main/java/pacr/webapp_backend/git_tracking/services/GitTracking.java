@@ -144,9 +144,7 @@ public class GitTracking implements IRepositoryImporter {
         LOGGER.info("Removing repository with ID {}.", repositoryID);
 
         Collection<String> commitHashes = gitTrackingAccess.getAllCommitHashes(repositoryID);
-        for (String commit : commitHashes) {
-            resultDeleter.deleteBenchmarkingResults(commit);
-        }
+        resultDeleter.deleteBenchmarkingResults(commitHashes);
 
         gitTrackingAccess.removeRepository(repositoryID);
     }
@@ -268,9 +266,7 @@ public class GitTracking implements IRepositoryImporter {
         jobScheduler.addJobs(gitRepository.getPullURL(), commitsToBenchmark);
 
         LOGGER.info("Removing {} benchmarks that are out of scope.", commitsToRemove.size());
-        for (String commitHash : commitsToRemove) {
-            resultDeleter.deleteBenchmarkingResults(commitHash);
-        }
+        resultDeleter.deleteBenchmarkingResults(commitsToRemove);
 
         gitRepository.setObserveFromDate(newObserveFromDate);
         gitTrackingAccess.updateRepository(gitRepository);

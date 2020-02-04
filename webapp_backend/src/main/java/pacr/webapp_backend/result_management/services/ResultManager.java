@@ -10,6 +10,7 @@ import pacr.webapp_backend.shared.IResultSaver;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Collection;
 import java.util.Map;
@@ -43,17 +44,11 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     }
 
     @Override
-    public void deleteBenchmarkingResults(@NotNull String commitHash) {
-        if (!StringUtils.hasText(commitHash)) {
-            throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
-        }
+    public void deleteBenchmarkingResults(@NotNull Collection<String> commitHashes) {
+        Objects.requireNonNull(commitHashes);
 
         synchronized (CommitResult.class) {
-            CommitResult result = resultAccess.getResultFromCommit(commitHash);
-
-            if (result != null) {
-                resultAccess.deleteResult(result);
-            }
+            resultAccess.deleteResults(commitHashes);
         }
     }
 
@@ -65,9 +60,12 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             return;
         }
 
+        List<String> commitHashes = new LinkedList<>();
         for (ICommit commit : commits) {
-            deleteBenchmarkingResults(commit.getCommitHash());
+            commitHashes.add(commit.getCommitHash());
         }
+
+        deleteBenchmarkingResults(commitHashes);
     }
 
     @Override

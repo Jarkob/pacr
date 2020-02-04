@@ -169,10 +169,12 @@ public class GitHandler {
         Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
 
         for (String commitHash : toDelete) {
-            resultDeleter.deleteBenchmarkingResults(commitHash);
-
+            // TODO Pavel: schöner machen
             gitTrackingAccess.removeCommit(commitHash);
         }
+
+        resultDeleter.deleteBenchmarkingResults(toDelete);
+
         gitTrackingAccess.updateRepository(gitRepository);
     }
 

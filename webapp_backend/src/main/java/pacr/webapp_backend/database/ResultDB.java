@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import pacr.webapp_backend.result_management.services.CommitResult;
 import pacr.webapp_backend.result_management.services.IResultAccess;
 
@@ -50,8 +51,8 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
     }
 
     @Override
-    default void deleteResult(CommitResult result) {
-        this.delete(result);
+    default void deleteResults(Collection<String> commitHashes) {
+        this.removeCommitResultsByCommitHashIn(commitHashes);
     }
 
     @Override
@@ -84,4 +85,12 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
      * @return the newest saved result for the repository.
      */
     CommitResult findFirstByRepositoryIdOrderByEntryDateDesc(int repositoryId);
+
+    /**
+     * This is a method that is automatically created by jpa based on its method name.
+     * @param commitHashes hashes of the commits whose results are meant to be deleted.
+     * @return the amount of deleted results.
+     */
+    @Transactional
+    Long removeCommitResultsByCommitHashIn(Collection<String> commitHashes);
 }

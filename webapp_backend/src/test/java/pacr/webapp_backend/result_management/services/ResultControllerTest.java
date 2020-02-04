@@ -11,12 +11,14 @@ import org.springframework.http.ResponseEntity;
 import pacr.webapp_backend.result_management.endpoints.ResultController;
 import pacr.webapp_backend.shared.IAuthenticator;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -177,7 +179,7 @@ public class ResultControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
-        verify(resultManagerMock).deleteBenchmarkingResults(HASH);
+        verify(resultManagerMock).deleteBenchmarkingResults(Arrays.asList(HASH));
     }
 
     /**
@@ -191,7 +193,7 @@ public class ResultControllerTest {
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
-        verify(resultManagerMock, never()).deleteBenchmarkingResults(anyString());
+        verify(resultManagerMock, never()).deleteBenchmarkingResults(anyCollection());
 
 
     }

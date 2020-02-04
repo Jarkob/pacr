@@ -92,8 +92,7 @@ public class GitTrackingTest {
 
         gitTracking.removeRepository(repositoryId);
 
-        verify(resultDeleter).deleteBenchmarkingResults(commit1.getCommitHash());
-        verify(resultDeleter).deleteBenchmarkingResults(commit2.getCommitHash());
+        verify(resultDeleter).deleteBenchmarkingResults(anyCollection());
 
         verify(gitTrackingAccess).removeRepository(repositoryId);
     }

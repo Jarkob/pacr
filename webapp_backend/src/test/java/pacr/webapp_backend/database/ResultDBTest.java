@@ -187,7 +187,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
         CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
-        this.resultDB.deleteResult(result);
+        this.resultDB.delete(result);
         CommitResult deletedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
 
         assertNull(deletedResult);
@@ -211,7 +211,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
 
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_ONE));
 
-        this.resultDB.deleteResult(resultToDelete);
+        this.resultDB.delete(resultToDelete);
 
         TimeUnit.SECONDS.sleep(1);
 
@@ -265,6 +265,34 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
         assertNotNull(newestResult);
         assertThat(commitResultThree.getEntryDate()).isCloseTo(newestResult.getEntryDate(), within(500, ChronoUnit.MILLIS));
         assertEquals(commitResultThree.getCommitHash(), newestResult.getCommitHash());
+    }
+
+    /**
+     * Tests whether deleteAllByCommitHash only deletes the results with a commit hash in the given collection
+     */
+    @Test
+    void deleteAllByCommitHash_deletesCorrectResults() {
+        CommitResult commitResultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        resultDB.saveResult(commitResultOne);
+
+        CommitResult commitResultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
+        resultDB.saveResult(commitResultTwo);
+
+        CommitResult commitResultThree = createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_TWO);
+        resultDB.saveResult(commitResultThree);
+
+        Collection<String> hashes = new HashSet<>();
+        hashes.add(COMMIT_HASH);
+        hashes.add(COMMIT_HASH_THREE);
+
+        resultDB.deleteResults(hashes);
+
+        hashes.add(COMMIT_HASH_TWO);
+
+        Collection<CommitResult> savedResults = resultDB.getResultsFromCommits(hashes);
+
+        assertEquals(1, savedResults.size());
+        assertEquals(COMMIT_HASH_TWO, savedResults.iterator().next().getCommitHash());
     }
 
     private CommitResult createNewCommitResult(String commitHash, Benchmark benchmark, int repositoryId) {

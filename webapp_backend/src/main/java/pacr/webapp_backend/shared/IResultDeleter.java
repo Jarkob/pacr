@@ -1,6 +1,7 @@
 package pacr.webapp_backend.shared;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 
 /**
  * Deletes benchmarking results from the system.
@@ -8,11 +9,11 @@ import javax.validation.constraints.NotNull;
 public interface IResultDeleter {
 
     /**
-     * Deletes the result for the commit if it is saved in the system.
+     * Deletes the results for the commits.
      * Enters CommitResult.class monitor.
-     * @param commitHash the hash of the commit. Cannot be null, empty or blank.
+     * @param commitHashes the hashes of the commits. Cannot be null.
      */
-    void deleteBenchmarkingResults(@NotNull String commitHash);
+    void deleteBenchmarkingResults(@NotNull Collection<String> commitHashes);
 
     /**
      * Deletes any saved results for commits from this repository. Nothing happens if no repository with the given id
@@ -20,6 +21,7 @@ public interface IResultDeleter {
      * Enters CommitResult.class monitor.
      * @param repositoryID the id of the repository.
      */
+    @Deprecated
     void deleteAllResultsForRepository(int repositoryID);
 
 }
