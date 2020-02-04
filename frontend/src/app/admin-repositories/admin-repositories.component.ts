@@ -173,7 +173,7 @@ export class AdminRepositoriesComponent implements OnInit {
       this.repositoryService.addRepository({
         id: addRepositoryFormValue.id,
         trackAllBranches: addRepositoryFormValue.trackMode,
-        selectedBranches: addRepositoryFormValue.trackedBranches,
+        selectedBranches: this.selectedBranchesForBackend(addRepositoryFormValue.trackedBranches, addRepositoryFormValue.trackMode),
         pullURL: addRepositoryFormValue.pullURL,
         name: addRepositoryFormValue.name,
         hookSet: addRepositoryFormValue.webHook,
@@ -194,6 +194,14 @@ export class AdminRepositoriesComponent implements OnInit {
     }
   }
 
+  private selectedBranchesForBackend(trackedBranches: string[], trackAllBranches: boolean): string[] {
+      if (trackAllBranches) {
+        return this.invertList(trackedBranches, this.allAddBranches);
+      }
+
+      return trackedBranches;
+  }
+
   /**
    * update the repository, which is currently selected for editing
    */
@@ -202,7 +210,7 @@ export class AdminRepositoriesComponent implements OnInit {
       this.repositoryService.updateRepository({
         id: this.selectedRepository.id,
         trackAllBranches: editRepositoryFormValue.trackMode,
-        selectedBranches: editRepositoryFormValue.trackedBranches,
+        selectedBranches: this.selectedBranchesForBackend(editRepositoryFormValue.trackedBranches, editRepositoryFormValue.trackMode),
         pullURL: editRepositoryFormValue.pullURL,
         name: editRepositoryFormValue.name,
         hookSet: editRepositoryFormValue.webHook,
