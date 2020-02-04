@@ -229,8 +229,10 @@ export class DiagramComponent implements OnInit {
     // load images
     const errorImage = new Image(20, 20);
     const globalErrorImage = new Image(20, 20);
-    errorImage.src = 'assets/warning.svg';
-    globalErrorImage.src = 'assets/error.svg';
+    const notYetImage = new Image(20, 20);
+    errorImage.src = 'assets/clear.svg';
+    globalErrorImage.src = 'assets/block.svg';
+    notYetImage.src = 'assets/run.svg';
     Chart.pluginService.register({
       afterUpdate: (chart) => {
         // tslint:disable-next-line:prefer-for-of
@@ -239,7 +241,7 @@ export class DiagramComponent implements OnInit {
           for (let j = 0; j < dataset._meta[2].data.length; j++) {
             const element = dataset._meta[2].data[j];
             if (!dataset.code[j].result) {
-              element._model.pointStyle = globalErrorImage; // TODO other image
+              element._model.pointStyle = notYetImage;
             } else if (dataset.code[j].globalError) {
               element._model.pointStyle = globalErrorImage;
             } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
