@@ -18,15 +18,15 @@ export class EventService {
   /**
    * get the events for leaderboards
    */
-  public getLeaderboardEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(this.globalService.url + '/events/leaderboard');
+  public getLeaderboardEvents(page: number, pageSize: number): Observable<any> {
+    return this.http.get<Event[]>(this.globalService.url + '/events/leaderboard?page=' + page + '&size=' + pageSize);
   }
 
   /**
    * get the events for benchmarking
    */
-  public getBenchmarkingEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>(this.globalService.url + '/events/benchmark');
+  public getBenchmarkingEvents(page: number, pageSize: number): Observable<any> {
+    return this.http.get<Event[]>(this.globalService.url + '/events/benchmark?page=' + page + '&size=' + pageSize);
   }
 
   /**

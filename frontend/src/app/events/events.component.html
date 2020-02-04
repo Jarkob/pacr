@@ -1,7 +1,12 @@
 <mat-card [style.overflow]="'auto'">
     <mat-tab-group>
         <mat-tab label="{{ strings?.benchmarkingEvents }}">
-            <mat-accordion class="headers-align">
+            <mat-paginator [length]="this.benchmarkingPage?.totalElements"
+                [pageSize]="this.benchmarkingPage?.size"
+                [pageSizeOptions]="this.pageSizeOptions"
+                (page)="this.benchmarkingPageEvent = this.getBenchmarkingEvents($event)">                    
+            </mat-paginator> 
+            <mat-accordion *ngIf="this.benchmarkingEvents && this.benchmarkingEvents.length > 0" class="headers-align">
                 <mat-expansion-panel *ngFor="let event of benchmarkingEvents">
                     <mat-expansion-panel-header>
                         <mat-panel-title> {{ event.created | date }} </mat-panel-title>
@@ -17,24 +22,31 @@
                     <p class="mat-h3"> {{ event.description }} </p>
                 </mat-expansion-panel>
             </mat-accordion>
+            <p *ngIf="!(this.benchmarkingEvents && this.benchmarkingEvents.length > 0)">No events available.</p>
         </mat-tab>
         <mat-tab label="{{ strings?.leaderboardEvents }}">
-            <mat-accordion class="headers-align">
+            <mat-paginator [length]="this.leaderboardPage?.totalElements"
+                [pageSize]="this.leaderboardPage?.size"
+                [pageSizeOptions]="this.pageSizeOptions"
+                (page)="this.leaderboardPageEvent = this.getLeaderboardEvents($event)">                    
+            </mat-paginator> 
+            <mat-accordion *ngIf="this.leaderboardEvents && this.leaderboardEvents.length > 0" class="headers-align">
                 <mat-expansion-panel *ngFor="let event of leaderboardEvents">
                     <mat-expansion-panel-header>
-                        <mat-panel-title>{{ event.title }}</mat-panel-title>
-                        <mat-panel-description>{{ event.created | date }}</mat-panel-description>
+                        <mat-panel-title> {{ event.created | date }} </mat-panel-title>
+                        <mat-panel-description> {{ event.title }}</mat-panel-description>
                     </mat-expansion-panel-header>
-                    
+
                     <p class="mat-h5"> {{ strings?.created }} {{ event.created | date }} </p>
 
                     <b class="mat-h3"> {{ strings?.title }} </b>                    
                     <p class="mat-h3"> {{ event.title }} </p>
-
+                    
                     <b class="mat-h3"> {{ strings?.description }} </b>
                     <p class="mat-h3"> {{ event.description }} </p>
                 </mat-expansion-panel>
             </mat-accordion>
+            <p *ngIf="!(this.leaderboardEvents && this.leaderboardEvents.length > 0)">No events available.</p>
         </mat-tab>
     </mat-tab-group>
 </mat-card>

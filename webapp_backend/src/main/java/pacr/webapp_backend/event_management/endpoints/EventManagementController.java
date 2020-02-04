@@ -3,6 +3,9 @@ package pacr.webapp_backend.event_management.endpoints;
 import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.View;
@@ -15,6 +18,8 @@ import pacr.webapp_backend.shared.EventCategory;
  */
 @RestController
 public class EventManagementController {
+
+    private static final int DEFAULT_PAGE_SIZE = 50;
 
     private EventHandler eventHandler;
 
@@ -36,19 +41,21 @@ public class EventManagementController {
     }
 
     /**
+     * @param pageable information about the requested page
      * @return a list of all leaderboard events.
      */
     @RequestMapping("/events/leaderboard")
-    public List<Event> getLeaderboardEvents() {
-        return eventHandler.getEvents(EventCategory.LEADERBOARD);
+    public Page<Event> getLeaderboardEvents(@PageableDefault(size = DEFAULT_PAGE_SIZE, sort = {"created"}) Pageable pageable) {
+        return eventHandler.getEvents(pageable, EventCategory.LEADERBOARD);
     }
 
     /**
+     * @param pageable information about the requested page
      * @return a list of all benchmarking events.
      */
     @RequestMapping("/events/benchmark")
-    public List<Event> getBenchmarkingEvents() {
-        return eventHandler.getEvents(EventCategory.BENCHMARKING);
+    public Page<Event> getBenchmarkingEvents(@PageableDefault(size = DEFAULT_PAGE_SIZE, sort = {"created"}) Pageable pageable) {
+        return eventHandler.getEvents(pageable, EventCategory.BENCHMARKING);
     }
 
     /**

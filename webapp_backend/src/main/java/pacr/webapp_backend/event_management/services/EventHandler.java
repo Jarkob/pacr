@@ -1,11 +1,16 @@
 package pacr.webapp_backend.event_management.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.EventTemplate;
@@ -33,6 +38,13 @@ public class EventHandler implements IEventHandler {
         this.eventContainers = new HashMap<>();
     }
 
+    @PostConstruct
+    private void initialize() {
+        for (EventCategory category : EventCategory.values()) {
+            eventContainers.put(category, new EventContainer(category, eventAccess));
+        }
+    }
+
     @Override
     public void addEvent(@NotNull EventTemplate eventTemplate) {
         Objects.requireNonNull(eventTemplate, "The eventTemplate cannot be null.");
@@ -46,6 +58,23 @@ public class EventHandler implements IEventHandler {
 
         EventContainer eventContainer = eventContainers.get(category);
         eventContainer.addEvent(eventTemplate.getTitle(), eventTemplate.getDescription());
+    }
+
+    /**
+     * Returns all stored events that belong to the given category.
+     *
+     * @param pageable information about the requested page.
+     * @param category category of the returned events.
+     * @return a list of events.
+     */
+    public Page<Event> getEvents(Pageable pageable, EventCategory category) {
+        if (eventContainers.containsKey(category)) {
+            EventContainer eventContainer = eventContainers.get(category);
+
+            return eventContainer.getEvents(pageable);
+        }
+
+        return new PageImpl<>(new ArrayList<>(), pageable, 0);
     }
 
     /**

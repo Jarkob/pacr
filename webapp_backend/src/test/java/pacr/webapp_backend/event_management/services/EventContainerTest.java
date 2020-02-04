@@ -3,12 +3,16 @@ package pacr.webapp_backend.event_management.services;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.shared.EventCategory;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -65,6 +69,7 @@ public class EventContainerTest {
     void addEvent_noError() {
         LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
+        when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(List.of(new Event(category, EVENT_TITLE, EVENT_DESCRIPTION)));
         eventContainer.addEvent(EVENT_TITLE, EVENT_DESCRIPTION);
 
         ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
@@ -113,11 +118,14 @@ public class EventContainerTest {
     @Test
     void getEvents_noError() throws InterruptedException {
         int amtEvents = 5;
+        List<Event> expectedEvents = new ArrayList<>();
         for (int i = 0; i < amtEvents; i++) {
             eventContainer.addEvent(EVENT_TITLE + i, EVENT_DESCRIPTION + i);
+            expectedEvents.add(new Event(category, EVENT_TITLE + i, EVENT_DESCRIPTION + i));
             Thread.sleep(200);
         }
 
+        when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(expectedEvents);
         List<Event> events = eventContainer.getEvents();
 
         assertEquals(amtEvents, events.size());
@@ -152,11 +160,13 @@ public class EventContainerTest {
             expectedEvents.add(new Event(category, EVENT_TITLE + i, EVENT_DESCRIPTION + i));
         }
 
-        when(eventAccess.findByCategory(category)).thenReturn(expectedEvents);
+        Pageable pageable = PageRequest.of(0, expectedEvents.size());
+
+        List<Event> sorted = expectedEvents;
+        Collections.sort(sorted);
+        when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(sorted);
 
         EventContainer eventContainer = new EventContainer(category, eventAccess);
-
-        verify(eventAccess).findByCategory(category);
 
         List<Event> events = eventContainer.getEvents();
 

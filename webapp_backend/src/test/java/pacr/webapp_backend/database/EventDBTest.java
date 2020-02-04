@@ -8,6 +8,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.shared.EventCategory;
@@ -24,6 +26,8 @@ public class EventDBTest extends SpringBootTestWithoutShell {
 
     private EventDB eventDB;
 
+    Pageable pageable;
+
     @Autowired
     public EventDBTest(EventDB eventDB) {
         MockitoAnnotations.initMocks(this);
@@ -37,6 +41,8 @@ public class EventDBTest extends SpringBootTestWithoutShell {
     @AfterEach
     void setUp() {
         this.eventDB.deleteAll();
+
+        this.pageable = PageRequest.of(0, 99);
     }
 
     @Test
@@ -46,7 +52,7 @@ public class EventDBTest extends SpringBootTestWithoutShell {
 
         eventDB.saveEvent(expectedEvent);
 
-        List<Event> events = eventDB.findByCategory(category);
+        List<Event> events = eventDB.findByCategory(pageable, category).getContent();
         assertEquals(1, events.size());
 
         Event event = events.get(0);
@@ -71,7 +77,7 @@ public class EventDBTest extends SpringBootTestWithoutShell {
         eventDB.saveEvent(expectedEvent);
         eventDB.saveEvent(otherEvent);
 
-        List<Event> events = eventDB.findByCategory(category);
+        List<Event> events = eventDB.findByCategory(pageable, category).getContent();
         assertEquals(1, events.size());
 
         Event event = events.get(0);

@@ -62,6 +62,9 @@ public class EventHandlerTest {
         LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         eventHandler.addEvent(eventTemplate);
 
+        when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(List.of(
+                new Event(category, EVENT_TITLE, EVENT_DESCRIPTION)));
+
         List<Event> events = eventHandler.getEvents(category);
 
         assertEquals(1, events.size());
@@ -81,7 +84,12 @@ public class EventHandlerTest {
         EventTemplate otherTemplate = createEventTemplate(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
 
         eventHandler.addEvent(eventTemplate);
+        when(eventAccess.findByCategoryOrderByCreatedDesc(eventTemplate.getCategory())).thenReturn(List.of(
+            new Event(category, EVENT_TITLE, EVENT_DESCRIPTION)));
+
         eventHandler.addEvent(otherTemplate);
+        when(eventAccess.findByCategoryOrderByCreatedDesc(otherTemplate.getCategory())).thenReturn(List.of(
+                new Event(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION)));
 
         List<Event> categoryEvents = eventHandler.getEvents(category);
         assertEquals(1, categoryEvents.size());
@@ -120,6 +128,8 @@ public class EventHandlerTest {
             EventTemplate template = createEventTemplate(category, title, description);
             eventHandler.addEvent(template);
         }
+
+        when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(expectedEvents);
 
         List<Event> events = eventHandler.getEvents(category);
         assertEquals(amtEvents, events.size());
@@ -171,6 +181,8 @@ public class EventHandlerTest {
             EventTemplate template = createEventTemplate(otherCategory, title, description);
             eventHandler.addEvent(template);
         }
+
+        when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(expectedEvents);
 
         List<Event> events = eventHandler.getEvents(category);
         assertEquals(amtEvents, events.size());

@@ -1,10 +1,10 @@
 package pacr.webapp_backend.event_management.services;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
 
@@ -16,7 +16,6 @@ public class EventContainer {
     private IEventAccess eventAccess;
 
     private EventCategory category;
-    private List<Event> events;
 
     /**
      * Creates a new event manager that handles events for the given category.
@@ -30,9 +29,6 @@ public class EventContainer {
 
         this.category = category;
         this.eventAccess = eventAccess;
-
-        // fetch all events that are available with this category
-        this.events = new ArrayList<>(eventAccess.findByCategory(category));
     }
 
     /**
@@ -53,17 +49,17 @@ public class EventContainer {
         Event event = new Event(category, title, description);
 
         eventAccess.saveEvent(event);
-        events.add(event);
     }
 
     /**
+     * @param pageable information about the requested page.
      * @return a sorted list of all events in this event manager.
      */
+    Page<Event> getEvents(Pageable pageable) {
+        return eventAccess.findByCategory(pageable, category);
+    }
+
     List<Event> getEvents() {
-        List<Event> toReturn = new ArrayList<>(events);
-
-        Collections.sort(toReturn);
-
-        return toReturn;
+        return eventAccess.findByCategoryOrderByCreatedDesc(category);
     }
 }
