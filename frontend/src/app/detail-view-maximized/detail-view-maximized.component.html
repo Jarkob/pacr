@@ -39,87 +39,8 @@
 
                 <app-system-environment-display [systemEnvironment]="benchmarkingResult?.systemEnvironment"></app-system-environment-display>
             </mat-tab>
-        <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.hasGlobalError">
-                <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">                
-                    <ng-container matColumnDef="benchmarkGroup">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.benchmarkGroup }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.benchmarkGroup }} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="benchmark">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.benchmark }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.benchmark}} </td>
-                    </ng-container>
-
-                    <ng-container matColumnDef="property">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.property }} </th>
-                        <td mat-cell *matCellDef="let element">
-                            <mat-icon class="errorIcon" *ngIf="element.hadLocalError" color="warn">error_outline</mat-icon>
-                            {{element.property}}
-                        </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="median">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableMedian }} </th>
-                        <td mat-cell *matCellDef="let element">
-                            <span id="medianValue">
-                                {{element.median | number:'1.4' }} {{ element.unit }}
-                            </span>
-                            
-                            <span *ngIf="element.compared" id="compareRation"
-                                [ngClass]="{red : element.ratioToPreviousCommit < 0, 
-                                            black: element.ratioToPreviousCommit === 0, 
-                                            green: element.ratioToPreviousCommit > 0}">
-                                {{ element.ratioToPreviousCommit | percent:'1.0-2' }}
-                            </span>                           
-                        </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="lowerQuartile">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableLowerQuartile }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.lowerQuartile | number:'1.4' }} {{ element.unit }} </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="upperQuartile">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableUpperQuartile }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.upperQuartile | number:'1.4' }} {{ element.unit }} </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="standardDeviation">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableStandardDeviation }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.standardDeviation | number:'1.4' }} {{ element.unit }} </td>
-                    </ng-container>
-                
-                    <ng-container matColumnDef="mean">
-                        <th mat-header-cell *matHeaderCellDef> {{ this.strings?.tableMean }} </th>
-                        <td mat-cell *matCellDef="let element"> {{element.mean | number:'1.4' }} {{ element.unit }} </td>
-                    </ng-container>
-                
-                    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-                
-                    <!-- Group header -->
-                    <ng-container matColumnDef="groupHeader">
-                        <td colspan="999" mat-cell *matCellDef="let group">
-                            <mat-icon id="expandIcon" *ngIf="group.expanded">expand_less</mat-icon>
-                            <mat-icon id="expandIcon" *ngIf="!group.expanded">expand_more</mat-icon>
-                            <span class="mat-h2" *ngIf="group.level === 1">{{ strings?.benchmarkGroup }} {{ group[groupByColumns[group.level - 1]] }}</span>
-                            <span class="mat-h3" *ngIf="group.level === 2">{{ strings?.benchmark }} {{ group[groupByColumns[group.level - 1]] }}</span> 
-                        </td>
-                    </ng-container>
-
-                    <!-- LocalError header -->
-                    <ng-container matColumnDef="localErrorHeader">
-                        <td colspan="999" mat-cell *matCellDef="let element">
-                            {{ strings?.localError }} {{ element.errorMessage }}
-                        </td>
-                    </ng-container>
-                
-                  <tr mat-row *matRowDef="let row; columns: ['groupHeader']; when: isGroup" (click)="groupHeaderClick(row)"> </tr>
-
-                  <tr mat-row *matRowDef="let row; columns: ['property', 'localErrorHeader']; when: hadLocalError"> </tr>
-                
-                </table>
+            <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.hasGlobalError">
+                <app-benchmarking-result-table [commitHash]="benchmarkingResult.commitHash"></app-benchmarking-result-table>
             </mat-tab>
         </mat-tab-group>
     </mat-card-content>

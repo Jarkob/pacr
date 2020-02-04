@@ -20,11 +20,6 @@
     "tabCommitResults": "Results",
     "tabResultDisabledTooltip": "There was a global error and all benchmarks failed.",
     "undefinedGroup": "Undefined Group",
-    "tableMedian": "Median",
-    "tableLowerQuartile": "Lower Quartile",
-    "tableUpperQuartile": "Upper Quartile",
-    "tableStandardDeviation": "Standard Deviation",
-    "tableMean": "Mean",
 
     "commitData": "Commit Data:",
     "systemEnvironment": "System Environment:"

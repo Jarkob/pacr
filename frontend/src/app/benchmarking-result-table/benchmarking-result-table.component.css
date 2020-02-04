@@ -1,0 +1,9 @@
+table {
+    width: 100%;
+}
+
+#expandIcon {
+    height: 26px;
+    vertical-align: bottom;
+    cursor: pointer;
+}

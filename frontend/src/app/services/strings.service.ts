@@ -79,4 +79,8 @@ export class StringService {
     public getSystemEnvironmentStrings(): Observable<any> {
         return this.http.get('./assets/system-environment-string.json');
     }
+
+    public getBenchmarkingResultTableStrings(): Observable<any> {
+        return this.http.get('./assets/benchmarking-result-table-string.json');
+    }
 }

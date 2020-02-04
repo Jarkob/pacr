@@ -1,3 +1,4 @@
+import { BenchmarkingResultTableComponent } from './benchmarking-result-table/benchmarking-result-table.component';
 import { SystemEnvironmentDisplayComponent } from './system-environment-display/system-environment-display.component';
 import { CommitDetailsComponent } from './commit-details/commit-details.component';
 import { CommitComparisonService } from './comparison/commit-comparison.service';
@@ -75,7 +76,8 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     ShortenStringPipe,
     CommitComparisonComponent,
     CommitDetailsComponent,
-    SystemEnvironmentDisplayComponent
+    SystemEnvironmentDisplayComponent,
+    BenchmarkingResultTableComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,

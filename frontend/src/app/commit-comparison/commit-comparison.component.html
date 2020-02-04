@@ -43,6 +43,15 @@
                     <app-system-environment-display [systemEnvironment]="benchmarkingResult2?.systemEnvironment"></app-system-environment-display>
                 </div>
             </mat-tab>
+            <mat-tab label="{{ strings?.tabComparison }}">
+
+            </mat-tab>
+            <mat-tab label="{{ strings?.tabBenchmarkingResults }} {{ benchmarkingResult1.commitHash | shortenString:7 }}">
+                <app-benchmarking-result-table [commitHash]="benchmarkingResult1.commitHash"></app-benchmarking-result-table>
+            </mat-tab>
+            <mat-tab label="{{ strings?.tabBenchmarkingResults }} {{ benchmarkingResult2.commitHash | shortenString:7 }}">
+                <app-benchmarking-result-table [commitHash]="benchmarkingResult2.commitHash"></app-benchmarking-result-table>
+            </mat-tab>
         </mat-tab-group>
     </mat-card-content>
     

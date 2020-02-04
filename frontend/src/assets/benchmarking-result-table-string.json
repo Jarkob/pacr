@@ -1,0 +1,10 @@
+{
+    "tableMedian": "Median",
+    "tableLowerQuartile": "Lower Quartile",
+    "tableUpperQuartile": "Upper Quartile",
+    "tableStandardDeviation": "Standard Deviation",
+    "tableMean": "Mean",
+    "benchmarkGroup": "Group:",
+    "benchmark": "Benchmark:",
+    "localError": "Error Message:"
+}
