@@ -31,7 +31,6 @@ import { DiagramComponent } from './diagram/diagram.component';
 import { DiagramMaximizedComponent } from './diagram-maximized/diagram-maximized.component';
 import { CommitHistoryComponent } from './commit-history/commit-history.component';
 import { AdminComponent } from './admin/admin.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { ToolbarComponent } from './toolbar/toolbar.component';
 
@@ -61,7 +60,6 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     AdminRepositoriesComponent,
     AdminBenchmarksComponent,
     SshConfigComponent,
-    DashboardComponent,
     LoginComponent,
     ToolbarComponent,
     DetailViewComponent,

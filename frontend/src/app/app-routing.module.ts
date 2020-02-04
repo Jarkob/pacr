@@ -3,13 +3,12 @@ import { AuthenticationGuardService } from './services/authentication-guard.serv
 import { AcademicDashboardComponent } from './academic-dashboard/academic-dashboard.component';
 import { CompetitiveDashboardComponent } from './competitive-dashboard/competitive-dashboard.component';
 import { AdminComponent } from './admin/admin.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },
+  { path: '', redirectTo: 'competitive', pathMatch: 'full' },
   { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuardService] },
   { path: 'competitive', component: CompetitiveDashboardComponent },
   { path: 'academic', component: AcademicDashboardComponent },
