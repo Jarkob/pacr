@@ -1,4 +1,7 @@
 {
     "comparing": "Comparing",
-    "with": "with"
+    "with": "with",
+
+    "tabCommitMetadata": "Commit Data",
+    "systemEnvironment": "System Environment"
 }

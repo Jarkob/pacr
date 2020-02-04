@@ -1,0 +1,9 @@
+{
+    "benchmarkerName": "Name:",
+    "os": "Operating System:",
+    "processor": "Processor:",
+    "kernel": "Kernel:",
+    "cores": "Cores:",
+    "memory": "Memory:",
+    "memoryUnit": "GiB"
+}

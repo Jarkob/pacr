@@ -1,0 +1,86 @@
+<mat-accordion class="headers-align">
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.commitMessage }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ benchmarkingResult?.commitMessage }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ benchmarkingResult?.commitMessage }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.repository }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ benchmarkingResult?.commitRepositoryName }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ benchmarkingResult?.commitRepositoryName }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.branches }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ benchmarkingResult?.commitBranchNames.join(strings?.listSeparator) }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ benchmarkingResult?.commitBranchNames.join(strings?.listSeparator) }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.authorDate }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ benchmarkingResult?.commitAuthorDate | date }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ benchmarkingResult?.commitAuthorDate | date }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.commitDate }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ benchmarkingResult?.commitCommitDate | date }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ benchmarkingResult?.commitCommitDate | date }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.entryDate }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ benchmarkingResult?.commitEntryDate | date }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        {{ benchmarkingResult?.commitEntryDate | date }}
+    </mat-expansion-panel>
+    <mat-expansion-panel *ngIf="benchmarkingResult.hasGlobalError" hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.globalError }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ benchmarkingResult?.errorMessage }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ benchmarkingResult?.errorMessage }}
+    </mat-expansion-panel>                        
+</mat-accordion>

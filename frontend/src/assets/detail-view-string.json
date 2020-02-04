@@ -3,15 +3,7 @@
     "noCommitSeleted": "Please select a commit in the diagram.",
     "globalErrorLabel": "failed",
     "globalErrorLabelTooltip": "No results are available because of a script exception.\nA detailed error message can be found under global error.",
-    "commitMessage": "Message:",
-    
-    "repository": "Repository:",
-    "branches": "Branches:",
-    "listSeparator": ", ",
-    "authorDate": "Author Date:",
-    "commitDate": "Commit Date:",
-    "entryDate": "Entry Date:",
-    "globalError": "Global Error:",
+
     "median": "Median:",
     "lowerQuartile": "Lower Quartile:",
     "upperQuartile": "Upper Quartile:",
@@ -20,8 +12,8 @@
     "interpretation": "Interpretation:",
     "property": "Property",
     "localError": "Error Message:",
-    "noBenchmarkProperty": "No benchmarks available.",
-    
+
+    "noBenchmarkProperty": "No benchmarks available.",    
     "benchmarkGroup": "Group:",
     "benchmark": "Benchmark:",
     "tabCommitData": "Metadata",
@@ -35,13 +27,5 @@
     "tableMean": "Mean",
 
     "commitData": "Commit Data:",
-    "systemEnvironment": "System Environment:",
-
-    "benchmarkerName": "Name:",
-    "os": "Operating System:",
-    "processor": "Processor:",
-    "kernel": "Kernel:",
-    "cores": "Cores:",
-    "memory": "Memory:",
-    "memoryUnit": "GiB"
+    "systemEnvironment": "System Environment:"
 }

@@ -1,0 +1,10 @@
+{
+    "commitMessage": "Message:",
+    "repository": "Repository:",
+    "branches": "Branches:",
+    "listSeparator": ", ",
+    "authorDate": "Author Date:",
+    "commitDate": "Commit Date:",
+    "entryDate": "Entry Date:",
+    "globalError": "Global Error:"
+}

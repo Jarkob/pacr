@@ -27,7 +27,23 @@
     </mat-card-header>
     
     <mat-card-content>
-        
+        <mat-tab-group animationDuration="0ms">
+            <mat-tab label="{{ strings?.tabCommitMetadata }}">
+                <div class="halfScreen left">
+                    <p class="mat-h1 title"> {{ benchmarkingResult1.commitHash | shortenString:7 }} </p>
+                    <app-commit-details [benchmarkingResult]="benchmarkingResult1"></app-commit-details>
+                    <p class="mat-h1 title"> {{ strings?.systemEnvironment }} </p>
+                    <app-system-environment-display [systemEnvironment]="benchmarkingResult1?.systemEnvironment"></app-system-environment-display>
+                </div>
+                <mat-divider [vertical]="true"></mat-divider>
+                <div class="halfScreen right">
+                    <p class="mat-h1 title"> {{ benchmarkingResult2.commitHash | shortenString:7 }} </p>
+                    <app-commit-details [benchmarkingResult]="benchmarkingResult2"></app-commit-details>
+                    <p class="mat-h1 title"> {{ strings?.systemEnvironment }} </p>
+                    <app-system-environment-display [systemEnvironment]="benchmarkingResult2?.systemEnvironment"></app-system-environment-display>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
     </mat-card-content>
     
 </mat-card>

@@ -1,0 +1,26 @@
+.halfScreen {    
+    width: 49%;
+    display: inline-block;
+    padding-bottom: 1em;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.title {
+    margin-top: 1em;
+}
+
+.mat-divider {
+    display: inline-block;
+    margin: 0;
+    margin-left: 1%;
+    height: 99%;
+    border-top-width: 1px;
+    border-top-style: solid;
+ }

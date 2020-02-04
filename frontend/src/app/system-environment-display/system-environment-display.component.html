@@ -1,0 +1,74 @@
+<mat-accordion class="headers-align valgin-center">
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.benchmarkerName }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ systemEnvironment?.computerName }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ systemEnvironment?.computerName }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.os }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ systemEnvironment?.os }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ systemEnvironment?.os }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.kernel }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ systemEnvironment?.kernel }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ systemEnvironment?.kernel }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.processor }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ systemEnvironment?.processor }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ systemEnvironment?.processor }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.cores }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ systemEnvironment?.cores }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ systemEnvironment?.cores }}
+    </mat-expansion-panel>
+    <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+            <mat-panel-title>
+                {{ strings?.memory }}
+            </mat-panel-title>
+            <mat-panel-description>
+                {{ systemEnvironment?.ramMemory }} {{ strings?.memoryUnit }}
+            </mat-panel-description>
+        </mat-expansion-panel-header>
+    
+        {{ systemEnvironment?.ramMemory }} {{ strings?.memoryUnit }}
+    </mat-expansion-panel>          
+</mat-accordion>

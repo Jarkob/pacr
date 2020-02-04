@@ -68,7 +68,15 @@ export class StringService {
         return this.http.get('./assets/comparison-string.json');
     }
 
-    public getCommitComparisonStrings() : Observable<any> {
+    public getCommitComparisonStrings(): Observable<any> {
         return this.http.get('./assets/commit-comparison-string.json');
+    }
+
+    public getCommitDetailsStrings(): Observable<any> {
+        return this.http.get('./assets/commit-details-string.json');
+    }
+
+    public getSystemEnvironmentStrings(): Observable<any> {
+        return this.http.get('./assets/system-environment-string.json');
     }
 }

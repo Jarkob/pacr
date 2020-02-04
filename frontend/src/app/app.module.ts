@@ -1,3 +1,5 @@
+import { SystemEnvironmentDisplayComponent } from './system-environment-display/system-environment-display.component';
+import { CommitDetailsComponent } from './commit-details/commit-details.component';
 import { CommitComparisonService } from './comparison/commit-comparison.service';
 import { CommitComparisonComponent } from './commit-comparison/commit-comparison.component';
 import { AuthenticationInterceptor } from './services/authentication.interceptor';
@@ -71,7 +73,9 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     BenchmarkerListComponent,
     BrachesPipe,
     ShortenStringPipe,
-    CommitComparisonComponent
+    CommitComparisonComponent,
+    CommitDetailsComponent,
+    SystemEnvironmentDisplayComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
