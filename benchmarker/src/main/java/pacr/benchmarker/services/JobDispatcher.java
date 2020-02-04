@@ -85,8 +85,6 @@ public class JobDispatcher {
             result.setGlobalError(e.getMessage());
         }
 
-        LOGGER.info(result.getBenchmarks());
-
         return result;
     }
 
