@@ -144,6 +144,10 @@ public class GitTracking implements IRepositoryImporter {
         LOGGER.info("Removing repository with ID {}.", repositoryID);
 
         GitRepository repository = gitTrackingAccess.getRepository(repositoryID);
+        if (repository == null) {
+            throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
+        }
+
         Set<String> commitHashes = gitTrackingAccess.getAllCommitHashes(repositoryID);
 
         resultDeleter.deleteBenchmarkingResults(commitHashes);

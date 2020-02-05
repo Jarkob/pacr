@@ -88,7 +88,10 @@ public class GitTrackingTest {
         when(commit1.getCommitHash()).thenReturn("hash1");
         when(commit2.getCommitHash()).thenReturn("hash2");
 
-        when(gitTrackingAccess.getAllCommits(42)).thenReturn(Arrays.asList(commit1, commit2));
+        GitRepository repository = Mockito.mock(GitRepository.class);
+
+        when(gitTrackingAccess.getRepository(repositoryId)).thenReturn(repository);
+        when(gitTrackingAccess.getAllCommits(repositoryId)).thenReturn(Arrays.asList(commit1, commit2));
 
         gitTracking.removeRepository(repositoryId);
 
@@ -99,8 +102,6 @@ public class GitTrackingTest {
 
     @Test
     public void removeRepositoryNotFound() {
-        doThrow(NoSuchElementException.class).when(gitTrackingAccess).removeRepository(anyInt());
-
         assertThrows(NoSuchElementException.class, () -> gitTracking.removeRepository(42));
     }
 

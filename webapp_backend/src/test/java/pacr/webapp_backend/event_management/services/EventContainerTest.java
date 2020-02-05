@@ -160,8 +160,6 @@ public class EventContainerTest {
             expectedEvents.add(new Event(category, EVENT_TITLE + i, EVENT_DESCRIPTION + i));
         }
 
-        Pageable pageable = PageRequest.of(0, expectedEvents.size());
-
         List<Event> sorted = expectedEvents;
         Collections.sort(sorted);
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(sorted);
