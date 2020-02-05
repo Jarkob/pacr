@@ -73,7 +73,7 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     /**
      * Tests whether the proper event was created when a result with comparison is saved.
      */
-    @Test @Disabled
+    @Test
     public void updateOtherComponents_shouldCreateEvent() {
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 
