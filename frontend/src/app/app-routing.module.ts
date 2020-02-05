@@ -8,7 +8,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'competitive', pathMatch: 'full' },
+  { path: '', redirectTo: 'dashboard1', pathMatch: 'full' },
   { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuardService] },
   { path: 'dashboard1', component: CompetitiveDashboardComponent },
   { path: 'dashboard2', component: AcademicDashboardComponent },
