@@ -26,8 +26,6 @@ import { LegendItem } from '../classes/legend-item';
 })
 export class DiagramComponent implements OnInit {
 
-  @Input() inSelectedBenchmark: Benchmark;
-
   constructor(
     private previewDialog: DiagramMaximizerService,
     private benchmarkingResultService: BenchmarkingResultService,
@@ -35,6 +33,8 @@ export class DiagramComponent implements OnInit {
     private benchmarkService: BenchmarkService,
     private diagramService: DiagramService,
   ) { }
+
+  @Input() inSelectedBenchmark: Benchmark;
 
   /**
    * data
@@ -152,13 +152,14 @@ export class DiagramComponent implements OnInit {
   legendData: any;
 
 
-  ngOnInit() {
-    if (this.inSelectedBenchmark != null) {
-      this.selectedBenchmark = this.inSelectedBenchmark;
-    }
 
+  ngOnInit() {
     this.getRepositories();
     this.getBenchmarkGroups();
+    if (this.inSelectedBenchmark != null) {
+      this.selectedBenchmark = this.inSelectedBenchmark;
+      this.loadBenchmark();
+    }
   }
 
   /**
@@ -213,15 +214,27 @@ export class DiagramComponent implements OnInit {
    * load the selected benchmark property
    */
   public loadProperty() {
+    let last = 0;
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.datasets.length; i++) {
       for (let j = 0; j < this.datasets[i].data.length; j++) {
         if (!this.datasets[i].code[j].result) {
-          this.datasets[i].data[j].y = 50; // FIXME
+          this.datasets[i].data[j].y = last;
         } else if (this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].errorMessage && j > 0) {
-          this.datasets[i].data[j].y = this.datasets[i].data[j - 1].y; // FIXME: won't work
+          this.datasets[i].data[j].y = last;
         } else {
           this.datasets[i].data[j].y = this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].result;
+          last = this.datasets[i].data[j].y;
+        }
+      }
+      for (let j = this.datasets[i].data.length - 1; j > -1; j--) {
+        if (!this.datasets[i].code[j].result) {
+          this.datasets[i].data[j].y = last;
+        } else if (this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].errorMessage && j > 0) {
+          this.datasets[i].data[j].y = last;
+        } else {
+          this.datasets[i].data[j].y = this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].result;
+          last = this.datasets[i].data[j].y;
         }
       }
     }
@@ -345,7 +358,7 @@ export class DiagramComponent implements OnInit {
 
   private deleteLine() {
     Chart.helpers.each(Chart.instances, (instance) => {
-      if (this.chart.chart.canvas.id === instance.canvas.id) {
+      if (this.chart && this.chart.chart.canvas.id === instance.canvas.id) {
         instance.options.annotation.annotations = [];
       }
     });
@@ -390,9 +403,7 @@ export class DiagramComponent implements OnInit {
       this.benchmarkService.getBenchmarksByGroup(group.id).subscribe(
         data => {
           this.benchmarks.set(group.name, data);
-        }
-      );
+      });
     });
   }
-
 }
