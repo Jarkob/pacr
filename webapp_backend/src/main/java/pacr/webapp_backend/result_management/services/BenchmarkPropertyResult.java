@@ -5,6 +5,7 @@ import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
+import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,6 +27,7 @@ import java.util.Objects;
 @Entity
 public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private static final int DEFAULT_RATIO = 1;
+    private static final int MAX_STRING_LENGTH = 2000;
 
     @Id
     @GeneratedValue
@@ -40,6 +42,8 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private double upperQuartile;
     private double standardDeviation;
     private boolean error;
+
+    @Column(length = MAX_STRING_LENGTH)
     private String errorMessage;
 
     private double ratio;
@@ -68,6 +72,10 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         if (measurement.getError() != null) {
             this.error = true;
             this.errorMessage = measurement.getError();
+
+            if (this.errorMessage.length() > MAX_STRING_LENGTH) {
+                this.errorMessage = this.errorMessage.substring(0, MAX_STRING_LENGTH);
+            }
         } else {
             this.error = false;
             this.errorMessage = null;
@@ -228,6 +236,10 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      * @param errorMessage the error message if there was an error.
      */
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        if (errorMessage.length() > MAX_STRING_LENGTH) {
+            this.errorMessage = errorMessage.substring(0, MAX_STRING_LENGTH);
+        } else {
+            this.errorMessage = errorMessage;
+        }
     }
 }

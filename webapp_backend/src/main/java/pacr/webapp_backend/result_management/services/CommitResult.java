@@ -1,11 +1,14 @@
 package pacr.webapp_backend.result_management.services;
 
 import java.util.Objects;
+
+import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -25,11 +28,15 @@ import java.util.Set;
 @Table(name = "commit_result")
 public class CommitResult implements IBenchmarkingResult {
 
+    private static final int MAX_STRING_LENGTH = 2000;
+
     @Id
     private String commitHash;
 
     private int repositoryId;
     private boolean error;
+
+    @Column(length = MAX_STRING_LENGTH)
     private String errorMessage;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -68,6 +75,10 @@ public class CommitResult implements IBenchmarkingResult {
         if (result.getGlobalError() != null) {
             this.error = true;
             this.errorMessage = result.getGlobalError();
+
+            if (this.errorMessage.length() > MAX_STRING_LENGTH) {
+                this.errorMessage = this.errorMessage.substring(0, MAX_STRING_LENGTH);
+            }
         } else {
             this.error = false;
             this.errorMessage = null;
@@ -197,6 +208,10 @@ public class CommitResult implements IBenchmarkingResult {
      * @param errorMessage the error message if there was an error with this result
      */
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
+        if (errorMessage.length() > MAX_STRING_LENGTH) {
+            this.errorMessage = errorMessage.substring(0, MAX_STRING_LENGTH);
+        } else {
+            this.errorMessage = errorMessage;
+        }
     }
 }

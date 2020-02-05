@@ -98,4 +98,11 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
     public SimpleBenchmark getBenchmark(String name) {
         return benchmarks.get(name);
     }
+
+    /**
+     * @param globalError the new global error.
+     */
+    public void setGlobalError(String globalError) {
+        this.globalError = globalError;
+    }
 }
