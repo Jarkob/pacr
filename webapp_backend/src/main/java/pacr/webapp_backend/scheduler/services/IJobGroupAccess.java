@@ -17,4 +17,11 @@ public interface IJobGroupAccess {
      */
     void saveJobGroup(JobGroup jobGroup);
 
+    /**
+     * Deletes a job group from the storage.
+     *
+     * @param jobGroup the group which is removed.
+     */
+    void deleteGroup(JobGroup jobGroup);
+
 }

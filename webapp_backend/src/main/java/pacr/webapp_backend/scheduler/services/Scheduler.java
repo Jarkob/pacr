@@ -2,6 +2,7 @@ package pacr.webapp_backend.scheduler.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -164,6 +165,34 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         LOGGER.info("Added {} jobs to the queue.", jobsToAdd.size());
 
         updateAll();
+    }
+
+    @Override
+    public void removeJobGroup(@NotNull String groupTitle) {
+        if (containsGroup(groupTitle)) {
+            Collection<Job> toRemove = new ArrayList<>();
+
+            toRemove.addAll(removeJobs(groupTitle, jobs));
+            toRemove.addAll(removeJobs(groupTitle, prioritized));
+
+            jobAccess.deleteJobs(toRemove);
+            JobGroup group = groups.remove(groupTitle);
+            jobGroupAccess.deleteGroup(group);
+        }
+    }
+
+    private Collection<Job> removeJobs(String groupTitle, Collection<Job> jobList) {
+        Collection<Job> toRemove = new ArrayList<>();
+
+        for (Job job : jobList) {
+            if (job.getJobGroupTitle().equals(groupTitle)) {
+                toRemove.add(job);
+            }
+        }
+
+        jobList.removeAll(toRemove);
+
+        return toRemove;
     }
 
     /**

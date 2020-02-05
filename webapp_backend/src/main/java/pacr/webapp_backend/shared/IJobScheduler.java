@@ -23,4 +23,11 @@ public interface IJobScheduler {
      */
     void addJobs(@NotNull String groupTitle, @NotNull Collection<String> jobIDs);
 
+    /**
+     * Removes all jobs belonging to the given job group.
+     *
+     * @param groupTitle the title of the group.
+     */
+    void removeJobGroup(@NotNull String groupTitle);
+
 }

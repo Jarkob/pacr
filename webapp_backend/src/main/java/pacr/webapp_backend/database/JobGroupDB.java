@@ -18,4 +18,9 @@ public interface JobGroupDB extends CrudRepository<JobGroup, Integer>, IJobGroup
     default void saveJobGroup(JobGroup jobGroup) {
         this.save(jobGroup);
     }
+
+    @Override
+    default void deleteGroup(JobGroup jobGroup) {
+        this.delete(jobGroup);
+    }
 }

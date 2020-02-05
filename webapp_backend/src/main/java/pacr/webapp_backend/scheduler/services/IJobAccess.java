@@ -37,4 +37,11 @@ public interface IJobAccess {
      */
     void deleteJob(Job job);
 
+    /**
+     * Deletes a list of jobs from the storage.
+     *
+     * @param jobs the list of jobs to be removed.
+     */
+    void deleteJobs(Collection<Job> jobs);
+
 }

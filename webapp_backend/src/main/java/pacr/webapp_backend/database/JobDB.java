@@ -24,4 +24,9 @@ public interface JobDB extends CrudRepository<Job, Integer>, IJobAccess {
     default void deleteJob(Job job) {
         this.delete(job);
     }
+
+    @Override
+    default void deleteJobs(Collection<Job> jobs) {
+        this.deleteAll(jobs);
+    }
 }
