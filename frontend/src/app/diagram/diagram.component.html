@@ -1,5 +1,5 @@
 <mat-card>
-    <button class="maximize-button" mat-mini-fab *ngIf="!this.maximized" (click)="maximizeDiagram()">
+    <button matToolTip="not yet available" disabled class="maximize-button" mat-mini-fab *ngIf="!this.maximized" (click)="maximizeDiagram()">
         <mat-icon>fullscreen</mat-icon>
     </button>
     <div fxLayout="row" fxFlexFill>
@@ -22,9 +22,9 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
-            <ul *ngIf="this.legendData">
+            <ul class="list" *ngIf="this.legendData">
                 <li *ngFor="let legendItem of this.legendData; let i = index">
-                    <mat-checkbox [(ngModel)]="this.checked[i]" (change)="toggleLine(i)">{{ legendItem.repositoryName }}/{{ legendItem.branch }}</mat-checkbox>
+                    <mat-checkbox [(ngModel)]="this.checked[i]" (change)="toggleLines(i)">{{ legendItem.repositoryName }}/{{ legendItem.branch }}</mat-checkbox>
                 </li>
             </ul>
 

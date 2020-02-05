@@ -145,12 +145,20 @@ export class DiagramComponent implements OnInit {
   labels = [];
   type = 'line';
   legend = true;
-  datasets: Dataset[] = [
-    {data: [], code: [], label: 'no data', fill: false, lineTension: 0, branch: '', repositoryId: 0, repositoryName: ''}
-  ];
+  datasets: Dataset[] = [{
+    data: [],
+    code: [],
+    label: 'no data',
+    fill: false,
+    lineTension: 0,
+    branch: '',
+    repositoryId: 0,
+    repositoryName: '',
+    borderColor: '',
+    pointBackgroundColor: ''
+  }];
   plugins = [ChartAnnotation];
   legendData: any;
-
 
 
   ngOnInit() {
@@ -176,12 +184,15 @@ export class DiagramComponent implements OnInit {
   }
 
   /**
-   * toggle a specific line in the diagram
+   * toggle specific lines in the diagram
    * @param index the index of the legend item
    */
-  public toggleLine(index: number) {
-    const datasetIndex = this.legendData[index].datasetIndex;
-    this.chart.datasets[datasetIndex].hidden = !this.checked[index];
+  public toggleLines(index: number) {
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < this.legendData[index].datasetIndices.length; i++) {
+      const datasetIndex = this.legendData[index].datasetIndices[i];
+      this.chart.datasets[datasetIndex].hidden = !this.checked[index];
+    }
     this.chart.update();
   }
 
@@ -272,6 +283,7 @@ export class DiagramComponent implements OnInit {
     });
     this.chart.update();
     this.legendData = this.chart.chart.generateLegend();
+    console.log(this.legendData);
     this.chart.update();
   }
 
@@ -300,7 +312,10 @@ export class DiagramComponent implements OnInit {
         lineTension: 0,
         repositoryId,
         repositoryName: this.repositories.get(repositoryId).name,
-        branch: 'master'};
+        branch: 'master',
+        borderColor: this.repositories.get(repositoryId).color,
+        pointBackgroundColor: this.repositories.get(repositoryId).color,
+      };
       for (const commit of list) {
         dataset.data.push({
           x: commit.commitDate,
@@ -373,18 +388,23 @@ export class DiagramComponent implements OnInit {
   }
 
   private legendCallback(currentChart: any): any {
-    const legend: LegendItem[] = [];
+    const map: Map<string, LegendItem> = new Map<string, LegendItem>();
     let index = 0;
     for (const dataset of currentChart.data.datasets) {
-      legend.push({
-        repositoryId: dataset.repositoryId,
-        repositoryName: dataset.repositoryName,
-        branch: dataset.branch,
-        datasetIndex: index // FIXME: highly likely to cause issues
-      });
+      const key = dataset.repositoryId + '/' + dataset.branch;
+      if (map.has(key)) {
+        map.get(key).datasetIndices.push(index);
+      } else {
+        map.set(key, {
+          repositoryId: dataset.repositoryId,
+          repositoryName: dataset.repositoryName,
+          branch: dataset.branch,
+          datasetIndices: [index] // FIXME: highly likely to cause issues
+        });
+      }
       index++;
     }
-    return legend;
+    return Array.from(map.values());
   }
 
   private getRepositories(): void {

@@ -7,4 +7,6 @@ export interface Dataset {
     repositoryId: number;
     repositoryName: string;
     branch: string;
+    borderColor: string;
+    pointBackgroundColor: string;
 }
