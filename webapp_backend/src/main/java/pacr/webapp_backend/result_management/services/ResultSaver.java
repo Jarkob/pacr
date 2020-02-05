@@ -73,6 +73,12 @@ abstract class ResultSaver {
 
             for (String inputBenchmarkName : inputBenchmarkResultsMap.keySet()) {
                 IBenchmark inputBenchmarkResult = inputBenchmarkResultsMap.get(inputBenchmarkName);
+
+                if (inputBenchmarkResult.getBenchmarkProperties().isEmpty()) {
+                    // skips this benchmark if it has no properties
+                    continue;
+                }
+
                 BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
 
                 Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
