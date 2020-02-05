@@ -45,6 +45,8 @@ public class SSHTransportConfigCallback implements TransportConfigCallback {
         @Override
         protected JSch createDefaultJSch(FS fs) throws JSchException {
             JSch jSch = super.createDefaultJSch(fs);
+            // removes all ssh identities of the pc
+            jSch.removeAllIdentity();
             jSch.addIdentity(pathToPrivateKey);
             return jSch;
         }
