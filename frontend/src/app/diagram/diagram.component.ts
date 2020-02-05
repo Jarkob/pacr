@@ -155,10 +155,8 @@ export class DiagramComponent implements OnInit {
 
   ngOnInit() {
     this.getRepositories();
-    this.getBenchmarkGroups();
     if (this.inSelectedBenchmark != null) {
       this.selectedBenchmark = this.inSelectedBenchmark;
-      this.loadBenchmark();
     }
   }
 
@@ -195,19 +193,27 @@ export class DiagramComponent implements OnInit {
       return;
     }
 
-    for (const [repositoryId, ] of this.repositories) {
-      this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, repositoryId, 'master').subscribe(
-        data => {
-          this.repositoryResults.set(repositoryId, data);
-          const lines = this.calculateLines(repositoryId);
-          // both is important, otherwise event listening for change of legend gets messed up
-          this.chart.datasets.concat(lines);
-          this.datasets = lines;
+    const keys = Array.from(this.repositories.keys());
+    this.getBenchmarkingResults(keys);
 
-        }
-      );
-    }
     this.deleteLine();
+  }
+
+  private getBenchmarkingResults(keys: number[]) {
+    if (keys.length === 0) {
+      this.loadProperty();
+      return;
+    }
+    this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, keys[0], 'master').subscribe(
+      data => {
+        this.repositoryResults.set(keys[0], data);
+        const lines = this.calculateLines(keys[0]);
+        // both is important, otherwise event listening for change of legend gets messed up
+        this.chart.datasets.concat(lines);
+        this.datasets = lines;
+        this.getBenchmarkingResults(keys.splice(1));
+      }
+    );
   }
 
   /**
@@ -264,7 +270,7 @@ export class DiagramComponent implements OnInit {
         }
       }
     });
-
+    this.chart.update();
     this.legendData = this.chart.chart.generateLegend();
     this.chart.update();
   }
@@ -387,6 +393,7 @@ export class DiagramComponent implements OnInit {
         data.forEach(repo => {
           this.repositories.set(repo.id, repo);
         });
+        this.getBenchmarkGroups();
       }
     );
   }
@@ -403,6 +410,13 @@ export class DiagramComponent implements OnInit {
       this.benchmarkService.getBenchmarksByGroup(group.id).subscribe(
         data => {
           this.benchmarks.set(group.name, data);
+          if (!this.selectedBenchmark && data.length !== 0) {
+            this.selectedBenchmark = data[0];
+            if (this.selectedBenchmark.properties && this.selectedBenchmark.properties.length !== 0) {
+              this.selectedBenchmarkProperty = this.selectedBenchmark.properties[0];
+              this.loadBenchmark();
+            }
+          }
       });
     });
   }

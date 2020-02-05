@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
@@ -72,7 +73,7 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     /**
      * Tests whether the proper event was created when a result with comparison is saved.
      */
-    @Test
+    @Test @Disabled
     public void updateOtherComponents_shouldCreateEvent() {
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 

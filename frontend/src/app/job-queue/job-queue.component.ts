@@ -1,5 +1,4 @@
 import { AuthenticationService } from './../services/authentication.service';
-import { FullJobQueue } from './../classes/full-job-queue';
 import { SchedulerService } from './../services/scheduler.service';
 import { Component, OnInit } from '@angular/core';
 import { Job } from '../classes/job';
@@ -27,7 +26,7 @@ export class JobQueueComponent implements OnInit {
 
   prioritizedPage: any;
   prioritized: Job[] = [];
-  priotitizedPageEvent: PageEvent = new PageEvent();
+  prioritizedPageEvent: PageEvent = new PageEvent();
 
   pageSizeOptions = [5, 10, 15, 20];
 
@@ -53,10 +52,10 @@ export class JobQueueComponent implements OnInit {
 
   private getQueue() {
     this.getJobsQueue(this.jobsPageEvent);
-    this.getPrioritizedQueue(this.priotitizedPageEvent);
+    this.getPrioritizedQueue(this.prioritizedPageEvent);
   }
 
-  private getJobsQueue(event: any): any {
+  public getJobsQueue(event: any): any {
     this.schedulerService.getJobsQueue(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.jobsPage = data;
@@ -67,7 +66,7 @@ export class JobQueueComponent implements OnInit {
     return event;
   }
 
-  private getPrioritizedQueue(event: any) {
+  public getPrioritizedQueue(event: any) {
     this.schedulerService.getPrioritizedQueue(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.prioritizedPage = data;
