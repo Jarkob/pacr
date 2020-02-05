@@ -161,7 +161,7 @@
                 </mat-list-option>
             </mat-selection-list>
 
-            <button mat-raised-button type="submit" color="primary" [disabled]="!editRepositoryForm.valid || allEditBranches.length == 0">{{ strings?.save }}</button>
+            <button mat-raised-button type="submit" color="primary" [disabled]="!editRepositoryForm.valid || allEditBranches.length === 0">{{ strings?.save }}</button>
             <button type="button" mat-raised-button (click)="onCancelEditRepository()">{{ strings?.cancel }}</button>
             <button type="button" color="warn" mat-raised-button 
                 (click)="deleteRepository(this.selectedRepository); repositoryTabs.selectedIndex = 0">{{ strings?.delete }}</button>

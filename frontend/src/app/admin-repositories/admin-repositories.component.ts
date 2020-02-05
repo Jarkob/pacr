@@ -173,7 +173,7 @@ export class AdminRepositoriesComponent implements OnInit {
       this.repositoryService.addRepository({
         id: addRepositoryFormValue.id,
         trackAllBranches: addRepositoryFormValue.trackMode,
-        selectedBranches: this.selectedBranchesForBackend(addRepositoryFormValue.trackedBranches, addRepositoryFormValue.trackMode),
+        selectedBranches: addRepositoryFormValue.trackedBranches,
         pullURL: addRepositoryFormValue.pullURL,
         name: addRepositoryFormValue.name,
         hookSet: addRepositoryFormValue.webHook,
@@ -194,14 +194,6 @@ export class AdminRepositoriesComponent implements OnInit {
     }
   }
 
-  private selectedBranchesForBackend(trackedBranches: string[], trackAllBranches: boolean): string[] {
-      if (trackAllBranches) {
-        return this.invertList(trackedBranches, this.allAddBranches);
-      }
-
-      return trackedBranches;
-  }
-
   /**
    * update the repository, which is currently selected for editing
    */
@@ -210,7 +202,7 @@ export class AdminRepositoriesComponent implements OnInit {
       this.repositoryService.updateRepository({
         id: this.selectedRepository.id,
         trackAllBranches: editRepositoryFormValue.trackMode,
-        selectedBranches: this.selectedBranchesForBackend(editRepositoryFormValue.trackedBranches, editRepositoryFormValue.trackMode),
+        selectedBranches: editRepositoryFormValue.trackedBranche,
         pullURL: editRepositoryFormValue.pullURL,
         name: editRepositoryFormValue.name,
         hookSet: editRepositoryFormValue.webHook,
@@ -268,7 +260,7 @@ export class AdminRepositoriesComponent implements OnInit {
     this.editNameControl.setValue(repository.name);
     this.editPullURLControl.setValue(repository.pullURL);
     this.editObserveAllControl.setValue(repository.observeFromDate === null);
-    this.editObserveFromDateControl.setValue(repository.observeFromDate);
+    this.editObserveFromDateControl.setValue(repository.observeFromDate ? repository.observeFromDate : new Date());
     this.editWebHookControl.setValue(repository.hookSet);
     this.editTrackModeControl.setValue(repository.trackAllBranches);
     this.editColorControl.setValue(repository.color);
