@@ -94,11 +94,21 @@ export class DiagramComponent implements OnInit {
       zoom: {
         pan: {
           enabled: true,
-          mode: 'xy'
+          mode: 'xy',
+          onPanComplete: ({ chart }) => {
+            const ticks = chart.scales['x-axis-0']._ticks;
+            console.log(ticks[0]);
+            console.log(ticks[ticks.length - 1]);
+          }
         },
         zoom: {
           enabled: true,
-          mode: 'xy'
+          mode: 'xy',
+          onZoomComplete: ({ chart }) => {
+            const ticks = chart.scales['x-axis-0']._ticks;
+            console.log(ticks[0]);
+            console.log(ticks[ticks.length - 1]);
+          }
         }
       },
     },
@@ -137,6 +147,7 @@ export class DiagramComponent implements OnInit {
             return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
           }
           const label = Math.round(item.yLabel * 100) / 100;
+          console.log(this.selectedBenchmarkProperty);
           return label + ' ' + this.selectedBenchmarkProperty.unit;
         }
       }
@@ -210,6 +221,7 @@ export class DiagramComponent implements OnInit {
     this.deleteLine();
   }
 
+  // here is a bug @Daniel (called from loadBenchmark after new benchmark is selected)
   private getBenchmarkingResults(keys: number[]) {
     if (keys.length === 0) {
       this.loadProperty();
@@ -283,7 +295,6 @@ export class DiagramComponent implements OnInit {
     });
     this.chart.update();
     this.legendData = this.chart.chart.generateLegend();
-    console.log(this.legendData);
     this.chart.update();
   }
 
@@ -430,9 +441,10 @@ export class DiagramComponent implements OnInit {
       this.benchmarkService.getBenchmarksByGroup(group.id).subscribe(
         data => {
           this.benchmarks.set(group.name, data);
-          if (!this.selectedBenchmark && data.length !== 0) {
+          if (!this.selectedBenchmark && data.length > 0) {
+            console.log(data);
             this.selectedBenchmark = data[0];
-            if (this.selectedBenchmark.properties && this.selectedBenchmark.properties.length !== 0) {
+            if (this.selectedBenchmark.properties && this.selectedBenchmark.properties.length > 0) {
               this.selectedBenchmarkProperty = this.selectedBenchmark.properties[0];
               this.loadBenchmark();
             }

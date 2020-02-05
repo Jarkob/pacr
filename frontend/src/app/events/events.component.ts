@@ -59,7 +59,6 @@ export class EventsComponent implements OnInit {
       data => {
         this.benchmarkingPage = data;
         this.benchmarkingEvents = data.content;
-        console.log(data);
       }
     );
 
