@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 import pacr.webapp_backend.git_tracking.services.GitTracking;
-import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.shared.IAuthenticator;
@@ -69,26 +68,56 @@ public class RepositoryManagerController {
 
         Set<TransferRepository> transferRepositories = new HashSet<>();
         for (GitRepository repository : repositories) {
-            Set<String> branchNames = new HashSet<>();
-            for (GitBranch branch : repository.getTrackedBranches()) {
-                branchNames.add(branch.getName());
-            }
-
-            TransferRepository transferRepository = new TransferRepository(repository.getId(),
-                    repository.isTrackAllBranches(), branchNames, repository.getPullURL(),
-                    repository.getName(), repository.isHookSet(), repository.getColor(),
-                    repository.getObserveFromDate(), repository.getCommitLinkPrefix());
-
-            transferRepositories.add(transferRepository);
+            transferRepositories.add(createTransferRepository(repository));
         }
 
         return transferRepositories;
+    }
+
+    private TransferRepository createTransferRepository(GitRepository gitRepository) {
+        // convert selected branches to tracked branches
+        Set<String> branchNames = invertSet(gitRepository.getSelectedBranches(),
+                gitTracking.getBranches(gitRepository.getPullURL()), gitRepository.isTrackAllBranches());
+
+        return new TransferRepository(gitRepository.getId(),
+                gitRepository.isTrackAllBranches(), branchNames, gitRepository.getPullURL(),
+                gitRepository.getName(), gitRepository.isHookSet(), gitRepository.getColor(),
+                gitRepository.getObserveFromDate(), gitRepository.getCommitLinkPrefix());
     }
 
     @RequestMapping(value = "/commits/{repositoryID}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     public Page<GitCommit> getAllCommits(@PageableDefault(size = 50, page = 0, sort = {"commitDate"},
             direction = Sort.Direction.ASC) Pageable pageable, @PathVariable("repositoryID") int repositoryID) {
         return gitTracking.getAllCommits(repositoryID, pageable);
+    }
+
+    /**
+     * Converts the tracked branches to selected branches.
+     * @param subset is the set being inverted.
+     * @param allEntries are all entries.
+     * @param invert is whether the set should be inverted or not.
+     * @return all selected branches that are on the white-/blacklist.
+     */
+    @org.jetbrains.annotations.NotNull
+    private Set<String> invertSet(@NotNull Set<String> subset,
+                                         @NotNull Set<String> allEntries, boolean invert) {
+        Objects.requireNonNull(subset);
+        Objects.requireNonNull(allEntries);
+
+        Set<String> selectedBranches = new HashSet<>();
+
+        if (invert) {
+            // all branches are being tracked, repository is in blacklist mode
+            selectedBranches.addAll(allEntries);
+            for (String trackedBranch : subset) {
+                selectedBranches.remove(trackedBranch);
+            }
+        } else {
+            // no branch is being tracked by default, repository is in whitelist mode
+            selectedBranches.addAll(subset);
+        }
+
+        return selectedBranches;
     }
 
     /**
@@ -110,8 +139,12 @@ public class RepositoryManagerController {
         LOGGER.info("Adding repository {} with URL {}.", transferRepository.getName(),
                 transferRepository.getPullURL());
 
+        // convert tracked branches to selected branches
+        Set<String> selectedBranches = invertSet(transferRepository.getTrackedBranches(),
+                gitTracking.getBranches(transferRepository.getPullURL()), transferRepository.isTrackAllBranches());
+
         return gitTracking.addRepository(transferRepository.getPullURL(), transferRepository.getObserveFromDate(),
-                transferRepository.getName(), transferRepository.getSelectedBranches(),
+                transferRepository.getName(), selectedBranches,
                 transferRepository.isTrackAllBranches(), transferRepository.isHookSet());
     }
 
@@ -160,22 +193,29 @@ public class RepositoryManagerController {
         // add new color to color picker if necessary
         String oldColor = gitRepository.getColor();
         String newColor = transferRepository.getColor();
+
         if (!oldColor.equals(newColor)) {
-            LOGGER.info("Changing color from {} zo {}.", oldColor, newColor);
+            LOGGER.info("Changing color from {} to {}.", oldColor, newColor);
             gitTracking.updateColorOfRepository(gitRepository, newColor);
         }
 
+        // change observeFromDate if necessary
         LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
         LocalDate newObserveFromDate = transferRepository.getObserveFromDate();
+
         if ((oldObserveFromDate == null && newObserveFromDate != null)
                 || (oldObserveFromDate != null && newObserveFromDate == null)
                 || (oldObserveFromDate != null && !oldObserveFromDate.isEqual(newObserveFromDate))) {
+
             LOGGER.info("Changing observeFromDate from {} to {}.", oldObserveFromDate, newObserveFromDate);
             gitTracking.updateObserveFromDateOfRepository(gitRepository, newObserveFromDate);
         }
 
-        gitRepository.setSelectedBranches(transferRepository.getSelectedBranches());
+        // convert tracked branches to selected branches
+        Set<String> selectedBranches = invertSet(transferRepository.getTrackedBranches(),
+                gitTracking.getBranches(transferRepository.getPullURL()), transferRepository.isTrackAllBranches());
 
+        gitRepository.setSelectedBranches(selectedBranches);
         gitRepository.setTrackAllBranches(transferRepository.isTrackAllBranches());
         gitRepository.setPullURL(transferRepository.getPullURL());
         gitRepository.setName(transferRepository.getName());

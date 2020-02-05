@@ -14,7 +14,7 @@ public class TransferRepository {
 
     private int id;
     private boolean trackAllBranches;
-    private Set<String> selectedBranches;
+    private Set<String> trackedBranches;
     private String pullURL;
     private String name;
     private boolean isHookSet;
@@ -27,7 +27,7 @@ public class TransferRepository {
      * Creates a new instance of TransferRepository.
      * @param id is the ID of the repository.
      * @param trackAllBranches is the option whether all branches are being tracked.
-     * @param selectedBranches are all selected branches.
+     * @param trackedBranches are all tracked branches.
      * @param pullURL is the pull URL of the repository.
      * @param name is the name of the repository.
      * @param isHookSet is the option whether a hook is set.
@@ -35,12 +35,12 @@ public class TransferRepository {
      * @param observeFromDate is the date from which on the repository is observed.
      * @param commitLinkPrefix is the commit link prefix.
      */
-    public TransferRepository(int id, boolean trackAllBranches, Set<String> selectedBranches, String pullURL,
+    public TransferRepository(int id, boolean trackAllBranches, Set<String> trackedBranches, String pullURL,
                               String name, boolean isHookSet, String color, LocalDate observeFromDate,
                               String commitLinkPrefix) {
         this.id = id;
         this.trackAllBranches = trackAllBranches;
-        this.selectedBranches = selectedBranches;
+        this.trackedBranches = trackedBranches;
         this.pullURL = pullURL;
         this.name = name;
         this.isHookSet = isHookSet;
@@ -65,17 +65,17 @@ public class TransferRepository {
     }
 
     /**
-     * @return all selected branches.
+     * @return all tracked branches.
      */
-    public Set<String> getSelectedBranches() {
-        return selectedBranches;
+    public Set<String> getTrackedBranches() {
+        return trackedBranches;
     }
 
     /**
-     * @param branchNames are all selected branches.
+     * @param branchNames are all tracked branches.
      */
-    public void setSelectedBranches(Set<String> branchNames) {
-        this.selectedBranches = branchNames;
+    public void setTrackedBranches(Set<String> branchNames) {
+        this.trackedBranches = branchNames;
     }
 
     /**

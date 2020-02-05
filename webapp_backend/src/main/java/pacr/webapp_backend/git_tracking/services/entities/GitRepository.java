@@ -240,10 +240,6 @@ public class GitRepository {
     public boolean isBranchSelected(@NotNull String branchName) {
         Objects.requireNonNull(branchName);
 
-        if (branchName.equals(MASTER)) {
-            return true;
-        }
-
         if (trackAllBranches) {
             return !selectedBranches.contains(branchName);
         }
