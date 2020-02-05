@@ -93,7 +93,7 @@ public interface IGitTrackingAccess {
      * @param repositoryID is the ID of the repository.
      * @return all commit hashes of commits belonging to the repository.
      */
-    Collection<String> getAllCommitHashes(int repositoryID);
+    Set<String> getAllCommitHashes(int repositoryID);
 
     /**
      * Returns a commit.
@@ -103,10 +103,10 @@ public interface IGitTrackingAccess {
     GitCommit getCommit(@NotNull String commitHash);
 
     /**
-     * Removes a commit.
-     * @param commitHash is the commit hash of the commit.
+     * Removes commits.
+     * @param commitHashes are all commit hashes being removed.
      */
-    void removeCommit(@NotNull String commitHash);
+    void removeCommits(@NotNull Set<String> commitHashes);
 
     /**
      * Checks if a commit is in the database or not.

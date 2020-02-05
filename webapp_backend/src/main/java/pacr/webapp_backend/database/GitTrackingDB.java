@@ -87,7 +87,7 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public Collection<String> getAllCommitHashes(int repositoryID) {
+    public Set<String> getAllCommitHashes(int repositoryID) {
         Collection<GitCommit> commits = commitDB.findGitCommitsByRepository_Id(repositoryID);
 
         Set<String> commitHashes = new HashSet<>();
@@ -106,10 +106,10 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void removeCommit(@NotNull String commitHash) {
-        Objects.requireNonNull(commitHash);
+    public void removeCommits(@NotNull Set<String> commitHashes) {
+        Objects.requireNonNull(commitHashes);
 
-        commitDB.deleteById(commitHash);
+        commitDB.removeGitCommitsByCommitHashIn(commitHashes);
     }
 
     @Override

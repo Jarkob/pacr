@@ -166,14 +166,10 @@ public class GitHandler {
 
         gitBranch.setHeadHash(null);
 
-        Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
-
-        for (String commitHash : toDelete) {
-            // TODO Pavel: schöner machen
-            gitTrackingAccess.removeCommit(commitHash);
-        }
+        Set<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
 
         resultDeleter.deleteBenchmarkingResults(toDelete);
+        gitTrackingAccess.removeCommits(toDelete);
 
         gitTrackingAccess.updateRepository(gitRepository);
     }

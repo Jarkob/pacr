@@ -106,9 +106,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
     public void cleanDatabase() {
         gitTrackingAccess.removeRepository(gitRepository.getId());
 
-        for (String commitHash : gitTrackingAccess.getAllCommitHashes(gitRepository.getId())) {
-            gitTrackingAccess.removeCommit(commitHash);
-        }
+        gitTrackingAccess.removeCommits(gitTrackingAccess.getAllCommitHashes(gitRepository.getId()));
     }
 
     @AfterAll
@@ -277,7 +275,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         gitTrackingAccess.updateRepository(gitRepository);
 
         when(cleanUpCommits.cleanUp(any(), eq(gitRepository), eq(gitTrackingAccess)))
-                .thenReturn(Collections.singletonList(HASH_8926F7));
+                .thenReturn(new HashSet<>(Collections.singletonList(HASH_8926F7)));
 
         Collection<String> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
 
@@ -288,7 +286,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         assertFalse(commitHashes.contains(HASH_8926F7));
 
         verify(cleanUpCommits).cleanUp(any(), eq(gitRepository), eq(gitTrackingAccess));
-        verify(resultDeleter).deleteBenchmarkingResults(Arrays.asList(HASH_8926F7));
+        verify(resultDeleter).deleteBenchmarkingResults(new HashSet<>(Arrays.asList(HASH_8926F7)));
     }
 
     /**

@@ -17,10 +17,11 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 import java.util.Collection;
+import java.util.Set;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.HashSet;
 
 /**
  * Implementation of ICleanUpCommits.
@@ -39,8 +40,8 @@ public class CleanUpCommits implements ICleanUpCommits {
     }
 
     @Override
-    public Collection<String> cleanUp(@NotNull Git git, @NotNull GitRepository gitRepository,
-                                      @NotNull IGitTrackingAccess gitTrackingAccess) {
+    public Set<String> cleanUp(@NotNull Git git, @NotNull GitRepository gitRepository,
+                               @NotNull IGitTrackingAccess gitTrackingAccess) {
         Objects.requireNonNull(git);
         Objects.requireNonNull(gitRepository);
 
@@ -86,7 +87,7 @@ public class CleanUpCommits implements ICleanUpCommits {
         }
 
         // get all unused commits
-        Collection<String> toDelete = new HashSet<>();
+        Set<String> toDelete = new HashSet<>();
         for (Map.Entry<String, Boolean> entry : commitUsed.entrySet()) {
             if (!entry.getValue()) {
                 toDelete.add(entry.getKey());

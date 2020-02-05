@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -93,10 +94,10 @@ public class CleanUpCommitsTest {
 
         when(gitTrackingAccess.containsCommit(HASH_8926F7)).thenReturn(true);
 
-        when(gitTrackingAccess.getAllCommitHashes(gitRepository.getId())).thenReturn(Arrays.asList(
+        when(gitTrackingAccess.getAllCommitHashes(gitRepository.getId())).thenReturn(new HashSet<>(Arrays.asList(
                 HASH_39E1A8,
                 HASH_9C8C86,
-                HASH_8926F7));
+                HASH_8926F7)));
 
         Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
 
