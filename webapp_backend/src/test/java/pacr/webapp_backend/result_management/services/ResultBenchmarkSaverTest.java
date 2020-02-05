@@ -1,11 +1,19 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
+import pacr.webapp_backend.database.BenchmarkDB;
+import pacr.webapp_backend.database.BenchmarkGroupDB;
+import pacr.webapp_backend.database.CommitDB;
+import pacr.webapp_backend.database.EventDB;
 import pacr.webapp_backend.database.GitTrackingDB;
+import pacr.webapp_backend.database.RepositoryDB;
+import pacr.webapp_backend.database.ResultDB;
 import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.event_management.services.EventHandler;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
@@ -19,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
 
@@ -33,20 +42,31 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
                     "the new benchmarking result is 50 percent better then the previous one (commit '1325').";
 
     private ResultManager resultManager;
-    private ResultGetter resultGetter;
-    private ResultBenchmarkSaver resultBenchmarkSaver;
     private GitTrackingDB gitTrackingAccess;
     private EventHandler eventHandler;
+    private EventDB eventDB;
+    private ResultDB resultDB;
+    private CommitDB commitDB;
+    private RepositoryDB repositoryDB;
+    private BenchmarkGroupDB benchmarkGroupDB;
+    private BenchmarkDB benchmarkDB;
+    private BenchmarkManager benchmarkManager;
 
     @Autowired
-    public ResultBenchmarkSaverTest(ResultManager resultManager, ResultGetter resultGetter,
-                                    ResultBenchmarkSaver resultBenchmarkSaver, GitTrackingDB gitTrackingDB,
-                                    EventHandler eventHandler) {
+    public ResultBenchmarkSaverTest(ResultManager resultManager, GitTrackingDB gitTrackingDB,
+                                    EventHandler eventHandler, EventDB eventDB, ResultDB resultDB, CommitDB commitDB,
+                                    RepositoryDB repositoryDB, BenchmarkGroupDB benchmarkGroupDB,
+                                    BenchmarkDB benchmarkDB) {
         this.resultManager = resultManager;
-        this.resultGetter = resultGetter;
-        this.resultBenchmarkSaver = resultBenchmarkSaver;
         this.gitTrackingAccess = gitTrackingDB;
         this.eventHandler = eventHandler;
+        this.eventDB = eventDB;
+        this.resultDB = resultDB;
+        this.commitDB = commitDB;
+        this.repositoryDB = repositoryDB;
+        this.benchmarkGroupDB = benchmarkGroupDB;
+        this.benchmarkDB = benchmarkDB;
+        this.benchmarkManager = new BenchmarkManager(benchmarkDB, benchmarkGroupDB);
     }
 
     /**
@@ -54,6 +74,8 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
      */
     @BeforeEach
     public void setUp() {
+        eventDB.deleteAll();
+
         // repository
         GitBranch branch = new GitBranch(BRANCH_NAME);
         GitRepository repository = new GitRepository(true, URL, REPO_NAME,
@@ -68,6 +90,17 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
         gitTrackingAccess.addRepository(repository);
         gitTrackingAccess.addCommit(commit);
         gitTrackingAccess.addCommit(commitTwo);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        eventDB.deleteAll();
+        resultDB.deleteAll();
+        commitDB.deleteAll();
+        repositoryDB.deleteAll();
+        benchmarkDB.deleteAll();
+        benchmarkGroupDB.deleteAll();
+        benchmarkManager = new BenchmarkManager(benchmarkDB, benchmarkGroupDB);
     }
 
     /**
@@ -89,7 +122,16 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
 
         List<Event> events = eventHandler.getEvents(EventCategory.BENCHMARKING);
 
-        assertEquals(EXPECTED_EVENT_DESCRIPTION, events.get(1).getDescription());
+        boolean foundEvent = false;
+
+        for (Event event : events) {
+            if (event.getDescription().equals(EXPECTED_EVENT_DESCRIPTION)) {
+                foundEvent = true;
+                break;
+            }
+        }
+
+        assertTrue(foundEvent);
     }
 
 }
