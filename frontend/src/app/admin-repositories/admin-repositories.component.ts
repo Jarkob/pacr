@@ -173,7 +173,7 @@ export class AdminRepositoriesComponent implements OnInit {
       this.repositoryService.addRepository({
         id: addRepositoryFormValue.id,
         trackAllBranches: addRepositoryFormValue.trackMode,
-        selectedBranches: addRepositoryFormValue.trackedBranches,
+        trackedBranches: addRepositoryFormValue.trackedBranches,
         pullURL: addRepositoryFormValue.pullURL,
         name: addRepositoryFormValue.name,
         hookSet: addRepositoryFormValue.webHook,
@@ -202,7 +202,7 @@ export class AdminRepositoriesComponent implements OnInit {
       this.repositoryService.updateRepository({
         id: this.selectedRepository.id,
         trackAllBranches: editRepositoryFormValue.trackMode,
-        selectedBranches: editRepositoryFormValue.trackedBranche,
+        trackedBranches: editRepositoryFormValue.trackedBranches,
         pullURL: editRepositoryFormValue.pullURL,
         name: editRepositoryFormValue.name,
         hookSet: editRepositoryFormValue.webHook,
@@ -264,19 +264,7 @@ export class AdminRepositoriesComponent implements OnInit {
     this.editWebHookControl.setValue(repository.hookSet);
     this.editTrackModeControl.setValue(repository.trackAllBranches);
     this.editColorControl.setValue(repository.color);
-    this.editTrackedBranchesControl.setValue(repository.selectedBranches);
-  }
-
-  public onEditTrackModeChange() {
-    const currentSelectedBranches: string[] = this.editTrackedBranchesControl.value;
-
-    this.editTrackedBranchesControl.setValue(this.invertList(currentSelectedBranches, this.allEditBranches));
-  }
-
-  public onAddTrackModeChange() {
-    const currentSelectedBranches: string[] = this.addTrackedBranchesControl.value;
-
-    this.addTrackedBranchesControl.setValue(this.invertList(currentSelectedBranches, this.allAddBranches));
+    this.editTrackedBranchesControl.setValue(repository.trackedBranches);
   }
 
   /**
@@ -284,27 +272,6 @@ export class AdminRepositoriesComponent implements OnInit {
    */
   public savePullInterval() {
     this.repositoryService.setPullInterval(this.pullInterval).subscribe();
-  }
-
-  /**
-   * Return a list that only contains values which are in compareTo but not in toInvert.
-   * @param toInvert string array
-   * @param compareTo string array
-   */
-  private invertList(toInvert: string[], compareTo: string[]): string[] {
-    const newSelectedBranches: string[] = [];
-
-    compareTo.forEach(branch => {
-      const foundElement: string = toInvert.find(element => {
-        return element === branch;
-      });
-
-      if (!foundElement) {
-        newSelectedBranches.push(branch);
-      }
-    });
-
-    return newSelectedBranches;
   }
 
   openSnackBar(message: string) {

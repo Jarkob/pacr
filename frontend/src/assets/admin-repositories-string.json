@@ -32,6 +32,7 @@
     "repositoryColorRequired": "A repository color is required.",
     "repositoryTrackMode": "Track Mode:",
     "repositoryTrackedBranches": "Tracked Branches:",
+    "none": "none",
 
     "add": "Add",
     "save": "Save",

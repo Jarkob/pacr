@@ -98,7 +98,7 @@ public class RepositoryManagerController {
      * @param invert is whether the set should be inverted or not.
      * @return all selected branches that are on the white-/blacklist.
      */
-    @org.jetbrains.annotations.NotNull
+    @NotNull
     private Set<String> invertSet(@NotNull Set<String> subset,
                                          @NotNull Set<String> allEntries, boolean invert) {
         Objects.requireNonNull(subset);

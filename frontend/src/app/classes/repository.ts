@@ -3,7 +3,7 @@ import { Commit } from './commit';
 export interface Repository {
     id: number;
     trackAllBranches: boolean;
-    selectedBranches: string[];
+    trackedBranches: string[];
     pullURL: string;
     name: string;
     hookSet: boolean;

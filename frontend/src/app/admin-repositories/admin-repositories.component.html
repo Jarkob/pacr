@@ -31,11 +31,11 @@
                     <p matLine class="mat-h4">
                         {{ strings?.trackMode }} 
                     <span matTooltip="{{ repository?.trackAllBranches ? strings?.blacklistDescription : strings?.whitelistDescription }}">
-                            {{ repository?.trackAllBranches ? strings?.whitelist : strings?.blacklist }}
+                            {{ repository?.trackAllBranches ? strings?.blacklist : strings?.whitelist }}
                         </span>
                     </p>
                     <p matLine class="mat-h4">
-                        {{ strings?.branches }} {{ repository?.selectedBranches.join(strings?.listSeparator) }}
+                        {{ strings?.branches }} {{ repository?.trackedBranches.length > 0 ? repository?.trackedBranches.join(strings?.listSeparator) : strings?.none }}
                     </p>    
                 </div>
                 <div id="options">                                    
@@ -88,7 +88,7 @@
 
             <div fxLayout="column">
                 <mat-label class="inlineLabel">{{ strings?.repositoryTrackMode }}</mat-label>
-                <mat-radio-group formControlName="trackMode" (change)="onAddTrackModeChange()">                                                                   
+                <mat-radio-group formControlName="trackMode">                                                                   
                     <mat-radio-button [value]="false" matTooltip="{{ strings?.whitelistDescription }}">{{ strings?.whitelist }}</mat-radio-button>
                     <mat-radio-button [value]="true" matTooltip="{{ strings?.blacklistDescription }}">{{ strings?.blacklist }}</mat-radio-button>
                 </mat-radio-group>
@@ -148,7 +148,7 @@
 
             <div fxLayout="column">
                 <mat-label class="inlineLabel">{{ strings?.repositoryTrackMode }}</mat-label>
-                <mat-radio-group formControlName="trackMode" (change)="onEditTrackModeChange()">                                                                   
+                <mat-radio-group formControlName="trackMode">                                                                   
                     <mat-radio-button [value]="false" matTooltip="{{ strings?.whitelistDescription }}">{{ strings?.whitelist }}</mat-radio-button>
                     <mat-radio-button [value]="true" matTooltip="{{ strings?.blacklistDescription }}">{{ strings?.blacklist }}</mat-radio-button>
                 </mat-radio-group>
