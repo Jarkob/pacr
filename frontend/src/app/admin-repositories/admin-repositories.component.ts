@@ -267,6 +267,52 @@ export class AdminRepositoriesComponent implements OnInit {
     this.editTrackedBranchesControl.setValue(repository.trackedBranches);
   }
 
+  public selectAllAddBranches() {
+    this.addTrackedBranchesControl.setValue(this.allAddBranches);
+  }
+
+  public deselectAllAddBranches() {
+    this.addTrackedBranchesControl.setValue([]);
+  }
+
+  public invertAddBranches() {
+    this.addTrackedBranchesControl.setValue(this.invertList(this.addTrackedBranchesControl.value, this.allAddBranches));
+  }
+
+  public selectAllEditBranches() {
+    this.editTrackedBranchesControl.setValue(this.allEditBranches);
+  }
+
+  public deselectAllEditBranches() {
+    this.editTrackedBranchesControl.setValue([]);
+  }
+
+  public invertEditBranches() {
+    this.editTrackedBranchesControl.setValue(this.invertList(this.editTrackedBranchesControl.value, this.allEditBranches));
+  }
+
+  /**
+   * Return a list that only contains values which are in compareTo but not in toInvert.
+   * @param toInvert string array
+   * @param compareTo string array
+   */
+  private invertList(toInvert: string[], compareTo: string[]): string[] {
+    const newSelectedBranches: string[] = [];
+
+    compareTo.forEach(branch => {
+      const foundElement: string = toInvert.find(element => {
+        return element === branch;
+      });
+
+      if (!foundElement) {
+        newSelectedBranches.push(branch);
+      }
+    });
+
+    return newSelectedBranches;
+  }
+
+
   /**
    * save the new pull interval
    */
