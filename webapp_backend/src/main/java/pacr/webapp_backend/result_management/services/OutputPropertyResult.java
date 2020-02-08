@@ -1,19 +1,15 @@
 package pacr.webapp_backend.result_management.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Objects;
 
 /**
  * Represents a slimmed down version of a BenchmarkPropertyResult for output. This only contains the statistical values
  * of the original BenchmarkPropertyResult, not all measured data.
  */
-public class OutputPropertyResult implements IBenchmarkProperty {
+public class OutputPropertyResult {
     private String name;
     private String unit;
     private ResultInterpretation interpretation;
@@ -54,32 +50,10 @@ public class OutputPropertyResult implements IBenchmarkProperty {
     }
 
     /**
-     * Gets the mean of all measurements as one result. The individual measurements are not available in a
-     * OutputPropertyResult.
-     * @return the mean.
+     * @return the unit of the measurements.
      */
-    @Override
-    public Collection<Double> getResults() {
-        Double[] results = { mean };
-        return Arrays.asList(results);
-    }
-
-    @Override @JsonIgnore
-    public ResultInterpretation getResultInterpretation() {
-        return interpretation;
-    }
-
-    @Override
     public String getUnit() {
         return unit;
-    }
-
-    @Override
-    public String getError() {
-        if (hadLocalError) {
-            return errorMessage;
-        }
-        return null;
     }
 
     /**

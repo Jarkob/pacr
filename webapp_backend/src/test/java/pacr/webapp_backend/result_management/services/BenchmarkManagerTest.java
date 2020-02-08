@@ -9,8 +9,12 @@ import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.BenchmarkGroupDB;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
+import java.util.Collection;
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     private BenchmarkDB benchmarkDB;
@@ -27,7 +31,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     private static final String UNIT = "unit";
     private static final int EXPECTED_NUM_OF_PROPERTIES = 2;
     private static final int EXPECTED_NUM_OF_GROUPS = 3;
-    private static final int EXPECTED_NUM_OF_GROUPS_AFTER_DEL = 1;
+    private static final int EXPECTED_SINGLE = 1;
     private static final int NO_ID = 0;
 
     private Benchmark benchmark;
@@ -155,11 +159,10 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     }
 
     /**
-     * Tests whether a benchmark can be removed from a group with updateBenchmark by passing the groupId
-     * GROUP_ID_NO_GROUP.
+     * Tests whether a benchmark can be removed from a group with updateBenchmark by passing the standard group id.
      */
     @Test
-    public void updateBenchmark_groupIdNoGroup_shouldMakeGroupNull() {
+    public void updateBenchmark_groupIdStandard_shouldMakeGroupStandard() {
         benchmarkDB.saveBenchmark(benchmark);
 
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME, BENCHMARK_DESCRIPTION,
@@ -170,6 +173,28 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         assertEquals(BenchmarkManager.getStandardGroupId(), savedBenchmark.getGroup().getId());
     }
 
+    @Test
+    void updateBenchmark_noBenchmarkWithGivenIdSaved_shouldThrowException() {
+        assertThrows(NoSuchElementException.class, () -> benchmarkManager.updateBenchmark(benchmark.getId(),
+                benchmark.getCustomName(), benchmark.getDescription(), group.getId()));
+    }
+
+    @Test
+    void updateBenchmark_noGroupWithGivenIdSaved_shouldThrowException() {
+        benchmarkDB.saveBenchmark(benchmark);
+
+        assertThrows(NoSuchElementException.class, () -> benchmarkManager.updateBenchmark(benchmark.getId(),
+                benchmark.getCustomName(), benchmark.getDescription(), group.getId() + 1));
+    }
+
+    @Test
+    void updateBenchmark_emptyName_shouldThrowException() {
+        benchmarkDB.saveBenchmark(benchmark);
+
+        assertThrows(IllegalArgumentException.class, () -> benchmarkManager.updateBenchmark(benchmark.getId(),
+                "", benchmark.getDescription(), group.getId()));
+    }
+
     /**
      * Tests whether group that was added with addGroup can be retrieved.
      */
@@ -178,6 +203,11 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         benchmarkManager.addGroup(GROUP_NAME_TWO);
 
         assertEquals(EXPECTED_NUM_OF_GROUPS, benchmarkManager.getAllGroups().size());
+    }
+
+    @Test
+    void addGroup_emptyName_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> benchmarkManager.addGroup(""));
     }
 
     /**
@@ -192,6 +222,17 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         assertEquals(GROUP_NAME_TWO, savedGroup.getName());
     }
 
+    @Test
+    void updateGroup_emptyName_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> benchmarkManager.updateGroup(group.getId(), ""));
+    }
+
+    @Test
+    void updateGroup_noGroupWithGivenIdSaved_shouldThrowException() {
+        assertThrows(NoSuchElementException.class,
+                () -> benchmarkManager.updateGroup(group.getId() + 1, GROUP_NAME));
+    }
+
     /**
      * Tests whether deleteGroup removes the group from the database.
      */
@@ -199,7 +240,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     public void deleteGroup_shouldRemoveGroupFromDatabase() throws IllegalAccessException {
         benchmarkManager.deleteGroup(group.getId());
 
-        assertEquals(EXPECTED_NUM_OF_GROUPS_AFTER_DEL, groupDB.count());
+        assertEquals(EXPECTED_SINGLE, groupDB.count());
     }
 
     /**
@@ -214,5 +255,34 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(BenchmarkManager.getStandardGroupId(), savedBenchmark.getGroup().getId());
+    }
+
+    @Test
+    void deleteGroup_attemptToDeleteStandardGroup_shouldThrowException() {
+        BenchmarkGroup standardGroup = groupDB.getStandardGroup();
+
+        assertThrows(IllegalAccessException.class, () -> benchmarkManager.deleteGroup(standardGroup.getId()));
+    }
+
+    @Test
+    void deleteGroup_noGroupWithGivenIdSaved_shouldThrowException() {
+        BenchmarkGroup standardGroup = groupDB.getStandardGroup();
+        assertThrows(NoSuchElementException.class,
+                () -> benchmarkManager.deleteGroup(standardGroup.getId() + group.getId()));
+    }
+
+    @Test
+    void getBenchmarksByGroup_twoBenchmarksDifferentGroups_shouldOnlyReturnBenchmarkOfGroup() {
+        BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+        Benchmark benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
+        benchmarkTwo.setGroup(groupTwo);
+
+        groupDB.saveBenchmarkGroup(groupTwo);
+        benchmarkDB.saveBenchmark(benchmarkTwo);
+
+        Collection<Benchmark> benchmarks = benchmarkManager.getBenchmarksByGroup(groupTwo.getId());
+
+        assertEquals(EXPECTED_SINGLE, benchmarks.size());
+        assertEquals(benchmarkTwo, benchmarks.iterator().next());
     }
 }

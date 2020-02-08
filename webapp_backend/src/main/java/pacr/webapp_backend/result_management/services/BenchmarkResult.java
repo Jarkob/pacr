@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -46,12 +47,13 @@ public class BenchmarkResult implements IBenchmark {
      * @param benchmark the benchmark. Throws IllegalArgumentException if it is null.
      */
     public BenchmarkResult(@NotNull Set<BenchmarkPropertyResult> propertyResults, @NotNull Benchmark benchmark) {
-        if (propertyResults == null || propertyResults.isEmpty()) {
-            throw new IllegalArgumentException("propertyResults cannot be null or empty");
+        Objects.requireNonNull(propertyResults);
+        Objects.requireNonNull(benchmark);
+
+        if (propertyResults.isEmpty()) {
+            throw new IllegalArgumentException("propertyResults cannot be empty");
         }
-        if (benchmark == null) {
-            throw new IllegalArgumentException("benchmark cannot be null");
-        }
+
         this.propertyResults = propertyResults;
         this.benchmark = benchmark;
     }

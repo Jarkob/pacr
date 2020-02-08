@@ -233,10 +233,10 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     /**
-     * @param errorMessage the error message if there was an error.
+     * @param errorMessage the error message if there was an error. May be null if there was no error.
      */
-    public void setErrorMessage(String errorMessage) {
-        if (errorMessage.length() > MAX_STRING_LENGTH) {
+    public void setErrorMessage(@Nullable String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > MAX_STRING_LENGTH) {
             this.errorMessage = errorMessage.substring(0, MAX_STRING_LENGTH);
         } else {
             this.errorMessage = errorMessage;

@@ -1,18 +1,12 @@
 package pacr.webapp_backend.result_management.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import pacr.webapp_backend.shared.IBenchmark;
-import pacr.webapp_backend.shared.IBenchmarkProperty;
-
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
  * Represents a benchmark for output purposes.
  */
-public class OutputBenchmark implements IBenchmark {
+public class OutputBenchmark {
 
     private static final transient int NO_GROUP_ID = -1;
 
@@ -47,17 +41,6 @@ public class OutputBenchmark implements IBenchmark {
         } else {
             this.groupId = NO_GROUP_ID;
         }
-    }
-
-    @Override @JsonIgnore
-    public Map<String, IBenchmarkProperty> getBenchmarkProperties() {
-        Map<String, IBenchmarkProperty> properties = new HashMap<>();
-
-        for (OutputPropertyResult result : results) {
-            properties.put(result.getName(), result);
-        }
-
-        return properties;
     }
 
     /**

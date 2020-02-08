@@ -2,7 +2,6 @@ package pacr.webapp_backend.result_management.services;
 
 import java.util.Objects;
 
-import org.hibernate.query.criteria.internal.expression.function.AggregationFunction;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
@@ -33,7 +32,7 @@ public class CommitResult implements IBenchmarkingResult {
     @Id
     private String commitHash;
 
-    private int repositoryId;
+    private int repositoryID;
     private boolean error;
 
     @Column(length = MAX_STRING_LENGTH)
@@ -61,13 +60,13 @@ public class CommitResult implements IBenchmarkingResult {
      * Throws IllegalArgumentException if any parameter is null.
      * @param result the IBenchmarkingResult.
      * @param benchmarkResults the measured data for each benchmark. May be empty.
-     * @param repositoryId id of the repository of the commit.
+     * @param repositoryID id of the repository of the commit.
      * @param commitDate the commit date of the commit. Cannot be null.
      * @param comparisonCommitHash the hash of the commit this result was compared to. May be null (in this case it is
      *                             implied that no comparison has taken place).
      */
     public CommitResult(@NotNull IBenchmarkingResult result, @NotNull Set<BenchmarkResult> benchmarkResults,
-                        int repositoryId, @NotNull LocalDateTime commitDate, @Nullable String comparisonCommitHash) {
+                        int repositoryID, @NotNull LocalDateTime commitDate, @Nullable String comparisonCommitHash) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(benchmarkResults);
         Objects.requireNonNull(commitDate);
@@ -84,7 +83,7 @@ public class CommitResult implements IBenchmarkingResult {
             this.errorMessage = null;
         }
         this.commitHash = result.getCommitHash();
-        this.repositoryId = repositoryId;
+        this.repositoryID = repositoryID;
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
@@ -98,20 +97,22 @@ public class CommitResult implements IBenchmarkingResult {
      * @param commitHash the hash of the measured commit. Throws IllegalArgumentException if it is empty.
      * @param systemEnvironment the system environment of the benchmarks.
      * @param benchmarkResults the measured data for each benchmark.
-     * @param repositoryId id of the repository of the commit.
+     * @param repositoryID id of the repository of the commit.
      */
     public CommitResult(@NotNull String commitHash, @NotNull SystemEnvironment systemEnvironment,
-                        @NotNull Set<BenchmarkResult> benchmarkResults, int repositoryId) {
-        if (commitHash == null || commitHash.isEmpty()) {
-            throw new IllegalArgumentException("commit hash cannot be null or empty");
+                        @NotNull Set<BenchmarkResult> benchmarkResults, int repositoryID) {
+        Objects.requireNonNull(commitHash);
+        Objects.requireNonNull(systemEnvironment);
+        Objects.requireNonNull(benchmarkResults);
+
+        if (commitHash.isEmpty()) {
+            throw new IllegalArgumentException("commit hash cannot be empty");
         }
-        if (systemEnvironment == null || benchmarkResults == null) {
-            throw new IllegalArgumentException("input cannot be null");
-        }
+
         this.error = false;
         this.errorMessage = null;
         this.commitHash = commitHash;
-        this.repositoryId = repositoryId;
+        this.repositoryID = repositoryID;
         this.systemEnvironment = systemEnvironment;
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
@@ -120,7 +121,7 @@ public class CommitResult implements IBenchmarkingResult {
 
     @Override
     public int getRepositoryID() {
-        return repositoryId;
+        return repositoryID;
     }
 
     @Override
@@ -150,13 +151,6 @@ public class CommitResult implements IBenchmarkingResult {
             return errorMessage;
         }
         return null;
-    }
-
-    /**
-     * @return Gets the id of the repository of the commit.
-     */
-    public int getRepositoryId() {
-        return repositoryId;
     }
 
     /**
@@ -205,10 +199,10 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     /**
-     * @param errorMessage the error message if there was an error with this result
+     * @param errorMessage the error message if there was an error with this result. May be null if there was no error.
      */
-    public void setErrorMessage(String errorMessage) {
-        if (errorMessage.length() > MAX_STRING_LENGTH) {
+    public void setErrorMessage(@Nullable String errorMessage) {
+        if (errorMessage != null && errorMessage.length() > MAX_STRING_LENGTH) {
             this.errorMessage = errorMessage.substring(0, MAX_STRING_LENGTH);
         } else {
             this.errorMessage = errorMessage;

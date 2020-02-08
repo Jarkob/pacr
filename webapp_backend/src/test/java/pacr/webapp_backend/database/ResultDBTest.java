@@ -94,7 +94,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
         this.resultDB.saveResult(newResultForSameCommit);
 
         CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
-        assertEquals(REPO_ID_TWO, savedResult.getRepositoryId());
+        assertEquals(REPO_ID_TWO, savedResult.getRepositoryID());
     }
 
     /**

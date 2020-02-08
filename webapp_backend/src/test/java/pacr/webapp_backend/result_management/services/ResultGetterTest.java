@@ -191,6 +191,32 @@ public class ResultGetterTest {
         assertEquals(0, outputs.size());
     }
 
+    @Test
+    void getBranchResults_shouldOutputDatabaseAnswer() {
+        when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME)).thenAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) {
+                Collection<GitCommit> commits = new LinkedList<>();
+                commits.add(commitMock);
+                return commits;
+            }
+        });
+
+        when(commitMock.getCommitHash()).thenReturn(HASH);
+
+        Collection<CommitResult> results = new LinkedList<>();
+        results.add(resultMock);
+
+        when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
+        when(resultMock.getCommitHash()).thenReturn(HASH);
+        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
+
+        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBranchResults(REPO_ID, BRANCH_NAME);
+
+        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(diagramOutputMock, outputs.get(HASH));
+    }
+
     /**
      * Tests whether getBranchResults throws exception if the branch or repository does not exist.
      */

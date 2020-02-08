@@ -1,9 +1,10 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.util.StringUtils;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ public class BenchmarkGroup {
      * @param name the name. Cannot be null, empty or blank (throws IllegalArgumentException).
      */
     public BenchmarkGroup(@NotNull String name) {
-        if (name == null || name.isEmpty() || name.isBlank()) {
+        if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank.");
         }
         this.name = name;

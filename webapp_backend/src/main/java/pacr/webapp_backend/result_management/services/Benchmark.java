@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management.services;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -57,7 +58,7 @@ public class Benchmark {
      *                     blank.
      */
     public Benchmark(@NotNull String originalName) {
-        if (originalName == null || originalName.isEmpty() || originalName.isBlank()) {
+        if (!StringUtils.hasText(originalName)) {
             throw new IllegalArgumentException("originalName cannot be null, empty or blank");
         }
         this.originalName = originalName;

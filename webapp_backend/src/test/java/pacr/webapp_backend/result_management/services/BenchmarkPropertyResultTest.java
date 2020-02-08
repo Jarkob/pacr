@@ -8,10 +8,13 @@ import pacr.webapp_backend.result_management.services.BenchmarkProperty;
 import pacr.webapp_backend.result_management.services.BenchmarkPropertyResult;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BenchmarkPropertyResultTest {
+
+    private static final int MAX_STRING_LENGTH = 2000;
 
     private static BenchmarkPropertyResult propertyResultEven;
     private static BenchmarkPropertyResult propertyResultOdd;
@@ -91,5 +94,28 @@ public class BenchmarkPropertyResultTest {
     public void getStandardDeviation_measurementsAreEntered_ShouldReturnStandardDeviation() {
         assertEquals(STANDARD_DEVIATION_EVEN, propertyResultEven.getStandardDeviation(), DELTA);
         assertEquals(STANDARD_DEVIATION_ODD, propertyResultOdd.getStandardDeviation(), DELTA);
+    }
+
+    @Test
+    void constructor_errorMessageTooLong_shouldTruncateErrorMessage() {
+        String error = "0".repeat(MAX_STRING_LENGTH * 2);
+        SimpleBenchmarkProperty result = new SimpleBenchmarkProperty();
+        result.setError(error);
+        BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(result, propertyMock);
+
+        assertEquals(MAX_STRING_LENGTH, propertyResult.getError().length());
+    }
+
+    @Test
+    void setErrorMessage_messageTooLong_shouldTruncateErrorMessage() {
+        String error = "0".repeat(MAX_STRING_LENGTH * 2);
+
+        propertyResultEven.setError(true);
+        propertyResultEven.setErrorMessage(error);
+
+        assertEquals(MAX_STRING_LENGTH, propertyResultEven.getError().length());
+
+        propertyResultEven.setError(false);
+        propertyResultEven.setErrorMessage(null);
     }
 }

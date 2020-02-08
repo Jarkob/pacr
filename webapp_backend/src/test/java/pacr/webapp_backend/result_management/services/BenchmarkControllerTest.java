@@ -6,6 +6,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import pacr.webapp_backend.result_management.endpoints.BenchmarkController;
 import pacr.webapp_backend.result_management.endpoints.BenchmarkInput;
 import pacr.webapp_backend.shared.IAuthenticator;
@@ -20,6 +22,8 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
 public class BenchmarkControllerTest {
 
@@ -38,6 +42,8 @@ public class BenchmarkControllerTest {
     private BenchmarkInput benchmarkInput;
 
     private BenchmarkController benchmarkController;
+
+    private MockMvc mockMvc;
     
     @BeforeEach
     public void setUp() {
@@ -47,6 +53,8 @@ public class BenchmarkControllerTest {
         benchmarkController = new BenchmarkController(authenticatorMock, benchmarkManagerMock);
 
         benchmarkInput = new BenchmarkInput(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
+
+        mockMvc = standaloneSetup(benchmarkController).build();
     }
 
     /**
@@ -60,6 +68,21 @@ public class BenchmarkControllerTest {
         Collection<Benchmark> testBenchmarks = benchmarkController.getAllBenchmarks();
 
         assertEquals(benchmarks, testBenchmarks);
+    }
+
+    /**
+     * Tests whether getAllBenchmarks returns the same as the benchmark manager.
+     */
+    @Test
+    void getAllBenchmarks_apiCall_shouldReturnSameAsBenchmarkManager() throws Exception {
+        List<Benchmark> benchmarks = new LinkedList<>();
+        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        benchmarks.add(benchmark);
+
+        when(benchmarkManagerMock.getAllBenchmarks()).thenReturn(benchmarks);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/benchmarks"))
+        .andExpect(content().string("[{\"id\":0,\"originalName\":\"benchmark\",\"customName\":\"benchmark\",\"description\":\"\",\"properties\":[],\"group\":null}]"));
     }
 
     /**

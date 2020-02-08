@@ -2,7 +2,6 @@ package pacr.webapp_backend.database;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,7 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
 
     @Override
     default CommitResult getNewestResult(int repositoryId) {
-        return this.findFirstByRepositoryIdOrderByEntryDateDesc(repositoryId);
+        return this.findFirstByRepositoryIDOrderByEntryDateDesc(repositoryId);
     }
 
     @Override
@@ -68,10 +67,10 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
 
     @Override
     default Page<CommitResult> getFullRepositoryResults(int repositoryId, Pageable pageable) {
-        return findAllByRepositoryId(repositoryId, pageable);
+        return findAllByRepositoryID(repositoryId, pageable);
     }
 
-    Page<CommitResult> findAllByRepositoryId(int repositoryId, Pageable pageable);
+    Page<CommitResult> findAllByRepositoryID(int repositoryId, Pageable pageable);
 
     /**
      * This is a method that is automatically created by jpa based on its method name.
@@ -84,7 +83,7 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
      * @param repositoryId the id of the repository.
      * @return the newest saved result for the repository.
      */
-    CommitResult findFirstByRepositoryIdOrderByEntryDateDesc(int repositoryId);
+    CommitResult findFirstByRepositoryIDOrderByEntryDateDesc(int repositoryId);
 
     /**
      * This is a method that is automatically created by jpa based on its method name.

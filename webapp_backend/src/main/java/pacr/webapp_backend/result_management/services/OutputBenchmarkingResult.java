@@ -1,24 +1,19 @@
 package pacr.webapp_backend.result_management.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import pacr.webapp_backend.shared.IBenchmark;
-import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.validation.constraints.NotNull;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 /**
  * Represents a benchmarking result for a certain commit. Contains data about the commit and all measurements and/or
  * error messages.
  */
-public class OutputBenchmarkingResult implements IBenchmarkingResult {
+public class OutputBenchmarkingResult {
 
     private boolean hasGlobalError;
     private String errorMessage;
@@ -117,38 +112,18 @@ public class OutputBenchmarkingResult implements IBenchmarkingResult {
         this.benchmarksList = new OutputBenchmark[0];
     }
 
-    @Override
-    public int getRepositoryID() {
-        return commitRepositoryId;
-    }
-
-    @Override
+    /**
+     * @return the commit hash of the result.
+     */
     public String getCommitHash() {
         return commitHash;
     }
 
-    @Override
+    /**
+     * @return the system environment the result was measured on.
+     */
     public ISystemEnvironment getSystemEnvironment() {
         return systemEnvironment;
-    }
-
-    @Override @JsonIgnore
-    public Map<String, IBenchmark> getBenchmarks() {
-        Map<String, IBenchmark> benchmarkMap = new HashMap<>();
-
-        for (OutputBenchmark benchmark : benchmarksList) {
-            benchmarkMap.put(benchmark.getOriginalName(), benchmark);
-        }
-
-        return benchmarkMap;
-    }
-
-    @Override @JsonIgnore
-    public String getGlobalError() {
-        if (getHasGlobalError()) {
-            return errorMessage;
-        }
-        return null;
     }
 
     /**

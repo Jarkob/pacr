@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management.services;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -76,9 +77,7 @@ public class BenchmarkManager {
      * @param benchmark the benchmark. Throws IllegalArgumentException if this is null.
      */
     void createOrUpdateBenchmark(@NotNull Benchmark benchmark) {
-        if (benchmark == null) {
-            throw new IllegalArgumentException("benchmark cannot be null");
-        }
+        Objects.requireNonNull(benchmark);
 
         if (benchmark.getGroup() == null) {
             benchmark.setGroup(standardGroup);
@@ -112,11 +111,9 @@ public class BenchmarkManager {
      * @param groupID the id of the new group.
      */
     public void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID) {
+        Objects.requireNonNull(description);
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
-        }
-        if (description == null) {
-            throw new IllegalArgumentException("description cannot be null");
         }
 
         synchronized (Benchmark.class) {
@@ -143,7 +140,7 @@ public class BenchmarkManager {
      * Enters Benchmark.class monitor.
      * @param name the name of the new benchmark group. Throws IllegalArgumentException if this is null, empty or blank.
      */
-    public void addGroup(String name) {
+    public void addGroup(@NotNull String name) {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
@@ -161,7 +158,7 @@ public class BenchmarkManager {
      * @param id the id of the group.
      * @param name the new name of the group. Throws IllegalArgumentException if this is null, empty or blank.
      */
-    public void updateGroup(int id, String name) {
+    public void updateGroup(int id, @NotNull String name) {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
