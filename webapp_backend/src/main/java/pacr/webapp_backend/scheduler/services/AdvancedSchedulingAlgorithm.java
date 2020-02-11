@@ -1,7 +1,5 @@
 package pacr.webapp_backend.scheduler.services;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Comparator;
 
 /**
@@ -19,46 +17,13 @@ class AdvancedSchedulingAlgorithm implements Comparator<Job> {
             return -1;
         }
 
-        LocalDateTime now = LocalDateTime.now();
+        int timeSheetCompare = Long.compare(job1.getGroupTimeSheet(), job2.getGroupTimeSheet());
 
-        long job1Score = calcScore(job1, now);
-        long job2Score = calcScore(job2, now);
-
-        // a lower score means that the job is scheduled before the other one
-        if (job1Score < job2Score) {
-            return -1;
-        } else if (job1Score == job2Score) {
+        if (timeSheetCompare == 0) {
             return job2.getQueued().compareTo(job1.getQueued());
         }
 
-        return 1;
-    }
-
-    /**
-     * Calculates a score for the job based on the time it was queued and the job group's benchmarking time.
-     *
-     * Score calculation:
-     *
-     * Take the seconds from the time it was scheduled until now.
-     * The job group's benchmarking time is added as a penalty so jobs which belong to a job group with a lot of
-     * benchmarking time have a worse score.
-     *
-     * A lower score is better. This way the most recent job is always preferred.
-     *
-     * @param job the job the score is calculated for.
-     * @param now the time that the score is calculated for.
-     * @return the score of the given job.
-     */
-    private long calcScore(Job job, LocalDateTime now) {
-        long nowSeconds = now.toEpochSecond(ZoneOffset.UTC);
-        long jobSeconds = job.getQueued().toEpochSecond(ZoneOffset.UTC);
-
-        long deltaJobToNow = nowSeconds - jobSeconds;
-
-        // weigh the group time sheet double
-        deltaJobToNow += job.getGroupTimeSheet() * 2;
-
-        return deltaJobToNow;
+        return timeSheetCompare;
     }
 
 }

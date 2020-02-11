@@ -18,7 +18,7 @@ public class JobGroup {
     private int id;
 
     private String title;
-    private transient long timeSheet;
+    private long timeSheet;
 
     /**
      * Creates an empty JobGroup.

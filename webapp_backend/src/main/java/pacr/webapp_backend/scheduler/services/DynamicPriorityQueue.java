@@ -1,9 +1,7 @@
 package pacr.webapp_backend.scheduler.services;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -23,7 +21,7 @@ public class DynamicPriorityQueue<E> extends PriorityQueue<E> {
     }
 
     @Override
-    public E poll() {
+    public E peek() {
         if (isEmpty()) {
             return null;
         }
@@ -34,28 +32,7 @@ public class DynamicPriorityQueue<E> extends PriorityQueue<E> {
         super.clear();
         super.addAll(Arrays.asList(elements));
 
-        return super.poll();
-    }
-
-    /**
-     * @return a list sorted by the priority of the elements.
-     */
-    public List<E> getSortedList() {
-        PriorityQueue<E> queue = new PriorityQueue<>(comparator());
-
-        // it is save to assume that the type of the array elements is E.
-        queue.addAll(Arrays.asList((E[]) super.toArray()));
-
-        List<E> sortedList = new ArrayList<>();
-
-        // PriorityQueue is not necessarily sorted
-        while (!queue.isEmpty()) {
-            E element = queue.poll();
-
-            sortedList.add(element);
-        }
-
-        return sortedList;
+        return super.peek();
     }
 
 }

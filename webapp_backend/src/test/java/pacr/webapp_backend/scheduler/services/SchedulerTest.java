@@ -1,39 +1,111 @@
 package pacr.webapp_backend.scheduler.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+import pacr.webapp_backend.SpringBootTestWithoutShell;
+import pacr.webapp_backend.database.JobDB;
+import pacr.webapp_backend.database.JobGroupDB;
 import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IObserver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
-public class SchedulerTest {
+public class SchedulerTest extends SpringBootTestWithoutShell {
 
     private Scheduler scheduler;
 
     final String JOB_GROUP = "jobGroup";
     final String JOB_ID = "jobID";
 
-    @Mock
-    private IJobAccess jobAccess;
+    private JobDB jobAccess;
+    private JobGroupDB jobGroupAccess;
 
-    @Mock
-    private IJobGroupAccess jobGroupAccess;
+    @Autowired
+    public SchedulerTest(JobDB jobAccess, JobGroupDB jobGroupAccess) {
+        this.jobAccess = spy(jobAccess);
+        this.jobGroupAccess = spy(jobGroupAccess);
+    }
 
     @BeforeEach
-    void initialize() {
+    void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        scheduler = new Scheduler(jobAccess, jobGroupAccess);
+        scheduler = spy(new Scheduler(jobAccess, jobGroupAccess));
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        jobAccess.deleteAll();
+        jobGroupAccess.deleteAll();
+    }
+
+    @Test
+    void Scheduler_loadJobsOnConstruct() {
+        JobGroup group1 = new JobGroup(JOB_GROUP + 1);
+        JobGroup group2 = new JobGroup(JOB_GROUP + 2);
+
+        final int amtJobsGroup1 = 5;
+        final String jobsGroup1Suffix = "G1";
+        saveJobsToDatabase(amtJobsGroup1, jobsGroup1Suffix, false, group1);
+
+        final int amtJobsGroup2 = 5;
+        final String jobsGroup2Suffix = "G2";
+        saveJobsToDatabase(amtJobsGroup2, jobsGroup2Suffix, false, group2);
+
+        final int amtPrioritizedGroup1 = 5;
+        final String prioritizedGroup1Suffix = "GP1";
+        saveJobsToDatabase(amtPrioritizedGroup1, prioritizedGroup1Suffix, true, group1);
+
+        Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
+        scheduler.loadJobsFromStorage();
+
+        assertEquals(amtJobsGroup1 + amtJobsGroup2, scheduler.getJobsQueue().size());
+        assertEquals(amtPrioritizedGroup1, scheduler.getPrioritizedQueue().size());
+
+        int actualAmtJobsGroup1 = 0;
+        int actualAmtJobsGroup2 = 0;
+        for (Job job : scheduler.getJobsQueue()) {
+            if (job.getJobGroupTitle().equals(group1.getTitle())) {
+                actualAmtJobsGroup1++;
+            } else if (job.getJobGroupTitle().equals(group2.getTitle())) {
+                actualAmtJobsGroup2++;
+            } else {
+                fail("Unknown group was added.");
+            }
+        }
+
+        int actualAmtPrioritizedGroup1 = 0;
+        for (Job job : scheduler.getPrioritizedQueue()) {
+            if (job.getJobGroupTitle().equals(group1.getTitle())) {
+                actualAmtPrioritizedGroup1++;
+            } else {
+                fail("Unknown group was added.");
+            }
+        }
+
+        assertEquals(amtJobsGroup1, actualAmtJobsGroup1);
+        assertEquals(amtJobsGroup2, actualAmtJobsGroup2);
+        assertEquals(amtPrioritizedGroup1, actualAmtPrioritizedGroup1);
     }
 
     @Test
@@ -58,6 +130,149 @@ public class SchedulerTest {
 
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
         assertEquals(JOB_ID, job.getJobID());
+    }
+
+    @Test
+    void addJob_invalidGroupTitle() {
+        assertThrows(IllegalArgumentException.class, () -> {
+           scheduler.addJob(null, JOB_ID);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJob("", JOB_ID);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJob(" ", JOB_ID);
+        });
+    }
+
+    @Test
+    void addJob_invalidJobId() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJob(JOB_GROUP,null);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJob(JOB_GROUP,"");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJob(JOB_GROUP, " ");
+        });
+    }
+
+    @Test
+    void addJobs_noError() {
+        Collection<String> jobIds = new ArrayList<>();
+
+        final int amtJobs = 5;
+        for (int i = 0; i < amtJobs; i++) {
+            jobIds.add(JOB_ID + i);
+        }
+
+        scheduler.addJobs(JOB_GROUP, jobIds);
+
+        Collection<Job> addedJobs = scheduler.getJobsQueue();
+
+        assertEquals(amtJobs, addedJobs.size());
+        for (Job job : addedJobs) {
+            assertEquals(JOB_GROUP, job.getJobGroupTitle());
+        }
+
+        verify(scheduler).updateAll();
+    }
+
+    @Test
+    void addJobs_invalidGroupTitle() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJobs(null, new ArrayList<>());
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJobs("", new ArrayList<>());
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.addJobs(" ", new ArrayList<>());
+        });
+
+        verify(scheduler, never()).updateAll();
+    }
+
+    @Test
+    void addJobs_invalidJobIds() {
+        Collection<String> jobIds = new ArrayList<>();
+
+        final int amtJobs = 5;
+        for (int i = 0; i < amtJobs; i++) {
+            jobIds.add(JOB_ID + i);
+        }
+        jobIds.add(null);
+        jobIds.add("");
+        jobIds.add(" ");
+
+        scheduler.addJobs(JOB_GROUP, jobIds);
+
+        Collection<Job> addedJobs = scheduler.getJobsQueue();
+
+        assertEquals(amtJobs, addedJobs.size());
+        for (Job job : addedJobs) {
+            assertEquals(JOB_GROUP, job.getJobGroupTitle());
+        }
+
+        assertThrows(NullPointerException.class, () -> {
+            scheduler.addJobs(JOB_GROUP, null);
+        });
+    }
+
+    @Test
+    void removeJobGroup_noError() throws InterruptedException {
+        final int amtJobs = 3;
+        final int amtPrioritized = 3;
+        fillSchedulerWithJobs(amtJobs, amtPrioritized);
+
+        // groupTitle is set by fillSchedulerWithJobs
+        final String groupToRemove = JOB_GROUP + 0;
+
+        scheduler.removeJobGroup(groupToRemove);
+
+        Collection<Job> jobs = scheduler.getJobsQueue();
+        Collection<Job> prioritized = scheduler.getPrioritizedQueue();
+
+        // fillSchedulerWithJobs adds groups with one job associated
+        // JOB_GROUP0 has a prioritized job
+        assertEquals(amtPrioritized - 1, prioritized.size());
+        assertEquals(amtJobs, jobs.size());
+
+        ArgumentCaptor<JobGroup> groupCaptor = ArgumentCaptor.forClass(JobGroup.class);
+        verify(jobGroupAccess).deleteGroup(groupCaptor.capture());
+
+        JobGroup group = groupCaptor.getValue();
+        assertEquals(groupToRemove, group.getTitle());
+    }
+
+    @Test
+    void removeJobGroup_unknownGroup() {
+        scheduler.removeJobGroup(JOB_GROUP);
+
+        verify(jobAccess, never()).deleteJob(any());
+        verify(jobGroupAccess, never()).deleteGroup(any());
+    }
+
+    @Test
+    void removeJobGroup_invalidGroupTitle() {
+        assertThrows(IllegalArgumentException.class, () -> {
+           scheduler.removeJobGroup(null);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.removeJobGroup("");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.removeJobGroup(" ");
+        });
     }
 
     @Test
@@ -93,11 +308,42 @@ public class SchedulerTest {
     }
 
     @Test
+    void givePriorityTo_invalidGroupTitle() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.givePriorityTo(null, JOB_ID);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.givePriorityTo("", JOB_ID);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.givePriorityTo(" ", JOB_ID);
+        });
+    }
+
+    @Test
+    void givePriorityTo_invalidJobId() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.givePriorityTo(JOB_GROUP,null);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.givePriorityTo(JOB_GROUP, "");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.givePriorityTo(JOB_GROUP, " ");
+        });
+    }
+
+    @Test
     void popJob_noPrioritized_noError() {
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
         IJob job = scheduler.popJob();
 
+        assertNotNull(job);
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
         assertEquals(JOB_ID, job.getJobID());
 
@@ -157,6 +403,24 @@ public class SchedulerTest {
     }
 
     @Test
+    void popJob_multipleCalls() {
+        scheduler.addJob(JOB_GROUP, JOB_ID);
+
+        IJob job = scheduler.popJob();
+
+        assertNotNull(job);
+        assertEquals(JOB_GROUP, job.getJobGroupTitle());
+        assertEquals(JOB_ID, job.getJobID());
+
+        checkSchedulerQueue(0, 0);
+
+        job = scheduler.popJob();
+
+        assertNull(job);
+        verify(scheduler).removeJobGroup(JOB_GROUP);
+    }
+
+    @Test
     void returnJob_noError() {
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
@@ -205,12 +469,14 @@ public class SchedulerTest {
 
         scheduler.addJob(JOB_GROUP, JOB_ID);
 
-        List<Job> jobs = scheduler.getJobsQueue();
+        Job job = getFirstJobInJobsQueue();
 
-        Job job = jobs.get(0);
         assertEquals(0, job.getGroupTimeSheet());
 
         scheduler.addToGroupTimeSheet(JOB_GROUP, TIME);
+
+        job = getFirstJobInJobsQueue();
+
         assertEquals(TIME, job.getGroupTimeSheet());
     }
 
@@ -402,12 +668,30 @@ public class SchedulerTest {
         for (int i = 0; i < amtPrioritizedJobs; i++) {
             scheduler.addJob(JOB_GROUP + i, JOB_ID + i);
             scheduler.givePriorityTo(JOB_GROUP + i, JOB_ID + i);
-            Thread.sleep(1);
+            Thread.sleep(1000);
         }
 
         for (int i = amtPrioritizedJobs; i < amtJobs + amtPrioritizedJobs; i++) {
             scheduler.addJob(JOB_GROUP + i, JOB_ID + i);
-            Thread.sleep(1);
+            Thread.sleep(1000);
+        }
+    }
+
+    private Job getFirstJobInJobsQueue() {
+        List<Job> jobs = scheduler.getJobsQueue();
+
+        assertTrue(jobs.size() > 0);
+
+        return jobs.get(0);
+    }
+
+    private void saveJobsToDatabase(int amount, String suffix, boolean prioritized, JobGroup group) {
+        jobGroupAccess.saveJobGroup(group);
+
+        for (int i = 0; i < amount; i++) {
+            Job job = new Job(JOB_ID + suffix + i, group);
+            job.setPrioritized(prioritized);
+            jobAccess.saveJob(job);
         }
     }
 
