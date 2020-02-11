@@ -1,11 +1,8 @@
 package pacr.webapp_backend.scheduler.endpoints;
 
-import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,12 +44,7 @@ public class SchedulerController {
      */
     @RequestMapping("/queue/prioritized")
     public Page<Job> getPrioritizedQueue(@PageableDefault(size = 15) Pageable pageable) {
-        List<Job> prioritized = scheduler.getPrioritizedQueue();
-
-        int start = Math.min(pageable.getPageNumber() * pageable.getPageSize(), prioritized.size());
-        int end = Math.min(start + pageable.getPageSize() - 1, prioritized.size());
-
-        return new PageImpl<>(prioritized.subList(start, end), pageable, prioritized.size());
+        return scheduler.getPrioritizedQueue(pageable);
     }
 
     /**
@@ -63,12 +55,7 @@ public class SchedulerController {
      */
     @RequestMapping("/queue/jobs")
     public Page<Job> getJobsQueue(@PageableDefault(size = 5) Pageable pageable) {
-        List<Job> jobs = scheduler.getJobsQueue();
-
-        int start = Math.min(pageable.getPageNumber() * pageable.getPageSize(), jobs.size());
-        int end = Math.min(start + pageable.getPageSize() - 1, jobs.size());
-
-        return new PageImpl<>(jobs.subList(start, end), pageable, jobs.size());
+        return scheduler.getJobsQueue(pageable);
     }
 
     /**

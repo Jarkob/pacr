@@ -1,24 +1,19 @@
 package pacr.webapp_backend.scheduler.endpoints;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
-import pacr.webapp_backend.scheduler.services.Job;
+import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.scheduler.services.Scheduler;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -35,6 +30,9 @@ public class SchedulerControllerTest {
 
     @Mock
     private IAuthenticator authenticator;
+
+    @Mock
+    private Pageable pageable;
 
     @Spy
     private PrioritizeMessage prioritizeMessage;
@@ -71,24 +69,18 @@ public class SchedulerControllerTest {
         });
     }
 
-    @Test @Disabled
-    void getQueue_noError() {
-        List<Job> jobs = new ArrayList<>();
-        Job job = mock(Job.class);
-        jobs.add(job);
+    @Test
+    void getPrioritizedQueue_noError() {
+        schedulerController.getPrioritizedQueue(pageable);
 
-        List<Job> prioritized = new ArrayList<>();
-        Job prioritizedJob = mock(Job.class);
-        prioritized.add(prioritizedJob);
+        verify(scheduler).getPrioritizedQueue(pageable);
+    }
 
-        when(scheduler.getJobsQueue()).thenReturn(jobs);
-        when(scheduler.getPrioritizedQueue()).thenReturn(prioritized);
+    @Test
+    void getJobsQueue_noError() {
+        schedulerController.getJobsQueue(pageable);
 
-        // TODO: Page objects are returned now
-        // FullJobQueue jobQueue = schedulerController.getQueue();
-
-        // assertEquals(jobs, jobQueue.getJobs());
-        // assertEquals(prioritized, jobQueue.getPrioritizedJobs());
+        verify(scheduler).getJobsQueue(pageable);
     }
 
     @Test

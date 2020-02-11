@@ -3,16 +3,16 @@ package pacr.webapp_backend.scheduler.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.PriorityQueue;
-import java.util.Set;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -33,8 +33,6 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     private DynamicPriorityQueue<JobGroup> groupQueue;
 
-    private PriorityQueue<Job> prioritizedQueue;
-
     private Map<String, JobGroup> groups;
 
     private Collection<IObserver> observers;
@@ -53,7 +51,6 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         this.jobGroupAccess = jobGroupAccess;
 
         this.groupQueue = new DynamicPriorityQueue<>(new GroupSchedulingAlgorithm());
-        this.prioritizedQueue = new DynamicPriorityQueue<>(new FIFOSchedulingAlgorithm());
 
         this.groups = new HashMap<>();
 
@@ -62,8 +59,6 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     @PostConstruct
     void loadJobsFromStorage() {
-        prioritizedQueue.addAll(jobAccess.findPrioritized());
-
         for (JobGroup group : jobGroupAccess.findAllJobGroups()) {
             groupQueue.add(group);
             groups.put(group.getTitle(), group);
@@ -96,15 +91,17 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     public IJob popJob() {
         Job job = null;
 
-        if (!prioritizedQueue.isEmpty()) {
-            job = prioritizedQueue.poll();
+        Collection<Job> prioritized = jobAccess.findPrioritized();
+
+        if (!prioritized.isEmpty()) {
+            job = prioritized.stream().findFirst().orElse(null);
         } else {
             while (job == null && groupQueue.size() > 0) {
                 JobGroup group = groupQueue.peek();
 
-                List<Job> jobs = new ArrayList<>(jobAccess.findJobs(group.getTitle()));
+                List<Job> jobs = new ArrayList<>(jobAccess.findAllJobs(group.getTitle()));
 
-                if (jobs.size() == 0) {
+                if (jobs.isEmpty()) {
                     removeJobGroup(group.getTitle());
                 } else {
                     jobs.sort(new AdvancedSchedulingAlgorithm());
@@ -187,30 +184,13 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
         }
         if (containsGroup(groupTitle)) {
-            Collection<Job> toRemove = new ArrayList<>();
-
-            toRemove.addAll(jobAccess.findJobs(groupTitle));
-            toRemove.addAll(removeJobs(groupTitle, prioritizedQueue));
+            Collection<Job> toRemove = new ArrayList<>(jobAccess.findAllJobs(groupTitle));
 
             jobAccess.deleteJobs(toRemove);
             JobGroup group = groups.remove(groupTitle);
             groupQueue.remove(group);
             jobGroupAccess.deleteGroup(group);
         }
-    }
-
-    private Collection<Job> removeJobs(String groupTitle, Collection<Job> jobList) {
-        Collection<Job> toRemove = new ArrayList<>();
-
-        for (Job job : jobList) {
-            if (job.getJobGroupTitle().equals(groupTitle)) {
-                toRemove.add(job);
-            }
-        }
-
-        jobList.removeAll(toRemove);
-
-        return toRemove;
     }
 
     /**
@@ -237,8 +217,6 @@ public class Scheduler implements IJobProvider, IJobScheduler {
                 Job prioritizedJob = new Job(jobID, groups.get(job.getJobGroupTitle()));
                 prioritizedJob.setPrioritized(true);
 
-                prioritizedQueue.add(prioritizedJob);
-
                 jobAccess.saveJob(prioritizedJob);
                 jobAccess.deleteJob(job);
 
@@ -253,22 +231,25 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     /**
      * Gets a sorted list of all jobs that are not manually prioritized.
-     * @return a list of jobs.
+     * @param pageable contains paging information.
+     * @return a page of jobs.
      */
-    public List<Job> getJobsQueue() {
-        List<Job> jobs = new ArrayList<>(jobAccess.findJobs());
+    public Page<Job> getJobsQueue(Pageable pageable) {
+        Page<Job> page = jobAccess.findJobs(pageable);
+        List<Job> jobs = new ArrayList<>(page.getContent());
 
         jobs.sort(new AdvancedSchedulingAlgorithm());
 
-        return jobs;
+        return new PageImpl<>(jobs, page.getPageable(), page.getTotalElements());
     }
 
     /**
      * Gets a sorted list of all jobs that are manually prioritized.
-     * @return a list of jobs.
+     * @param pageable contains paging information.
+     * @return a page of jobs.
      */
-    public List<Job> getPrioritizedQueue() {
-        return new ArrayList<>(prioritizedQueue);
+    public Page<Job> getPrioritizedQueue(Pageable pageable) {
+        return jobAccess.findPrioritized(pageable);
     }
 
     @Override
