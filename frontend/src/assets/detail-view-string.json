@@ -1,6 +1,7 @@
 {
     "cardTitle": "Commit Detail View",
-    "noCommitSeleted": "Please select a commit in the diagram.",
+    "comparedTo": "compared to:",
+    "noCommitSeleted": "Please select a commit in the diagram or in the latest commits list.",
     "globalErrorLabel": "failed",
     "globalErrorLabelTooltip": "No results are available because of a script exception.\nA detailed error message can be found under global error.",
 

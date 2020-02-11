@@ -10,7 +10,7 @@
                 <span *ngIf="selected && !benchmarkingResult?.commitURL"
                     matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
                     {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
-                </span>
+                </span>                               
             </div>
             <div *ngIf="selected" class="labelContainer">
                 <mat-chip-list>
@@ -27,6 +27,16 @@
         
         <!-- Push button to the right -->
         <div fxFlex></div>
+
+        <div id="comparedTo">
+            <span *ngIf="selected && benchmarkingResult?.comparisonCommitHash">
+                {{ strings?.comparedTo }}                    
+            </span> 
+            <a *ngIf="selected && benchmarkingResult?.comparisonCommitHash" (click)="selectCommit(benchmarkingResult?.comparisonCommitHash)" 
+                matTooltip="{{benchmarkingResult?.comparisonCommitHash}}" matTooltipPosition="left">
+                {{ benchmarkingResult?.comparisonCommitHash | shortenString:7 }}
+            </a>            
+        </div>
 
         <button mat-mini-fab (click)="maximizeDetailView()">
             <mat-icon>fullscreen</mat-icon>
@@ -59,7 +69,8 @@
                     </mat-form-field>
 
                     <p *ngIf="selectedBenchmarkProperty" class="mat-h4">
-                        {{ strings.interpretation }} {{ selectedBenchmarkProperty[1].interpretation }}
+                        {{ strings.interpretation }} 
+                        <span class="valueText">{{ selectedBenchmarkProperty[1].interpretation | enumString }}</span>
                     </p>
 
                 <p *ngIf="!selectedBenchmarkProperty" class="mat-h4">{{ strings?.noBenchmarkProperty }}</p>
@@ -91,11 +102,11 @@
                                 </mat-panel-title>
                                 <mat-panel-description>
                                     {{ selectedBenchmarkProperty[1].median | number:'1.3' }} {{ selectedBenchmarkProperty[1].unit }}
-                                    <span *ngIf="selectedBenchmarkProperty[1].compared"
-                                        [ngClass]="{red : selectedBenchmarkProperty[1].ratioToPreviousCommit < 0, 
-                                                   black: selectedBenchmarkProperty[1].ratioToPreviousCommit === 0, 
-                                                   green: selectedBenchmarkProperty[1].ratioToPreviousCommit > 0}">
-                                        {{ selectedBenchmarkProperty[1].ratioToPreviousCommit | percent:'1.0-2' }}
+                                    <span class="right" *ngIf="selectedBenchmarkProperty[1].compared"
+                                        [ngClass]="{red : selectedBenchmarkProperty[1].ratioToPreviousCommit < 1, 
+                                                   valueText: selectedBenchmarkProperty[1].ratioToPreviousCommit === 1, 
+                                                   green: selectedBenchmarkProperty[1].ratioToPreviousCommit > 1}">
+                                        {{ selectedBenchmarkProperty[1].ratioToPreviousCommit - 1 | percent:'1.0-2' }}
                                     </span>
                                 </mat-panel-description>
                             </mat-expansion-panel-header>

@@ -1,3 +1,4 @@
+import { EnumStringPipe } from './pipes/enum-pipe';
 import { FooterComponent } from './footer/footer.component';
 import { CommitComparisonTableComponent } from './commit-comparison-table/commit-comparison-table.component';
 import { BenchmarkingResultTableComponent } from './benchmarking-result-table/benchmarking-result-table.component';
@@ -83,7 +84,8 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     SystemEnvironmentDisplayComponent,
     BenchmarkingResultTableComponent,
     CommitComparisonTableComponent,
-    TimeAgoPipe
+    TimeAgoPipe,
+    EnumStringPipe
   ],
   entryComponents: [
     DetailViewMaximizedComponent,

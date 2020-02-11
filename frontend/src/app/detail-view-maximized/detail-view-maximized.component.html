@@ -22,7 +22,19 @@
                 </mat-chip-list>
             </div>
         </mat-card-title>
+
         <div fxFlex></div>
+        
+        <div id="comparedTo">
+            <span *ngIf="benchmarkingResult?.comparisonCommitHash">
+                {{ strings?.comparedTo }}                    
+            </span> 
+            <a *ngIf="benchmarkingResult?.comparisonCommitHash" (click)="selectCommit(benchmarkingResult?.comparisonCommitHash); resultTable.selectCommit(benchmarkingResult?.comparisonCommitHash)" 
+                matTooltip="{{benchmarkingResult?.comparisonCommitHash}}" matTooltipPosition="left">
+                {{ benchmarkingResult?.comparisonCommitHash | shortenString:7 }}
+            </a>            
+        </div>
+
         <button mat-mini-fab (click)="close()">
             <mat-icon>fullscreen_exit</mat-icon>
         </button>
@@ -40,7 +52,7 @@
                 <app-system-environment-display [systemEnvironment]="benchmarkingResult?.systemEnvironment"></app-system-environment-display>
             </mat-tab>
             <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.hasGlobalError">
-                <app-benchmarking-result-table [commitHash]="benchmarkingResult.commitHash"></app-benchmarking-result-table>
+                <app-benchmarking-result-table [commitHash]="benchmarkingResult.commitHash" #resultTable></app-benchmarking-result-table>
             </mat-tab>
         </mat-tab-group>
     </mat-card-content>

@@ -13,6 +13,10 @@
     margin-top: 6px;
 }
 
+#comparedTo {
+    margin-right: 15px;
+}
+
 mat-panel-description {
     overflow:hidden;
     white-space:nowrap;

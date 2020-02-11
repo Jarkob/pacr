@@ -39,7 +39,21 @@ export class DetailViewMaximizedComponent implements OnInit {
         this.strings = data;
       }
     );
-    this.benchmarkingResultService.getBenchmarkingResultsForCommit(this.commitHash).subscribe(
+    this.selectCommit(this.commitHash);
+  }
+
+  /**
+   * select a commit for the detail view
+   * @param commitHash the hash of the commit
+   */
+  public selectCommit(commitHash: string): void {
+    if (commitHash === null || commitHash === '') {
+      return;
+    }
+
+    this.commitHash = commitHash;
+
+    this.benchmarkingResultService.getBenchmarkingResultsForCommit(commitHash).subscribe(
       data => {
         this.benchmarkingResult = data;
       }

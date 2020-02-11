@@ -97,6 +97,10 @@ a {
   color: green;
 }
 
+.right {
+  float: right;
+}
+
 .errorIcon {
   font-size: 18px;
   width: 18px;
