@@ -1,0 +1,6 @@
+<dataset>
+    <benchmark_group id="1" name="Other" standard_group="1"/>
+    <benchmark_group id="100" name="John" standard_group="0"/>
+    <benchmark_group id="1000" name="John" standard_group="0"/>
+    <benchmark_group id="10000" name="John" standard_group="0"/>
+</dataset>
