@@ -103,3 +103,18 @@ a {
   height: 17px;
   vertical-align: bottom;
 }
+
+.valueText {
+  color: #C1C9C9;
+}
+
+.textAlignRow {
+  display: table-row;
+}
+.textAlignRow div {
+  display: table-cell;
+}
+
+.textAlignRow .textAlignItem {
+  padding-left: 10px;
+}

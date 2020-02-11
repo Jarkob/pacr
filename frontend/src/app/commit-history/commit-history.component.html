@@ -14,7 +14,7 @@
             <mat-expansion-panel *ngFor="let commit of commits">
                 <mat-expansion-panel-header>
                     <mat-panel-title> 
-                        {{ commit.commitEntryDate | date }}                         
+                        {{ commit.commitEntryDate | timeAgo }}                         
                     </mat-panel-title>
                     
                     <mat-panel-description>{{ commit.commitMessage }}</mat-panel-description>
@@ -24,17 +24,29 @@
                     {{ strings?.commitHash }}
                     
                     <a id="openDetailView" (click)="selectCommit(commit.commitHash)" matTooltip="{{commit.commitHash}}" matTooltipPosition="right">
-                        {{ commit.commitHash | shortenString:7 | braces }}
+                        {{ commit.commitHash | shortenString:7 }}
                     </a>
-                </p>
-                <p class="mat-h3">
-                    {{ strings?.commitDate }}
-                    <span class="mat-h4">{{ commit.commitCommitDate | date }}</span> 
-                </p>
-                
+                </p>                              
 
-                <p class="mat-h3">{{ strings?.commitMessage }}</p>
-                <p class="mat-h3">{{ commit.commitMessage }}</p>
+                <div>
+                    <p class="mat-h3">
+                        {{ strings?.commitMessage }}<br>
+                        <span class="valueText">{{ commit.commitMessage }}</span>                        
+                    </p>                    
+                </div>
+
+                <div class="textAlignRow">
+                    <div>{{ strings?.authorDate }}</div>
+                    <div class="textAlignItem valueText">{{ commit.commitAuthorDate | date:'MMM dd, y, HH:mm:ss' }}</div>     
+                </div>
+                <div class="textAlignRow">
+                    <div>{{ strings?.commitDate }}</div>
+                    <div class="textAlignItem valueText">{{ commit.commitCommitDate | date:'MMM dd, y, HH:mm:ss' }}</div>
+                </div>
+                <div class="textAlignRow">
+                    <div>{{ strings?.entryDate }}</div>
+                    <div class="textAlignItem valueText">{{ commit.commitEntryDate | date:'MMM dd, y, HH:mm:ss' }}</div>
+                </div>
             </mat-expansion-panel>
         </mat-accordion>
     </mat-card-content>    

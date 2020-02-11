@@ -13,6 +13,7 @@ import { CommitHistoryMaximizedComponent } from './commit-history-maximized/comm
 import { CommitHistoryMaximizerService } from './commit-history/commit-history-maximizer.service';
 import { ShortenStringPipe } from './pipes/shorten-string-pipe';
 import { BrachesPipe } from './pipes/braces-pipe';
+import {TimeAgoPipe} from 'time-ago-pipe';
 import { DiagramMaximizerService } from './diagram/diagram-maximizer.service';
 import { DetailViewMaximizerService } from './detail-view/detail-view-maximizer.service';
 import { GlobalService } from './services/global.service';
@@ -81,7 +82,8 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     CommitDetailsComponent,
     SystemEnvironmentDisplayComponent,
     BenchmarkingResultTableComponent,
-    CommitComparisonTableComponent
+    CommitComparisonTableComponent,
+    TimeAgoPipe
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
