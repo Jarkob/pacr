@@ -2,11 +2,11 @@
     <mat-card-header id="stickyHeader">
         <span class="mat-h2">
             Compare 
-            <a *ngIf="this.commitHash1" (click)="openDetailView(this.commitHash1)">{{ this.commitHash1 | shortenString:7 | braces }}</a>
-            <span *ngIf="!this.commitHash1">{{ "not selected" | braces }}</span>
+            <a *ngIf="this.commitHash1" (click)="openDetailView(this.commitHash1)">{{ this.commitHash1 | shortenString:7 }}</a>
+            <span *ngIf="!this.commitHash1">{{ "'not selected'" }}</span>
             with
-            <a *ngIf="this.commitHash2" (click)="openDetailView(this.commitHash2)">{{ this.commitHash2 | shortenString:7 | braces }}</a>
-            <span *ngIf="!this.commitHash2">{{ "not selected" | braces }}</span>
+            <a *ngIf="this.commitHash2" (click)="openDetailView(this.commitHash2)">{{ this.commitHash2 | shortenString:7 }}</a>
+            <span *ngIf="!this.commitHash2">{{ "'not selected'" }}</span>
         </span>
         <button mat-button [disabled]="!(this.commitHash1 && this.commitHash2)" (click)="openCommitComparison()">Compare</button>
         <button mat-button (click)="clear()">Clear</button>
@@ -14,11 +14,13 @@
     
     <mat-card-content>
         <div id="tableControls" fxLayout="row">
-            <mat-select (selectionChange)="updateRepository()" id="repositorySelect" [(ngModel)]="this.selectedRepository" [compareWith]="compareRepository">
-                <mat-option *ngFor="let repository of this.repositories" [value]="repository">
-                    {{ repository.name }}
-                </mat-option>
-            </mat-select>
+            <mat-form-field>
+                <mat-select (selectionChange)="updateRepository()" id="repositorySelect" [(ngModel)]="this.selectedRepository" [compareWith]="compareRepository">
+                    <mat-option *ngFor="let repository of this.repositories" [value]="repository">
+                        {{ repository.name }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>            
             <mat-paginator [length]="this.commitsPage?.totalElements"
                 [pageSize]="this.commitsPage?.size"
                 [pageSizeOptions]="this.pageSizeOptions"

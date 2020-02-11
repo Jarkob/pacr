@@ -5,7 +5,7 @@
                 <span>{{ strings?.cardTitle }}</span>
                 <a target="_blank" rel="noopener noreferrer" *ngIf="selected && benchmarkingResult?.commitURL" href="{{ benchmarkingResult?.commitURL }}" 
                     matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 
-                    {{ benchmarkingResult?.commitHash  | shortenString:7 | braces}}
+                    {{ benchmarkingResult?.commitHash  | shortenString:7}}
                 </a>
                 <span *ngIf="selected && !benchmarkingResult?.commitURL"
                     matTooltip="{{ benchmarkingResult?.commitHash }}" matTooltipPosition="right"> 

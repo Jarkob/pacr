@@ -47,7 +47,7 @@
 
     <ng-container matColumnDef="interpretation">
         <th mat-header-cell *matHeaderCellDef> {{ this.strings?.interpretation }} </th>
-        <td mat-cell *matCellDef="let element"> {{element.interpretation}} </td>
+        <td mat-cell *matCellDef="let element"> {{ element.interpretation | enumString }} </td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
