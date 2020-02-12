@@ -9,7 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
-import java.awt.Color;
 import java.time.LocalDate;
 import java.util.Set;
 import java.util.HashSet;
