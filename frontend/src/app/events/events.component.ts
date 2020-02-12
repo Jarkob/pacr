@@ -54,7 +54,7 @@ export class EventsComponent implements OnInit {
     );
   }
 
-  private getBenchmarkingEvents(event: any): any {
+  public getBenchmarkingEvents(event: any): any {
     this.eventService.getBenchmarkingEvents(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.benchmarkingPage = data;
@@ -66,7 +66,7 @@ export class EventsComponent implements OnInit {
     return event;
   }
 
-  private getLeaderboardEvents(event: any): any {
+  public getLeaderboardEvents(event: any): any {
     this.eventService.getLeaderboardEvents(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.leaderboardPage = data;
