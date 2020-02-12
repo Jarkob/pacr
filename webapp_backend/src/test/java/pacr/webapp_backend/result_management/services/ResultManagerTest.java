@@ -4,6 +4,7 @@ import javassist.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
@@ -25,6 +26,12 @@ import java.util.LinkedList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static pacr.webapp_backend.result_management.services.SimpleCommit.REPO_ID;
 
 public class ResultManagerTest extends SpringBootTestWithoutShell {
 
@@ -127,6 +134,17 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         assertEquals(HASH_TWO, savedResultTwo.getCommitHash());
     }
 
+    @Test
+    void importBenchmarkingResults_noCommitSaved_shouldThrowException() {
+        SimpleBenchmarkingResult resultToImport = new SimpleBenchmarkingResult();
+        resultToImport.setCommitHash(HASH_TWO);
+
+        Collection<IBenchmarkingResult> resultsToImport = new LinkedList<>();
+        resultsToImport.add(resultToImport);
+
+        assertThrows(IllegalArgumentException.class, () -> resultManager.importBenchmarkingResults(resultsToImport));
+    }
+
     /**
      * Tests whether deleteAllResultsForRepository only deletes results from commits in that repository.
      */
@@ -158,6 +176,20 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         assertNull(savedResultTwo);
 
         gitTrackingAccess.removeRepository(repoTwo.getId());
+    }
+
+    @Test
+    void deleteAllResultsForRepository_dbAccessReturnsNullForCommits_shouldNotDeleteAnything() {
+        IGetCommitAccess commitAccessMock = Mockito.mock(IGetCommitAccess.class);
+        IResultAccess resultAccessMock = Mockito.mock(IResultAccess.class);
+        when(commitAccessMock.getCommitsFromRepository(REPO_ID)).thenReturn(null);
+
+        ResultManager resultManager = new ResultManager(resultAccessMock, commitAccessMock, null,
+                null);
+
+        resultManager.deleteAllResultsForRepository(REPO_ID);
+
+        verify(resultAccessMock, never()).deleteResults(anyCollection());
     }
 
     /**
@@ -195,5 +227,13 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
 
         assertNotNull(savedResultTwo);
         assertEquals(HASH_TWO, savedResultTwo.getCommitHash());
+    }
+
+    @Test
+    void saveBenchmarkingResults_noCommitSavedForResult_shouldThrowException() {
+        SimpleBenchmarkingResult resultToSave = new SimpleBenchmarkingResult();
+        resultToSave.setCommitHash(HASH_TWO);
+
+        assertThrows(IllegalArgumentException.class, () -> resultManager.saveBenchmarkingResults(resultToSave));
     }
 }

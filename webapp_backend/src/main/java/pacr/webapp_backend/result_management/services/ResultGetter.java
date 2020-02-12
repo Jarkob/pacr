@@ -107,7 +107,15 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         return outputBuilder.buildDetailOutput(commit, result);
     }
 
+    /**
+     * Gets the requested page of all the results of the commits of a repository.
+     * @param repositoryId the id of the repository
+     * @param pageable the requested page and sort. Cannot be null.
+     * @return the page of detailed results with commit information.
+     */
     public Page<OutputBenchmarkingResult> getFullRepositoryResults(int repositoryId, Pageable pageable) {
+        Objects.requireNonNull(pageable);
+
         Page<CommitResult> results = resultAccess.getFullRepositoryResults(repositoryId, pageable);
 
         List<OutputBenchmarkingResult> outputBenchmarkingResults = new LinkedList<>();
@@ -287,16 +295,6 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         }
 
         return resultsMap;
-    }
-
-    private Map<String, ICommit> getHashToCommitMap(Collection<? extends ICommit> commits) {
-        Map<String, ICommit> hashToCommit = new HashMap<>();
-
-        for (ICommit commit : commits) {
-            hashToCommit.put(commit.getCommitHash(), commit);
-        }
-
-        return hashToCommit;
     }
 
     private List<OutputBenchmarkingResult> resultsToOutputResults(List<CommitResult> results) {

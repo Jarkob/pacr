@@ -8,23 +8,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class NewResultEventTest {
 
-    private static final String HASH = "ads803";
+    private static final String HASH = "12345678";
     private static final String REPO = "tichy ticker";
     private static final String NO_ERROR = null;
     private static final String ERROR = "could not open file";
     private static final int IMPROVEMENT = 24;
-    private static final String COMPARISON_HASH = "das089d";
+    private static final int HASH_LENGTH = 7;
+    private static final String COMPARISON_HASH = "012345678";
     private static final String NO_COMPARISON = null;
 
     private static final String EXPECTED_NORMAL_TITLE = "New Benchmarking Result for Repository '" + REPO + "'";
     private static final String EXPECTED_NORMAL_DESCRIPTION = "A new benchmarking result was measured for the commit '"
-            + HASH + "' from repository '" + REPO + "'. On average, the new benchmarking result is "
-            + IMPROVEMENT + " percent better then the previous one (commit '" + COMPARISON_HASH + "').";
+            + HASH.substring(0, HASH_LENGTH) + "' from repository '" + REPO + "'. On average, the new benchmarking result is "
+            + IMPROVEMENT + " percent better then the previous one (commit '"
+            + COMPARISON_HASH.substring(0, HASH_LENGTH) + "').";
     private static final String EXPECTED_ERROR_TITLE = "Error While Benchmarking Commit for Repository '" + REPO + "'";
     private static final String EXPECTED_ERROR_DESCRIPTION = "An error occurred while benchmarking commit '"
-            + HASH + "' for repository '" + REPO + "': '" + ERROR + "'";
+            + HASH.substring(0, HASH_LENGTH) + "' for repository '" + REPO + "': '" + ERROR + "'";
     private static final String EXPECTED_NO_COMPARISON_DESCRIPTION = "A new benchmarking result was measured for the commit '"
-            + HASH + "' from repository '" + REPO + "'. No data was found for comparison.";
+            + HASH.substring(0, HASH_LENGTH) + "' from repository '" + REPO + "'. No data was found for comparison.";
 
     /**
      * Tests if title and description get generated properly if it is a successful result with comparison data.

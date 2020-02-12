@@ -70,6 +70,12 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
         return findAllByRepositoryID(repositoryId, pageable);
     }
 
+    /**
+     * This is a method that is automatically created by jpa based on its method name.
+     * @param repositoryId the id of the repository.
+     * @param pageable the requested page.
+     * @return a page of the commit results of the repository.
+     */
     Page<CommitResult> findAllByRepositoryID(int repositoryId, Pageable pageable);
 
     /**

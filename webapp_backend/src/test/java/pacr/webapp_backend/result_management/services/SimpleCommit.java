@@ -10,6 +10,8 @@ import java.util.Collection;
  * Simple ICommit implementation for testing purposes.
  */
 public class SimpleCommit implements ICommit {
+    public static final int REPO_ID = 1;
+
     private String commitHash;
     private String message;
     private LocalDateTime entryDate;
@@ -49,7 +51,7 @@ public class SimpleCommit implements ICommit {
 
     @Override
     public int getRepositoryID() {
-        return 0;
+        return REPO_ID;
     }
 
     @Override

@@ -10,6 +10,11 @@ import java.util.List;
  */
 public final class StatisticalCalculator {
     /**
+     * This is returned if no calculations could be made on the given input (due to being null, empty, etc.)
+     */
+    public static final int ERROR_CODE = -1;
+
+    /**
      * No instance of this class can be created because all methods are static.
      */
     private StatisticalCalculator() {
@@ -24,7 +29,7 @@ public final class StatisticalCalculator {
      */
     static double getQuantile(double p, @NotNull List<Double> values) {
         if (values == null || values.isEmpty() || p < 0 || p > 1) {
-            return -1;
+            return ERROR_CODE;
         }
 
         List<Double> resultsList = new LinkedList<>(values);
@@ -46,7 +51,7 @@ public final class StatisticalCalculator {
      */
     static double getMean(@NotNull List<Double> values) {
         if (values == null || values.size() == 0) {
-            return -1;
+            return ERROR_CODE;
         }
         double total = 0;
         for (double value : values) {
@@ -63,7 +68,7 @@ public final class StatisticalCalculator {
      */
     static double getStandardDeviation(@NotNull List<Double> values) {
         if (values == null || values.size() == 0) {
-            return -1;
+            return ERROR_CODE;
         }
         double mean = getMean(values);
         double sumOfResultsMinusMeanSquared = 0;

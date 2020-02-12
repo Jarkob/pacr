@@ -13,12 +13,15 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class OutputBuilderTest {
 
+    public static final String HASH_TWO = "hash2";
     public static final String MSG = "msg";
     public static final String REPO_NAME = "repo";
     public static final String BRANCH_NAME = "branch";
@@ -41,6 +44,7 @@ public class OutputBuilderTest {
 
     private CommitResult resultOne;
     private ICommit commitOne;
+    private ICommit commitDifferentHash;
     private Benchmark benchmark;
     private Benchmark benchmarkTwo;
     private BenchmarkProperty property;
@@ -83,6 +87,8 @@ public class OutputBuilderTest {
 
         commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW,
                 new GitRepository(false, URL, REPO_NAME, "#000000", NOW.toLocalDate()));
+
+        commitDifferentHash = new GitCommit(HASH_TWO, MSG, NOW, NOW, new GitRepository());
     }
 
     /**
@@ -127,6 +133,21 @@ public class OutputBuilderTest {
     }
 
     @Test
+    void buildDetailOutput_differentHashes_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> outputBuilder.buildDetailOutput(commitDifferentHash, resultOne));
+    }
+
+    @Test
+    void buildDetailOutput_onlyCommit_shouldReturnObjectWithNoResultAndNoError() {
+        OutputBenchmarkingResult output = outputBuilder.buildDetailOutput(commitOne);
+
+        assertEquals(commitOne.getCommitHash(), output.getCommitHash());
+        assertTrue(output.getBenchmarksList().isEmpty());
+        assertFalse(output.getHasGlobalError());
+    }
+
+    @Test
     void buildDiagramOutput_shouldCopyData() {
         DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne, resultOne);
 
@@ -137,6 +158,14 @@ public class OutputBuilderTest {
 
         assertEquals(ERROR, output.getResult().get(PROPERTY_NAME_TWO).getErrorMessage());
         assertNull(output.getResult().get(PROPERTY_NAME_TWO).getResult());
+    }
 
+    @Test
+    void buildDiagramOutput_onlyCommit_shouldReturnObjectWithNoResult() {
+        DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne);
+
+        assertEquals(commitOne.getCommitHash(), output.getCommitHash());
+        assertNull(output.getResult());
+        assertNull(output.getGlobalError());
     }
 }

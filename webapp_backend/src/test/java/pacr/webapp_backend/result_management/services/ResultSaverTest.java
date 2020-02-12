@@ -2,15 +2,25 @@ package pacr.webapp_backend.result_management.services;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.ResultDB;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
+import pacr.webapp_backend.shared.ISystemEnvironment;
+import pacr.webapp_backend.shared.ResultInterpretation;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ResultSaverTest extends SpringBootTestWithoutShell {
 
@@ -21,10 +31,13 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     private static final String COMMIT_HASH = SimpleBenchmarkingResult.COMMIT_HASH;
     private static final String COMMIT_HASH_TWO = "hash2";
     private static final String NO_COMPARISON_COMMIT_HASH = null;
+    private static final String ERROR = "error";
     private static final double MEASUREMENT = SimpleBenchmarkProperty.MEASUREMENT;
     private static final int EXPECTED_NUM_OF_PROPERTIES = 1;
     private static final int EXPECTED_NUM_OF_PROPERTIES_AFTER_ADDING = 2;
     private static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
+    private static final int EXPECTED_NUM_OF_RESULTS = 1;
+    private static final int EXPECTED_SINGLE_BENCHMARK = 1;
 
     private ResultImportSaver resultSaver;
     private ResultDB resultDB;
@@ -113,5 +126,80 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
 
         assertNotNull(benchmark);
         assertEquals(EXPECTED_NUM_OF_PROPERTIES_AFTER_ADDING, benchmark.getProperties().size());
+    }
+
+    @Test
+    void saveResult_benchmarkWithNoProperties_shouldSkipBenchmarkInCommitResult() {
+        SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
+        SimpleBenchmark benchmarkWithNoProperties = new SimpleBenchmark(new HashMap<>());
+        result.addBenchmark(BENCHMARK_NAME_TWO, benchmarkWithNoProperties);
+
+        resultSaver.saveResult(result, new SimpleCommit(), null);
+
+        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+
+        assertEquals(EXPECTED_SINGLE_BENCHMARK, savedResult.getBenchmarks().size());
+        assertNotNull(savedResult.getBenchmarks().get(SimpleBenchmarkingResult.BENCHMARK_NAME));
+    }
+
+    @Test
+    void saveResult_resultWithNoBenchmarksAndNoError_shouldSetGlobalError() {
+        ISystemEnvironment sysEnvMock = Mockito.mock(ISystemEnvironment.class);
+        SimpleBenchmarkingResult emptyResult = new SimpleBenchmarkingResult(SimpleBenchmarkingResult.COMMIT_HASH,
+                new SystemEnvironment(sysEnvMock), new HashMap<>(), null);
+
+        resultSaver.saveResult(emptyResult, new SimpleCommit(), null);
+
+        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+
+        assertTrue(savedResult.hasGlobalError());
+    }
+
+    @Test
+    void saveResult_propertyWithNoResultsAndNoError_shouldSetLocalError() {
+        SimpleBenchmarkProperty emptyProperty = new SimpleBenchmarkProperty(new HashSet<>(),
+                ResultInterpretation.LESS_IS_BETTER, SimpleBenchmarkProperty.UNIT, null);
+
+        HashMap<String, IBenchmarkProperty> propertyMap = new HashMap<>();
+        propertyMap.put(PROPERTY_NAME_TWO, emptyProperty);
+
+        SimpleBenchmark benchmarkOfProperty = new SimpleBenchmark(propertyMap);
+
+        SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
+        result.addBenchmark(BENCHMARK_NAME_TWO, benchmarkOfProperty);
+
+        resultSaver.saveResult(result, new SimpleCommit(), null);
+
+        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+
+        assertTrue(savedResult.getBenchmarks().get(BENCHMARK_NAME_TWO)
+                .getBenchmarkProperties().get(PROPERTY_NAME_TWO).isError());
+    }
+
+    @Test
+    void saveResult_newResultForCommitHashThatAlreadyHasOldResult_shouldOverwriteOldResult() {
+        SimpleCommit commit = new SimpleCommit();
+        SimpleBenchmarkingResult resultWithError = new SimpleBenchmarkingResult();
+        resultWithError.setGlobalError(ERROR);
+
+        resultSaver.saveResult(resultWithError, commit, NO_COMPARISON_COMMIT_HASH);
+
+        SimpleBenchmarkingResult resultWithoutError = new SimpleBenchmarkingResult();
+
+        resultSaver.saveResult(resultWithoutError, commit, NO_COMPARISON_COMMIT_HASH);
+
+        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        assertFalse(savedResult.hasGlobalError());
+
+        Collection<String> hash = new LinkedList<>();
+        hash.add(SimpleBenchmarkingResult.COMMIT_HASH);
+
+        Collection<CommitResult> savedResults = resultDB.getResultsFromCommits(hash);
+
+        assertEquals(EXPECTED_NUM_OF_RESULTS, savedResults.size());
+        assertFalse(savedResults.iterator().next().hasGlobalError());
+
+        CommitResult latestSavedResult = resultDB.getNewestResult(SimpleCommit.REPO_ID);
+        assertFalse(latestSavedResult.hasGlobalError());
     }
 }

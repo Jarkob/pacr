@@ -12,6 +12,8 @@ import java.util.Objects;
  */
 public class NewResultEvent extends EventTemplate {
 
+    private static final int HASH_LENGTH = 7;
+
     // TODO get these Strings from a file.
     private static final String TITLE_FORMAT = "New Benchmarking Result for Repository '%s'";
     private static final String GENERIC_DESCRIPTION_FORMAT =
@@ -35,14 +37,15 @@ public class NewResultEvent extends EventTemplate {
      * Creates a NewResultEvent for a new benchmarking result.
      *
      * @param category the category of the created events. Cannot be null.
-     * @param commitHash the hash of the commit that was benchmarked. Cannot be null.
+     * @param commitHash the hash of the commit that was benchmarked. Will be shortened to 7 characters. Cannot be null.
      * @param repositoryName the name of the repository of the commit. Cannot be null.
      * @param globalError the error message of the result for the commit. May be null if there was no error. Otherwise
      *                    I assume an error (even if this field is empty or blank).
      * @param averageImprovementPercentage the average improvement between this commit and the comparison commit. Not
      *                                     used if comparisonCommitHash is null.
-     * @param comparisonCommitHash the hash of the commit used for comparison. May be null (in this case it is assumed
-     *                             no comparison has taken place and averageImprovementPercentage is ignored).
+     * @param comparisonCommitHash the hash of the commit used for comparison. Will be shortened to 7 characters. May be
+     *                             null (in this case it is assumed no comparison has taken place and
+     *                             averageImprovementPercentage is ignored).
      */
     NewResultEvent(@NotNull EventCategory category, @NotNull String commitHash, @NotNull String repositoryName,
                           @Nullable String globalError, int averageImprovementPercentage,
@@ -53,11 +56,11 @@ public class NewResultEvent extends EventTemplate {
         Objects.requireNonNull(commitHash);
         Objects.requireNonNull(repositoryName);
 
-        this.commitHash = commitHash;
+        this.commitHash = shortenHash(commitHash);
         this.repositoryName = repositoryName;
         this.globalError = globalError;
         this.averageImprovementPercentage = averageImprovementPercentage;
-        this.comparisonCommitHash = comparisonCommitHash;
+        this.comparisonCommitHash = shortenHash(comparisonCommitHash);
     }
 
     @Override
@@ -95,5 +98,12 @@ public class NewResultEvent extends EventTemplate {
         }
 
         return descriptionBuilder.toString();
+    }
+
+    private String shortenHash(String commitHash) {
+        if (commitHash != null && commitHash.length() > HASH_LENGTH) {
+            return commitHash.substring(0, HASH_LENGTH);
+        }
+        return commitHash;
     }
 }

@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 /**
  * Represents the specification of a computer system that was used to benchmark a certain commit.
@@ -31,12 +32,11 @@ public class SystemEnvironment implements ISystemEnvironment {
 
     /**
      * Creates a system environment. Copies all data from the given system environment.
-     * @param sysEnv the system environment. Throws IllegalArgumentException if it is null.
+     * @param sysEnv the system environment. Cannot be null.
      */
     SystemEnvironment(@NotNull ISystemEnvironment sysEnv) {
-        if (sysEnv == null) {
-            throw new IllegalArgumentException("system environment cannot be null");
-        }
+        Objects.requireNonNull(sysEnv);
+
         this.name = sysEnv.getComputerName();
         this.os = sysEnv.getOS();
         this.processor = sysEnv.getProcessor();

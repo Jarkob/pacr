@@ -128,6 +128,12 @@ public class ResultController {
         return resultGetter.getBenchmarkResults(benchmarkId, repositoryId, branch);
     }
 
+    /**
+     * Gets a page of the benchmarking results of a repository.
+     * @param repositoryId the id of the repository.
+     * @param pageable the requested page and sort (sorted by commit date by default).
+     * @return the page of detailed results.
+     */
     @GetMapping("/results/pageable/repository/{repositoryId}")
     public Page<OutputBenchmarkingResult> getResultsForRepository(@PathVariable int repositoryId,
                                               @PageableDefault(size = 10, page = 0, sort = {"commitDate"}) Pageable pageable) {

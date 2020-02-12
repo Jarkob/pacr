@@ -6,8 +6,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
@@ -37,7 +38,7 @@ public class ResultGetterTest {
     public static final int REPO_ID = 1;
     public static final int BENCHMARK_ID = 5;
     public static final int BENCHMARK_ID_TWO = 10;
-    public static final int EXPECTED_NUM_OF_RESULTS = 1;
+    public static final int EXPECTED_SINGLE_RESULT = 1;
     public static final int EXPECTED_NUM_OF_ALL_RESULTS = 1;
     public static final int EXPECTED_NUM_OF_NEW_RESULTS = 2;
     public static final int PAGE_NUM = 0;
@@ -114,6 +115,30 @@ public class ResultGetterTest {
         assertEquals(outputResultMock, output);
     }
 
+    @Test
+    void getCommitResult_parameterIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> resultGetter.getCommitResult(null));
+    }
+
+    @Test
+    void getFullRepositoryResults_shouldReturnDatabaseAnswer() {
+        PageRequest pageable = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+
+        List<CommitResult> results = new LinkedList<>();
+        results.add(resultMock);
+
+        when(resultAccessMock.getFullRepositoryResults(REPO_ID, pageable)).thenReturn(new PageImpl<>(results));
+
+        when(resultMock.getCommitHash()).thenReturn(HASH);
+        when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
+        when(outputBuilderMock.buildDetailOutput(commitMock, resultMock)).thenReturn(outputResultMock);
+
+        Page<OutputBenchmarkingResult> output = resultGetter.getFullRepositoryResults(REPO_ID, pageable);
+
+        assertEquals(EXPECTED_SINGLE_RESULT, output.getContent().size());
+        assertEquals(outputResultMock, output.getContent().get(0));
+    }
+
     /**
      * Tests whether getRepositoryResults returns all results.
      */
@@ -139,7 +164,7 @@ public class ResultGetterTest {
 
         HashMap<String, DiagramOutputResult> outputs = resultGetter.getRepositoryResults(REPO_ID);
 
-        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
         assertEquals(diagramOutputMock, outputs.get(HASH));
     }
 
@@ -213,7 +238,7 @@ public class ResultGetterTest {
 
         HashMap<String, DiagramOutputResult> outputs = resultGetter.getBranchResults(REPO_ID, BRANCH_NAME);
 
-        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
         assertEquals(diagramOutputMock, outputs.get(HASH));
     }
 
@@ -227,6 +252,11 @@ public class ResultGetterTest {
         assertThrows(NoSuchElementException.class, () -> {
             resultGetter.getBranchResults(REPO_ID, BRANCH_NAME);
         });
+    }
+
+    @Test
+    void getBranchResults_parameterIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> resultGetter.getBranchResults(REPO_ID, null));
     }
 
     /**
@@ -379,7 +409,7 @@ public class ResultGetterTest {
         HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResults(REMOVE_NO_BENCHMARK, REPO_ID,
                 BRANCH_NAME);
 
-        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
         assertEquals(diagramOutputMock, outputs.get(HASH));
     }
 
@@ -418,7 +448,7 @@ public class ResultGetterTest {
         HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResultsSubset(REMOVE_NO_BENCHMARK,
                 REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE);
 
-        assertEquals(EXPECTED_NUM_OF_RESULTS, outputs.size());
+        assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
         assertEquals(diagramOutputMock, outputs.get(HASH));
     }
 
@@ -438,6 +468,11 @@ public class ResultGetterTest {
     void isCommitBenchmarked_isBenchmarked_shouldReturnTrue() {
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
         assertTrue(resultGetter.isCommitBenchmarked(HASH));
+    }
+
+    @Test
+    void isCommitBenchmarked_parameterIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> resultGetter.isCommitBenchmarked(null));
     }
 
     /**

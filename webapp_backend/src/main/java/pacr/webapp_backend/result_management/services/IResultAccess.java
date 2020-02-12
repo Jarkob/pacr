@@ -24,6 +24,12 @@ public interface IResultAccess {
      */
     CommitResult getNewestResult(int repositoryId);
 
+    /**
+     * Gets a page of the commit results of a repository.
+     * @param repositoryId the id of the repository.
+     * @param pageable the requested page.
+     * @return the commit results.
+     */
     Page<CommitResult> getFullRepositoryResults(int repositoryId, Pageable pageable);
 
     /**
