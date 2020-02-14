@@ -225,7 +225,6 @@ export class DiagramComponent implements OnInit {
     this.deleteLine();
   }
 
-  // here is a bug @Daniel (called from loadBenchmark after new benchmark is selected)
   private getBenchmarkingResults(repositoryIds: number[]) {
     if (repositoryIds.length === 0) {
       this.loadProperty();
@@ -272,15 +271,16 @@ export class DiagramComponent implements OnInit {
         }
       }
     }
+    this.loadImages();
+  }
 
-    // load images
+  private loadImages() {
     const errorImage = new Image(20, 20);
     const globalErrorImage = new Image(20, 20);
     const notYetImage = new Image(20, 20);
     errorImage.src = 'assets/clear.svg';
     globalErrorImage.src = 'assets/block.svg';
     notYetImage.src = 'assets/run.svg';
-    // TODO refactor
     Chart.pluginService.register({
       afterUpdate: (chart) => {
         // tslint:disable-next-line:prefer-for-of
