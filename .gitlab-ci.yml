@@ -1,15 +1,13 @@
 stages:
-  - build
-  - test
-  - deploy
+  - backend
+  - frontend
 
-pacrjob:
-  stage: test
+backend:
+  stage: backend
   tags:
     - maven
   script:
     - echo "Building project with maven"
     - cd webapp_backend
     - mvn verify
-    - cd ../frontend
-    - ng build --aot --prod
+    
