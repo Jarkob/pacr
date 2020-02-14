@@ -25,6 +25,7 @@ public class TokenManagerTest {
     private static final String ISSUER = "PACR-Backend";
     private static final String FOREIGN_ISSUER = "foreign";
     private static final String AUDIENCE = "admin";
+    private static final String FALSE_TOKEN = "false";
 
     private TokenManager tokenManager;
     private IAuthenticationAccess authenticationAccessMock;
@@ -89,6 +90,14 @@ public class TokenManagerTest {
         String foreignToken = generateComparisonToken(SECRET, FOREIGN_ISSUER, AUDIENCE);
 
         assertFalse(tokenManager.authenticate(foreignToken));
+    }
+
+    @Test
+    void authenticate_noSecret_shouldReturnFalse() {
+        when(authenticationAccessMock.getSecret()).thenReturn(EMPTY_SECRET);
+
+        String token = tokenManager.generateToken();
+        assertFalse(tokenManager.authenticate(token));
     }
 
     private String generateComparisonToken(byte[] secret, String issuer, String audience) {

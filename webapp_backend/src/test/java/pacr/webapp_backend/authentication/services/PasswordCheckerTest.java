@@ -54,9 +54,14 @@ public class PasswordCheckerTest {
      * Tests whether checkPassword throws an exception if no password has been set yet.
      */
     @Test
-    void checkPassword_emptyAdminPassword_shouldThrowException() {
+    void checkPassword_emptyAdminPasswordHash_shouldThrowException() {
         when(authenticationAccessMock.getAdminPasswordHash()).thenReturn(EMPTY);
 
         assertThrows(IllegalStateException.class, () -> passwordChecker.checkPassword(PASSWORD));
+    }
+
+    @Test
+    void checkPassword_emptyAdminPassword_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> passwordChecker.checkPassword(EMPTY));
     }
 }

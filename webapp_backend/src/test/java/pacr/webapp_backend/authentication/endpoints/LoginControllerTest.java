@@ -5,7 +5,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import pacr.webapp_backend.authentication.services.Password;
 import pacr.webapp_backend.authentication.services.PasswordChecker;
+import pacr.webapp_backend.authentication.services.Token;
 import pacr.webapp_backend.authentication.services.TokenManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,6 +20,7 @@ public class LoginControllerTest {
 
     private static final String PASSWORD = "password";
     private static final String JWT = "jwt";
+    private static final Password PASSWORD_OBJ = new Password(PASSWORD);
 
     @Mock
     private PasswordChecker passwordCheckerMock;
@@ -35,28 +38,28 @@ public class LoginControllerTest {
     /**
      * Tests whether login correctly tests the entered password and returns the jwt if it is correct.
      */
-//    @Test
-//    void login_passwordCorrect_shouldReturnJWT() {
-//        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(true);
-//        when(tokenManagerMock.generateToken()).thenReturn(JWT);
-//
-//        ResponseEntity<String> response = loginController.login(PASSWORD);
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertEquals(JWT, response.getBody());
-//    }
-//
-//    /**
-//     * Tests whether login returns no jwt and an unauthorized response if the password is incorrect.
-//     */
-//    @Test
-//    void login_passwordIncorrect_shouldReturnUnauthorizedWithEmptyBody() {
-//        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(false);
-//
-//        ResponseEntity<String> response = loginController.login(PASSWORD);
-//
-//        verify(tokenManagerMock, never()).generateToken();
-//        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-//        assertNull(response.getBody());
-//    }
+    @Test
+    void login_passwordCorrect_shouldReturnJWT() {
+        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(true);
+        when(tokenManagerMock.generateToken()).thenReturn(JWT);
+
+        ResponseEntity<Token> response = loginController.login(PASSWORD_OBJ);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(JWT, response.getBody().getToken());
+    }
+
+    /**
+     * Tests whether login returns no jwt and an unauthorized response if the password is incorrect.
+     */
+    @Test
+    void login_passwordIncorrect_shouldReturnUnauthorizedWithEmptyBody() {
+        when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(false);
+
+        ResponseEntity<Token> response = loginController.login(PASSWORD_OBJ);
+
+        verify(tokenManagerMock, never()).generateToken();
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+        assertNull(response.getBody());
+    }
 }
