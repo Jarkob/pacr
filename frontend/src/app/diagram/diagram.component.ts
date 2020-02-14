@@ -173,6 +173,9 @@ export class DiagramComponent implements OnInit {
 
 
   ngOnInit() {
+    console.log('call after redirect');
+    this.chart.chart = undefined;
+    console.log('chart: ', this.chart);
     this.getRepositories();
     if (this.inSelectedBenchmark != null) {
       this.selectedBenchmark = this.inSelectedBenchmark;
@@ -282,8 +285,9 @@ export class DiagramComponent implements OnInit {
         // tslint:disable-next-line:prefer-for-of
         for (let i = 0; i < chart.config.data.datasets.length; i++) {
           const dataset: any = chart.config.data.datasets[i];
-          for (let j = 0; j < dataset._meta[2].data.length; j++) {
-            const element = dataset._meta[2].data[j];
+          // key of dataset._meta has a random name
+          for (let j = 0; j < dataset._meta[Object.keys(dataset._meta)[0]].data.length; j++) {
+            const element = dataset._meta[Object.keys(dataset._meta)[0]].data[j];
             if (!dataset.code[j].result) {
               element._model.pointStyle = notYetImage;
             } else if (dataset.code[j].globalError) {
@@ -293,7 +297,7 @@ export class DiagramComponent implements OnInit {
             }
           }
         }
-        this.legendData = this.chart.chart.generateLegend();
+        this.legendData = chart.generateLegend();
       }
     });
     this.chart.update();
