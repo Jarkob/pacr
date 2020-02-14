@@ -29,6 +29,13 @@ export class ToolbarComponent implements OnInit {
   }
 
   /**
+   * log the user out
+   */
+  public logout() {
+    this.authenticationService.logout();
+  }
+
+  /**
    * navigate to the previous page
    */
   public navigateBack() {
