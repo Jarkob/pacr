@@ -2,9 +2,6 @@ package pacr.webapp_backend.database;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import pacr.webapp_backend.SpringBootTestWithoutShell;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +9,7 @@ import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -136,5 +134,19 @@ public class AuthenticationStorageTest {
         for (int i = 0; i < secret.length; ++i) {
             assertEquals(SECRET[i], secret[i]);
         }
+    }
+
+    @Test
+    void getAdminPasswordHash_noFile_shouldThrowException() {
+        adminPasswordHashFile.delete();
+
+        assertThrows(IllegalStateException.class, () -> authenticationStorage.getAdminPasswordHash());
+    }
+
+    @Test
+    void getSecret_noFile_shouldThrowException() {
+        secretFile.delete();
+
+        assertThrows(IllegalStateException.class, () -> authenticationStorage.getSecret());
     }
 }
