@@ -12,6 +12,7 @@ import pacr.webapp_backend.authentication.services.TokenManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -61,5 +62,12 @@ public class LoginControllerTest {
         verify(tokenManagerMock, never()).generateToken();
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         assertNull(response.getBody());
+    }
+
+    @Test
+    void login_passwordIsNull_shouldThrowException() {
+        Password withoutPW = new Password();
+
+        assertThrows(IllegalArgumentException.class, () -> loginController.login(withoutPW));
     }
 }

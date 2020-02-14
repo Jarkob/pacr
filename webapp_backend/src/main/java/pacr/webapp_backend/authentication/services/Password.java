@@ -1,8 +1,13 @@
 package pacr.webapp_backend.authentication.services;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * A representation of a password, needed for authentication
  */
+@Getter
+@Setter
 public class Password {
 
     private String password;
@@ -17,22 +22,6 @@ public class Password {
      * @param password the value of the password
      */
     public Password(String password) {
-        this.password = password;
-    }
-
-    /**
-     * Get the value of the password
-     * @return the value of the password
-     */
-    public String getPassword() {
-        return password;
-    }
-
-    /**
-     * Set the value of the password
-     * @param password the value of the password
-     */
-    public void setPassword(String password) {
         this.password = password;
     }
 }
