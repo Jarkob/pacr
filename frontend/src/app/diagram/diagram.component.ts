@@ -171,8 +171,11 @@ export class DiagramComponent implements OnInit {
   plugins = [ChartAnnotation];
   legendData: any;
 
+  loading = false;
+
 
   ngOnInit() {
+    this.loading = true;
     this.chart.chart = undefined;
     this.getRepositories();
     if (this.inSelectedBenchmark != null) {
@@ -215,7 +218,7 @@ export class DiagramComponent implements OnInit {
     if (this.selectedBenchmark == null) {
       return;
     }
-
+    this.loading = true;
     const repositoryIds = Array.from(this.repositories.keys());
     this.getBenchmarkingResults(repositoryIds);
 
@@ -299,6 +302,7 @@ export class DiagramComponent implements OnInit {
       }
     });
     this.chart.update();
+    this.loading = false;
   }
 
   private calculateLines(repositoryId: number): any[] {

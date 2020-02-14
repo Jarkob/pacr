@@ -37,5 +37,8 @@
             [chartType]="type"
             [plugins]="plugins">
         </canvas>
+            <div class="diagram-spinner">
+                <mat-spinner *ngIf="loading" color="primary" [diameter]="50"></mat-spinner>
+            </div>
     </div>
 </mat-card>

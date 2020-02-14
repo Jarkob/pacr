@@ -19,3 +19,9 @@ ul, li {
     list-style-type: none;
     padding: 0;
 }
+
+.diagram-spinner {
+    position: absolute;
+    top: 40%;
+    left: 57%;
+}
