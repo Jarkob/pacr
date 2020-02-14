@@ -1,3 +1,4 @@
+import { DetailViewService } from './../services/detail-view.service';
 import { BenchmarkProperty } from './../classes/benchmark-property';
 import { Dataset } from './../classes/dataset';
 import { DiagramMaximizerService } from './diagram-maximizer.service';
@@ -10,7 +11,6 @@ import * as ChartAnnotation from 'chartjs-plugin-annotation';
 import { RepositoryService } from '../services/repository.service';
 import { Repository } from '../classes/repository';
 import { BenchmarkService } from '../services/benchmark.service';
-import { DiagramService } from '../services/diagram.service';
 import * as Chart from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { BenchmarkGroup } from '../classes/benchmark-group';
@@ -31,7 +31,7 @@ export class DiagramComponent implements OnInit {
     private benchmarkingResultService: BenchmarkingResultService,
     private repositoryService: RepositoryService,
     private benchmarkService: BenchmarkService,
-    private diagramService: DiagramService,
+    private detailViewService: DetailViewService,
   ) { }
 
   @Input() inSelectedBenchmark: Benchmark;
@@ -185,10 +185,10 @@ export class DiagramComponent implements OnInit {
 
   /**
    * select a commit from the diagram
-   * @param sha the id of the commit
+   * @param commitHash the id of the commit
    */
-  public selectCommit(sha: string) {
-    this.diagramService.selectCommit(sha);
+  public selectCommit(commitHash: string) {
+    this.detailViewService.selectCommit(commitHash);
   }
 
   /**

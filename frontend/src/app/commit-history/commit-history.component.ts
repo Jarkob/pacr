@@ -1,3 +1,4 @@
+import { DetailViewService } from './../services/detail-view.service';
 import { StringService } from './../services/strings.service';
 import { CommitHistoryMaximizerService } from './commit-history-maximizer.service';
 import { CommitHistoryMaximizedRef } from './commit-history-maximized-ref';
@@ -16,6 +17,7 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 export class CommitHistoryComponent implements OnInit {
 
   constructor(
+    private detailViewService: DetailViewService,
     private eventService: EventService,
     private previewDialog: CommitHistoryMaximizerService,
     private stringService: StringService
@@ -25,13 +27,12 @@ export class CommitHistoryComponent implements OnInit {
   strings: any;
   commits: CommitBenchmarkingResult[];
 
-
   /**
    * select a commit
    * @param commitHash the hash of the commit to be selected
    */
   public selectCommit(commitHash: string) {
-    this.commitSelectedEvent.emit(commitHash);
+    this.detailViewService.selectCommit(commitHash);
   }
 
   ngOnInit() {

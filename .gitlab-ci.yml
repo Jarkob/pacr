@@ -11,3 +11,5 @@ pacrjob:
     - echo "Building project with maven"
     - cd webapp_backend
     - mvn verify
+    - cd ../frontend
+    - ng build --aot --prod

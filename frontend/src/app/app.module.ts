@@ -1,4 +1,6 @@
-import { EnumStringPipe } from './pipes/enum-pipe';
+import { EnumPipe } from './pipes/enum-pipe';
+import { DetailViewService } from './services/detail-view.service';
+import { CommitHistoryJobQueueWrapperComponent } from './commit-history-job-queue-wrapper/commit-history-job-queue-wrapper.component';
 import { FooterComponent } from './footer/footer.component';
 import { CommitComparisonTableComponent } from './commit-comparison-table/commit-comparison-table.component';
 import { BenchmarkingResultTableComponent } from './benchmarking-result-table/benchmarking-result-table.component';
@@ -85,7 +87,8 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     BenchmarkingResultTableComponent,
     CommitComparisonTableComponent,
     TimeAgoPipe,
-    EnumStringPipe
+    EnumPipe,
+    CommitHistoryJobQueueWrapperComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
@@ -117,6 +120,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     ImportExportService,
     RepositoryService,
     SchedulerService,
+    DetailViewService,
     GlobalService,
     {
       provide: HTTP_INTERCEPTORS,
@@ -127,7 +131,8 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
   exports: [
     BrachesPipe,
     ShortenStringPipe,
-    PercentPipe
+    PercentPipe,
+    EnumPipe
   ],
   bootstrap: [AppComponent]
 })

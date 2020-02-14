@@ -1,0 +1,18 @@
+:host {
+    flex: 1 1 100%;
+    display: flex;
+    flex-flow: column;
+}
+
+.maximize-button {
+    position: absolute;
+    right: 1em;
+    z-index: 999;
+}
+
+mat-card {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    overflow-y: scroll;
+}

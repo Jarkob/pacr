@@ -1,9 +1,9 @@
+import { DetailViewService } from './../services/detail-view.service';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { StringService } from './../services/strings.service';
 import { DetailViewMaximizerService } from './detail-view-maximizer.service';
 import { DetailViewMaximizedRef } from './detail-view-maximized-ref';
 import { Subscription } from 'rxjs';
-import { DiagramService } from './../services/diagram.service';
 import { OverlayRef } from '@angular/cdk/overlay';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -21,7 +21,7 @@ export class DetailViewComponent implements OnInit, OnDestroy {
   constructor(
     private previewDialog: DetailViewMaximizerService,
     private benchmarkingResultService: BenchmarkingResultService,
-    private diagramService: DiagramService,
+    private detailViewService: DetailViewService,
     private stringService: StringService
   ) { }
 
@@ -42,7 +42,7 @@ export class DetailViewComponent implements OnInit, OnDestroy {
         this.strings = data;
       }
     );
-    this.selectedCommitSubscription = this.diagramService.selectedCommit.subscribe(
+    this.selectedCommitSubscription = this.detailViewService.selectedCommit.subscribe(
       data => {
         this.selectCommit(data);
       }

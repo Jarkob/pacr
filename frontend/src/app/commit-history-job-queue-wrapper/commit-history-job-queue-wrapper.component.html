@@ -1,0 +1,17 @@
+<mat-card [style.overflow]="'auto'">
+    <button mat-mini-fab class="maximize-button" *ngIf="tabGroup.selectedIndex == 0" 
+        (click)="commitHistory.maximizeCommitHistory()">
+        <mat-icon>fullscreen</mat-icon>
+    </button>
+    <mat-tab-group #tabGroup>
+
+        <mat-tab label="Latest">
+            <app-commit-history #commitHistory ></app-commit-history>
+        </mat-tab>
+        
+        <mat-tab label="Queue">
+            <app-job-queue></app-job-queue>
+        </mat-tab>
+    
+    </mat-tab-group>    
+</mat-card>

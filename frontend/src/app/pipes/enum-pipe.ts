@@ -9,7 +9,7 @@ import { Pipe, PipeTransform } from '@angular/core';
  *   formats to: test enum
 */
 @Pipe({name: 'enumString'})
-export class EnumStringPipe implements PipeTransform {
+export class EnumPipe implements PipeTransform {
   transform(value: string): string {
     let output = value.split('_').join(' ');
 

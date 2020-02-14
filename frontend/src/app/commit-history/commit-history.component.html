@@ -1,49 +1,37 @@
-<mat-card [style.overflow]="'auto'">
-    <mat-card-header>
-        <mat-card-title>{{ strings?.title }}</mat-card-title>
-
-        <!-- Push button to the right -->
-        <div fxFlex></div>
-
-        <button mat-mini-fab (click)="maximizeCommitHistory()">
-            <mat-icon>fullscreen</mat-icon>
-        </button>
-    </mat-card-header>
-    <mat-card-content>
-        <mat-accordion id="history" class="headers-align">
-            <mat-expansion-panel *ngFor="let commit of commits">
-                <mat-expansion-panel-header>
-                    <mat-panel-title> 
-                        {{ commit.commitEntryDate | timeAgo }}                         
-                    </mat-panel-title>
-                    
-                    <mat-panel-description>{{ commit.commitMessage }}</mat-panel-description>
-                </mat-expansion-panel-header>
+<div>    
+    <mat-accordion id="history" class="headers-align">
+        <mat-expansion-panel *ngFor="let commit of commits">
+            <mat-expansion-panel-header>
+                <mat-panel-title> 
+                    {{ commit.commitEntryDate | timeAgo }}                         
+                </mat-panel-title>
                 
-                <p class="mat-h3">
-                    {{ strings?.commitHash }}
-                    
-                    <a id="openDetailView" (click)="selectCommit(commit.commitHash)" matTooltip="{{commit.commitHash}}" matTooltipPosition="right">
-                        {{ commit.commitHash | shortenString:7 }}
-                    </a>
-                </p>                              
+                <mat-panel-description>{{ commit.commitMessage }}</mat-panel-description>
+            </mat-expansion-panel-header>
+            
+            <p class="mat-h3">
+                {{ strings?.commitHash }}
+                
+                <a id="openDetailView" (click)="selectCommit(commit.commitHash)" matTooltip="{{commit.commitHash}}" matTooltipPosition="right">
+                    {{ commit.commitHash | shortenString:7 }}
+                </a>
+            </p>                              
 
-                <span class="mat-h3">{{ strings?.commitMessage }}</span>
-                <p class="mat-h3 valueText">{{ commit.commitMessage }}</p>
+            <span class="mat-h3">{{ strings?.commitMessage }}</span>
+            <p class="mat-h3 valueText">{{ commit.commitMessage }}</p>
 
-                <div class="textAlignRow">
-                    <div>{{ strings?.authorDate }}</div>
-                    <div class="textAlignItem valueText">{{ commit.commitAuthorDate | date:'MMM dd, y, HH:mm:ss' }}</div>     
-                </div>
-                <div class="textAlignRow">
-                    <div>{{ strings?.commitDate }}</div>
-                    <div class="textAlignItem valueText">{{ commit.commitCommitDate | date:'MMM dd, y, HH:mm:ss' }}</div>
-                </div>
-                <div class="textAlignRow">
-                    <div>{{ strings?.entryDate }}</div>
-                    <div class="textAlignItem valueText">{{ commit.commitEntryDate | date:'MMM dd, y, HH:mm:ss' }}</div>
-                </div>
-            </mat-expansion-panel>
-        </mat-accordion>
-    </mat-card-content>    
-</mat-card>
+            <div class="textAlignRow">
+                <div>{{ strings?.authorDate }}</div>
+                <div class="textAlignItem valueText">{{ commit.commitAuthorDate | date:'MMM dd, y, HH:mm:ss' }}</div>     
+            </div>
+            <div class="textAlignRow">
+                <div>{{ strings?.commitDate }}</div>
+                <div class="textAlignItem valueText">{{ commit.commitCommitDate | date:'MMM dd, y, HH:mm:ss' }}</div>
+            </div>
+            <div class="textAlignRow">
+                <div>{{ strings?.entryDate }}</div>
+                <div class="textAlignItem valueText">{{ commit.commitEntryDate | date:'MMM dd, y, HH:mm:ss' }}</div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion> 
+</div>
