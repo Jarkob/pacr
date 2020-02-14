@@ -215,26 +215,27 @@ export class DiagramComponent implements OnInit {
       return;
     }
 
-    const keys = Array.from(this.repositories.keys());
-    this.getBenchmarkingResults(keys);
+    const repositoryIds = Array.from(this.repositories.keys());
+    this.getBenchmarkingResults(repositoryIds);
 
     this.deleteLine();
   }
 
   // here is a bug @Daniel (called from loadBenchmark after new benchmark is selected)
-  private getBenchmarkingResults(keys: number[]) {
-    if (keys.length === 0) {
+  private getBenchmarkingResults(repositoryIds: number[]) {
+    if (repositoryIds.length === 0) {
       this.loadProperty();
       return;
     }
-    this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, keys[0], 'master').subscribe(
+    this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, repositoryIds[0], 'master').subscribe(
       data => {
-        this.repositoryResults.set(keys[0], data);
-        const lines = this.calculateLines(keys[0]);
+        this.repositoryResults.set(repositoryIds[0], data);
+        const lines = this.calculateLines(repositoryIds[0]);
         // both is important, otherwise event listening for change of legend gets messed up
         this.chart.datasets.concat(lines);
         this.datasets = lines;
-        this.getBenchmarkingResults(keys.splice(1));
+        this.chart.update();
+        this.getBenchmarkingResults(repositoryIds.splice(1));
       }
     );
   }
@@ -275,6 +276,7 @@ export class DiagramComponent implements OnInit {
     errorImage.src = 'assets/clear.svg';
     globalErrorImage.src = 'assets/block.svg';
     notYetImage.src = 'assets/run.svg';
+    // TODO refactor
     Chart.pluginService.register({
       afterUpdate: (chart) => {
         // tslint:disable-next-line:prefer-for-of
@@ -291,10 +293,9 @@ export class DiagramComponent implements OnInit {
             }
           }
         }
+        this.legendData = this.chart.chart.generateLegend();
       }
     });
-    this.chart.update();
-    this.legendData = this.chart.chart.generateLegend();
     this.chart.update();
   }
 
@@ -442,7 +443,6 @@ export class DiagramComponent implements OnInit {
         data => {
           this.benchmarks.set(group.name, data);
           if (!this.selectedBenchmark && data.length > 0) {
-            console.log(data);
             this.selectedBenchmark = data[0];
             if (this.selectedBenchmark.properties && this.selectedBenchmark.properties.length > 0) {
               this.selectedBenchmarkProperty = this.selectedBenchmark.properties[0];
