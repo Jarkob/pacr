@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Getter;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
@@ -11,8 +12,9 @@ import java.util.Objects;
 
 /**
  * Represents a benchmarking result for a certain commit. Contains data about the commit and all measurements and/or
- * error messages.
+ * error messages. @Getter provides this class with all getters so the json can be properly created.
  */
+@Getter
 public class OutputBenchmarkingResult {
 
     private boolean hasGlobalError;
@@ -120,13 +122,6 @@ public class OutputBenchmarkingResult {
     }
 
     /**
-     * @return the system environment the result was measured on.
-     */
-    public ISystemEnvironment getSystemEnvironment() {
-        return systemEnvironment;
-    }
-
-    /**
      * Gets all benchmarks (for output)that were executed on the commit.
      * @return the benchmarks.
      */
@@ -140,90 +135,6 @@ public class OutputBenchmarkingResult {
      */
     public boolean getHasGlobalError() {
         return hasGlobalError;
-    }
-
-    /**
-     * @return the global error message of this result.
-     */
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    /**
-     * @return the message of the commit of this result.
-     */
-    public String getCommitMessage() {
-        return commitMessage;
-    }
-
-    /**
-     * @return the url of the commit of this result.
-     */
-    public String getCommitURL() {
-        return commitURL;
-    }
-
-    /**
-     * @return the hash of the commit this result was compared to. May be null if no comparison was done.
-     */
-    public String getComparisonCommitHash() {
-        return comparisonCommitHash;
-    }
-
-    /**
-     * @return the entry date of the commit of this result into the database.
-     */
-    public String getCommitEntryDate() {
-        return commitEntryDate;
-    }
-
-    /**
-     * @return the commit date of the commit of this result.
-     */
-    public String getCommitCommitDate() {
-        return commitCommitDate;
-    }
-
-    /**
-     * @return the author date of the commit of this result.
-     */
-    public String getCommitAuthorDate() {
-        return commitAuthorDate;
-    }
-
-    /**
-     * @return the id of the repository of the commit of this result.
-     */
-    public int getCommitRepositoryId() {
-        return commitRepositoryId;
-    }
-
-    /**
-     * @return the name of the repository of the commit of this result.
-     */
-    public String getCommitRepositoryName() {
-        return commitRepositoryName;
-    }
-
-    /**
-     * @return the names of the branches of the commit of this result.
-     */
-    public Collection<String> getCommitBranchNames() {
-        return commitBranchNames;
-    }
-
-    /**
-     * @return the hashes of the parents of the commit of this result.
-     */
-    public Collection<String> getCommitParentHashes() {
-        return commitParentHashes;
-    }
-
-    /**
-     * @return the labels of the commit of this result.
-     */
-    public Collection<String> getCommitLabels() {
-        return commitLabels;
     }
 
     private boolean belongToSameCommit(ICommit commit, CommitResult result) {

@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Getter;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
 import javax.validation.constraints.NotNull;
@@ -8,7 +9,9 @@ import java.util.Objects;
 /**
  * Represents a slimmed down version of a BenchmarkPropertyResult for output. This only contains the statistical values
  * of the original BenchmarkPropertyResult, not all measured data.
+ * '@Getter' provides this class with all getters so the json can be properly created.
  */
+@Getter
 public class OutputPropertyResult {
     private String name;
     private String unit;
@@ -47,91 +50,5 @@ public class OutputPropertyResult {
 
         this.ratioToPreviousCommit = result.getRatio();
         this.compared = result.isCompared();
-    }
-
-    /**
-     * @return the unit of the measurements.
-     */
-    public String getUnit() {
-        return unit;
-    }
-
-    /**
-     * @return the interpretation of the measurements.
-     */
-    public ResultInterpretation getInterpretation() {
-        return interpretation;
-    }
-
-    /**
-     * @return the mean of the measurements.
-     */
-    public double getMean() {
-        return mean;
-    }
-
-    /**
-     * @return the lower quartile of the measurements.
-     */
-    public double getLowerQuartile() {
-        return lowerQuartile;
-    }
-
-    /**
-     * @return the median of the measurements.
-     */
-    public double getMedian() {
-        return median;
-    }
-
-    /**
-     * @return the upper quartile of the measurements.
-     */
-    public double getUpperQuartile() {
-        return upperQuartile;
-    }
-
-    /**
-     * @return the standard deviation of the measurements.
-     */
-    public double getStandardDeviation() {
-        return standardDeviation;
-    }
-
-    /**
-     * @return {@code true} if there was an error measuring this property, otherwise {@code false}.
-     */
-    public boolean isHadLocalError() {
-        return hadLocalError;
-    }
-
-    /**
-     * @return the error message if there was an error.
-     */
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    /**
-     * @return the ratio of the median with the median of the comparison commit.
-     */
-    public double getRatioToPreviousCommit() {
-        return ratioToPreviousCommit;
-    }
-
-    /**
-     * @return {@code true} if a comparison to a parent commit was done and ratio has been properly set, otherwise
-     * {@code false}.
-     */
-    public boolean isCompared() {
-        return compared;
-    }
-
-    /**
-     * Gets the name of the property.
-     * @return the name
-     */
-    public String getName() {
-        return name;
     }
 }

@@ -15,10 +15,14 @@ import pacr.webapp_backend.shared.IAuthenticator;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -126,6 +130,25 @@ public class BenchmarkControllerTest {
         verify(benchmarkManagerMock, never()).updateBenchmark(anyInt(), anyString(), anyString(), anyInt());
     }
 
+    @Test
+    void updateBenchmark_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> benchmarkController.updateBenchmark(new BenchmarkInput(), null));
+    }
+
+    @Test
+    void updateBenchmark_benchmarkNotFound_shouldReturnNotFoundCode() {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+        doThrow(new NoSuchElementException())
+                .when(benchmarkManagerMock).updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
+
+        BenchmarkInput input = new BenchmarkInput(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
+
+        ResponseEntity<Object> response = benchmarkController.updateBenchmark(input, TOKEN);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
     /**
      * Tests whether addGroup adds it on the benchmark manager and if it authenticates the token correctly.
      */
@@ -152,6 +175,11 @@ public class BenchmarkControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
         verify(benchmarkManagerMock, never()).addGroup(anyString());
+    }
+
+    @Test
+    void addGroup_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> benchmarkController.addGroup(null, null));
     }
 
     /**
@@ -182,6 +210,22 @@ public class BenchmarkControllerTest {
         verify(benchmarkManagerMock, never()).updateGroup(anyInt(), anyString());
     }
 
+    @Test
+    void updateGroup_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> benchmarkController.updateGroup(GROUP_ID, null, null));
+    }
+
+    @Test
+    void updateGroup_groupNotFound_shouldReturnNotFoundCode() {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+        doThrow(new NoSuchElementException()).when(benchmarkManagerMock).updateGroup(GROUP_ID, GROUP_NAME);
+
+        ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
     /**
      * Tests whether deleteGroup deletes it on the benchmark manager and if it authenticates the token correctly.
      */
@@ -208,6 +252,31 @@ public class BenchmarkControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
         verify(benchmarkManagerMock, never()).deleteGroup(anyInt());
+    }
+
+    @Test
+    void deleteGroup_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> benchmarkController.deleteGroup(GROUP_ID, null));
+    }
+
+    @Test
+    void deleteGroup_groupNotFound_shouldReturnNotFoundCode() throws IllegalAccessException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+        doThrow(new NoSuchElementException()).when(benchmarkManagerMock).deleteGroup(GROUP_ID);
+
+        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    void deleteGroup_inputIsIdOfStandardGroup_shouldReturnBadRequestCode() throws IllegalAccessException {
+        when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
+        doThrow(new IllegalAccessException()).when(benchmarkManagerMock).deleteGroup(GROUP_ID);
+
+        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     /**

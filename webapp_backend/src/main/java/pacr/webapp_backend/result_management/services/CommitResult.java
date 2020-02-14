@@ -116,6 +116,7 @@ public class CommitResult implements IBenchmarkingResult {
         this.systemEnvironment = systemEnvironment;
         this.benchmarkResults = benchmarkResults;
         this.entryDate = LocalDateTime.now();
+        this.commitDate = LocalDateTime.now();
         this.comparisonCommitHash = null;
     }
 
@@ -196,6 +197,13 @@ public class CommitResult implements IBenchmarkingResult {
      */
     public void setError(boolean error) {
         this.error = error;
+    }
+
+    /**
+     * @return the commit date of the commit.
+     */
+    public LocalDateTime getCommitDate() {
+        return commitDate;
     }
 
     /**

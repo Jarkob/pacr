@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Getter;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
@@ -8,7 +9,9 @@ import java.util.Objects;
 
 /**
  * An even smaller version of a benchmarking result that is optimized for information needed in a diagram view.
+ * '@Getter' provides this class with all getters so the json can be properly created.
  */
+@Getter
 public class DiagramOutputResult {
 
     private String commitHash;
@@ -79,41 +82,6 @@ public class DiagramOutputResult {
     }
 
     /**
-     * @param commitHash the hash fo the commit of this result.
-     */
-    public void setCommitHash(String commitHash) {
-        this.commitHash = commitHash;
-    }
-
-    /**
-     * @return the commit date of the commit.
-     */
-    public String getCommitDate() {
-        return commitDate;
-    }
-
-    /**
-     * @param commitDate the commit date of the commit.
-     */
-    public void setCommitDate(String commitDate) {
-        this.commitDate = commitDate;
-    }
-
-    /**
-     * @return the author date of the commit.
-     */
-    public String getAuthorDate() {
-        return authorDate;
-    }
-
-    /**
-     * @param authorDate the author date of the commit.
-     */
-    public void setAuthorDate(String authorDate) {
-        this.authorDate = authorDate;
-    }
-
-    /**
      * @return a hash map that maps property names to the measured median (or error message) for that property.
      */
     public HashMap<String, ResultWithError> getResult() {
@@ -121,37 +89,9 @@ public class DiagramOutputResult {
     }
 
     /**
-     * @param result the hash map that maps property name to its result or error.
-     */
-    public void setResult(HashMap<String, ResultWithError> result) {
-        this.result = result;
-    }
-
-    /**
-     * @return the hashes of the parents of the commit.
-     */
-    public String[] getParents() {
-        return parents;
-    }
-
-    /**
-     * @param parents the hashes of the parents of the commit.
-     */
-    public void setParents(String[] parents) {
-        this.parents = parents;
-    }
-
-    /**
      * @return the error message of global error.
      */
     public String getGlobalError() {
         return globalError;
-    }
-
-    /**
-     * @param globalError the error message of a global error.
-     */
-    public void setGlobalError(String globalError) {
-        this.globalError = globalError;
     }
 }

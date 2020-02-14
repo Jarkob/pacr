@@ -1,11 +1,15 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Getter;
+
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
  * Represents a benchmark for output purposes.
+ * '@Getter' provides this class with all getters so the json can be properly created.
  */
+@Getter
 public class OutputBenchmark {
 
     private static final transient int NO_GROUP_ID = -1;
@@ -44,45 +48,9 @@ public class OutputBenchmark {
     }
 
     /**
-     * Gets the original name of the benchmark.
-     * @return the original name.
-     */
-    String getOriginalName() {
-        return originalName;
-    }
-
-    /**
      * @return Gets the id of the group the benchmark belongs to. -1 if the benchmark belongs to no group.
      */
     public int getGroupId() {
         return groupId;
-    }
-
-    /**
-     * @return the unique id of the benchmark.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @return the custom name of the benchmark.
-     */
-    public String getCustomName() {
-        return customName;
-    }
-
-    /**
-     * @return the description of the benchmark.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @return the properties with results of this benchmark.
-     */
-    public OutputPropertyResult[] getResults() {
-        return results;
     }
 }

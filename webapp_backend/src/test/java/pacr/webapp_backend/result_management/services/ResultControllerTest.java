@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
@@ -92,6 +95,12 @@ public class ResultControllerTest {
 
         verify(resultGetterMock).getCommitResult(HASH);
         assertEquals(outputMock, testOutput);
+    }
+
+    @Test
+    void getBenchmarkingResultForCommit_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> resultController.getBenchmarkingResultForCommit(null));
     }
 
     /**
@@ -194,7 +203,19 @@ public class ResultControllerTest {
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
         verify(resultManagerMock, never()).deleteBenchmarkingResults(anyCollection());
+    }
 
+    @Test
+    void deleteResult_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> resultController.deleteBenchmarkingResult(null, null));
+    }
 
+    @Test
+    void getResultsForRepository_pageable_shouldCallResultGetter() {
+        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
+        resultController.getResultsForRepository(REPO_ID, pageRequest);
+
+        verify(resultGetterMock).getFullRepositoryResults(REPO_ID, pageRequest);
     }
 }

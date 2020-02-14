@@ -2,6 +2,7 @@ package pacr.webapp_backend.database;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.shared.ICommit;
@@ -15,6 +16,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -28,6 +30,8 @@ public class GetCommitDBTest extends GitTrackingDBTest {
     private static final String HASH_TWO = "hash2";
     private static final String MSG = "message";
     private static final int PAGE_SIZE = 200;
+    private static final int UNKNOWN_REPO = 124981;
+    private static final String UNKNOWN_BRANCH = "124981";
 
     private GetCommitDB getCommitDB;
 
@@ -95,6 +99,12 @@ public class GetCommitDBTest extends GitTrackingDBTest {
                 getCommitDB.getCommitsFromBranch(repository.getId(), BRANCH_NAME).size());
     }
 
+    @Test
+    void getCommitsFromBranch_unknownRepo_shouldReturnNull() {
+        Collection<? extends ICommit> commits = getCommitDB.getCommitsFromBranch(UNKNOWN_REPO, BRANCH_NAME);
+        assertNull(commits);
+    }
+
     /**
      * Tests whether getAllCommit returns the correct amount of commits.
      */
@@ -158,5 +168,14 @@ public class GetCommitDBTest extends GitTrackingDBTest {
 
         assertFalse(firstPageContainsFirstCommit);
         assertEquals(HASH_TWO + 0, firstCommit.get(0).getCommitHash());
+    }
+
+    @Test
+    void getCommitsFromBranch_pageableAndUnknownBranch_shouldReturnNull() {
+        gitTrackingDB.addRepository(repository);
+        Page<? extends ICommit> commits = getCommitDB.getCommitsFromBranch(repository.getId(), UNKNOWN_BRANCH, 0,
+                PAGE_SIZE);
+
+        assertNull(commits);
     }
 }

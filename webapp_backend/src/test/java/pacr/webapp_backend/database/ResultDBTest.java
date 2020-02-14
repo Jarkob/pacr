@@ -6,6 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.result_management.services.SystemEnvironment;
 import pacr.webapp_backend.result_management.services.Benchmark;
@@ -24,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.within;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -42,6 +46,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
     private static final int REPO_ID_ONE = 1;
     private static final int REPO_ID_TWO = 2;
     private static final int EXPECTED_NUM_OF_RESULTS_ONE_NOT_SAVED = 1;
+    private static final int PAGE_SIZE = 10;
 
     private ResultDB resultDB;
     private BenchmarkDB benchmarkDB;
@@ -293,6 +298,34 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
 
         assertEquals(1, savedResults.size());
         assertEquals(COMMIT_HASH_TWO, savedResults.iterator().next().getCommitHash());
+    }
+
+    @Test
+    void getFullRepositoryResults_shouldOnlyReturnRequestedPage() {
+        for (int i = 0; i < PAGE_SIZE + 1; ++i) {
+            CommitResult commitResult = createNewCommitResult(COMMIT_HASH + i, benchmark, REPO_ID_ONE);
+            CommitResult commitResult2 = createNewCommitResult(COMMIT_HASH + i + i, benchmark, REPO_ID_TWO);
+
+            resultDB.saveResult(commitResult);
+            resultDB.saveResult(commitResult2);
+        }
+
+        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE, Sort.by("commitDate").descending());
+        Page<CommitResult> results = resultDB.getFullRepositoryResults(REPO_ID_ONE, pageRequest);
+
+        assertEquals(PAGE_SIZE, results.getContent().size());
+
+        LocalDateTime previousTime = LocalDateTime.now().plusSeconds(1);
+
+        for (CommitResult result : results.getContent()) {
+            assertEquals(REPO_ID_ONE, result.getRepositoryID());
+
+            assertTrue(result.getCommitDate().isBefore(previousTime)
+                    || result.getCommitDate().equals(previousTime),
+                    result.getCommitDate().toString() + " is not before " + previousTime.toString());
+
+            previousTime = result.getCommitDate();
+        }
     }
 
     private CommitResult createNewCommitResult(String commitHash, Benchmark benchmark, int repositoryId) {

@@ -74,9 +74,8 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
 
     @Override
     public GitCommit getCommit(@NotNull String commitHash) {
-        if (commitHash == null) {
-            throw new IllegalArgumentException("commitHash cannot be null");
-        }
+        Objects.requireNonNull(commitHash);
+
         return commitDB.findById(commitHash).orElse(null);
     }
 
