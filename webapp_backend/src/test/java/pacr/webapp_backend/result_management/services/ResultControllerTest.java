@@ -135,10 +135,10 @@ public class ResultControllerTest {
      */
     @Test
     void getNewResults_shouldCallResultGetter() {
-        List<OutputBenchmarkingResult> getterOutput = new LinkedList<>();
+        List<CommitHistoryItem> getterOutput = new LinkedList<>();
         when(resultGetterMock.getNewestResults()).thenReturn(getterOutput);
 
-        List<OutputBenchmarkingResult> testOutput = resultController.getNewBenchmarkingResults();
+        List<CommitHistoryItem> testOutput = resultController.getNewBenchmarkingResults();
 
         verify(resultGetterMock).getNewestResults();
         assertEquals(getterOutput, testOutput);

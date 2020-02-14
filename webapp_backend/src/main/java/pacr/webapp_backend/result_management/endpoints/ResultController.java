@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import pacr.webapp_backend.result_management.services.CommitHistoryItem;
 import pacr.webapp_backend.result_management.services.OutputBenchmarkingResult;
 import pacr.webapp_backend.result_management.services.DiagramOutputResult;
 import pacr.webapp_backend.result_management.services.ResultGetter;
@@ -164,7 +165,7 @@ public class ResultController {
      * @return the newest results.
      */
     @GetMapping("/history")
-    public List<OutputBenchmarkingResult> getNewBenchmarkingResults() {
+    public List<CommitHistoryItem> getNewBenchmarkingResults() {
         return resultGetter.getNewestResults();
     }
 

@@ -193,10 +193,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     /**
      * @return Gets up to 100 of the newest saved results.
      */
-    public List<OutputBenchmarkingResult> getNewestResults() {
+    public List<CommitHistoryItem> getNewestResults() {
         List<CommitResult> results = resultAccess.getNewestResults();
 
-        return resultsToOutputResults(results);
+        return resultsToHistoryItems(results);
     }
 
     @Override
@@ -297,15 +297,15 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         return resultsMap;
     }
 
-    private List<OutputBenchmarkingResult> resultsToOutputResults(List<CommitResult> results) {
-        List<OutputBenchmarkingResult> outputResultsSameOrder = new LinkedList<>();
+    private List<CommitHistoryItem> resultsToHistoryItems(List<CommitResult> results) {
+        List<CommitHistoryItem> history = new LinkedList<>();
 
         for (CommitResult result : results) {
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commit, result);
-            outputResultsSameOrder.add(outputResult);
+            CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
+            history.add(historyItem);
         }
 
-        return outputResultsSameOrder;
+        return history;
     }
 }
