@@ -173,9 +173,7 @@ export class DiagramComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log('call after redirect');
     this.chart.chart = undefined;
-    console.log('chart: ', this.chart);
     this.getRepositories();
     if (this.inSelectedBenchmark != null) {
       this.selectedBenchmark = this.inSelectedBenchmark;
