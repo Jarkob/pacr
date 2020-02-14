@@ -72,26 +72,4 @@ public class DiagramOutputResult {
         this.parents = commit.getParentHashes().toArray(new String[0]);
         this.globalError = null;
     }
-
-
-    /**
-     * @return the hash of the commit of this result
-     */
-    public String getCommitHash() {
-        return commitHash;
-    }
-
-    /**
-     * @return a hash map that maps property names to the measured median (or error message) for that property.
-     */
-    public HashMap<String, ResultWithError> getResult() {
-        return result;
-    }
-
-    /**
-     * @return the error message of global error.
-     */
-    public String getGlobalError() {
-        return globalError;
-    }
 }

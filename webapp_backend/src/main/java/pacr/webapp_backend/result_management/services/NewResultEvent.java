@@ -37,14 +37,15 @@ public class NewResultEvent extends EventTemplate {
      * Creates a NewResultEvent for a new benchmarking result.
      *
      * @param category the category of the created events. Cannot be null.
-     * @param commitHash the hash of the commit that was benchmarked. Will be shortened to 7 characters. Cannot be null.
+     * @param commitHash the hash of the commit that was benchmarked. Will be shortened to HASH_LENGTH characters.
+     *                   Cannot be null.
      * @param repositoryName the name of the repository of the commit. Cannot be null.
      * @param globalError the error message of the result for the commit. May be null if there was no error. Otherwise
      *                    I assume an error (even if this field is empty or blank).
      * @param averageImprovementPercentage the average improvement between this commit and the comparison commit. Not
      *                                     used if comparisonCommitHash is null.
-     * @param comparisonCommitHash the hash of the commit used for comparison. Will be shortened to 7 characters. May be
-     *                             null (in this case it is assumed no comparison has taken place and
+     * @param comparisonCommitHash the hash of the commit used for comparison. Will be shortened to HASH_LENGTH
+     *                             characters. May be null (in this case it is assumed no comparison has taken place and
      *                             averageImprovementPercentage is ignored).
      */
     NewResultEvent(@NotNull EventCategory category, @NotNull String commitHash, @NotNull String repositoryName,

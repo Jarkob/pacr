@@ -46,11 +46,4 @@ public class OutputBenchmark {
             this.groupId = NO_GROUP_ID;
         }
     }
-
-    /**
-     * @return Gets the id of the group the benchmark belongs to. -1 if the benchmark belongs to no group.
-     */
-    public int getGroupId() {
-        return groupId;
-    }
 }

@@ -115,26 +115,11 @@ public class OutputBenchmarkingResult {
     }
 
     /**
-     * @return the commit hash of the result.
-     */
-    public String getCommitHash() {
-        return commitHash;
-    }
-
-    /**
-     * Gets all benchmarks (for output)that were executed on the commit.
+     * Gets all benchmarks (for output) that were executed on the commit.
      * @return the benchmarks.
      */
     public List<OutputBenchmark> getBenchmarksList() {
         return Arrays.asList(benchmarksList);
-    }
-
-    /**
-     * Indicates whether there was global error while benchmarking the commit.
-     * @return true if there was a global error. Otherwise false.
-     */
-    public boolean getHasGlobalError() {
-        return hasGlobalError;
     }
 
     private boolean belongToSameCommit(ICommit commit, CommitResult result) {
