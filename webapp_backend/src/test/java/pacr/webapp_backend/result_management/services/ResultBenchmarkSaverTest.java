@@ -38,8 +38,7 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     private static final String URL = "url";
     private static final String REPO_NAME = "repo";
     private static final String EXPECTED_EVENT_DESCRIPTION =
-            "A new benchmarking result was measured for the commit 'hash2' from repository 'repo'. On average, " +
-                    "the new benchmarking result is 50 percent better then the previous one (commit '1325').";
+            "On average, the result is 50% better then the previous one ('1325').";
 
     private ResultManager resultManager;
     private GitTrackingDB gitTrackingAccess;

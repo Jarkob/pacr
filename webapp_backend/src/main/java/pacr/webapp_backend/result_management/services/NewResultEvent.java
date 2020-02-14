@@ -15,15 +15,13 @@ public class NewResultEvent extends EventTemplate {
     private static final int HASH_LENGTH = 7;
 
     // TODO get these Strings from a file.
-    private static final String TITLE_FORMAT = "New Benchmarking Result for Repository '%s'";
-    private static final String GENERIC_DESCRIPTION_FORMAT =
-            "A new benchmarking result was measured for the commit '%s' from repository '%s'. ";
+    private static final String TITLE_FORMAT = "'%s' Benchmarked for Repository '%s'";
     private static final String NO_COMPARISON_DESCRIPTION = "No data was found for comparison.";
     private static final String COMPARISON_DESCRIPTION =
-            "On average, the new benchmarking result is %d percent %s then the previous one (commit '%s').";
-    private static final String TITLE_FORMAT_GLOBAL_ERROR = "Error While Benchmarking Commit for Repository '%s'";
+            "On average, the result is %d%% %s then the previous one ('%s').";
+    private static final String TITLE_FORMAT_GLOBAL_ERROR = "Error While Benchmarking '%s' for Repository '%s'";
     private static final String DESCRIPTION_FORMAT_GLOBAL_ERROR =
-            "An error occurred while benchmarking commit '%s' for repository '%s': '%s'";
+            "Error message: '%s'";
     private static final String POSITIVE = "better";
     private static final String NEGATIVE = "worse";
 
@@ -69,11 +67,11 @@ public class NewResultEvent extends EventTemplate {
         if (globalError != null) {
             // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
             // (even if global error is blank or empty)
-            return String.format(TITLE_FORMAT_GLOBAL_ERROR, repositoryName);
+            return String.format(TITLE_FORMAT_GLOBAL_ERROR, commitHash, repositoryName);
         }
         // I only assume there was no error if the field globalError is null.
 
-        return String.format(TITLE_FORMAT, repositoryName);
+        return String.format(TITLE_FORMAT, commitHash, repositoryName);
     }
 
     @Override
@@ -81,13 +79,11 @@ public class NewResultEvent extends EventTemplate {
         if (globalError != null) {
             // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
             // (even if global error is blank or empty)
-            return String.format(DESCRIPTION_FORMAT_GLOBAL_ERROR, commitHash, repositoryName, globalError);
+            return String.format(DESCRIPTION_FORMAT_GLOBAL_ERROR, globalError);
         }
         // I only assume there was no error if the field globalError is null.
 
         StringBuilder descriptionBuilder = new StringBuilder();
-
-        descriptionBuilder.append(String.format(GENERIC_DESCRIPTION_FORMAT, commitHash, repositoryName));
 
         if (comparisonCommitHash == null) {
             descriptionBuilder.append(NO_COMPARISON_DESCRIPTION);

@@ -17,16 +17,15 @@ public class NewResultEventTest {
     private static final String COMPARISON_HASH = "012345678";
     private static final String NO_COMPARISON = null;
 
-    private static final String EXPECTED_NORMAL_TITLE = "New Benchmarking Result for Repository '" + REPO + "'";
-    private static final String EXPECTED_NORMAL_DESCRIPTION = "A new benchmarking result was measured for the commit '"
-            + HASH.substring(0, HASH_LENGTH) + "' from repository '" + REPO + "'. On average, the new benchmarking result is "
-            + IMPROVEMENT + " percent better then the previous one (commit '"
+    private static final String EXPECTED_NORMAL_TITLE = "'" +  HASH.substring(0, HASH_LENGTH)
+            + "' Benchmarked for Repository '" + REPO + "'";
+    private static final String EXPECTED_NORMAL_DESCRIPTION = "On average, the result is "
+            + IMPROVEMENT + "% better then the previous one ('"
             + COMPARISON_HASH.substring(0, HASH_LENGTH) + "').";
-    private static final String EXPECTED_ERROR_TITLE = "Error While Benchmarking Commit for Repository '" + REPO + "'";
-    private static final String EXPECTED_ERROR_DESCRIPTION = "An error occurred while benchmarking commit '"
-            + HASH.substring(0, HASH_LENGTH) + "' for repository '" + REPO + "': '" + ERROR + "'";
-    private static final String EXPECTED_NO_COMPARISON_DESCRIPTION = "A new benchmarking result was measured for the commit '"
-            + HASH.substring(0, HASH_LENGTH) + "' from repository '" + REPO + "'. No data was found for comparison.";
+    private static final String EXPECTED_ERROR_TITLE = "Error While Benchmarking '" + HASH.substring(0, HASH_LENGTH)
+            + "' for Repository '" + REPO + "'";
+    private static final String EXPECTED_ERROR_DESCRIPTION = "Error message: '" + ERROR + "'";
+    private static final String EXPECTED_NO_COMPARISON_DESCRIPTION = "No data was found for comparison.";
 
     /**
      * Tests if title and description get generated properly if it is a successful result with comparison data.
