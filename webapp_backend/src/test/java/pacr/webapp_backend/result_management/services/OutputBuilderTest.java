@@ -7,7 +7,6 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
-import java.awt.Color;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -144,7 +143,7 @@ public class OutputBuilderTest {
 
         assertEquals(commitOne.getCommitHash(), output.getCommitHash());
         assertTrue(output.getBenchmarksList().isEmpty());
-        assertFalse(output.getHasGlobalError());
+        assertFalse(output.isGlobalError());
     }
 
     @Test

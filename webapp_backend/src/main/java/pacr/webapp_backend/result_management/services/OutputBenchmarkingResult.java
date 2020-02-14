@@ -17,7 +17,7 @@ import java.util.Objects;
 @Getter
 public class OutputBenchmarkingResult {
 
-    private boolean hasGlobalError;
+    private boolean globalError;
     private String errorMessage;
 
     private String commitHash;
@@ -58,7 +58,7 @@ public class OutputBenchmarkingResult {
         if (!belongToSameCommit(commit, result)) {
             throw new IllegalArgumentException("commit and result must belong to same commit hash");
         }
-        this.hasGlobalError = result.hasGlobalError();
+        this.globalError = result.hasGlobalError();
         this.errorMessage = result.getGlobalError();
         this.commitHash = commit.getCommitHash();
         this.commitURL = commit.getCommitURL();
@@ -91,7 +91,7 @@ public class OutputBenchmarkingResult {
     OutputBenchmarkingResult(@NotNull ICommit commit) {
         Objects.requireNonNull(commit);
 
-        this.hasGlobalError = false;
+        this.globalError = false;
         this.errorMessage = null;
 
         this.commitHash = commit.getCommitHash();
