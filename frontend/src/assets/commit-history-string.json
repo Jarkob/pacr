@@ -4,5 +4,7 @@
     "commitMessage": "Message:",
     "commitDate": "Commit Date:",
     "authorDate": "Author Date:",
-    "entryDate": "Entry Date:"
+    "entryDate": "Entry Date:",
+    "errorMessage": "Error Message:",
+    "significantCommit": "This commit has a significant change."
 }

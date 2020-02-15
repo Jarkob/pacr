@@ -1,3 +1,4 @@
+import { CommitHistoryItem } from './../classes/commit-history-item';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { Event } from './../classes/event';
 import { GlobalService } from './global.service';
@@ -32,7 +33,7 @@ export class EventService {
   /**
    * get the commit history
    */
-  public getCommitHistory(): Observable<CommitBenchmarkingResult[]> {
-    return this.http.get<CommitBenchmarkingResult[]>(this.globalService.url + '/history');
+  public getCommitHistory(): Observable<CommitHistoryItem[]> {
+    return this.http.get<CommitHistoryItem[]>(this.globalService.url + '/history');
   }
 }
