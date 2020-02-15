@@ -65,6 +65,7 @@ export class BenchmarkingResultService {
    * @param repository the id of the repository
    */
   public getBenchmarkingResultsForRepository(repositoryId: number, page: number, size: number): Observable<any> {
+    console.log(repositoryId);
     return this.http.get<any>(this.globalService.url + '/results/pageable/repository/' + repositoryId + '?page=' + page + '&size=' + size);
   }
 

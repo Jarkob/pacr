@@ -1,0 +1,17 @@
+<mat-card [style.overflow]="'auto'">
+    <button mat-mini-fab class="maximize-button" *ngIf="tabGroup.selectedIndex == 0" 
+        (click)="this.maximizeDetailView()">
+        <mat-icon>fullscreen</mat-icon>
+    </button>
+    <mat-tab-group #tabGroup animationDuration="0ms">
+
+        <mat-tab label="Detail View">
+            <app-detail-view></app-detail-view>
+        </mat-tab>
+        
+        <mat-tab label="Quick Select">
+            <app-comparison></app-comparison>
+        </mat-tab>
+    
+    </mat-tab-group>    
+</mat-card>

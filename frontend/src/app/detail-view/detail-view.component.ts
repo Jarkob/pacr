@@ -19,7 +19,6 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 export class DetailViewComponent implements OnInit, OnDestroy {
 
   constructor(
-    private previewDialog: DetailViewMaximizerService,
     private benchmarkingResultService: BenchmarkingResultService,
     private detailViewService: DetailViewService,
     private stringService: StringService
@@ -86,14 +85,8 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * maximize the detail view
-   * https://blog.thoughtram.io/angular/2017/11/20/custom-overlays-with-angulars-cdk.html
-   */
-  public maximizeDetailView() {
-    const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
-      commitHash: this.benchmarkingResult.commitHash
-    });
+  public updateSelectedCommit(commitHash: string) {
+    this.detailViewService.selectCommit(commitHash);
   }
 
   ngOnDestroy() {

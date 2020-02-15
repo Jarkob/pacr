@@ -1,3 +1,4 @@
+import { DetailViewComparisonWrapperComponent } from './detail-view-comparison-wrapper/detail-view-comparison-wrapper.component';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { EnumPipe } from './pipes/enum-pipe';
 import { DetailViewService } from './services/detail-view.service';
@@ -88,7 +89,8 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     CommitComparisonTableComponent,
     TimeAgoPipe,
     EnumPipe,
-    CommitHistoryJobQueueWrapperComponent
+    CommitHistoryJobQueueWrapperComponent,
+    DetailViewComparisonWrapperComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,

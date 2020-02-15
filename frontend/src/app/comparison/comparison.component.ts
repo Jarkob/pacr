@@ -55,6 +55,7 @@ export class ComparisonComponent implements OnInit {
       data => {
         this.repositories = data;
 
+        console.log(this.repositories);
         if (this.repositories && this.repositories.length > 0) {
           this.selectedRepository = this.repositories[0];
 
@@ -94,8 +95,10 @@ export class ComparisonComponent implements OnInit {
   getCommits(event: any): any {
     this.commits = [];
 
+    console.log(this.selectedRepository);
     this.resultService.getBenchmarkingResultsForRepository(this.selectedRepository.id, event.pageIndex, event.pageSize).subscribe(
       data => {
+        console.log(data);
         this.commitsPage = data;
         this.commits = data.content;
       }
