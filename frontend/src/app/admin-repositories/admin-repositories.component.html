@@ -18,11 +18,17 @@
                     </p>                                
                     <p matLine class="mat-h4">
                         {{ strings?.observeFromDate }}
-                        <span *ngIf="repository?.observeFromDate">{{ repository?.observeFromDate | date }}</span>
-                        <span *ngIf="!repository?.observeFromDate">{{ strings?.everythingTracked }}</span>
+                        <span *ngIf="repository?.observeFromDate" class="valueText">{{ repository?.observeFromDate | date }}</span>
+                        <span *ngIf="!repository?.observeFromDate" class="valueText">{{ strings?.everythingTracked }}</span>
                     </p>
                     <p matLine class="mat-h4">
-                        {{ strings?.hookSet }} {{ repository?.hookSet ? strings?.hookIsSet : strings?.hookIsNotSet }}
+                        {{ strings?.hookSet }}
+                        <span class="valueText">
+                            {{ repository?.hookSet ? strings?.hookIsSet : strings?.hookIsNotSet }}                            
+                        </span> 
+                        <span class="valueText" *ngIf="repository?.hookSet">
+                            {{ backendUrl + repository?.webHookURL | braces }}
+                        </span>                        
                     </p>
                     <p matLine class="mat-h4">
                         {{ strings?.color }} 
@@ -30,12 +36,15 @@
                     </p>
                     <p matLine class="mat-h4">
                         {{ strings?.trackMode }} 
-                        <span matTooltip="{{ repository?.trackAllBranches ? strings?.blacklistDescription : strings?.whitelistDescription }}">
+                        <span class="valueText" matTooltip="{{ repository?.trackAllBranches ? strings?.blacklistDescription : strings?.whitelistDescription }}">
                             {{ repository?.trackAllBranches ? strings?.blacklist : strings?.whitelist }}
                         </span>
                     </p>
                     <p matLine class="mat-h4">
-                        {{ strings?.branches }} {{ repository?.trackedBranches.length > 0 ? repository?.trackedBranches.join(strings?.listSeparator) : strings?.none }}
+                        {{ strings?.branches }}
+                        <span class="valueText">
+                            {{ repository?.trackedBranches.length > 0 ? repository?.trackedBranches.join(strings?.listSeparator) : strings?.none }}
+                        </span>
                     </p>    
                 </div>
                 <div id="options">                                    
@@ -93,7 +102,7 @@
                 </mat-radio-group>
             </div>                                
 
-            <label> {{ strings?.repositoryTrackedBranches }} <span *ngIf="!(allAddBranches && allAddBranches.length > 0)"> {{ strings?.missingPullURL }} </span> </label>
+            <label> {{ strings?.repositoryTrackedBranches }} <span *ngIf="!(allAddBranches && allAddBranches.length > 0)" class="valueText"> {{ strings?.missingPullURL }} </span> </label>
             <div *ngIf="allAddBranches && allAddBranches.length > 0" fxLayout="row" fxLayoutGap="1em">
                 <button mat-raised-button type="button" (click)="selectAllAddBranches()">{{ strings?.selectAll }}</button>
                 <button mat-raised-button type="button" (click)="deselectAllAddBranches()">{{ strings?.deselectAll }}</button>
@@ -106,7 +115,7 @@
             </mat-selection-list>
 
             <button mat-raised-button type="submit" color="primary" [disabled]="!addRepositoryForm.valid || allAddBranches.length == 0">{{ strings?.add }}</button>
-            <button type="button" mat-raised-button (click)="onCancelAddRepository()">{{ strings?.cancel }}</button>
+            <button type="button" mat-raised-button (click)="onCancelAddRepository(); repositoryTabs.selectedIndex = 0">{{ strings?.cancel }}</button>
         </form>
     </mat-tab>
     <mat-tab *ngIf="selectedRepository" label="{{ strings?.tabEditRepository }}">
@@ -171,7 +180,7 @@
             </mat-selection-list>
 
             <button mat-raised-button type="submit" color="primary" [disabled]="!editRepositoryForm.valid || allEditBranches.length === 0">{{ strings?.save }}</button>
-            <button type="button" mat-raised-button (click)="onCancelEditRepository()">{{ strings?.cancel }}</button>
+            <button type="button" mat-raised-button (click)="onCancelEditRepository(); repositoryTabs.selectedIndex = 0">{{ strings?.cancel }}</button>
             <button type="button" color="warn" mat-raised-button 
                 (click)="deleteRepository(this.selectedRepository); repositoryTabs.selectedIndex = 0">{{ strings?.delete }}</button>
         </form>

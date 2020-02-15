@@ -1,3 +1,4 @@
+import { GlobalService } from './../services/global.service';
 import { MatSnackBar } from '@angular/material';
 import { Subscription, interval } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
@@ -16,8 +17,11 @@ export class AdminRepositoriesComponent implements OnInit {
   constructor(
     private stringService: StringService,
     private repositoryService: RepositoryService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private globalService: GlobalService
   ) { }
+
+  backendUrl: string;
 
   public editRepositoryForm: FormGroup;
 
@@ -56,6 +60,8 @@ export class AdminRepositoriesComponent implements OnInit {
   repositoryUpdateInterval = 30;
 
   ngOnInit() {
+    this.backendUrl = this.globalService.getBackendURL();
+    
     this.stringService.getAdminRepositoriesStrings().subscribe(
       data => {
         this.strings = data;
@@ -143,6 +149,7 @@ export class AdminRepositoriesComponent implements OnInit {
 
   public onCancelEditRepository() {
     this.loadRepositoryData(this.selectedRepository);
+    this.selectedRepository = null;
   }
 
   public onEditPullURLChange() {
@@ -177,6 +184,7 @@ export class AdminRepositoriesComponent implements OnInit {
         pullURL: addRepositoryFormValue.pullURL,
         name: addRepositoryFormValue.name,
         hookSet: addRepositoryFormValue.webHook,
+        webHookURL: '',
         color: addRepositoryFormValue.color,
         observeFromDate: addRepositoryFormValue.observeAll ? null : addRepositoryFormValue.observeFromDate,
         commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
@@ -206,6 +214,7 @@ export class AdminRepositoriesComponent implements OnInit {
         pullURL: editRepositoryFormValue.pullURL,
         name: editRepositoryFormValue.name,
         hookSet: editRepositoryFormValue.webHook,
+        webHookURL: this.selectedRepository.webHookURL,
         color: editRepositoryFormValue.color,
         observeFromDate: editRepositoryFormValue.observeAll ? null : editRepositoryFormValue.observeFromDate,
         commitLinkPrefix: this.selectedRepository.commitLinkPrefix,

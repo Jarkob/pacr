@@ -162,6 +162,7 @@ export class AdminBenchmarksComponent implements OnInit {
 
   onCancelEditBenchmark() {
     this.loadBenchmarkData(this.selectedBenchmark);
+    this.selectedBenchmark = null;
   }
 
   /**
@@ -261,6 +262,7 @@ export class AdminBenchmarksComponent implements OnInit {
 
   onCancelEditBenchmarkGroup() {
     this.loadBenchmarkGroupData(this.selectedBenchmarkGroup);
+    this.selectedBenchmarkGroup = null;
   }
 
   onSaveBenchmarkGroups() {

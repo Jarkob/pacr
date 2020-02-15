@@ -7,6 +7,7 @@ export interface Repository {
     pullURL: string;
     name: string;
     hookSet: boolean;
+    webHookURL: string;
     color: string;
     observeFromDate: Date;
     commitLinkPrefix: string;
