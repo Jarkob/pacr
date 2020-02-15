@@ -17,6 +17,8 @@ import java.util.Objects;
 @Component
 public class ResultBenchmarkSaver extends ResultSaver {
 
+    private static final String MASTER_BRANCH = "master";
+
     private ResultGetter subjectForObservers;
     private IEventHandler eventHandler;
 
@@ -35,7 +37,8 @@ public class ResultBenchmarkSaver extends ResultSaver {
     }
 
     /**
-     * Creates a new event with comparison to the comparison commit and updates observers of {@link INewestResult}.
+     * Creates a new event with comparison to the comparison commit and updates observers of {@link INewestResult} if
+     * the new commit is on the master branch.
      * @param result the result. Cannot be null
      * @param commit the commit of the result. Cannot be null.
      * @param comparisonCommitHash the hash of the commit for comparison. May be null (in this case no comparison was
@@ -70,6 +73,9 @@ public class ResultBenchmarkSaver extends ResultSaver {
 
         eventHandler.addEvent(benchmarkingEvent);
 
-        subjectForObservers.updateAll();
+        // only update observers if the commit is on the master branch
+        if (commit.getBranchNames().contains(MASTER_BRANCH)) {
+            subjectForObservers.updateAll();
+        }
     }
 }
