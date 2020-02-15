@@ -3,7 +3,7 @@
         (click)="commitHistory.maximizeCommitHistory()">
         <mat-icon>fullscreen</mat-icon>
     </button>
-    <mat-tab-group #tabGroup>
+    <mat-tab-group #tabGroup [selectedIndex]="defaultTabIndex">
 
         <mat-tab label="Latest">
             <app-commit-history #commitHistory ></app-commit-history>

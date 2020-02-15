@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-commit-history-job-queue-wrapper',
@@ -8,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class CommitHistoryJobQueueWrapperComponent implements OnInit {
 
   constructor() { }
+
+  @Input() defaultTabIndex = 0;
 
   ngOnInit() {
   }
