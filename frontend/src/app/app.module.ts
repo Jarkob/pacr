@@ -32,7 +32,6 @@ import { AppComponent } from './app.component';
 import { BenchmarkerListComponent } from './benchmarker-list/benchmarker-list.component';
 import { JobQueueComponent } from './job-queue/job-queue.component';
 import { CompetitiveDashboardComponent } from './competitive-dashboard/competitive-dashboard.component';
-import { AcademicDashboardComponent } from './academic-dashboard/academic-dashboard.component';
 import { EventsComponent } from './events/events.component';
 import { DetailViewComponent } from './detail-view/detail-view.component';
 import { DetailViewMaximizedComponent } from './detail-view-maximized/detail-view-maximized.component';
@@ -75,7 +74,6 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     DetailViewComponent,
     DetailViewMaximizedComponent,
     EventsComponent,
-    AcademicDashboardComponent,
     CompetitiveDashboardComponent,
     JobQueueComponent,
     BenchmarkerListComponent,
