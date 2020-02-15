@@ -6,7 +6,8 @@ import { Component, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
 
 /**
- * lists the events emitted by the backend
+ * lists the events emitted by the backend.
+ * Events are categorized in benchmarking and leaderboard events.
  */
 @Component({
   selector: 'app-events',
@@ -33,7 +34,7 @@ export class EventsComponent implements OnInit {
   pageSizeOptions = [5, 10, 15, 20];
 
   eventSubscription: Subscription;
-  eventUpdateInterval = 120; // in seconds
+  eventUpdateInterval = 20; // in seconds
 
   ngOnInit() {
     this.stringService.getEventsStrings().subscribe(
@@ -54,6 +55,12 @@ export class EventsComponent implements OnInit {
     );
   }
 
+  /**
+   * Fetches all available benchmarking events in a page.
+   *
+   * @param pagingEvent pageable event containing paging information.
+   * @returns the pagination event.
+   */
   public getBenchmarkingEvents(event: any): any {
     this.eventService.getBenchmarkingEvents(event.pageIndex, event.pageSize).subscribe(
       data => {
@@ -65,15 +72,32 @@ export class EventsComponent implements OnInit {
     return event;
   }
 
-  public getLeaderboardEvents(event: any): any {
-    this.eventService.getLeaderboardEvents(event.pageIndex, event.pageSize).subscribe(
+  /**
+   * Fetches all available leaderboard events in a page.
+   *
+   * @param pagingEvent pageable event containing paging information.
+   * @returns the pagination event.
+   */
+  public getLeaderboardEvents(pagingEvent: any): any {
+    this.eventService.getLeaderboardEvents(pagingEvent.pageIndex, pagingEvent.pageSize).subscribe(
       data => {
         this.leaderboardPage = data;
         this.leaderboardEvents = data.content;
       }
     );
 
-    return event;
+    return pagingEvent;
+  }
+
+  /**
+   * Assign each displayed event a unique identifier so it doesn't need to
+   * be rendered again if it doesn't change.
+   *
+   * @param index index of the item in the list.
+   * @param item the event.
+   */
+  public trackCommitHistoryItem(index: number, item: Event) {
+    return item.id;
   }
 
 }

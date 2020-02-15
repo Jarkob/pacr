@@ -6,7 +6,7 @@ import { Subscription, interval } from 'rxjs';
 import { PageEvent } from '@angular/material';
 
 /**
- * shows the job queue
+ * Displays a job queue.
  */
 @Component({
   selector: 'app-job-queue',
@@ -31,7 +31,7 @@ export class JobQueueComponent implements OnInit {
   pageSizeOptions = [5, 10, 15, 20];
 
   queueSubscription: Subscription;
-  queueUpdateInterval = 5; // in seconds
+  queueUpdateInterval = 15; // in seconds
 
   ngOnInit() {
     this.getQueue();
@@ -55,7 +55,13 @@ export class JobQueueComponent implements OnInit {
     this.getPrioritizedQueue(this.prioritizedPageEvent);
   }
 
-  public getJobsQueue(event: any): any {
+  /**
+   * Fetch all normal queue items.
+   *
+   * @param pagingEvent pageable event containing paging information.
+   * @returns the pagination event.
+   */
+  private getJobsQueue(event: any): any {
     this.schedulerService.getJobsQueue(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.jobsPage = data;
@@ -66,7 +72,13 @@ export class JobQueueComponent implements OnInit {
     return event;
   }
 
-  public getPrioritizedQueue(event: any) {
+  /**
+   * Fetch all prioritized queue items.
+   *
+   * @param pagingEvent pageable event containing paging information.
+   * @returns the pagination event.
+   */
+  private getPrioritizedQueue(event: any): any {
     this.schedulerService.getPrioritizedQueue(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.prioritizedPage = data;
@@ -78,7 +90,8 @@ export class JobQueueComponent implements OnInit {
   }
 
   /**
-   * prioritize a selected job
+   * Prioritize a selected queue item.
+   *
    * @param job the job to be prioritized
    */
   public prioritize(job: Job) {

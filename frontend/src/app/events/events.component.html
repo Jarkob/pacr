@@ -7,7 +7,7 @@
                 (page)="this.benchmarkingPageEvent = this.getBenchmarkingEvents($event)">                    
             </mat-paginator> 
             <mat-accordion *ngIf="this.benchmarkingEvents && this.benchmarkingEvents.length > 0" class="headers-align">
-                <mat-expansion-panel *ngFor="let event of benchmarkingEvents">
+                <mat-expansion-panel *ngFor="let event of benchmarkingEvents; trackBy: trackEvent">
                     <mat-expansion-panel-header>
                         <mat-panel-title> {{ event.created | timeAgo }} </mat-panel-title>
                         <mat-panel-description> {{ event.title }}</mat-panel-description>
@@ -34,7 +34,7 @@
                 (page)="this.leaderboardPageEvent = this.getLeaderboardEvents($event)">                    
             </mat-paginator> 
             <mat-accordion *ngIf="this.leaderboardEvents && this.leaderboardEvents.length > 0" class="headers-align">
-                <mat-expansion-panel *ngFor="let event of leaderboardEvents">
+                <mat-expansion-panel *ngFor="let event of leaderboardEvents; trackBy: trackEvent">
                     <mat-expansion-panel-header>
                         <mat-panel-title> {{ event.created | timeAgo }} </mat-panel-title>
                         <mat-panel-description> {{ event.title }}</mat-panel-description>
