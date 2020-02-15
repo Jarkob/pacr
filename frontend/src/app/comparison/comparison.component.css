@@ -1,8 +1,5 @@
-mat-card {
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-    overflow-y: scroll;
+#comparison {
+    margin-top: 10px;
 }
 
 :host {
@@ -19,5 +16,6 @@ mat-card {
     top: 0;
     position: sticky;
     z-index: 999;
-    background: inherit;
+    padding: 9px 0px;
+    background: #424242;    
 }

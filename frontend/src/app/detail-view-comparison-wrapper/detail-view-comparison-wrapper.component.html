@@ -9,8 +9,8 @@
             <app-detail-view></app-detail-view>
         </mat-tab>
         
-        <mat-tab label="Quick Select">
-            <app-comparison></app-comparison>
+        <mat-tab label="Comparison">
+            <app-comparison (commitSelectedEvent)="tabGroup.selectedIndex = 0"></app-comparison>
         </mat-tab>
     
     </mat-tab-group>    

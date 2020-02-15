@@ -1,3 +1,4 @@
+import { DetailViewService } from './../services/detail-view.service';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { CommitComparisonService } from './commit-comparison.service';
@@ -6,7 +7,6 @@ import { StringService } from './../services/strings.service';
 import { Repository } from './../classes/repository';
 import { RepositoryService } from './../services/repository.service';
 import { PageEvent } from '@angular/material';
-import { Commit } from './../classes/commit';
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 /**
@@ -23,12 +23,15 @@ export class ComparisonComponent implements OnInit {
     private previewDialog: CommitComparisonService,
     private stringService: StringService,
     private repositoryService: RepositoryService,
-    private resultService: BenchmarkingResultService
+    private resultService: BenchmarkingResultService,
+    private detailViewService: DetailViewService
   ) { }
 
   @Output() commitSelectedEvent = new EventEmitter();
 
   strings: any;
+
+  hasScrolled: boolean;
 
   displayedColumns: string[] = ['commitHash', 'commitDate', 'authorDate', 'commitMessage'];
 
@@ -55,7 +58,6 @@ export class ComparisonComponent implements OnInit {
       data => {
         this.repositories = data;
 
-        console.log(this.repositories);
         if (this.repositories && this.repositories.length > 0) {
           this.selectedRepository = this.repositories[0];
 
@@ -66,7 +68,8 @@ export class ComparisonComponent implements OnInit {
   }
 
   openDetailView(commitHash: string) {
-    this.commitSelectedEvent.emit(commitHash);
+    this.detailViewService.selectCommit(commitHash);
+    this.commitSelectedEvent.emit();
   }
 
   selectForComparison(row: any) {
@@ -95,10 +98,8 @@ export class ComparisonComponent implements OnInit {
   getCommits(event: any): any {
     this.commits = [];
 
-    console.log(this.selectedRepository);
     this.resultService.getBenchmarkingResultsForRepository(this.selectedRepository.id, event.pageIndex, event.pageSize).subscribe(
       data => {
-        console.log(data);
         this.commitsPage = data;
         this.commits = data.content;
       }

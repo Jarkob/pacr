@@ -16,3 +16,7 @@ mat-card {
     overflow: hidden;
     overflow-y: scroll;
 }
+
+mat-tab-group {
+    height: 100%;
+}

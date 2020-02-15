@@ -38,6 +38,7 @@ body {
 a {
   color: cornflowerblue;
   text-decoration: none;
+  cursor: pointer;
 }
 
 /* Scrollbar style */

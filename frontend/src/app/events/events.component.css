@@ -26,3 +26,7 @@ mat-panel-title {
 .mat-expanded mat-panel-description {
     display: none;
 }
+
+mat-tab-group {
+    height: 100%;
+}

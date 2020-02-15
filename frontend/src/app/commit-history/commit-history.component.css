@@ -17,7 +17,3 @@ mat-panel-title {
 .mat-expanded mat-panel-description {
     display: none;
 }
-
-#openDetailView {
-    cursor: pointer;
-}
