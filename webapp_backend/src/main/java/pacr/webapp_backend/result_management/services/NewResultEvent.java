@@ -5,7 +5,9 @@ import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.EventTemplate;
 
 import javax.validation.constraints.NotNull;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.ResourceBundle;
 
 /**
  * EventTemplate for a new benchmarking result.
@@ -13,23 +15,15 @@ import java.util.Objects;
 public class NewResultEvent extends EventTemplate {
 
     private static final int HASH_LENGTH = 7;
-
-    // TODO get these Strings from a file.
-    private static final String TITLE_FORMAT = "'%s' Benchmarked for Repository '%s'";
-    private static final String NO_COMPARISON_DESCRIPTION = "No data was found for comparison.";
-    private static final String COMPARISON_DESCRIPTION =
-            "On average, the result is %d%% %s then the previous one ('%s').";
-    private static final String TITLE_FORMAT_GLOBAL_ERROR = "Error While Benchmarking '%s' for Repository '%s'";
-    private static final String DESCRIPTION_FORMAT_GLOBAL_ERROR =
-            "Error message: '%s'";
-    private static final String POSITIVE = "better";
-    private static final String NEGATIVE = "worse";
+    private static final String PATH_TO_LOCALIZATION = "localization/MessagesBundle";
 
     private String commitHash;
     private String repositoryName;
     private String globalError;
     private int averageImprovementPercentage;
     private String comparisonCommitHash;
+
+    private ResourceBundle resources;
 
     /**
      * Creates a NewResultEvent for a new benchmarking result.
@@ -60,6 +54,10 @@ public class NewResultEvent extends EventTemplate {
         this.globalError = globalError;
         this.averageImprovementPercentage = averageImprovementPercentage;
         this.comparisonCommitHash = shortenHash(comparisonCommitHash);
+
+        // This can easily be expanded to support more languages. The necessary translations may be saved in a
+        // MessagesBundle_xx_XX.properties file and the backend would require a global locale that would be used here.
+        resources = ResourceBundle.getBundle(PATH_TO_LOCALIZATION, new Locale("en", "US"));
     }
 
     @Override
@@ -67,11 +65,11 @@ public class NewResultEvent extends EventTemplate {
         if (globalError != null) {
             // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
             // (even if global error is blank or empty)
-            return String.format(TITLE_FORMAT_GLOBAL_ERROR, commitHash, repositoryName);
+            return String.format(resources.getString("TITLE_FORMAT_GLOBAL_ERROR"), commitHash, repositoryName);
         }
         // I only assume there was no error if the field globalError is null.
 
-        return String.format(TITLE_FORMAT, commitHash, repositoryName);
+        return String.format(resources.getString("TITLE_FORMAT"), commitHash, repositoryName);
     }
 
     @Override
@@ -79,19 +77,20 @@ public class NewResultEvent extends EventTemplate {
         if (globalError != null) {
             // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
             // (even if global error is blank or empty)
-            return String.format(DESCRIPTION_FORMAT_GLOBAL_ERROR, globalError);
+            return String.format(resources.getString("DESCRIPTION_FORMAT_GLOBAL_ERROR"), globalError);
         }
         // I only assume there was no error if the field globalError is null.
 
         StringBuilder descriptionBuilder = new StringBuilder();
 
         if (comparisonCommitHash == null) {
-            descriptionBuilder.append(NO_COMPARISON_DESCRIPTION);
+            descriptionBuilder.append(resources.getString("NO_COMPARISON_DESCRIPTION"));
         } else {
-            String positiveOrNegative = averageImprovementPercentage < 0 ? NEGATIVE : POSITIVE;
+            String positiveOrNegative = averageImprovementPercentage < 0 ? resources.getString("NEGATIVE")
+                    : resources.getString("POSITIVE");
 
-            descriptionBuilder.append(String.format(COMPARISON_DESCRIPTION, Math.abs(averageImprovementPercentage),
-                    positiveOrNegative, comparisonCommitHash));
+            descriptionBuilder.append(String.format(resources.getString("COMPARISON_DESCRIPTION"),
+                    Math.abs(averageImprovementPercentage), positiveOrNegative, comparisonCommitHash));
         }
 
         return descriptionBuilder.toString();
