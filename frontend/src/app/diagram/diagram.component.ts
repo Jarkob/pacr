@@ -175,7 +175,6 @@ export class DiagramComponent implements OnInit {
 
 
   ngOnInit() {
-    this.loading = true;
     this.chart.chart = undefined;
     this.getRepositories();
     if (this.inSelectedBenchmark != null) {
