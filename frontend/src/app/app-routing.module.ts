@@ -1,13 +1,13 @@
 import { LoginComponent } from './login/login.component';
 import { AuthenticationGuardService } from './services/authentication-guard.service';
-import { CompetitiveDashboardComponent } from './competitive-dashboard/competitive-dashboard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminComponent } from './admin/admin.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 
 const routes: Routes = [
-  { path: '', component: CompetitiveDashboardComponent },
+  { path: '', component: DashboardComponent },
   { path: 'admin', component: AdminComponent, canActivate: [AuthenticationGuardService] },
   { path: 'login', component: LoginComponent }
 ];
