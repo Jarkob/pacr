@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * Saves benchmarking results for commits and may update other components.
@@ -23,6 +22,7 @@ abstract class ResultSaver {
 
     private static final String NO_RESULT_ERROR = "PACR received no benchmarking result for this commit";
     private static final String NO_PROPERTY_RESULT_ERROR = "PACR received no measurements for this property";
+    private static final double SIGNIFICANCE_FACTOR = 3d;
 
     protected IResultAccess resultAccess;
     private BenchmarkManager benchmarkManager;
@@ -45,24 +45,27 @@ abstract class ResultSaver {
      * Enters Benchmark.class monitor and exits it. Then enters CommitResult.class monitor.
      * @param result the benchmarking result that is saved. Cannot be null.
      * @param commit the commit of the benchmarking result. Cannot be null.
-     * @param comparisonCommitHash the hash of the commit that is used for comparison when updating other components.
-     *                             May be null. In that case no comparison will be executed.
+     * @param comparisonResult the result that is used for comparison. May be null. In that case no comparison will be
+     *                         executed.
      */
     void saveResult(@NotNull IBenchmarkingResult result, @NotNull ICommit commit,
-                    @Nullable String comparisonCommitHash) {
+                    @Nullable CommitResult comparisonResult) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 
-        Set<BenchmarkResult> benchmarkResultsToSave = new HashSet<>();
+        String comparisonCommitHash = null;
+        if (comparisonResult != null) {
+            comparisonCommitHash = comparisonResult.getCommitHash();
+        }
+
+        CommitResult resultToSave = new CommitResult(result, commit.getRepositoryID(), commit.getCommitDate(),
+                comparisonCommitHash);
+
+        boolean significantPropertyResultExists = false;
 
         synchronized (Benchmark.class) {
             Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
             Collection<Benchmark> benchmarksFromResult = new HashSet<>();
-
-            CommitResult comparisonResult = null;
-            if (comparisonCommitHash != null) {
-                comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
-            }
 
             Map<String, ? extends IBenchmark> inputBenchmarkResultsMap = result.getBenchmarks();
 
@@ -79,26 +82,27 @@ abstract class ResultSaver {
                     continue;
                 }
 
-                BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
-
                 Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
                 benchmarksFromResult.add(benchmark);
 
-                Set<BenchmarkPropertyResult> propertyResultsToSave = getPropertyResults(inputBenchmarkResult,
-                        comparisonBenchmarkResult, benchmark);
-                BenchmarkResult benchmarkResultToSave = new BenchmarkResult(propertyResultsToSave, benchmark);
+                BenchmarkResult benchmarkResultToSave = new BenchmarkResult(benchmark);
+                BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
 
-                benchmarkResultsToSave.add(benchmarkResultToSave);
+                if (isSignificantAndAddPropertyResults(inputBenchmarkResult, benchmarkResultToSave,
+                        comparisonBenchmarkResult)) {
+                    significantPropertyResultExists = true;
+                }
+
+                resultToSave.addBenchmarkResult(benchmarkResultToSave);
             }
 
             updateSavedBenchmarks(benchmarksFromResult);
+
+            resultToSave.setSignificant(significantPropertyResultExists);
         }
 
-        CommitResult resultToSave = new CommitResult(result, benchmarkResultsToSave, commit.getRepositoryID(),
-                commit.getCommitDate(), comparisonCommitHash);
-
-        // set error if it has not been set yet but there are no benchmark results in the given IBenchmarkingResult
-        if (benchmarkResultsToSave.isEmpty() && !resultToSave.hasGlobalError()) {
+        // set error if it has not been set yet but there are no benchmark results
+        if (resultToSave.getBenchmarkResults().isEmpty() && !resultToSave.hasGlobalError()) {
             resultToSave.setError(true);
             resultToSave.setErrorMessage(NO_RESULT_ERROR);
         }
@@ -121,11 +125,9 @@ abstract class ResultSaver {
     abstract void updateOtherComponents(@NotNull CommitResult result, @NotNull ICommit commit,
                                         @Nullable String comparisonCommitHash);
 
-    private Set<BenchmarkPropertyResult> getPropertyResults(IBenchmark inputBenchmarkResult,
-                                                            BenchmarkResult comparisonBenchmarkResult,
-                                                            Benchmark benchmark) {
-        Set<BenchmarkPropertyResult> propertyResultsToSave = new HashSet<>();
-
+    private boolean isSignificantAndAddPropertyResults(IBenchmark inputBenchmarkResult,
+                                                       BenchmarkResult benchmarkResult,
+                                                       BenchmarkResult comparisonBenchmarkResult) {
         Map<String, ? extends IBenchmarkProperty> inputPropertyResultsMap =
                 inputBenchmarkResult.getBenchmarkProperties();
 
@@ -134,22 +136,41 @@ abstract class ResultSaver {
             comparisonPropertyResultsMap = comparisonBenchmarkResult.getBenchmarkProperties();
         }
 
+        boolean significantPropertyResultExists = false;
+
         for (String inputPropertyName : inputPropertyResultsMap.keySet()) {
             IBenchmarkProperty inputPropertyResult = inputPropertyResultsMap.get(inputPropertyName);
             BenchmarkPropertyResult comparisonPropertyResult = comparisonPropertyResultsMap.get(inputPropertyName);
 
             BenchmarkPropertyResult propertyResultToSave = getPropertyResultUpdateBenchmark(inputPropertyName,
-                    inputPropertyResult, comparisonPropertyResult, benchmark);
+                    inputPropertyResult, benchmarkResult.getBenchmark());
 
-            propertyResultsToSave.add(propertyResultToSave);
+            // set error if it has not been set yet but there are no results for this property
+            if (inputPropertyResult.getResults().isEmpty() && !propertyResultToSave.isError()) {
+                propertyResultToSave.setError(true);
+                propertyResultToSave.setErrorMessage(NO_PROPERTY_RESULT_ERROR);
+            }
+
+            // comparison to previous result
+            if (comparisonPropertyResult != null && !propertyResultToSave.isError()
+                    && !comparisonPropertyResult.isError()) {
+                propertyResultToSave.setRatio(propertyResultToSave.getMedian() / comparisonPropertyResult.getMedian());
+                propertyResultToSave.setCompared(true);
+
+                if (significantChange(propertyResultToSave, comparisonPropertyResult)) {
+                    propertyResultToSave.setSignificant(true);
+                    significantPropertyResultExists = true;
+                }
+            }
+
+            benchmarkResult.addPropertyResult(propertyResultToSave);
         }
 
-        return propertyResultsToSave;
+        return significantPropertyResultExists;
     }
 
     private BenchmarkPropertyResult getPropertyResultUpdateBenchmark(String propertyName,
                                                                      IBenchmarkProperty propertyResult,
-                                                                     BenchmarkPropertyResult comparisonPropertyResult,
                                                                      Benchmark benchmark) {
         // new property is created or it is found in the properties of the (saved or newly created) benchmark.
         BenchmarkProperty property = new BenchmarkProperty(propertyName, propertyResult.getUnit(),
@@ -163,22 +184,7 @@ abstract class ResultSaver {
         }
         benchmark.addProperty(property);
 
-        BenchmarkPropertyResult propertyResultToSave =  new BenchmarkPropertyResult(propertyResult, property);
-
-        // set error if it has not been set yet but there are no results for this property
-        if (propertyResult.getResults().isEmpty() && !propertyResultToSave.isError()) {
-            propertyResultToSave.setError(true);
-            propertyResultToSave.setErrorMessage(NO_PROPERTY_RESULT_ERROR);
-        }
-
-        // comparison to previous result
-        if (comparisonPropertyResult != null && !propertyResultToSave.isError()
-                && !comparisonPropertyResult.isError()) {
-            propertyResultToSave.setRatio(propertyResultToSave.getMedian() / comparisonPropertyResult.getMedian());
-            propertyResultToSave.setCompared(true);
-        }
-
-        return propertyResultToSave;
+        return new BenchmarkPropertyResult(propertyResult, property);
     }
 
     private Benchmark getBenchmark(String benchmarkName, Collection<Benchmark> savedBenchmarks) {
@@ -198,5 +204,20 @@ abstract class ResultSaver {
         for (Benchmark benchmarkToUpdate : benchmarksToUpdate) {
             benchmarkManager.createOrUpdateBenchmark(benchmarkToUpdate);
         }
+    }
+
+    /**
+     * A result is considered significant if the median strays at least SIGNIFICANCE_FACTOR standard deviations from the
+     * previous result.
+     */
+    private boolean significantChange(BenchmarkPropertyResult result, BenchmarkPropertyResult comparison) {
+        double standardDeviation = result.getStandardDeviation();
+        if (comparison.getStandardDeviation() > standardDeviation) {
+            standardDeviation = comparison.getStandardDeviation();
+        }
+
+        double insignificanceInterval = SIGNIFICANCE_FACTOR * standardDeviation;
+
+        return Math.abs(result.getMedian() - comparison.getMedian()) > insignificanceInterval;
     }
 }

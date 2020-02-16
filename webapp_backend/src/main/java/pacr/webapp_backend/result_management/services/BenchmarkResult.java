@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -42,19 +43,13 @@ public class BenchmarkResult implements IBenchmark {
     }
 
     /**
-     * Creates a BenchmarkResult from an array of property results with the measured data and a benchmark.
-     * @param propertyResults the measured data for properties. Throws IllegalArgumentException if it is null or empty.
-     * @param benchmark the benchmark. Throws IllegalArgumentException if it is null.
+     * Creates a BenchmarkResult from a benchmark.
+     * @param benchmark the benchmark. Cannot be null.
      */
-    public BenchmarkResult(@NotNull Set<BenchmarkPropertyResult> propertyResults, @NotNull Benchmark benchmark) {
-        Objects.requireNonNull(propertyResults);
+    public BenchmarkResult(@NotNull Benchmark benchmark) {
         Objects.requireNonNull(benchmark);
 
-        if (propertyResults.isEmpty()) {
-            throw new IllegalArgumentException("propertyResults cannot be empty");
-        }
-
-        this.propertyResults = propertyResults;
+        this.propertyResults = new HashSet<>();
         this.benchmark = benchmark;
     }
 
@@ -91,5 +86,14 @@ public class BenchmarkResult implements IBenchmark {
      */
     public Benchmark getBenchmark() {
         return benchmark;
+    }
+
+    /**
+     * @param propertyResult adds the property results to the properties of this benchmark.
+     */
+    public void addPropertyResult(@NotNull BenchmarkPropertyResult propertyResult) {
+        Objects.requireNonNull(propertyResult);
+
+        propertyResults.add(propertyResult);
     }
 }

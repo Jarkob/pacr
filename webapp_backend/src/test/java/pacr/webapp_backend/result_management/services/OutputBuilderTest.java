@@ -70,19 +70,14 @@ public class OutputBuilderTest {
         iPropResult.setError(ERROR);
         BenchmarkPropertyResult propertyResultTwo = new BenchmarkPropertyResult(iPropResult, propertyTwo);
 
-        Set<BenchmarkPropertyResult> propertyResultsOne = new HashSet<>();
-        propertyResultsOne.add(propertyResult);
+        BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
+        benchmarkResult.addPropertyResult(propertyResult);
+        BenchmarkResult benchmarkResultTwo = new BenchmarkResult(benchmarkTwo);
+        benchmarkResultTwo.addPropertyResult(propertyResultTwo);
 
-        Set<BenchmarkPropertyResult> propertyResultsTwo = new HashSet<>();
-        propertyResultsTwo.add(propertyResultTwo);
-
-        BenchmarkResult benchmarkResult = new BenchmarkResult(propertyResultsOne, benchmark);
-        BenchmarkResult benchmarkResultTwo = new BenchmarkResult(propertyResultsTwo, benchmarkTwo);
-
-        Set<BenchmarkResult> benchmarkResults = new HashSet<>();
-        benchmarkResults.add(benchmarkResult);
-        benchmarkResults.add(benchmarkResultTwo);
-        resultOne = new CommitResult(new SimpleBenchmarkingResult(), benchmarkResults, REPO_ID, LocalDateTime.now(), COMPARISON_HASH);
+        resultOne = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID, LocalDateTime.now(), COMPARISON_HASH);
+        resultOne.addBenchmarkResult(benchmarkResult);
+        resultOne.addBenchmarkResult(benchmarkResultTwo);
 
         commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW,
                 new GitRepository(false, URL, REPO_NAME, "#000000", NOW.toLocalDate()));

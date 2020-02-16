@@ -30,7 +30,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     private static final String BENCHMARK_NAME_TWO = "benchmark2";
     private static final String COMMIT_HASH = SimpleBenchmarkingResult.COMMIT_HASH;
     private static final String COMMIT_HASH_TWO = "hash2";
-    private static final String NO_COMPARISON_COMMIT_HASH = null;
+    private static final CommitResult NO_COMPARISON_RESULT = null;
     private static final String ERROR = "error";
     private static final double MEASUREMENT = SimpleBenchmarkProperty.MEASUREMENT;
     private static final int EXPECTED_NUM_OF_PROPERTIES = 1;
@@ -62,7 +62,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void saveResult_shouldBeInDatabaseWithBenchmark() {
-        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
 
         CommitResult savedResult = resultDB.getResultFromCommit(COMMIT_HASH);
 
@@ -87,7 +87,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void saveResult_withNewAndOldBenchmark_shouldOnlySaveNewBenchmark() {
-        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
 
         SimpleBenchmarkingResult resultWithAddedBenchmark = new SimpleBenchmarkingResult();
         resultWithAddedBenchmark.setCommitHash(COMMIT_HASH_TWO);
@@ -96,7 +96,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
 
         resultWithAddedBenchmark.addBenchmark(BENCHMARK_NAME_TWO, newBenchmark);
 
-        resultSaver.saveResult(resultWithAddedBenchmark, new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(resultWithAddedBenchmark, new SimpleCommit(), NO_COMPARISON_RESULT);
 
         assertEquals(EXPECTED_NUM_OF_BENCHMARKS, benchmarkDB.count());
     }
@@ -106,7 +106,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void saveResult_withNewAndOldProperty_shouldOnlySaveNewProperty() {
-        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
 
         SimpleBenchmarkingResult resultWithAddedProperty = new SimpleBenchmarkingResult();
         resultWithAddedProperty.setCommitHash(COMMIT_HASH_TWO);
@@ -114,7 +114,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
         SimpleBenchmarkProperty newProperty = new SimpleBenchmarkProperty();
         resultWithAddedProperty.getBenchmark(BENCHMARK_NAME).addProperty(PROPERTY_NAME_TWO, newProperty);
 
-        resultSaver.saveResult(resultWithAddedProperty, new SimpleCommit(), NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(resultWithAddedProperty, new SimpleCommit(), NO_COMPARISON_RESULT);
 
         Benchmark benchmark = null;
         for (Benchmark savedBenchmark : benchmarkDB.getAllBenchmarks()) {
@@ -182,11 +182,11 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
         SimpleBenchmarkingResult resultWithError = new SimpleBenchmarkingResult();
         resultWithError.setGlobalError(ERROR);
 
-        resultSaver.saveResult(resultWithError, commit, NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(resultWithError, commit, NO_COMPARISON_RESULT);
 
         SimpleBenchmarkingResult resultWithoutError = new SimpleBenchmarkingResult();
 
-        resultSaver.saveResult(resultWithoutError, commit, NO_COMPARISON_COMMIT_HASH);
+        resultSaver.saveResult(resultWithoutError, commit, NO_COMPARISON_RESULT);
 
         CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
         assertFalse(savedResult.hasGlobalError());

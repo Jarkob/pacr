@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
+import pacr.webapp_backend.result_management.services.SimpleBenchmarkingResult;
 import pacr.webapp_backend.result_management.services.SystemEnvironment;
 import pacr.webapp_backend.result_management.services.Benchmark;
 import pacr.webapp_backend.result_management.services.BenchmarkPropertyResult;
@@ -84,7 +85,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
         CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
 
         assertEquals(COMMIT_HASH, savedResult.getCommitHash());
-        assertEquals(BENCHMARK_NAME, savedResult.getBenchmarksIterable().iterator().next().getName());
+        assertEquals(BENCHMARK_NAME, savedResult.getBenchmarkResults().iterator().next().getName());
     }
 
     /**
@@ -145,7 +146,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
         CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
 
         assertEquals(BENCHMARK_NAME_TWO,
-                savedResult.getBenchmarksIterable().iterator().next().getBenchmark().getCustomName());
+                savedResult.getBenchmarkResults().iterator().next().getBenchmark().getCustomName());
     }
 
     /**
@@ -331,13 +332,16 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
     private CommitResult createNewCommitResult(String commitHash, Benchmark benchmark, int repositoryId) {
         BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult();
 
-        Set<BenchmarkPropertyResult> propertyResults = new HashSet<>();
-        propertyResults.add(propertyResult);
-        BenchmarkResult benchmarkResult = new BenchmarkResult(propertyResults, benchmark);
+        BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
+        benchmarkResult.addPropertyResult(propertyResult);
 
-        Set<BenchmarkResult> benchmarkResults = new HashSet<>();
-        benchmarkResults.add(benchmarkResult);
+        SimpleBenchmarkingResult resultInput = new SimpleBenchmarkingResult();
+        resultInput.setCommitHash(commitHash);
 
-        return new CommitResult(commitHash, systemEnvironmentMock, benchmarkResults, repositoryId);
+        CommitResult result = new CommitResult(resultInput, repositoryId, LocalDateTime.now(),
+                null);
+        result.addBenchmarkResult(benchmarkResult);
+
+        return result;
     }
 }

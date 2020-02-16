@@ -39,7 +39,7 @@ public class CommitHistoryItem {
         this.entryDate = commit.getEntryDate().toString();
 
         this.compared = result.getComparisonCommitHash() != null;
-        this.significant = false; // TODO
+        this.significant = result.isSignificant();
 
         this.globalError = result.hasGlobalError();
         this.globalErrorMessage = result.getGlobalError();

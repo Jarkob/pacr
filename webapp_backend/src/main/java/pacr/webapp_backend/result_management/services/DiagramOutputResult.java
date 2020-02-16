@@ -40,7 +40,7 @@ public class DiagramOutputResult {
         this.authorDate = commit.getAuthorDate().toString();
 
         this.result = new HashMap<>();
-        for (BenchmarkResult benchmarkResult : commitResult.getBenchmarksIterable()) {
+        for (BenchmarkResult benchmarkResult : commitResult.getBenchmarkResults()) {
             for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertiesIterable()) {
                 ResultWithError resultAndErrorMessage;
                 if (propertyResult.isError()) {

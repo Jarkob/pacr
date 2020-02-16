@@ -1,6 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import jdk.jshell.Diag;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.ICommit;
 
@@ -72,7 +71,7 @@ public class OutputBuilder {
     }
 
     private List<OutputBenchmark> buildOutputBenchmarks(CommitResult result) {
-        Iterable<BenchmarkResult> benchmarkResults = result.getBenchmarksIterable();
+        Iterable<BenchmarkResult> benchmarkResults = result.getBenchmarkResults();
 
         List<OutputBenchmark> outputBenchmarks = new LinkedList<>();
 

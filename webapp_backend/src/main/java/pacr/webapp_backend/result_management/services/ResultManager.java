@@ -1,7 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.IResultDeleter;
@@ -85,7 +84,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         }
 
         for (IBenchmarkingResult result : results) {
-            resultImportSaver.saveResult(result, resultsWithCommits.get(result), null);
+            ICommit commit = resultsWithCommits.get(result);
+            resultImportSaver.saveResult(result, commit, getComparisonResult(commit));
         }
     }
 
@@ -99,18 +99,10 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             throw new IllegalArgumentException("could not find commit with hash " + benchmarkingResult.getCommitHash());
         }
 
-        String comparisonCommitHash = null;
-
-        ICommit comparisonCommit = getComparisonCommit(commit);
-
-        if (comparisonCommit != null) {
-            comparisonCommitHash = comparisonCommit.getCommitHash();
-        }
-
-        resultBenchmarkSaver.saveResult(benchmarkingResult, commit, comparisonCommitHash);
+        resultBenchmarkSaver.saveResult(benchmarkingResult, commit, getComparisonResult(commit));
     }
 
-    private ICommit getComparisonCommit(ICommit commit) {
+    private CommitResult getComparisonResult(ICommit commit) {
         if (commit == null) {
             return null;
         }
@@ -127,7 +119,9 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             return null;
         }
 
-        return getCommitLatestCommitDate(parents);
+        ICommit comparisonCommit = getCommitLatestCommitDate(parents);
+
+        return resultAccess.getResultFromCommit(comparisonCommit.getCommitHash());
     }
 
     private ICommit getCommitLatestCommitDate(Collection<? extends ICommit> commits) {

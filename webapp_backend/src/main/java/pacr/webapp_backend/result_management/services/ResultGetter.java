@@ -278,7 +278,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
                 // remove unwanted benchmarks if benchmarkIdToKeep is not -1
                 List<BenchmarkResult> benchmarksToRemove = new LinkedList<>();
 
-                for (BenchmarkResult benchmarkResult : result.getBenchmarksIterable()) {
+                for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
                     if (benchmarkResult.getBenchmark().getId() == benchmarkIdToKeep) {
                         resultsMap.put(result.getCommitHash(), result);
                     } else {

@@ -22,7 +22,7 @@ public class CommitResultTest {
         SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
         result.setGlobalError(errorTooLong);
 
-        CommitResult commitResult = new CommitResult(result, new HashSet<>(), REPO_ID, LocalDateTime.now(), null);
+        CommitResult commitResult = new CommitResult(result, REPO_ID, LocalDateTime.now(), null);
 
         assertEquals(MAX_STRING_LENGTH, commitResult.getGlobalError().length());
         assertEquals(errorTooLong.substring(0, MAX_STRING_LENGTH), commitResult.getGlobalError());
@@ -32,17 +32,11 @@ public class CommitResultTest {
     void setErrorMessage_errorTooLong_shouldTruncateError() {
         String errorTooLong = "0".repeat(MAX_STRING_LENGTH * 2);
 
-        CommitResult commitResult = new CommitResult(new SimpleBenchmarkingResult(), new HashSet<>(), REPO_ID,
+        CommitResult commitResult = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID,
                 LocalDateTime.now(), null);
         commitResult.setError(true);
         commitResult.setErrorMessage(errorTooLong);
 
         assertEquals(MAX_STRING_LENGTH, commitResult.getGlobalError().length());
-    }
-
-    @Test
-    void constructor_emptyHash_shouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> new CommitResult("", new SystemEnvironment(),
-                new HashSet<>(), REPO_ID));
     }
 }

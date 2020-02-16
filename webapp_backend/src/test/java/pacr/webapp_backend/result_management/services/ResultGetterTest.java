@@ -17,9 +17,11 @@ import pacr.webapp_backend.shared.IObserver;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -287,10 +289,10 @@ public class ResultGetterTest {
         Benchmark benchmarkMock = Mockito.mock(Benchmark.class);
         Benchmark benchmarkTwoMock = Mockito.mock(Benchmark.class);
 
-        List<BenchmarkResult> benchmarkResults = new LinkedList<>();
+        Set<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResultMock);
         benchmarkResults.add(benchmarkResultMockTwo);
-        when(resultMock.getBenchmarksIterable()).thenReturn(benchmarkResults);
+        when(resultMock.getBenchmarkResults()).thenReturn(benchmarkResults);
 
         when(benchmarkResultMock.getBenchmark()).thenReturn(benchmarkMock);
         when(benchmarkResultMockTwo.getBenchmark()).thenReturn(benchmarkTwoMock);
@@ -333,10 +335,10 @@ public class ResultGetterTest {
         Benchmark benchmarkMock = Mockito.mock(Benchmark.class);
         Benchmark benchmarkTwoMock = Mockito.mock(Benchmark.class);
 
-        List<BenchmarkResult> benchmarkResults = new LinkedList<>();
+        HashSet<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResultMock);
         benchmarkResults.add(benchmarkResultMockTwo);
-        when(resultMock.getBenchmarksIterable()).thenReturn(benchmarkResults);
+        when(resultMock.getBenchmarkResults()).thenReturn(benchmarkResults);
 
         when(benchmarkResultMock.getBenchmark()).thenReturn(benchmarkMock);
         when(benchmarkResultMockTwo.getBenchmark()).thenReturn(benchmarkTwoMock);

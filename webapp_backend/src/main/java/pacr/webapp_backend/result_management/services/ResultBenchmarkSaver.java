@@ -53,7 +53,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
         double totalImprovementPercentage = 0;
         int numberOfComparisons = 0;
 
-        for (BenchmarkResult benchmarkResult : result.getBenchmarksIterable()) {
+        for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
             for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertiesIterable()) {
                 if (propertyResult.isCompared()) {
                     totalImprovementPercentage += (propertyResult.getRatio() - 1d) * 100d;

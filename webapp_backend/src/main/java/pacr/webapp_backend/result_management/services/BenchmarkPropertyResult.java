@@ -49,6 +49,11 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private double ratio;
     private boolean compared;
 
+    /**
+     * A result is considered significant if the median strays at least 3 standard deviations from the previous result.
+     */
+    private boolean significant;
+
     @ManyToOne
     @JoinColumn
     private BenchmarkProperty property;
@@ -89,6 +94,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
 
         this.ratio = DEFAULT_RATIO;
         this.compared = false;
+        this.significant = false;
     }
 
     /**
@@ -114,6 +120,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
 
         this.ratio = DEFAULT_RATIO;
         this.compared = false;
+        this.significant = false;
     }
 
     @Override
@@ -210,6 +217,14 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     /**
+     * @return {@code true} if the change from this result compared to the previous result was significant, otherwise
+     * {@code false}.
+     */
+    public boolean isSignificant() {
+        return significant;
+    }
+
+    /**
      * Sets the ratio of this results mean to a result for comparison.
      * @param ratio the ratio between the two means.
      */
@@ -223,6 +238,14 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      */
     public void setCompared(boolean compared) {
         this.compared = compared;
+    }
+
+    /**
+     * Sets whether the change of this result from the previous result was significant.
+     * @param significant the boolean value.
+     */
+    public void setSignificant(boolean significant) {
+        this.significant = significant;
     }
 
     /**

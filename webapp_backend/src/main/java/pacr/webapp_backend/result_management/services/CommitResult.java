@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import java.util.HashSet;
 import java.util.Objects;
 
 import org.springframework.lang.Nullable;
@@ -48,6 +49,8 @@ public class CommitResult implements IBenchmarkingResult {
     private LocalDateTime commitDate;
     private String comparisonCommitHash;
 
+    private boolean significant;
+
     /**
      * Creates empty result. Needed for jpa.
      */
@@ -59,16 +62,14 @@ public class CommitResult implements IBenchmarkingResult {
      * commitHash, system environment and the repository from the IBenchmarkingResult.
      * Throws IllegalArgumentException if any parameter is null.
      * @param result the IBenchmarkingResult.
-     * @param benchmarkResults the measured data for each benchmark. May be empty.
      * @param repositoryID id of the repository of the commit.
      * @param commitDate the commit date of the commit. Cannot be null.
      * @param comparisonCommitHash the hash of the commit this result was compared to. May be null (in this case it is
      *                             implied that no comparison has taken place).
      */
-    public CommitResult(@NotNull IBenchmarkingResult result, @NotNull Set<BenchmarkResult> benchmarkResults,
-                        int repositoryID, @NotNull LocalDateTime commitDate, @Nullable String comparisonCommitHash) {
+    public CommitResult(@NotNull IBenchmarkingResult result, int repositoryID, @NotNull LocalDateTime commitDate,
+                        @Nullable String comparisonCommitHash) {
         Objects.requireNonNull(result);
-        Objects.requireNonNull(benchmarkResults);
         Objects.requireNonNull(commitDate);
 
         if (result.getGlobalError() != null) {
@@ -85,39 +86,10 @@ public class CommitResult implements IBenchmarkingResult {
         this.commitHash = result.getCommitHash();
         this.repositoryID = repositoryID;
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
-        this.benchmarkResults = benchmarkResults;
+        this.benchmarkResults = new HashSet<>();
         this.entryDate = LocalDateTime.now();
         this.commitDate = commitDate;
         this.comparisonCommitHash = comparisonCommitHash;
-    }
-
-    /**
-     * Creates a CommitResult with no error and no comparison. Throws IllegalArgumentException if any input parameter is
-     * null.
-     * @param commitHash the hash of the measured commit. Throws IllegalArgumentException if it is empty.
-     * @param systemEnvironment the system environment of the benchmarks.
-     * @param benchmarkResults the measured data for each benchmark.
-     * @param repositoryID id of the repository of the commit.
-     */
-    public CommitResult(@NotNull String commitHash, @NotNull SystemEnvironment systemEnvironment,
-                        @NotNull Set<BenchmarkResult> benchmarkResults, int repositoryID) {
-        Objects.requireNonNull(commitHash);
-        Objects.requireNonNull(systemEnvironment);
-        Objects.requireNonNull(benchmarkResults);
-
-        if (commitHash.isEmpty()) {
-            throw new IllegalArgumentException("commit hash cannot be empty");
-        }
-
-        this.error = false;
-        this.errorMessage = null;
-        this.commitHash = commitHash;
-        this.repositoryID = repositoryID;
-        this.systemEnvironment = systemEnvironment;
-        this.benchmarkResults = benchmarkResults;
-        this.entryDate = LocalDateTime.now();
-        this.commitDate = LocalDateTime.now();
-        this.comparisonCommitHash = null;
     }
 
     @Override
@@ -162,10 +134,10 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     /**
-     * Gets an iterable of all the measurements for each benchmark.
-     * @return the iterable BenchmarkResults.
+     * Gets all the measurements for each benchmark.
+     * @return the BenchmarkResults.
      */
-    public Iterable<BenchmarkResult> getBenchmarksIterable() {
+    public Set<BenchmarkResult> getBenchmarkResults() {
         return benchmarkResults;
     }
 
@@ -204,6 +176,29 @@ public class CommitResult implements IBenchmarkingResult {
      */
     public LocalDateTime getCommitDate() {
         return commitDate;
+    }
+
+    /**
+     * @param benchmarkResult the result for a benchmark is added to the results of this commit result.
+     */
+    public void addBenchmarkResult(@NotNull BenchmarkResult benchmarkResult) {
+        Objects.requireNonNull(benchmarkResult);
+
+        benchmarkResults.add(benchmarkResult);
+    }
+
+    /**
+     * @param significant sets whether this commit result is significant compared to the previous result.
+     */
+    public void setSignificant(boolean significant) {
+        this.significant = significant;
+    }
+
+    /**
+     * @return {@code true} if this result is significant compared to the previous result, otherwise {@code false}.
+     */
+    public boolean isSignificant() {
+        return significant;
     }
 
     /**
