@@ -1,0 +1,19 @@
+FROM openjdk:13-slim
+
+LABEL "pacr-backend"="true"
+
+RUN useradd -m pacr
+
+COPY webapp_backend-0.1.jar /home/pacr/backend.jar
+COPY ssh.key /home/pacr/ssh.key
+COPY ssh.pub /home/pacr/ssh.pub
+COPY defaultAdminPasswordHash.txt /home/pacr/adminPasswordHash.txt
+
+USER "pacr"
+
+ENV MYSQL_HOST "192.168.178.105"
+
+EXPOSE 8080
+
+WORKDIR "/home/pacr"
+ENTRYPOINT ["java", "-jar", "/home/pacr/backend.jar"]
