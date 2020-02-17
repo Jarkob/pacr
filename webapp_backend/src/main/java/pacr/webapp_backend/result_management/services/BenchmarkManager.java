@@ -87,8 +87,9 @@ public class BenchmarkManager {
             this.benchmarkAccess.saveBenchmark(benchmark);
 
             // TODO figure out if the bug that caused this workaround can be fixed. Because I have given up for now.
-            // for some reason jpa sometimes won't set the ids of the properties (even though they have been created in
-            // the database). This is a workaround to fix this.
+            // saveBenchmark creates a merge between the java object and the database representation. The problem is:
+            // persist is not called directly on the children, but rather copies of them. so the id is never set in the
+            // original java object. This is a workaround to fix this by setting the ids manually after the fact.
             Benchmark savedBenchmark = benchmarkAccess.getBenchmark(benchmark.getId());
             for (BenchmarkProperty savedProperty : savedBenchmark.getProperties()) {
                 for (BenchmarkProperty property : benchmark.getProperties()) {
