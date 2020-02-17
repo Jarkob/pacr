@@ -22,7 +22,7 @@ import {
     MatNativeDateModule,
     MatSnackBarModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
+    MatProgressSpinnerModule
 } from '@angular/material';
 import { NgModule } from '@angular/core';
 
@@ -49,7 +49,7 @@ import { NgModule } from '@angular/core';
         MatDatepickerModule,
         MatSnackBarModule,
         MatPaginatorModule,
-        MatProgressSpinnerModule,
+        MatProgressSpinnerModule
     ],
     exports: [
         MatToolbarModule,

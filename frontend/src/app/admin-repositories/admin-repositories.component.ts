@@ -1,5 +1,6 @@
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { GlobalService } from './../services/global.service';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material';
 import { Subscription, interval } from 'rxjs';
 import { Component, OnInit } from '@angular/core';
 import { StringService } from './../services/strings.service';
@@ -7,10 +8,31 @@ import { RepositoryService } from './../services/repository.service';
 import { Repository } from '../classes/repository';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'MM/YYYY',
+  },
+  display: {
+    dateInput: 'DD.MM.YYYY',
+    monthYearLabel: 'MMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
 @Component({
   selector: 'app-admin-repositories',
   templateUrl: './admin-repositories.component.html',
-  styleUrls: ['./admin-repositories.component.css']
+  styleUrls: ['./admin-repositories.component.css'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
+  ],
 })
 export class AdminRepositoriesComponent implements OnInit {
 
@@ -61,7 +83,7 @@ export class AdminRepositoriesComponent implements OnInit {
 
   ngOnInit() {
     this.backendUrl = this.globalService.getBackendURL();
-    
+
     this.stringService.getAdminRepositoriesStrings().subscribe(
       data => {
         this.strings = data;
@@ -177,6 +199,10 @@ export class AdminRepositoriesComponent implements OnInit {
    */
   public addRepository = (addRepositoryFormValue) => {
     if (this.addRepositoryForm.valid) {
+      // fixes date conversion error when sending it to the backend
+      const observeDate = addRepositoryFormValue.observeFromDate;
+      observeDate.setMinutes(observeDate.getMinutes() - observeDate.getTimezoneOffset());
+
       this.repositoryService.addRepository({
         id: addRepositoryFormValue.id,
         trackAllBranches: addRepositoryFormValue.trackMode,
@@ -186,7 +212,7 @@ export class AdminRepositoriesComponent implements OnInit {
         hookSet: addRepositoryFormValue.webHook,
         webHookURL: '',
         color: addRepositoryFormValue.color,
-        observeFromDate: addRepositoryFormValue.observeAll ? null : addRepositoryFormValue.observeFromDate,
+        observeFromDate: addRepositoryFormValue.observeAll ? null : observeDate,
         commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
         commits: []
       }).subscribe(

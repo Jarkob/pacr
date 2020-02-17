@@ -56,6 +56,7 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { DragDropModule} from '@angular/cdk/drag-drop';
+import { DateAdapter } from '@angular/material';
 
 @NgModule({
   declarations: [
