@@ -45,6 +45,8 @@ public class GitTracking implements IRepositoryImporter {
     private ICommitBenchmarkedChecker commitBenchmarkedChecker;
     private String ignoreTag;
 
+    private boolean pullingFromAllRepositories;
+
     /**
      * Initiates an instance of GitTracking.
      * @param gitTrackingAccess is the database access for repositories and commits.
@@ -74,6 +76,7 @@ public class GitTracking implements IRepositoryImporter {
         this.colorPicker = colorPicker;
         this.commitBenchmarkedChecker = commitBenchmarkedChecker;
         this.ignoreTag = ignoreTag;
+        this.pullingFromAllRepositories = false;
     }
 
     /**
@@ -216,6 +219,8 @@ public class GitTracking implements IRepositoryImporter {
      * Pulls from all repositories.
      */
     public void pullFromAllRepositories() {
+        this.pullingFromAllRepositories = true;
+
         for (GitRepository repository : gitTrackingAccess.getAllRepositories()) {
             LOGGER.info("Checking if hook is set for {} ({}).", repository.getName(), repository.getId());
             if (!repository.isHookSet()) {
@@ -223,6 +228,8 @@ public class GitTracking implements IRepositoryImporter {
                 pullFromRepository(repository.getId());
             }
         }
+
+        this.pullingFromAllRepositories = false;
     }
 
     /**
@@ -295,5 +302,12 @@ public class GitTracking implements IRepositoryImporter {
         gitRepository.setObserveFromDate(newObserveFromDate);
         gitTrackingAccess.updateRepository(gitRepository);
 
+    }
+
+    /**
+     * @return whether the system is pulling from all repositories at the moment.
+     */
+    public boolean isPullingFromAllRepositories() {
+        return pullingFromAllRepositories;
     }
 }

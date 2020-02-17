@@ -9,8 +9,6 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Objects;
 
 /**

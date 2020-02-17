@@ -1,5 +1,6 @@
 package pacr.webapp_backend.git_tracking.services;
 
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,11 +23,14 @@ import java.util.Objects;
  * @author Pavel Zwerschke
  */
 @Component
-public class PullIntervalSchedulingTrigger implements Trigger {
+public class PullIntervalSchedulingTrigger implements Trigger, NextExecutionGetter {
 
     private static final Logger LOGGER = LogManager.getLogger(PullIntervalSchedulingTrigger.class);
 
     private IPullIntervalAccess pullIntervalAccess;
+
+    @Getter
+    private LocalDateTime nextExecutionTime;
 
     /**
      * Creates an instance of PullIntervalSchedulingTrigger.
@@ -66,6 +70,8 @@ public class PullIntervalSchedulingTrigger implements Trigger {
 
     private void logNextExecution(LocalDateTime nextExecution) {
         assert nextExecution != null;
+
+        this.nextExecutionTime = nextExecution;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formatDateTime = nextExecution.format(formatter);
