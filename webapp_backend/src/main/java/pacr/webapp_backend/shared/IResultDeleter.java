@@ -15,13 +15,4 @@ public interface IResultDeleter {
      */
     void deleteBenchmarkingResults(@NotNull Collection<String> commitHashes);
 
-    /**
-     * Deletes any saved results for commits from this repository. Nothing happens if no repository with the given id
-     * exists in the system.
-     * Enters CommitResult.class monitor.
-     * @param repositoryID the id of the repository.
-     */
-    @Deprecated
-    void deleteAllResultsForRepository(int repositoryID);
-
 }

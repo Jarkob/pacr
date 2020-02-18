@@ -19,14 +19,6 @@ public interface IGetCommitAccess {
     Collection<? extends ICommit> getCommitsFromRepository(int id);
 
     /**
-     * Gets all saved commits from a branch of a repository. Returns null if no such repository or branch exists.
-     * @param id the repository id.
-     * @param branch the branch name. Throws IllegalArgumentException if this is null.
-     * @return the commits of the branch.
-     */
-    Collection<? extends ICommit> getCommitsFromBranch(int id, @NotNull String branch);
-
-    /**
      * Gets a subset of the saved commits from a branch of a repository. Returns {@code null} if no such repository or branch
      * exists.
      * @param repositoryId the repository id.
@@ -36,12 +28,6 @@ public interface IGetCommitAccess {
      * @return a page with the requested commits.
      */
     Page<? extends ICommit> getCommitsFromBranch(int repositoryId, @NotNull String branchName, int page, int size);
-
-    /**
-     * Gets all saved commits. Returns null if no commits are saved.
-     * @return all commits.
-     */
-    Collection<? extends ICommit> getAllCommits();
 
     /**
      * Gets the saved commit of the hash. Returns null if no such commit is saved.

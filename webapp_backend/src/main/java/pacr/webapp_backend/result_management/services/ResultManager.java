@@ -9,7 +9,6 @@ import pacr.webapp_backend.shared.IResultSaver;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.Collection;
 import java.util.Map;
@@ -49,22 +48,6 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         synchronized (CommitResult.class) {
             resultAccess.deleteResults(commitHashes);
         }
-    }
-
-    @Override
-    public void deleteAllResultsForRepository(int repositoryID) {
-        Collection<? extends ICommit> commits = commitAccess.getCommitsFromRepository(repositoryID);
-
-        if (commits == null) {
-            return;
-        }
-
-        List<String> commitHashes = new LinkedList<>();
-        for (ICommit commit : commits) {
-            commitHashes.add(commit.getCommitHash());
-        }
-
-        deleteBenchmarkingResults(commitHashes);
     }
 
     @Override

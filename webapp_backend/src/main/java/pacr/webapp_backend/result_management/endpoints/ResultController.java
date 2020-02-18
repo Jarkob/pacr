@@ -49,34 +49,6 @@ public class ResultController {
     }
 
     /**
-     * Gets all benchmarking results of a specific repository.
-     * @param repositoryId the id of the repository.
-     * @return the benchmarking results.
-     */
-    @Deprecated
-    @GetMapping("/results/repository/{repositoryId}")
-    public Map<String, DiagramOutputResult> getBenchmarkingResultsFromRepository(@PathVariable int repositoryId) {
-        return resultGetter.getRepositoryResults(repositoryId);
-    }
-
-    /**
-     * Gets all benchmarking results of a specific branch.
-     * @param repositoryId the id of the repository.
-     * @param branch the name of the branch. Cannot be null, empty or blank.
-     * @return the benchmarking results.
-     */
-    @Deprecated
-    @GetMapping("/results/repository/{repositoryId}/{branch}")
-    public Map<String, DiagramOutputResult> getBenchmarkingResultsFromBranch(
-            @PathVariable int repositoryId, @NotNull @PathVariable String branch) {
-        if (!StringUtils.hasText(branch)) {
-            throw new IllegalArgumentException("branch cannot be null, empty or blank");
-        }
-
-        return resultGetter.getBranchResults(repositoryId, branch);
-    }
-
-    /**
      * Gets the benchmarking result of a specific commit.
      * @param commitHash the hash of the commit. Cannot be null, empty or blank.
      * @return the benchmarking result.
@@ -91,17 +63,8 @@ public class ResultController {
     }
 
     /**
-     * Gets the benchmarking results of all commits, but only for the specified benchmark.
-     * @param benchmarkId the id of the benchmark.
-     * @return the benchmarking results of one benchmark.
-     */
-    @GetMapping("/results/benchmark/{benchmarkId}")
-    public Map<String, DiagramOutputResult> getBenchmarkingResultsForBenchmark(@PathVariable int benchmarkId) {
-        return resultGetter.getBenchmarkResults(benchmarkId);
-    }
-
-    /**
      * Gets the benchmarking results of all commits of a repository, but only for the specified benchmark.
+     * TODO is this used by the frontend?
      * @param repositoryId the id of the repository.
      * @param benchmarkId the id of the benchmark.
      * @return the benchmarking results of one benchmark.
@@ -110,22 +73,6 @@ public class ResultController {
     public Map<String, DiagramOutputResult> getResultsForRepositoryAndBenchmark(@PathVariable int benchmarkId,
                                                                                     @PathVariable int repositoryId) {
         return resultGetter.getBenchmarkResults(repositoryId, benchmarkId);
-    }
-
-    /**
-     * Gets the benchmarking results of all commits of a branch, but only for the specified benchmark.
-     * @param benchmarkId the id of the benchmark.
-     * @param repositoryId the id of the repository.
-     * @param branch the name of the branch. Cannot be null.
-     * @return the benchmarking results of one benchmark.
-     */
-    @GetMapping("/results/benchmark/{benchmarkId}/{repositoryId}/{branch}")
-    public Map<String, DiagramOutputResult> getResultsForBranchAndBenchmark(@PathVariable int benchmarkId,
-                                                                            @PathVariable int repositoryId,
-                                                                            @NotNull @PathVariable String branch) {
-        Objects.requireNonNull(branch);
-
-        return resultGetter.getBenchmarkResults(benchmarkId, repositoryId, branch);
     }
 
     /**

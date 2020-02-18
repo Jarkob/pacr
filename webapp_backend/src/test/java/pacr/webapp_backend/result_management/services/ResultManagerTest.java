@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,8 +39,6 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     private static final String HASH_TWO = "hash2";
     private static final String MSG = "msg";
     private static final LocalDateTime NOW = LocalDateTime.now();
-    private static final String BRANCH_NAME = "branch";
-    private static final String URL = "url";
     private static final String REPO_NAME = "repo";
 
     private ResultManager resultManager;
@@ -51,7 +50,6 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     private BenchmarkManager benchmarkManager;
 
     private GitRepository repository;
-    private GitBranch branch;
     private GitCommit commit;
 
     @Autowired
@@ -73,15 +71,14 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     @BeforeEach
     public void setUp() {
         // repository
-        branch = new GitBranch(BRANCH_NAME);
-        repository = new GitRepository(true, URL, REPO_NAME,
-                "#000000", LocalDate.now());
+        repository = new GitRepository();
+        repository.setName(REPO_NAME);
 
         // commit
         commit = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, repository);
 
         gitTrackingAccess.addRepository(repository);
-        gitTrackingAccess.addCommit(commit);
+        gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(commit)));
     }
 
     @AfterEach
@@ -120,7 +117,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         results.add(resultOne);
         results.add(resultTwo);
 
-        gitTrackingAccess.addCommit(new GitCommit(HASH_TWO, MSG, NOW, NOW, repository));
+        gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(new GitCommit(HASH_TWO, MSG, NOW, NOW, repository))));
 
         resultManager.importBenchmarkingResults(results);
 
@@ -143,53 +140,6 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         resultsToImport.add(resultToImport);
 
         assertThrows(IllegalArgumentException.class, () -> resultManager.importBenchmarkingResults(resultsToImport));
-    }
-
-    /**
-     * Tests whether deleteAllResultsForRepository only deletes results from commits in that repository.
-     */
-    @Test
-    void deleteAllResultsForRepository_shouldOnlyDeleteFromRepository() throws NotFoundException {
-        SimpleBenchmarkingResult resultOne = new SimpleBenchmarkingResult();
-        SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
-        resultTwo.setCommitHash(HASH_TWO);
-
-        Collection<IBenchmarkingResult> results = new LinkedList<>();
-        results.add(resultOne);
-        results.add(resultTwo);
-
-        GitRepository repoTwo = new GitRepository(false, URL, REPO_NAME, "#000000",
-                NOW.toLocalDate());
-        GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repoTwo);
-
-        gitTrackingAccess.addRepository(repoTwo);
-        gitTrackingAccess.addCommit(commitTwo);
-
-        resultManager.importBenchmarkingResults(results);
-
-        resultManager.deleteAllResultsForRepository(repoTwo.getId());
-
-        CommitResult savedResultOne = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
-        CommitResult savedResultTwo = resultDB.getResultFromCommit(HASH_TWO);
-
-        assertNotNull(savedResultOne);
-        assertNull(savedResultTwo);
-
-        gitTrackingAccess.removeRepository(repoTwo.getId());
-    }
-
-    @Test
-    void deleteAllResultsForRepository_dbAccessReturnsNullForCommits_shouldNotDeleteAnything() {
-        IGetCommitAccess commitAccessMock = Mockito.mock(IGetCommitAccess.class);
-        IResultAccess resultAccessMock = Mockito.mock(IResultAccess.class);
-        when(commitAccessMock.getCommitsFromRepository(REPO_ID)).thenReturn(null);
-
-        ResultManager resultManager = new ResultManager(resultAccessMock, commitAccessMock, null,
-                null);
-
-        resultManager.deleteAllResultsForRepository(REPO_ID);
-
-        verify(resultAccessMock, never()).deleteResults(anyCollection());
     }
 
     /**
@@ -216,7 +166,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
         commitTwo.addParent(SimpleBenchmarkingResult.COMMIT_HASH);
 
-        gitTrackingAccess.addCommit(commitTwo);
+        gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(commitTwo)));
 
         SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
         resultTwo.setCommitHash(HASH_TWO);

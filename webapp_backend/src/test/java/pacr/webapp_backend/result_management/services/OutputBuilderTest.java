@@ -80,7 +80,7 @@ public class OutputBuilderTest {
         resultOne.addBenchmarkResult(benchmarkResultTwo);
 
         commitOne = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW,
-                new GitRepository(false, URL, REPO_NAME, "#000000", NOW.toLocalDate()));
+                new GitRepository());
 
         commitDifferentHash = new GitCommit(HASH_TWO, MSG, NOW, NOW, new GitRepository());
     }

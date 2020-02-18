@@ -55,35 +55,6 @@ public class ResultControllerTest {
     }
 
     /**
-     * Tests whether getResultsFromRepository correctly calls the ResultGetter.
-     */
-    @Test
-    void getResultsFromRepository_shouldCallResultGetter() {
-        HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
-        when(resultGetterMock.getRepositoryResults(REPO_ID)).thenReturn(getterOutput);
-
-        Map<String, DiagramOutputResult> testOutput = resultController.getBenchmarkingResultsFromRepository(REPO_ID);
-
-        verify(resultGetterMock).getRepositoryResults(REPO_ID);
-        assertEquals(getterOutput, testOutput);
-    }
-
-    /**
-     * Tests whether getResultsFromBranch correctly calls the ResultGetter.
-     */
-    @Test
-    void getResultsFromBranch_shouldCallResultGetter() {
-        HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
-        when(resultGetterMock.getBranchResults(REPO_ID, BRANCH_NAME)).thenReturn(getterOutput);
-
-        Map<String, DiagramOutputResult> testOutput = resultController.getBenchmarkingResultsFromBranch(REPO_ID,
-                BRANCH_NAME);
-
-        verify(resultGetterMock).getBranchResults(REPO_ID, BRANCH_NAME);
-        assertEquals(getterOutput, testOutput);
-    }
-
-    /**
      * Tests whether getResultForCommit correctly calls the ResultGetter.
      */
     @Test
@@ -101,19 +72,6 @@ public class ResultControllerTest {
     void getBenchmarkingResultForCommit_inputIsNull_shouldThrowException() {
         assertThrows(IllegalArgumentException.class,
                 () -> resultController.getBenchmarkingResultForCommit(null));
-    }
-
-    /**
-     * Tests whether getResultsForBenchmark correctly calls the ResultGetter.
-     */
-    @Test
-    void getResultForBenchmark_shouldCallResultGetter() {
-        HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
-        when(resultGetterMock.getBenchmarkResults(BENCHMARK_ID)).thenReturn(getterOutput);
-
-        Map<String, DiagramOutputResult> testOutput = resultController.getBenchmarkingResultsForBenchmark(BENCHMARK_ID);
-        verify(resultGetterMock).getBenchmarkResults(BENCHMARK_ID);
-        assertEquals(getterOutput, testOutput);
     }
 
     /**
@@ -141,21 +99,6 @@ public class ResultControllerTest {
         List<CommitHistoryItem> testOutput = resultController.getNewBenchmarkingResults();
 
         verify(resultGetterMock).getNewestResults();
-        assertEquals(getterOutput, testOutput);
-    }
-
-    /**
-     * Tests whether getResultsForBranchAndBenchmark correctly calls the ResultGetter.
-     */
-    @Test
-    void getResultsForBranchAndBenchmark_shouldCallResultGetter() {
-        HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
-        when(resultGetterMock.getBenchmarkResults(BENCHMARK_ID, REPO_ID, BRANCH_NAME)).thenReturn(getterOutput);
-
-        Map<String, DiagramOutputResult> testOutput = resultController.getResultsForBranchAndBenchmark(BENCHMARK_ID,
-                REPO_ID, BRANCH_NAME);
-
-        verify(resultGetterMock).getBenchmarkResults(BENCHMARK_ID, REPO_ID, BRANCH_NAME);
         assertEquals(getterOutput, testOutput);
     }
 

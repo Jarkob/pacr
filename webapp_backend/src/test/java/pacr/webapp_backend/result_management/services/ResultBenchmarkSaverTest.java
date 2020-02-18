@@ -21,6 +21,8 @@ import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.IObserver;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -91,8 +93,8 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
         commitTwo.addBranch(repository.getTrackedBranch(BRANCH_NAME));
 
         gitTrackingAccess.addRepository(repository);
-        gitTrackingAccess.addCommit(commit);
-        gitTrackingAccess.addCommit(commitTwo);
+        gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(commit)));
+        gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(commitTwo)));
     }
 
     @AfterEach

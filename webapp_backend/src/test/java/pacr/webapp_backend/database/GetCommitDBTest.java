@@ -9,6 +9,7 @@ import pacr.webapp_backend.shared.ICommit;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -51,72 +52,10 @@ public class GetCommitDBTest extends GitTrackingDBTest {
 
         commit.setRepository(repository);
 
-        super.gitTrackingDB.addCommit(commit);
+        super.gitTrackingDB.addCommits(new HashSet<>(Arrays.asList(commit)));
 
         assertEquals(EXPECTED_NUM_OF_COMMITS_IN_REPOSITORY,
                 getCommitDB.getCommitsFromRepository(repository.getId()).size());
-    }
-
-    /**
-     * Tests whether getCommitsFromBranch returns the correct amount of commits.
-     */
-    @Test
-    public void getCommitsFromBranch_branchWithCommits_shouldReturnAllCommitsOnBranch() {
-
-        GitBranch branch = null;
-        GitBranch branchTwo = null;
-
-        Set<String> branches = new HashSet<>();
-        branches.add(BRANCH_NAME);
-        branches.add(BRANCH_NAME_TWO);
-
-        repository.setSelectedBranches(branches);
-
-        Collection<GitBranch> trackedBranches = repository.getTrackedBranches();
-        for (GitBranch trackedBranch : trackedBranches) {
-            if (trackedBranch.getName().equals(BRANCH_NAME)) {
-                branch = trackedBranch;
-            } else if (trackedBranch.getName().equals(BRANCH_NAME_TWO)) {
-                branchTwo = trackedBranch;
-            } else {
-                fail("unknown branch");
-            }
-        }
-
-        super.gitTrackingDB.addRepository(repository);
-
-        commit.setRepository(repository);
-        commit.addBranch(branch);
-
-        GitCommit commit2 = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), repository);
-        commit2.addBranch(branchTwo);
-
-        super.gitTrackingDB.updateRepository(repository);
-        super.gitTrackingDB.addCommit(commit);
-        super.gitTrackingDB.addCommit(commit2);
-
-        assertEquals(EXPECTED_NUM_OF_COMMITS_ON_BRANCH,
-                getCommitDB.getCommitsFromBranch(repository.getId(), BRANCH_NAME).size());
-    }
-
-    @Test
-    void getCommitsFromBranch_unknownRepo_shouldReturnNull() {
-        Collection<? extends ICommit> commits = getCommitDB.getCommitsFromBranch(UNKNOWN_REPO, BRANCH_NAME);
-        assertNull(commits);
-    }
-
-    /**
-     * Tests whether getAllCommit returns the correct amount of commits.
-     */
-    @Test
-    public void getAllCommits_savedCommits_shouldReturnAllCommits() {
-        super.gitTrackingDB.addRepository(repository);
-
-        commit.setRepository(repository);
-
-        super.gitTrackingDB.addCommit(commit);
-
-        assertEquals(EXPECTED_NUM_OF_ALL_COMMITS, getCommitDB.getAllCommits().size());
     }
 
     /**
@@ -137,7 +76,7 @@ public class GetCommitDBTest extends GitTrackingDBTest {
                     LocalDateTime.now(), repository);
             newCommit.addBranch(branch);
 
-            gitTrackingDB.addCommit(newCommit);
+            gitTrackingDB.addCommits(new HashSet<>(Arrays.asList(newCommit)));
         }
 
         List<? extends ICommit> commits = getCommitDB

@@ -52,37 +52,6 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     /**
-     * Gets all saved benchmarking results of a repository.
-     * @param repositoryId the id of the repository.
-     * @return the benchmarking results.
-     */
-    public HashMap<String, DiagramOutputResult> getRepositoryResults(int repositoryId) {
-        Collection<? extends ICommit> commits = commitAccess.getCommitsFromRepository(repositoryId);
-        return commitsToDiagramResults(commits, KEEP_ALL_BENCHMARK_DATA);
-    }
-
-    /**
-     * Gets all saved benchmarking results of a branch.
-     * @param repositoryId the id of the repository of the branch.
-     * @param branch the name of the branch. Cannot be null, empty or blank.
-     * @return the benchmarking results.
-     */
-    public HashMap<String, DiagramOutputResult> getBranchResults(int repositoryId, @NotNull String branch) {
-        if (!StringUtils.hasText(branch)) {
-            throw new IllegalArgumentException("branch cannot be null, empty or blank");
-        }
-
-        Collection<? extends ICommit> commits = commitAccess.getCommitsFromBranch(repositoryId, branch);
-
-        if (commits == null) {
-            throw new NoSuchElementException("no repository with id " + repositoryId + " or no branch with name "
-                    + branch + " was found");
-        }
-
-        return commitsToDiagramResults(commits, KEEP_ALL_BENCHMARK_DATA);
-    }
-
-    /**
      * Gets the benchmarking result of a commit.
      * @param commitHash the hash of the commit. Cannot be null, empty or blank.
      * @return the benchmarking result (or just the commit data if no result was found for the commit).
@@ -130,19 +99,6 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     /**
-     * Gets all benchmarking results with a specific measurements for a specific benchmark.
-     * @param benchmarkId the id of the benchmark.
-     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
-     *         omitted)
-     */
-    public HashMap<String, DiagramOutputResult> getBenchmarkResults(int benchmarkId) {
-        // TODO currently incredibly inefficient
-
-        Collection<? extends ICommit> commits = this.commitAccess.getAllCommits();
-        return commitsToDiagramResults(commits, benchmarkId);
-    }
-
-    /**
      * Gets all benchmarking results for a repository with measurements for a specific benchmark.
      * @param repositoryId the id of the repository.
      * @param benchmarkId the id of the benchmark.
@@ -152,21 +108,6 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     public HashMap<String, DiagramOutputResult> getBenchmarkResults(int repositoryId, int benchmarkId) {
         Collection<? extends ICommit> commitsFromRepository = commitAccess.getCommitsFromRepository(repositoryId);
         return commitsToDiagramResults(commitsFromRepository, benchmarkId);
-    }
-
-    /**
-     * Gets all benchmarking results for a branch with measurements for a specific benchmark.
-     * @param benchmarkId the id of the benchmark.
-     * @param repositoryId the id of the repository.
-     * @param branch the name of the branch. Cannot be null.
-     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
-     *         omitted)
-     */
-    public HashMap<String, DiagramOutputResult> getBenchmarkResults(int benchmarkId, int repositoryId,
-                                                                    @NotNull String branch) {
-        Objects.requireNonNull(branch);
-        Collection<? extends ICommit> commitsFromBranch = commitAccess.getCommitsFromBranch(repositoryId, branch);
-        return commitsToDiagramResults(commitsFromBranch, benchmarkId);
     }
 
     /**

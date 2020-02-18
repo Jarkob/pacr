@@ -40,18 +40,6 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
     }
 
     @Override
-    public Collection<? extends ICommit> getCommitsFromBranch(int repositoryId, String branchName) {
-        Objects.requireNonNull(branchName);
-
-        GitBranch branch = getGitBranch(repositoryId, branchName);
-        if (branch == null) {
-            return null;
-        }
-
-        return commitDB.findGitCommitsByRepository_IdAndBranches(repositoryId, branch);
-    }
-
-    @Override
     public Page<? extends ICommit> getCommitsFromBranch(int repositoryId, String branchName, int page, int size) {
         Objects.requireNonNull(branchName);
 
@@ -63,13 +51,6 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
         Pageable sortedByCommitDate = PageRequest.of(page, size, Sort.by("commitDate").descending());
 
         return commitDB.findGitCommitsByRepository_IdAndBranches(repositoryId, branch, sortedByCommitDate);
-    }
-
-    @Override
-    public Collection<? extends ICommit> getAllCommits() {
-        List<GitCommit> commits = new LinkedList<>();
-        commitDB.findAll().forEach(commits::add);
-        return commits;
     }
 
     @Override

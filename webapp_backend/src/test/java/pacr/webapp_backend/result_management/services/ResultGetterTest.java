@@ -143,35 +143,6 @@ public class ResultGetterTest {
     }
 
     /**
-     * Tests whether getRepositoryResults returns all results.
-     */
-    @Test
-    void getRepositoryResults_shouldReturnOutputResults() {
-        when(commitAccessMock.getCommitsFromRepository(REPO_ID)).thenAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                Collection<GitCommit> commits = new LinkedList<>();
-                commits.add(commitMock);
-                return commits;
-            }
-        });
-
-        when(commitMock.getCommitHash()).thenReturn(HASH);
-
-        Collection<CommitResult> results = new LinkedList<>();
-        results.add(resultMock);
-
-        when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
-        when(resultMock.getCommitHash()).thenReturn(HASH);
-        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
-
-        HashMap<String, DiagramOutputResult> outputs = resultGetter.getRepositoryResults(REPO_ID);
-
-        assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
-        assertEquals(diagramOutputMock, outputs.get(HASH));
-    }
-
-    /**
      * Tests whether getNewestResult returns the same object like the database access class.
      */
     @Test
@@ -200,112 +171,6 @@ public class ResultGetterTest {
 
         assertEquals(EXPECTED_NUM_OF_ALL_RESULTS, testResults.size());
         assertEquals(HASH, testResults.get(0).getCommitHash());
-    }
-
-    /**
-     * Tests whether getRepositoryResults returns empty collection if there are no results.
-     */
-    @Test
-    void getRepositoryResults_noResults_shouldReturnEmptyCollection() {
-        when(commitAccessMock.getCommitsFromRepository(REPO_ID)).thenAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                return new LinkedList<GitCommit>();
-            }
-        });
-
-        HashMap<String, DiagramOutputResult> outputs = resultGetter.getRepositoryResults(REPO_ID);
-
-        assertEquals(0, outputs.size());
-    }
-
-    @Test
-    void getBranchResults_shouldOutputDatabaseAnswer() {
-        when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME)).thenAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                Collection<GitCommit> commits = new LinkedList<>();
-                commits.add(commitMock);
-                return commits;
-            }
-        });
-
-        when(commitMock.getCommitHash()).thenReturn(HASH);
-
-        Collection<CommitResult> results = new LinkedList<>();
-        results.add(resultMock);
-
-        when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
-        when(resultMock.getCommitHash()).thenReturn(HASH);
-        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
-
-        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBranchResults(REPO_ID, BRANCH_NAME);
-
-        assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
-        assertEquals(diagramOutputMock, outputs.get(HASH));
-    }
-
-    /**
-     * Tests whether getBranchResults throws exception if the branch or repository does not exist.
-     */
-    @Test
-    void getBranchResults_noBranch_shouldThrowNoSuchElementException() {
-        when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME)).thenReturn(null);
-
-        assertThrows(NoSuchElementException.class, () -> {
-            resultGetter.getBranchResults(REPO_ID, BRANCH_NAME);
-        });
-    }
-
-    @Test
-    void getBranchResults_parameterIsNull_shouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> resultGetter.getBranchResults(REPO_ID, null));
-    }
-
-    /**
-     * Tests whether getBenchmarkResults only outputs the benchmark results that the caller is looking for and properly
-     * removes other results.
-     */
-    @Test
-    void getBenchmarkResults_extraBenchmark_shouldRemoveBenchmark() {
-        when(commitAccessMock.getAllCommits()).thenAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                Collection<GitCommit> commits = new LinkedList<>();
-                commits.add(commitMock);
-                return commits;
-            }
-        });
-
-        when(commitMock.getCommitHash()).thenReturn(HASH);
-
-        List<CommitResult> allResults = new LinkedList<>();
-        allResults.add(resultMock);
-        when(resultAccessMock.getResultsFromCommits(any())).thenReturn(allResults);
-
-        BenchmarkResult benchmarkResultMock = Mockito.mock(BenchmarkResult.class);
-        BenchmarkResult benchmarkResultMockTwo = Mockito.mock(BenchmarkResult.class);
-
-        Benchmark benchmarkMock = Mockito.mock(Benchmark.class);
-        Benchmark benchmarkTwoMock = Mockito.mock(Benchmark.class);
-
-        Set<BenchmarkResult> benchmarkResults = new HashSet<>();
-        benchmarkResults.add(benchmarkResultMock);
-        benchmarkResults.add(benchmarkResultMockTwo);
-        when(resultMock.getBenchmarkResults()).thenReturn(benchmarkResults);
-
-        when(benchmarkResultMock.getBenchmark()).thenReturn(benchmarkMock);
-        when(benchmarkResultMockTwo.getBenchmark()).thenReturn(benchmarkTwoMock);
-
-        when(benchmarkMock.getId()).thenReturn(BENCHMARK_ID);
-        when(benchmarkTwoMock.getId()).thenReturn(BENCHMARK_ID_TWO);
-
-        when(outputBuilderMock.buildDiagramOutput(any(), any())).thenReturn(diagramOutputMock);
-
-        resultGetter.getBenchmarkResults(BENCHMARK_ID);
-
-        verify(resultMock).removeBenchmarkResult(benchmarkResultMockTwo);
-        verify(resultMock, never()).removeBenchmarkResult(benchmarkResultMock);
     }
 
     /**
@@ -384,37 +249,6 @@ public class ResultGetterTest {
         List<CommitHistoryItem> newestResults = resultGetter.getNewestResults();
 
         assertEquals(EXPECTED_NUM_OF_NEW_RESULTS, newestResults.size());
-    }
-
-    /**
-     * Tests whether getBenchmarkResults properly builds output objects.
-     */
-    @Test
-    void getBenchmarkResults_forBranch_shouldBuildOutputObjects() {
-        Collection<GitCommit> commits = new LinkedList<>();
-        commits.add(commitMock);
-
-        when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME)).thenAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                return commits;
-            }
-        });
-
-        when(commitMock.getCommitHash()).thenReturn(HASH);
-
-        Collection<CommitResult> results = new LinkedList<>();
-        results.add(resultMock);
-
-        when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
-        when(resultMock.getCommitHash()).thenReturn(HASH);
-        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
-
-        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResults(REMOVE_NO_BENCHMARK, REPO_ID,
-                BRANCH_NAME);
-
-        assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
-        assertEquals(diagramOutputMock, outputs.get(HASH));
     }
 
     /**
