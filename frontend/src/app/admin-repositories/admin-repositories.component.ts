@@ -1,3 +1,4 @@
+import { ExecutionTime } from './../classes/execution-time';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import { GlobalService } from './../services/global.service';
 import { MatSnackBar, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material';
@@ -82,6 +83,11 @@ export class AdminRepositoriesComponent implements OnInit {
   repositorySubscription: Subscription;
   repositoryUpdateInterval = 30;
 
+  nextExecutionTimeSubscription: Subscription;
+  nextExecutionTimeUpdateInterval = 1;
+  nextExecutionTime: ExecutionTime;
+  millisecondsUntilNextPull: number;
+
   ngOnInit() {
     this.backendUrl = this.globalService.getBackendURL();
 
@@ -106,8 +112,33 @@ export class AdminRepositoriesComponent implements OnInit {
       }
     );
 
+    this.repositoryService.getNextExecutionTime().subscribe(
+      data => {
+        this.nextExecutionTime = data;
+      }
+    );
+
+    // setup update timer for seconds until next pull
+    setInterval(() => {
+      this.updateNextPullTime();
+    }, 1000);
+
     this.initAddFormControls();
     this.initEditFormControls();
+  }
+
+  updateNextPullTime() {
+    const timeDelta = Math.floor(new Date(this.nextExecutionTime.nextExecutionTime).valueOf() - new Date().valueOf());
+
+    this.millisecondsUntilNextPull = Math.max(0, timeDelta);
+
+    if (this.millisecondsUntilNextPull === 0) {
+      this.repositoryService.getNextExecutionTime().subscribe(
+        data => {
+          this.nextExecutionTime = data;
+        }
+      );
+    }
   }
 
   getRepositories() {

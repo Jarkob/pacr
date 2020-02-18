@@ -20,6 +20,10 @@
 
     "tabAddTitle": "Add a new Repository:",
 
+    "nextPullTimeStart": "Pulling from all repositories in",
+    "nextPullTimeEnd": "minutes.",
+    "currentlyPulling": "Currently pulling from all repositories.",
+
     "tabEditTitle": "Editing:",
     "repositoryName": "Display Name",
     "repositoryNameRequired": "Name is required.",

@@ -1,3 +1,4 @@
+import { ExecutionTime } from './../classes/execution-time';
 import { Repository } from './../classes/repository';
 import { Observable } from 'rxjs';
 import { GlobalService } from './global.service';
@@ -79,4 +80,13 @@ export class RepositoryService {
   public updateRepository(repository: Repository): Observable<Repository> {
     return this.http.post<Repository>(this.globalService.url + '/update-repository', repository, httpOptions);
   }
+
+  /**
+   * update a repository
+   */
+  public getNextExecutionTime(): Observable<ExecutionTime> {
+    return this.http.get<ExecutionTime>(this.globalService.url + '/next-execution-time');
+  }
+
+
 }
