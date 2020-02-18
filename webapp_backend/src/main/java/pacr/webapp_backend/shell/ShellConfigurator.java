@@ -16,6 +16,8 @@ public class ShellConfigurator {
 
     private static final String LOGGER_NAME = "pacr.webapp_backend";
     private static final String APPENDER_NAME = "ConsoleAppender";
+    private static final String OFF_MESSAGE = "log output off";
+    private static final String ON_MESSAGE = "log output on";
 
     private static boolean logOutput = true;
 
@@ -24,18 +26,21 @@ public class ShellConfigurator {
      * file.
      */
     @ShellMethod("toggles whether logs are displayed on the console.")
-    public void toggleLogOutput() {
+    public String toggleLogOutput() {
         LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         Configuration config = ctx.getConfiguration();
 
         LoggerConfig appLogger = config.getLoggers().get(LOGGER_NAME);
         LoggerConfig rootLogger = config.getRootLogger();
 
+        String output;
+
         if (logOutput) {
             appLogger.removeAppender(APPENDER_NAME);
             rootLogger.removeAppender(APPENDER_NAME);
 
             logOutput = false;
+            output = OFF_MESSAGE;
         } else {
             Appender consoleAppender = config.getAppender(APPENDER_NAME);
 
@@ -43,8 +48,10 @@ public class ShellConfigurator {
             rootLogger.addAppender(consoleAppender, rootLogger.getLevel(), rootLogger.getFilter());
 
             logOutput = true;
+            output = ON_MESSAGE;
         }
-
         ctx.updateLoggers();
+
+        return output;
     }
 }

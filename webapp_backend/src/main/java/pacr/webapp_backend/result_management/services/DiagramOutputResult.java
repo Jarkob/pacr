@@ -19,6 +19,7 @@ public class DiagramOutputResult {
     private String authorDate;
     private HashMap<String, ResultWithError> result;
     private String[] parents;
+    private String[] labels;
     private String globalError;
 
     /**
@@ -52,6 +53,7 @@ public class DiagramOutputResult {
             }
         }
 
+        this.labels = commit.getLabels().toArray(new String[0]);
         this.parents = commit.getParentHashes().toArray(new String[0]);
         this.globalError = commitResult.getGlobalError();
     }
