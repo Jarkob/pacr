@@ -138,4 +138,22 @@ public class ResultController {
 
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
+
+    /**
+     * Gets all measurements that were made for a benchmark property for a commit.
+     * @param commitHash the hash of the commit. Cannot be null, empty or blank.
+     * @param benchmarkId the id of the benchmark of the property.
+     * @param propertyName the name of the property. Cannot be null, empty or blank.
+     * @return the measurements for this property and commit.
+     */
+    @GetMapping("/results/commit/{commitHash}/{benchmarkId}/{propertyName}")
+    public List<Double> getMeasurementsOfPropertyForCommit(@NotNull @PathVariable String commitHash,
+                                                           @PathVariable int benchmarkId,
+                                                           @NotNull @PathVariable String propertyName) {
+        if (!StringUtils.hasText(commitHash) || !StringUtils.hasText(propertyName)) {
+            throw new IllegalArgumentException("input cannot be null, empty or blank");
+        }
+
+        return resultGetter.getMeasurementsOfPropertyForCommit(commitHash, benchmarkId, propertyName);
+    }
 }

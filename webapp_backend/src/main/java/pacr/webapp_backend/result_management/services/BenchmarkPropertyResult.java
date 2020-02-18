@@ -124,7 +124,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     @Override
-    public Collection<Double> getResults() {
+    public List<Double> getResults() {
         return measurements;
     }
 

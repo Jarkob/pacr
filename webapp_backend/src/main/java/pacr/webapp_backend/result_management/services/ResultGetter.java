@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
@@ -138,6 +139,41 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         List<CommitResult> results = resultAccess.getNewestResults();
 
         return resultsToHistoryItems(results);
+    }
+
+    /**
+     * Gets all measurements that were made for a benchmark property for a commit.
+     * @param commitHash the hash of the commit. Cannot be null, empty or blank.
+     * @param benchmarkId the id of the benchmark of the property.
+     * @param propertyName the name of the property. Cannot be null, empty or blank.
+     * @return the measurements for this property and commit.
+     */
+    public List<Double> getMeasurementsOfPropertyForCommit(@NotNull String commitHash,
+                                                           int benchmarkId,
+                                                           @NotNull String propertyName) {
+        if (!StringUtils.hasText(commitHash) || !StringUtils.hasText(propertyName)) {
+            throw new IllegalArgumentException("input cannot be null, empty or blank");
+        }
+
+        CommitResult result = resultAccess.getResultFromCommit(commitHash);
+        if (result == null) {
+            throw new NoSuchElementException("no result found for this commit");
+        }
+
+        for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
+
+            if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
+                for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertiesIterable()) {
+                    if (propertyResult.getName().equals(propertyName)) {
+                        return propertyResult.getResults();
+                    }
+                }
+                break;
+            }
+
+        }
+
+        throw new NoSuchElementException("property not found for this result");
     }
 
     @Override
