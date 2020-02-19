@@ -1,4 +1,3 @@
-import { ConfigService } from './services/config.service';
 import { DetailViewComparisonWrapperComponent } from './detail-view-comparison-wrapper/detail-view-comparison-wrapper.component';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { EnumPipe } from './pipes/enum-pipe';
@@ -111,7 +110,6 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     DragDropModule
   ],
   providers: [
-    ConfigService,
     DetailViewMaximizerService,
     CommitHistoryMaximizerService,
     DiagramMaximizerService,

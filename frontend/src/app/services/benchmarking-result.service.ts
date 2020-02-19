@@ -1,6 +1,5 @@
 import { DiagramOutputResult } from './../classes/diagram-output-result';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
-import { MockService } from './mock.service';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
@@ -14,7 +13,6 @@ export class BenchmarkingResultService {
   constructor(
     private http: HttpClient,
     private globalService: GlobalService,
-    private mockService: MockService
   ) { }
 
   /**
@@ -65,7 +63,6 @@ export class BenchmarkingResultService {
    * @param repository the id of the repository
    */
   public getBenchmarkingResultsForRepository(repositoryId: number, page: number, size: number): Observable<any> {
-    console.log(repositoryId);
     return this.http.get<any>(this.globalService.url + '/results/pageable/repository/' + repositoryId + '?page=' + page + '&size=' + size);
   }
 

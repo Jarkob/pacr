@@ -1,4 +1,3 @@
-import { ConfigService } from './config.service';
 import { Injectable, isDevMode } from '@angular/core';
 
 @Injectable({
@@ -8,8 +7,8 @@ export class GlobalService {
 
   url: string;
 
-  constructor(private configService: ConfigService) {
-    this.url = isDevMode() ? configService.getConfig().devUrl : configService.getConfig().prodUrl;
+  constructor() {
+    this.url = isDevMode() ? 'http://localhost:8080' : 'https://pacr.aaaaaaah.de';
   }
 
   /**
