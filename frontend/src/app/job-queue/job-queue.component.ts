@@ -61,7 +61,7 @@ export class JobQueueComponent implements OnInit {
    * @param pagingEvent pageable event containing paging information.
    * @returns the pagination event.
    */
-  private getJobsQueue(event: any): any {
+  public getJobsQueue(event: any): any {
     this.schedulerService.getJobsQueue(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.jobsPage = data;
@@ -78,7 +78,7 @@ export class JobQueueComponent implements OnInit {
    * @param pagingEvent pageable event containing paging information.
    * @returns the pagination event.
    */
-  private getPrioritizedQueue(event: any): any {
+  public getPrioritizedQueue(event: any): any {
     this.schedulerService.getPrioritizedQueue(event.pageIndex, event.pageSize).subscribe(
       data => {
         this.prioritizedPage = data;

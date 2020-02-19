@@ -64,7 +64,7 @@ export class CommitHistoryComponent implements OnInit {
   /**
    * Assign each displayed commit history item a unique identifier so it doesn't need to
    * be rendered again if it doesn't change.
-   * 
+   *
    * @param index index of the item in the list.
    * @param item the commit history item.
    */

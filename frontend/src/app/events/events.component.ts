@@ -96,7 +96,7 @@ export class EventsComponent implements OnInit {
    * @param index index of the item in the list.
    * @param item the event.
    */
-  public trackCommitHistoryItem(index: number, item: Event) {
+  public trackEvent(index: number, item: Event) {
     return item.id;
   }
 
