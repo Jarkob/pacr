@@ -247,16 +247,14 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         Map<String, CommitResult> resultsMap = new HashMap<>();
 
         for (CommitResult result : results) {
-            if (benchmarkIdToKeep == KEEP_ALL_BENCHMARK_DATA) {
-                resultsMap.put(result.getCommitHash(), result);
-            } else {
-                // remove unwanted benchmarks if benchmarkIdToKeep is not -1
+            resultsMap.put(result.getCommitHash(), result);
+
+            if (benchmarkIdToKeep != KEEP_ALL_BENCHMARK_DATA) {
+                // remove unwanted benchmarks if benchmarkIdToKeep is not KEEP_ALL_BENCHMARK_DATA
                 List<BenchmarkResult> benchmarksToRemove = new LinkedList<>();
 
                 for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
-                    if (benchmarkResult.getBenchmark().getId() == benchmarkIdToKeep) {
-                        resultsMap.put(result.getCommitHash(), result);
-                    } else {
+                    if (benchmarkResult.getBenchmark().getId() != benchmarkIdToKeep) {
                         benchmarksToRemove.add(benchmarkResult);
                     }
                 }

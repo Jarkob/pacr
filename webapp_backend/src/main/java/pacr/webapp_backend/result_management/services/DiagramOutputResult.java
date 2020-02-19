@@ -49,7 +49,7 @@ public class DiagramOutputResult {
                 } else {
                     resultAndErrorMessage = new ResultWithError(propertyResult.getMedian(), null);
                 }
-                    result.put(propertyResult.getName(), resultAndErrorMessage);
+                result.put(propertyResult.getName(), resultAndErrorMessage);
             }
         }
 
@@ -71,6 +71,7 @@ public class DiagramOutputResult {
 
         this.result = null;
 
+        this.labels = commit.getLabels().toArray(new String[0]);
         this.parents = commit.getParentHashes().toArray(new String[0]);
         this.globalError = null;
     }
