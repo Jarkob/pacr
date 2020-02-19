@@ -1,5 +1,7 @@
 package pacr.benchmarker.services;
 
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,13 +10,10 @@ import java.util.Map;
  */
 public class Benchmark {
 
+    @Getter
     private Map<String, BenchmarkProperty> properties;
 
     public Benchmark() {
         this.properties = new HashMap<>();
-    }
-
-    public Map<String, BenchmarkProperty> getProperties() {
-        return properties;
     }
 }

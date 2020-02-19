@@ -4,9 +4,8 @@ import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.stereotype.Component;
-import pacr.benchmarker.services.Benchmark;
-import pacr.benchmarker.services.Benchmarker;
 import pacr.benchmarker.services.IJobResultSender;
+import pacr.benchmarker.services.JobExecutor;
 import pacr.benchmarker.services.JobResult;
 
 import java.lang.reflect.Type;
@@ -20,15 +19,15 @@ import java.lang.reflect.Type;
 public class NewJobHandler implements StompFrameHandler, IJobResultSender {
 
     private StompSession session;
-    private Benchmarker benchmarker;
+    private JobExecutor jobExecutor;
 
     /**
      * Creates an instance of NewJobHandler.
-     * @param benchmarker will execute jobs.
+     * @param jobExecutor will execute jobs.
      */
-    public NewJobHandler(Benchmarker benchmarker) {
-        this.benchmarker = benchmarker;
-        this.benchmarker.setResultSender(this);
+    public NewJobHandler(JobExecutor jobExecutor) {
+        this.jobExecutor = jobExecutor;
+        this.jobExecutor.setResultSender(this);
     }
 
     /**
@@ -48,7 +47,7 @@ public class NewJobHandler implements StompFrameHandler, IJobResultSender {
     public void handleFrame(StompHeaders stompHeaders, Object o) {
         JobMessage job = (JobMessage)o;
 
-        benchmarker.executeJob(job.getRepository(), job.getCommitHash());
+        jobExecutor.executeJob(job.getRepository(), job.getCommitHash());
     }
 
     @Override

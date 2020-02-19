@@ -1,0 +1,16 @@
+{
+    "standard_lib": {
+        "time": {
+            "error": "generic error"
+        }
+    },
+    "standard_lib size": {
+        "time": {
+            "resultInterpretation": "LESS_IS_BETTER",
+            "results": [
+                34, 50, 10, 20, 22, 25, 33, 11
+            ],
+            "unit": "s"
+        }
+    }
+}

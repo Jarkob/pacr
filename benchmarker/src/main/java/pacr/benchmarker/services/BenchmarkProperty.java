@@ -1,5 +1,6 @@
 package pacr.benchmarker.services;
 
+import lombok.Getter;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -10,9 +11,12 @@ import java.util.Collection;
  */
 public class BenchmarkProperty {
 
+    @Getter
     private Collection<Double> results;
     private String resultInterpretation;
+    @Getter
     private String unit;
+    @Getter
     private String error;
 
     public BenchmarkProperty() {
@@ -20,13 +24,6 @@ public class BenchmarkProperty {
         this.resultInterpretation = "";
         this.unit = "";
         this.error = "";
-    }
-
-    /**
-     * @return the results of this property.
-     */
-    public Collection<Double> getResults() {
-        return results;
     }
 
     /**
@@ -42,19 +39,5 @@ public class BenchmarkProperty {
             }
         }
         return ResultInterpretation.NEUTRAL;
-    }
-
-    /**
-     * @return the unit of this property.
-     */
-    public String getUnit() {
-        return unit;
-    }
-
-    /**
-     * @return the error message of this property.
-     */
-    public String getError() {
-        return error;
     }
 }

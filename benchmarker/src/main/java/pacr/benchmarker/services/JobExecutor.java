@@ -1,5 +1,6 @@
 package pacr.benchmarker.services;
 
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pacr.benchmarker.services.git.GitHandler;
@@ -15,6 +16,7 @@ import java.util.Objects;
 @Component
 public class JobExecutor {
 
+    @Setter
     private IJobResultSender resultSender;
     private GitHandler gitHandler;
     private JobDispatcher jobDispatcher;
@@ -34,14 +36,6 @@ public class JobExecutor {
         this.gitHandler = gitHandler;
         this.jobDispatcher = jobDispatcher;
         this.relativePathToWorkingDir = relativePathToWorkingDir;
-    }
-
-
-    /**
-     * @param resultSender the result sender being set.
-     */
-    public void setResultSender(IJobResultSender resultSender) {
-        this.resultSender = resultSender;
     }
 
     /**

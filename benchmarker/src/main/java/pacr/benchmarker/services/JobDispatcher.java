@@ -41,9 +41,18 @@ public class JobDispatcher {
     public BenchmarkingResult dispatchJob(String repositoryDir) {
         LOGGER.info("Starting process {} with {} as argument.", runnerFile, repositoryDir);
 
+        // check if windows
+        String os = System.getProperty("os.name").toLowerCase();
+        String runner;
+        if (os.contains("win")) {
+            runner = runnerDir + "/" + runnerFile;
+        } else {
+            runner = "./" + runnerFile;
+        }
+
         Process process;
         try {
-            process = new ProcessBuilder("./" + runnerFile, repositoryDir)
+            process = new ProcessBuilder(runner, repositoryDir)
                     .directory(new File(runnerDir))
                     .start();
         } catch (IOException e) {
