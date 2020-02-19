@@ -25,6 +25,7 @@
         <Logger name="pacr.webapp_backend" level="debug" additivity="false">
             <AppenderRef ref="ConsoleAppender" />
             <AppenderRef ref="FileAppender" />
+            <AppenderRef ref="ConsoleAppender" />
         </Logger>
 
         <Root level="info">

@@ -1,0 +1,22 @@
+.tabTitle {
+    margin-top: 20px;
+    width: 100%;
+}
+
+.action-button {
+    margin-top: 15px;
+}
+
+#selectContainer {
+    border: solid 2px rgb(59, 59, 59);
+    padding: 25px 20px;
+    width: 100%;
+}
+
+#btnSelect {
+    margin-right: 10px;
+}
+
+#spinner {
+    margin-right: 10px;
+}

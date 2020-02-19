@@ -1,5 +1,7 @@
 package pacr.webapp_backend.shared;
 
+import java.util.Set;
+
 /**
  * An interface for a git repository.
  */
@@ -16,5 +18,10 @@ public interface IRepository {
      * @return pull URL
      */
     String getPullURL();
+
+    /**
+     * @return all tracked branches
+     */
+    Set<String> getTrackedBranches();
 
 }

@@ -20,16 +20,16 @@ export class ImportExportService {
 
   /**
    * import benchmarking results
-   * @param results the results to be imported
+   * @param results the results to be imported in json format
    */
-  public import(results: BenchmarkingResult[]): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/import', results, httpOptions);
+  public import(results: any): Observable<{}> {
+    return this.http.post<{}>(this.globalService.url + '/importResults', results, httpOptions);
   }
 
   /**
    * export benchmarking results
    */
-  public export(): Observable<BenchmarkingResult[]> {
-    return this.http.get<BenchmarkingResult[]>(this.globalService.url + '/export');
+  public export(): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/exportResults');
   }
 }

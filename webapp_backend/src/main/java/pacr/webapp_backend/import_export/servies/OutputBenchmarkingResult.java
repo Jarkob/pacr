@@ -3,6 +3,7 @@ package pacr.webapp_backend.import_export.servies;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
@@ -20,6 +21,9 @@ public class OutputBenchmarkingResult {
     @Getter
     private String repositoryName;
 
+    @Getter
+    private Set<String> trackedBranches;
+    
     private Collection<BenchmarkingResult> benchmarkingResults;
 
     /**
@@ -28,9 +32,10 @@ public class OutputBenchmarkingResult {
      * @param benchmarkingResults the results belonging to the repository.
      * @param repositoryPullUrl the pull-url of the repository.
      * @param repositoryName the display name of the repository.
+     * @param trackedBranches the tracked branches of the repository.
      */
     public OutputBenchmarkingResult(Collection<IBenchmarkingResult> benchmarkingResults,
-                                        String repositoryPullUrl, String repositoryName) {
+                                        String repositoryPullUrl, String repositoryName, Set<String> trackedBranches) {
 
         Objects.requireNonNull(benchmarkingResults, "The benchmarkingResults cannot be null.");
 
@@ -49,6 +54,7 @@ public class OutputBenchmarkingResult {
 
         this.repositoryPullUrl = repositoryPullUrl;
         this.repositoryName = repositoryName;
+        this.trackedBranches = trackedBranches;
     }
 
     /**

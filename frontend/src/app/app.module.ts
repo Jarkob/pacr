@@ -1,3 +1,4 @@
+import { AdminImportExportComponent } from './admin-import-export/admin-import-export.component';
 import { DetailViewComparisonWrapperComponent } from './detail-view-comparison-wrapper/detail-view-comparison-wrapper.component';
 import { TimeAgoPipe } from 'time-ago-pipe';
 import { EnumPipe } from './pipes/enum-pipe';
@@ -89,7 +90,8 @@ import { DateAdapter } from '@angular/material';
     TimeAgoPipe,
     EnumPipe,
     CommitHistoryJobQueueWrapperComponent,
-    DetailViewComparisonWrapperComponent
+    DetailViewComparisonWrapperComponent,
+    AdminImportExportComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,

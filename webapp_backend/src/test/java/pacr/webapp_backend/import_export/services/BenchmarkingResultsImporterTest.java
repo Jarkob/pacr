@@ -103,7 +103,8 @@ public class BenchmarkingResultsImporterTest {
                 benchmarkingResults.add(benchmarkingResult);
             }
 
-            this.importedResults.add(new OutputBenchmarkingResult(benchmarkingResults, REPO_PULL_URL + i, REPO_NAME + i));
+            this.importedResults.add(new OutputBenchmarkingResult(benchmarkingResults, REPO_PULL_URL + i,
+                    REPO_NAME + i, new HashSet<>()));
         }
 
         this.benchmarkingResultsImporter = new BenchmarkingResultsImporter(resultImporter, repositoryImporter);

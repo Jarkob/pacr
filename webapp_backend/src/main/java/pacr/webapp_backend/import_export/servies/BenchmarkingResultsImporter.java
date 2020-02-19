@@ -44,7 +44,8 @@ public class BenchmarkingResultsImporter {
         Collection<IBenchmarkingResult> benchmarkingResults = new ArrayList<>();
 
         for (OutputBenchmarkingResult result : results) {
-            repositoryImporter.importRepository(result.getRepositoryPullUrl(), now, result.getRepositoryName(), new HashSet<>());
+            repositoryImporter.importRepository(result.getRepositoryPullUrl(), now, result.getRepositoryName(),
+                    result.getTrackedBranches());
 
             benchmarkingResults.addAll(result.getBenchmarkingResults());
         }
