@@ -1,5 +1,7 @@
 package pacr.benchmarker.services;
 
+import org.springframework.util.StringUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -34,7 +36,10 @@ public class BenchmarkProperty {
         try {
             return ResultInterpretation.valueOf(resultInterpretation);
         } catch (IllegalArgumentException | NullPointerException e) {
-            error = "Unknown result interpretation.";
+            // check that result interpretation
+            if (!StringUtils.hasText(error)) {
+                error = "Unknown result interpretation.";
+            }
         }
         return ResultInterpretation.NEUTRAL;
     }
