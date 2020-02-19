@@ -89,6 +89,11 @@ public interface ICommit {
     Collection<String> getBranchNames();
 
     /**
+     * @return {@code true} if this commit is on the master branch, otherwise {@code false}.
+     */
+    boolean isOnMaster();
+
+    /**
      * Gets the HTTPS URL for this commit.
      * @return url or null if it doesn't exist.
      */

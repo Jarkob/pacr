@@ -20,7 +20,7 @@ public class NewResultEventTest {
     private static final String EXPECTED_NORMAL_TITLE = "'" +  HASH.substring(0, HASH_LENGTH)
             + "' Benchmarked for Repository '" + REPO + "'";
     private static final String EXPECTED_NORMAL_DESCRIPTION = "On average, the result is "
-            + IMPROVEMENT + "% better then the previous one ('"
+            + IMPROVEMENT + "% better than the previous one ('"
             + COMPARISON_HASH.substring(0, HASH_LENGTH) + "').";
     private static final String EXPECTED_ERROR_TITLE = "Error While Benchmarking '" + HASH.substring(0, HASH_LENGTH)
             + "' for Repository '" + REPO + "'";

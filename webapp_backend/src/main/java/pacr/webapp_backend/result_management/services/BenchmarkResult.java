@@ -65,10 +65,10 @@ public class BenchmarkResult implements IBenchmark {
     }
 
     /**
-     * Gets all measured data for the properties in an iterable.
-     * @return the iterable property results.
+     * Gets all measured data for the properties.
+     * @return the property results.
      */
-    public Iterable<BenchmarkPropertyResult> getPropertiesIterable() {
+    public Set<BenchmarkPropertyResult> getPropertyResults() {
         return propertyResults;
     }
 

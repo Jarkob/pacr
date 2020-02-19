@@ -133,6 +133,16 @@ public class GitCommit implements ICommit {
         return repository.getName();
     }
 
+    @Override
+    public boolean isOnMaster() {
+        for (GitBranch branch : branches) {
+            if (branch.isMaster()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Sets the branch for this commit.
      * @param branch is the branch being set.

@@ -5,7 +5,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
@@ -163,7 +162,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
 
             if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
-                for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertiesIterable()) {
+                for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                     if (propertyResult.getName().equals(propertyName)) {
                         return propertyResult.getResults();
                     }

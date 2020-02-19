@@ -65,6 +65,11 @@ public class SimpleCommit implements ICommit {
     }
 
     @Override
+    public boolean isOnMaster() {
+        return true;
+    }
+
+    @Override
     public String getCommitURL() {
         return null;
     }

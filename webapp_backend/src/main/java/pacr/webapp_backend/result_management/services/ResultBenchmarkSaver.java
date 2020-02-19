@@ -17,8 +17,6 @@ import java.util.Objects;
 @Component
 public class ResultBenchmarkSaver extends ResultSaver {
 
-    private static final String MASTER_BRANCH = "master";
-
     private ResultGetter subjectForObservers;
     private IEventHandler eventHandler;
 
@@ -54,7 +52,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
         int numberOfComparisons = 0;
 
         for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
-            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertiesIterable()) {
+            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                 if (propertyResult.isCompared()) {
                     totalImprovementPercentage += (propertyResult.getRatio() - 1d) * 100d;
                     ++numberOfComparisons;
@@ -74,7 +72,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
         eventHandler.addEvent(benchmarkingEvent);
 
         // only update observers if the commit is on the master branch
-        if (commit.getBranchNames().contains(MASTER_BRANCH)) {
+        if (commit.isOnMaster()) {
             subjectForObservers.updateAll();
         }
     }

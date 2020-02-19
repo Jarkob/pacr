@@ -15,6 +15,8 @@ import java.util.Objects;
 @Entity
 public class GitBranch {
 
+    private static final String MASTER_BRANCH_NAME = "master";
+
     @Id
     @GeneratedValue
     private int id;
@@ -61,5 +63,12 @@ public class GitBranch {
      */
     public void setHeadHash(String headHash) {
         this.headHash = headHash;
+    }
+
+    /**
+     * @return {@code true} if this branch is the master branch, otherwise {@code false}.
+     */
+    public boolean isMaster() {
+        return name.equals(MASTER_BRANCH_NAME);
     }
 }

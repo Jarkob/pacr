@@ -42,7 +42,7 @@ public class DiagramOutputResult {
 
         this.result = new HashMap<>();
         for (BenchmarkResult benchmarkResult : commitResult.getBenchmarkResults()) {
-            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertiesIterable()) {
+            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                 ResultWithError resultAndErrorMessage;
                 if (propertyResult.isError()) {
                     resultAndErrorMessage = new ResultWithError(null, propertyResult.getError());

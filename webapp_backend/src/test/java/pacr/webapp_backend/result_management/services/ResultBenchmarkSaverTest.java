@@ -39,7 +39,7 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     private static final String MASTER_BRANCH = "master";
     private static final String REPO_NAME = "repo";
     private static final String EXPECTED_EVENT_DESCRIPTION =
-            "On average, the result is 50% better then the previous one ('1325').";
+            "On average, the result is 50% better than the previous one ('1325').";
 
     private ResultManager resultManager;
     private GitTrackingDB gitTrackingAccess;

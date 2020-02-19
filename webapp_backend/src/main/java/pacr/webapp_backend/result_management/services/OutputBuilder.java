@@ -85,7 +85,7 @@ public class OutputBuilder {
     }
 
     private OutputBenchmark buildOutputBenchmark(BenchmarkResult benchmarkResult) {
-        Iterable<BenchmarkPropertyResult> propertyResults = benchmarkResult.getPropertiesIterable();
+        Iterable<BenchmarkPropertyResult> propertyResults = benchmarkResult.getPropertyResults();
         List<OutputPropertyResult> outputProperties = new LinkedList<>();
 
         for (BenchmarkPropertyResult propertyResult : propertyResults) {

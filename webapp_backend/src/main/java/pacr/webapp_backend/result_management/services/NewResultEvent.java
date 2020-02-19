@@ -16,6 +16,15 @@ public class NewResultEvent extends EventTemplate {
 
     private static final int HASH_LENGTH = 7;
     private static final String PATH_TO_LOCALIZATION = "localization/MessagesBundle";
+    private static final String TITLE_FORMAT_GLOBAL_ERROR = "TITLE_FORMAT_GLOBAL_ERROR";
+    private static final String TITLE_FORMAT = "TITLE_FORMAT";
+    private static final String DESCRIPTION_FORMAT_GLOBAL_ERROR = "DESCRIPTION_FORMAT_GLOBAL_ERROR";
+    private static final String NO_COMPARISON_DESCRIPTION = "NO_COMPARISON_DESCRIPTION";
+    private static final String NEGATIVE = "NEGATIVE";
+    private static final String POSITIVE = "POSITIVE";
+    private static final String COMPARISON_DESCRIPTION = "COMPARISON_DESCRIPTION";
+    private static final String LANGUAGE_EN = "en";
+    private static final String REGION_US = "US";
 
     private String commitHash;
     private String repositoryName;
@@ -57,7 +66,7 @@ public class NewResultEvent extends EventTemplate {
 
         // This can easily be expanded to support more languages. The necessary translations may be saved in a
         // MessagesBundle_xx_XX.properties file and the backend would require a global locale that would be used here.
-        resources = ResourceBundle.getBundle(PATH_TO_LOCALIZATION, new Locale("en", "US"));
+        resources = ResourceBundle.getBundle(PATH_TO_LOCALIZATION, new Locale(LANGUAGE_EN, REGION_US));
     }
 
     @Override
@@ -65,11 +74,11 @@ public class NewResultEvent extends EventTemplate {
         if (globalError != null) {
             // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
             // (even if global error is blank or empty)
-            return String.format(resources.getString("TITLE_FORMAT_GLOBAL_ERROR"), commitHash, repositoryName);
+            return String.format(resources.getString(TITLE_FORMAT_GLOBAL_ERROR), commitHash, repositoryName);
         }
         // I only assume there was no error if the field globalError is null.
 
-        return String.format(resources.getString("TITLE_FORMAT"), commitHash, repositoryName);
+        return String.format(resources.getString(TITLE_FORMAT), commitHash, repositoryName);
     }
 
     @Override
@@ -77,19 +86,19 @@ public class NewResultEvent extends EventTemplate {
         if (globalError != null) {
             // Following the definition in IBenchmarkingResult, I assume there was an error if globalError is not null
             // (even if global error is blank or empty)
-            return String.format(resources.getString("DESCRIPTION_FORMAT_GLOBAL_ERROR"), globalError);
+            return String.format(resources.getString(DESCRIPTION_FORMAT_GLOBAL_ERROR), globalError);
         }
         // I only assume there was no error if the field globalError is null.
 
         StringBuilder descriptionBuilder = new StringBuilder();
 
         if (comparisonCommitHash == null) {
-            descriptionBuilder.append(resources.getString("NO_COMPARISON_DESCRIPTION"));
+            descriptionBuilder.append(resources.getString(NO_COMPARISON_DESCRIPTION));
         } else {
-            String positiveOrNegative = averageImprovementPercentage < 0 ? resources.getString("NEGATIVE")
-                    : resources.getString("POSITIVE");
+            String positiveOrNegative = averageImprovementPercentage < 0 ? resources.getString(NEGATIVE)
+                    : resources.getString(POSITIVE);
 
-            descriptionBuilder.append(String.format(resources.getString("COMPARISON_DESCRIPTION"),
+            descriptionBuilder.append(String.format(resources.getString(COMPARISON_DESCRIPTION),
                     Math.abs(averageImprovementPercentage), positiveOrNegative, comparisonCommitHash));
         }
 
