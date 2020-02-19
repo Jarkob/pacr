@@ -1,23 +1,19 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
 import java.util.Map;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 
 /**
  * Represents a benchmark with multiple properties.
  */
+@NoArgsConstructor
 public class Benchmark implements IBenchmark {
 
+    @Setter
     private Map<String, BenchmarkProperty> properties;
-
-    /**
-     * Creates an empty Benchmark.
-     *
-     * Needed for Spring to work.
-     */
-    public Benchmark() {
-    }
 
     /**
      * @return the benchmark properties.
@@ -27,10 +23,4 @@ public class Benchmark implements IBenchmark {
         return properties;
     }
 
-    /**
-     * @param properties are the benchmark properties being set.
-     */
-    public void setProperties(Map<String, BenchmarkProperty> properties) {
-        this.properties = properties;
-    }
 }

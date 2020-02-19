@@ -38,7 +38,7 @@ public class SystemEnvironment implements ISystemEnvironment {
         Objects.requireNonNull(sysEnv);
 
         this.name = sysEnv.getComputerName();
-        this.os = sysEnv.getOS();
+        this.os = sysEnv.getOs();
         this.processor = sysEnv.getProcessor();
         this.kernel = sysEnv.getKernel();
         this.cores = sysEnv.getCores();
@@ -51,7 +51,7 @@ public class SystemEnvironment implements ISystemEnvironment {
     }
 
     @Override
-    public String getOS() {
+    public String getOs() {
         return this.os;
     }
 

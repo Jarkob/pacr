@@ -1,8 +1,13 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 /**
  * A benchmarking job that has a PACR-Benchmarker associated to it.
  */
+@NoArgsConstructor
+@Getter
 public class BenchmarkerJob {
 
     private String address;
@@ -43,32 +48,4 @@ public class BenchmarkerJob {
         }
     }
 
-    /**
-     * Creates an empty BenchmarkerJob.
-     *
-     * Needed for Spring to work.
-     */
-    public BenchmarkerJob() {
-    }
-
-    /**
-     * @return the address of the benchmarker that gets the job.
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @return the pull-url of the repository the commit belongs to.
-     */
-    public String getRepository() {
-        return repository;
-    }
-
-    /**
-     * @return the commit hash of the commit which gets benchmarked.
-     */
-    public String getCommitHash() {
-        return commitHash;
-    }
 }

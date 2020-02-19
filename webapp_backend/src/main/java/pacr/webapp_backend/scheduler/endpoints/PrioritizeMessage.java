@@ -1,36 +1,18 @@
 package pacr.webapp_backend.scheduler.endpoints;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 /**
  * Represents a message from the frontend to prioritize a job.
  */
+@Getter
+@NoArgsConstructor
 public class PrioritizeMessage {
 
     private String jobID;
     private String groupTitle;
-
-    /**
-     * Creates an empty PrioritizeMessage.
-     *
-     * Needed for Spring.
-     */
-    public PrioritizeMessage() {
-    }
-
-    /**
-     * @return the jobID of the job which is going to be prioritized.
-     */
-    public String getJobID() {
-        return jobID;
-    }
-
-    /**
-     * @return the group title the job belongs to.
-     */
-    public String getGroupTitle() {
-        return groupTitle;
-    }
 
     /**
      * @return whether all attributes are valid inputs.

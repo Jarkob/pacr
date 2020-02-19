@@ -1,6 +1,5 @@
 package pacr.webapp_backend.event_management.endpoints;
 
-import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;

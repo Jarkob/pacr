@@ -1,5 +1,15 @@
 package pacr.webapp_backend.result_management.services;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
+import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -11,17 +21,6 @@ import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
 import pacr.webapp_backend.shared.INewestResult;
 import pacr.webapp_backend.shared.IObserver;
 import pacr.webapp_backend.shared.IResultExporter;
-
-import javax.validation.constraints.NotNull;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Set;
 
 /**
  * Gets benchmarking results from repository, branches or single commits from the database and updates observers about

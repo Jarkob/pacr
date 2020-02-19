@@ -13,7 +13,7 @@ public interface ISystemEnvironment {
     /**
      * @return a description of the used operating system. Returns null if there was a detection error.
      */
-    String getOS();
+    String getOs();
 
     /**
      * @return the name of the processor. Returns null if there was a detection error.

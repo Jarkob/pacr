@@ -1,23 +1,31 @@
 package pacr.webapp_backend.scheduler.services;
 
-import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.springframework.util.StringUtils;
 
 /**
  * A job group is used to track the benchmarking time of a repository.
  */
 @Entity
+@Getter
+@EqualsAndHashCode
 public class JobGroup {
 
     @Id
     @GeneratedValue
+    @EqualsAndHashCode.Exclude
+    @Getter(AccessLevel.NONE)
     private int id;
 
     private String title;
+
+    @EqualsAndHashCode.Exclude
     private long timeSheet;
 
     /**
@@ -42,20 +50,6 @@ public class JobGroup {
     }
 
     /**
-     * @return the title of the group.
-     */
-    String getTitle() {
-        return title;
-    }
-
-    /**
-     * @return the current time sheet of the group in seconds.
-     */
-    long getTimeSheet() {
-        return timeSheet;
-    }
-
-    /**
      * Adds the given time to the group's time sheet.
      * @param time the time in seconds. (>= 0)
      */
@@ -72,26 +66,6 @@ public class JobGroup {
      */
     void resetTimeSheet() {
         this.timeSheet = 0;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        JobGroup jobGroup = (JobGroup) o;
-
-        return Objects.equals(title, jobGroup.title);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(title);
     }
 
 }

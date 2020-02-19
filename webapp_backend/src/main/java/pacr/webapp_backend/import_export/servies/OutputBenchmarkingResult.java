@@ -2,27 +2,25 @@ package pacr.webapp_backend.import_export.servies;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Objects;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 
 /**
  * Represents all benchmarking results for a repository to be exported or imported.
  */
+@NoArgsConstructor
 public class OutputBenchmarkingResult {
 
-    private Collection<BenchmarkingResult> benchmarkingResults;
+    @Getter
     private String repositoryPullUrl;
+
+    @Getter
     private String repositoryName;
 
-    /**
-     * Creates an empty OutputBenchmarkingResult.
-     *
-     * Needed for Spring to work.
-     */
-    public OutputBenchmarkingResult() {
-    }
+    private Collection<BenchmarkingResult> benchmarkingResults;
 
     /**
      * Creates a new OutputBenchmarkingResult.
@@ -60,17 +58,4 @@ public class OutputBenchmarkingResult {
         return benchmarkingResults;
     }
 
-    /**
-     * @return the repository pull-url the benchmarking results belong to.
-     */
-    public String getRepositoryPullUrl() {
-        return repositoryPullUrl;
-    }
-
-    /**
-     * @return the display name of the repository.
-     */
-    public String getRepositoryName() {
-        return repositoryName;
-    }
 }

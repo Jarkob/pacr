@@ -1,25 +1,21 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
 import java.util.Map;
-
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmark;
 
 /**
  * Represents a collection of benchmarks that were run for a commit.
  */
+@NoArgsConstructor
 public class BenchmarkingResult {
 
     private Map<String, Benchmark> benchmarks;
-    private String globalError;
 
-    /**
-     * Creates an empty BenchmarkingResult.
-     *
-     * Needed for Spring to work.
-     */
-    public BenchmarkingResult() {
-    }
+    @Setter
+    private String globalError;
 
     /**
      * @return a list of benchmarks that were run associated with their name.
@@ -39,11 +35,4 @@ public class BenchmarkingResult {
         return globalError;
     }
 
-    /**
-     * Sets the global error of the BenchmarkingResult.
-     * @param globalError is the global error.
-     */
-    public void setGlobalError(String globalError) {
-        this.globalError = globalError;
-    }
 }

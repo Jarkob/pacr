@@ -2,6 +2,8 @@ package pacr.webapp_backend.import_export.servies;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
@@ -10,20 +12,15 @@ import pacr.webapp_backend.shared.ISystemEnvironment;
 /**
  * Represents a collection of benchmarks that were run for a commit.
  */
+@NoArgsConstructor
 public class BenchmarkingResult implements IBenchmarkingResult {
 
+    @Getter
     private String commitHash;
+
+    private SystemEnvironment systemEnvironment;
     private Map<String, Benchmark> benchmarks;
     private String globalError;
-    private SystemEnvironment systemEnvironment;
-
-    /**
-     * Creates an empty BenchmarkingResult.
-     *
-     * Needed for Spring to work.
-     */
-    public BenchmarkingResult() {
-    }
 
     /**
      * Creates a BenchmarkingResult from an IBenchmarkingResult interface.
@@ -45,11 +42,6 @@ public class BenchmarkingResult implements IBenchmarkingResult {
     @Override
     public int getRepositoryID() {
         return -1;
-    }
-
-    @Override
-    public String getCommitHash() {
-        return commitHash;
     }
 
     @Override

@@ -1,7 +1,6 @@
 package pacr.webapp_backend.event_management.services;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
 
@@ -18,28 +21,28 @@ import pacr.webapp_backend.shared.EventCategory;
  * Represents an event with a title and a description.
  */
 @Entity
+@Getter
+@NoArgsConstructor
+@EqualsAndHashCode
 public class Event implements Comparable<Event> {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
+    @Getter(AccessLevel.NONE)
+    @EqualsAndHashCode.Exclude
     private int id;
 
     @Enumerated(EnumType.STRING)
+    @Getter(AccessLevel.NONE)
     private EventCategory category;
 
     @Column(length = 1000)
     private String title;
+
     @Column(length = 1000)
     private String description;
-    private LocalDateTime created;
 
-    /**
-     * Creates an empty Event.
-     *
-     * Needed for JPA to work.
-     */
-    public Event() {
-    }
+    private LocalDateTime created;
 
     /**
      * Creates a new Event.
@@ -65,27 +68,6 @@ public class Event implements Comparable<Event> {
         this.created = LocalDateTime.now();
     }
 
-    /**
-     * @return the title of the event.
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * @return a description of the event.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @return the date the event was created.
-     */
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
     @Override
     public int compareTo(Event event) {
         assert (created != null);
@@ -93,20 +75,4 @@ public class Event implements Comparable<Event> {
         return created.compareTo(event.created);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Event event = (Event) o;
-
-        return category == event.category
-                && Objects.equals(title, event.title)
-                && Objects.equals(description, event.description)
-                && Objects.equals(created.truncatedTo(ChronoUnit.SECONDS), event.created.truncatedTo(ChronoUnit.SECONDS));
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(category, title, description, created.truncatedTo(ChronoUnit.SECONDS));
-    }
 }

@@ -1,19 +1,16 @@
 package pacr.webapp_backend.benchmarker_communication.endpoints;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 /**
  * A message containing a ssh key that is sent over a websocket connection.
  */
+@Getter
+@NoArgsConstructor
 public class SSHKeyMessage {
 
     private String sshKey;
-
-    /**
-     * Creates an empty SSHKeyMessage.
-     *
-     * Necessary for spring to work.
-     */
-    public SSHKeyMessage() {
-    }
 
     /**
      * Creates a new SSHKeyMessage with the given key.
@@ -22,9 +19,5 @@ public class SSHKeyMessage {
      */
     public SSHKeyMessage(String sshKey) {
         this.sshKey = sshKey;
-    }
-
-    public String getSshKey() {
-        return sshKey;
     }
 }

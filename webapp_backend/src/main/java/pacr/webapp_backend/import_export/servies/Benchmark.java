@@ -2,23 +2,17 @@ package pacr.webapp_backend.import_export.servies;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.NoArgsConstructor;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 
 /**
  * Represents a benchmark with multiple properties.
  */
+@NoArgsConstructor
 public class Benchmark implements IBenchmark {
 
     private Map<String, BenchmarkProperty> benchmarkProperties;
-
-    /**
-     * Creates an empty Benchmark.
-     *
-     * Needed for Spring to work.
-     */
-    public Benchmark() {
-    }
 
     /**
      * Creates a Benchmark from an IBenchmark interface.

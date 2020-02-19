@@ -2,13 +2,18 @@ package pacr.webapp_backend.benchmarker_communication.services;
 
 import java.util.HashMap;
 import java.util.Map;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
-import pacr.webapp_backend.shared.ISystemEnvironment;
 
 /**
  * Represents the result of a BenchmarkerJob.
  */
+@NoArgsConstructor
+@Getter
 public class JobResult implements IBenchmarkingResult {
 
     private static final String BENCHMARKING_RESULT_MISSING_ERROR = "Results could not be sent to the server.";
@@ -17,29 +22,14 @@ public class JobResult implements IBenchmarkingResult {
     private String repository;
     private String commitHash;
     private SystemEnvironment systemEnvironment;
-    private BenchmarkingResult benchmarkingResult;
 
-    /**
-     * Creates an empty JobResult.
-     *
-     * Needed for Spring to work.
-     */
-    public JobResult() {
-    }
+    @Setter
+    @Getter(AccessLevel.NONE)
+    private BenchmarkingResult benchmarkingResult;
 
     @Override
     public int getRepositoryID() {
         return -1; // the repository id is unknown at this point.
-    }
-
-    @Override
-    public String getCommitHash() {
-        return commitHash;
-    }
-
-    @Override
-    public ISystemEnvironment getSystemEnvironment() {
-        return systemEnvironment;
     }
 
     @Override
@@ -58,27 +48,6 @@ public class JobResult implements IBenchmarkingResult {
         }
 
         return benchmarkingResult.getGlobalError();
-    }
-
-    /**
-     * @param benchmarkingResult is the benchmarking result.
-     */
-    public void setBenchmarkingResult(BenchmarkingResult benchmarkingResult) {
-        this.benchmarkingResult = benchmarkingResult;
-    }
-
-    /**
-     * @return the execution time needed to perform the job in seconds.
-     */
-    public long getExecutionTime() {
-        return executionTime;
-    }
-
-    /**
-     * @return is the repository pull URL of the job result.
-     */
-    public String getRepository() {
-        return repository;
     }
 
 }

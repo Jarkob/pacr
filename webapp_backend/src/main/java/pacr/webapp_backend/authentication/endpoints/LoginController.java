@@ -1,5 +1,6 @@
 package pacr.webapp_backend.authentication.endpoints;
 
+import javax.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -10,8 +11,6 @@ import pacr.webapp_backend.authentication.services.Password;
 import pacr.webapp_backend.authentication.services.PasswordChecker;
 import pacr.webapp_backend.authentication.services.Token;
 import pacr.webapp_backend.authentication.services.TokenManager;
-
-import javax.validation.constraints.NotNull;
 
 /**
  * Generates valid jwts for clients with the proper password.
