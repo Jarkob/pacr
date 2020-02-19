@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -17,6 +18,7 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
     public static final String NO_ERROR = null;
 
     private Collection<Double> results;
+    @Setter
     private ResultInterpretation resultInterpretation;
     private String unit;
     private String error;

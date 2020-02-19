@@ -129,6 +129,34 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     }
 
     @Test
+    void saveResult_withOldPropertyWithNewInterpretation_shouldUpdateDatabaseProperty() {
+        resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
+
+        SimpleBenchmarkingResult resultWithChangedProperty = new SimpleBenchmarkingResult();
+        resultWithChangedProperty.setCommitHash(COMMIT_HASH_TWO);
+
+        SimpleBenchmarkProperty property = resultWithChangedProperty.getBenchmark(BENCHMARK_NAME)
+                .getProperty(PROPERTY_NAME);
+        assertEquals(ResultInterpretation.LESS_IS_BETTER, property.getResultInterpretation());
+
+        property.setResultInterpretation(ResultInterpretation.MORE_IS_BETTER);
+
+        resultSaver.saveResult(resultWithChangedProperty, new SimpleCommit(), NO_COMPARISON_RESULT);
+
+        Benchmark benchmark = null;
+        for (Benchmark savedBenchmark : benchmarkDB.getAllBenchmarks()) {
+            if (savedBenchmark.getOriginalName().equals(BENCHMARK_NAME)) {
+                benchmark = savedBenchmark;
+                break;
+            }
+        }
+
+        assertNotNull(benchmark);
+        assertEquals(ResultInterpretation.MORE_IS_BETTER,
+                benchmark.getProperties().iterator().next().getInterpretation());
+    }
+
+    @Test
     void saveResult_benchmarkWithNoProperties_shouldSkipBenchmarkInCommitResult() {
         SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
         SimpleBenchmark benchmarkWithNoProperties = new SimpleBenchmark(new HashMap<>());

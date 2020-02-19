@@ -178,6 +178,12 @@ abstract class ResultSaver {
 
         for (BenchmarkProperty savedProperty : benchmark.getProperties()) {
             if (savedProperty.getName().equals(propertyName)) {
+                // update the saved property only if this new property does not have an error
+                // otherwise the fields such as ResultInterpretation might not be set correctly
+                if (propertyResult.getError() == null) {
+                    updateProperty(savedProperty, propertyResult);
+                }
+                
                 property = savedProperty;
                 break;
             }
@@ -185,6 +191,11 @@ abstract class ResultSaver {
         benchmark.addProperty(property);
 
         return new BenchmarkPropertyResult(propertyResult, property);
+    }
+
+    private void updateProperty(BenchmarkProperty originalProperty, IBenchmarkProperty newProperty) {
+        originalProperty.setInterpretation(newProperty.getResultInterpretation());
+        originalProperty.setUnit(newProperty.getUnit());
     }
 
     private Benchmark getBenchmark(String benchmarkName, Collection<Benchmark> savedBenchmarks) {

@@ -1,5 +1,8 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
@@ -15,12 +18,15 @@ import java.util.Objects;
  */
 @Entity(name = "BenchmarkProperty")
 @Table(name = "benchmark_property")
+@Getter
+@Setter
 public class BenchmarkProperty {
 
     @Id
     @GeneratedValue
     private int id;
 
+    @Setter(AccessLevel.NONE)
     private String name;
     private String unit;
     private ResultInterpretation interpretation;
@@ -48,47 +54,6 @@ public class BenchmarkProperty {
         this.name = name;
         this.unit = unit;
         this.interpretation = interpretation;
-    }
-
-    /**
-     * Gets the unique id of this property.
-     * @return the id.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets the id of this property. Sometimes jpa doesn't set this itself for some reason. Only use this if the given
-     * id maps to an object in the database.
-     * @param id the unique id from the database.
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Gets the name of this property.
-     * @return the name.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Gets the measured unit of this property.
-     * @return the unit.
-     */
-    public String getUnit() {
-        return unit;
-    }
-
-    /**
-     * Gets the interpretation (usually "MORE_IS_BETTER", "LESS_IS_BETTER" or "NEUTRAL") of this property.
-     * @return the interpretation.
-     */
-    public ResultInterpretation getInterpretation() {
-        return interpretation;
     }
 
     @Override
