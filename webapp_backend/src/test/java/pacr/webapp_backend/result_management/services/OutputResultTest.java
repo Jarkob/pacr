@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class OutputResultTest {
 
     private static final int REPO_ID = 1;
+    private static final int BENCHMARK_ID = 1;
     private static final String HASH_TWO = "differentHash";
     private static final String MSG = "msg";
 
@@ -22,7 +23,7 @@ public class OutputResultTest {
         CommitResult result = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID, LocalDateTime.now(), null);
         ICommit commit = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), new GitRepository());
 
-        assertThrows(IllegalArgumentException.class, () -> new DiagramOutputResult(result, commit));
+        assertThrows(IllegalArgumentException.class, () -> new DiagramOutputResult(result, commit, BENCHMARK_ID));
     }
 
     @Test

@@ -23,12 +23,13 @@ public class DiagramOutputResult {
     private String globalError;
 
     /**
-     * Creates a DiagramOutputResult from a commit result and its commit. The result and commit must belong to the same
-     * hash.
+     * Creates a DiagramOutputResult from a specific benchmark of a commit result and its commit. The result and commit
+     * must belong to the same hash.
      * @param commitResult the result. Cannot be null.
      * @param commit the commit. Cannot be null.
+     * @param benchmarkId the id of the benchmark that is supposed to be included in this DiagramOutputResult.
      */
-    DiagramOutputResult(@NotNull CommitResult commitResult, @NotNull ICommit commit) {
+    DiagramOutputResult(@NotNull CommitResult commitResult, @NotNull ICommit commit, int benchmarkId) {
         Objects.requireNonNull(commitResult);
         Objects.requireNonNull(commit);
 
@@ -42,14 +43,17 @@ public class DiagramOutputResult {
 
         this.result = new HashMap<>();
         for (BenchmarkResult benchmarkResult : commitResult.getBenchmarkResults()) {
-            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
-                ResultWithError resultAndErrorMessage;
-                if (propertyResult.isError()) {
-                    resultAndErrorMessage = new ResultWithError(null, propertyResult.getError());
-                } else {
-                    resultAndErrorMessage = new ResultWithError(propertyResult.getMedian(), null);
+            if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
+                for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+                    ResultWithError resultAndErrorMessage;
+                    if (propertyResult.isError()) {
+                        resultAndErrorMessage = new ResultWithError(null, propertyResult.getError());
+                    } else {
+                        resultAndErrorMessage = new ResultWithError(propertyResult.getMedian(), null);
+                    }
+                    result.put(propertyResult.getName(), resultAndErrorMessage);
                 }
-                result.put(propertyResult.getName(), resultAndErrorMessage);
+                break;
             }
         }
 

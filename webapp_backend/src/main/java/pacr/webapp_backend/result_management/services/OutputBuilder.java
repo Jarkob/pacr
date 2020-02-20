@@ -52,11 +52,11 @@ public class OutputBuilder {
      * @param result the result. Cannot be null.
      * @return a {@link DiagramOutputResult} copied from the commit and result.
      */
-    DiagramOutputResult buildDiagramOutput(@NotNull ICommit commit, @NotNull CommitResult result) {
+    DiagramOutputResult buildDiagramOutput(@NotNull ICommit commit, @NotNull CommitResult result, int benchmarkId) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
 
-        return new DiagramOutputResult(result, commit);
+        return new DiagramOutputResult(result, commit, benchmarkId);
     }
 
     /**

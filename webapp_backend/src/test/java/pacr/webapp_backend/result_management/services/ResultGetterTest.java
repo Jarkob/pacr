@@ -20,15 +20,18 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,7 +49,6 @@ public class ResultGetterTest {
     public static final int EXPECTED_NUM_OF_NEW_RESULTS = 2;
     public static final int PAGE_NUM = 0;
     public static final int PAGE_SIZE = 200;
-    public static final int REMOVE_NO_BENCHMARK = -1;
 
     @Mock
     private IGetCommitAccess commitAccessMock;
@@ -194,6 +196,8 @@ public class ResultGetterTest {
         allResults.add(resultMock);
         when(resultAccessMock.getResultsFromCommits(any())).thenReturn(allResults);
 
+        when(resultMock.getCommitHash()).thenReturn(HASH);
+
         BenchmarkResult benchmarkResultMock = Mockito.mock(BenchmarkResult.class);
         BenchmarkResult benchmarkResultMockTwo = Mockito.mock(BenchmarkResult.class);
 
@@ -211,12 +215,12 @@ public class ResultGetterTest {
         when(benchmarkMock.getId()).thenReturn(BENCHMARK_ID);
         when(benchmarkTwoMock.getId()).thenReturn(BENCHMARK_ID_TWO);
 
-        when(outputBuilderMock.buildDiagramOutput(any(), any())).thenReturn(diagramOutputMock);
+        when(outputBuilderMock.buildDiagramOutput(any(), any(), anyInt())).thenReturn(diagramOutputMock);
 
-        resultGetter.getBenchmarkResults(REPO_ID, BENCHMARK_ID);
+        Map<String, DiagramOutputResult> results = resultGetter.getBenchmarkResults(REPO_ID, BENCHMARK_ID);
 
-        verify(resultMock).removeBenchmarkResult(benchmarkResultMockTwo);
-        verify(resultMock, never()).removeBenchmarkResult(benchmarkResultMock);
+        assertEquals(EXPECTED_SINGLE_RESULT, results.size());
+        assertEquals(diagramOutputMock, results.get(HASH));
     }
 
     /**
@@ -281,10 +285,10 @@ public class ResultGetterTest {
 
         when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
         when(resultMock.getCommitHash()).thenReturn(HASH);
-        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock)).thenReturn(diagramOutputMock);
+        when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock, BENCHMARK_ID)).thenReturn(diagramOutputMock);
 
-        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResultsSubset(REMOVE_NO_BENCHMARK,
-                REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE);
+        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID,
+                BRANCH_NAME, PAGE_NUM, PAGE_SIZE);
 
         assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
         assertEquals(diagramOutputMock, outputs.get(HASH));

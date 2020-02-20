@@ -29,8 +29,6 @@ import pacr.webapp_backend.shared.IResultExporter;
 @Component
 public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, IResultExporter {
 
-    private static final int KEEP_ALL_BENCHMARK_DATA = -1;
-
     private IGetCommitAccess commitAccess;
     private IResultAccess resultAccess;
     private OutputBuilder outputBuilder;
@@ -101,7 +99,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * Gets all benchmarking results for a repository with measurements for a specific benchmark.
      * @param repositoryId the id of the repository.
      * @param benchmarkId the id of the benchmark.
-     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
+     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted)
      */
     public HashMap<String, DiagramOutputResult> getBenchmarkResults(int repositoryId, int benchmarkId) {
@@ -116,7 +114,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param branch the name of the branch. Cannot be null.
      * @param page the number of the requested page.
      * @param size the size of the page.
-     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is not being
+     * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted).
      */
     public HashMap<String, DiagramOutputResult> getBenchmarkResultsSubset(int benchmarkId, int repositoryId,
@@ -213,13 +211,13 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     private HashMap<String, DiagramOutputResult> commitsToDiagramResults(Collection<? extends ICommit> commits,
-                                                              int benchmarkIdToKeep) {
+                                                              int benchmarkId) {
         Collection<String> hashes = new LinkedList<>();
         for (ICommit commit : commits) {
             hashes.add(commit.getCommitHash());
         }
 
-        Map<String, CommitResult> results = getResultsAndRemoveOtherBenchmarks(hashes, benchmarkIdToKeep);
+        Map<String, CommitResult> results = getResultsMap(hashes);
 
         HashMap<String, DiagramOutputResult> outputResults = new HashMap<>();
 
@@ -229,7 +227,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
             DiagramOutputResult outputResult = null;
 
             if (resultForCommit != null) {
-                outputResult = outputBuilder.buildDiagramOutput(commit, resultForCommit);
+                outputResult = outputBuilder.buildDiagramOutput(commit, resultForCommit, benchmarkId);
             } else {
                 outputResult = outputBuilder.buildDiagramOutput(commit);
             }
@@ -240,31 +238,13 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         return outputResults;
     }
 
-    private Map<String, CommitResult> getResultsAndRemoveOtherBenchmarks(Collection<String> commitHashes,
-                                                                        int benchmarkIdToKeep) {
+    private Map<String, CommitResult> getResultsMap(Collection<String> commitHashes) {
         // if any of the hashes in commitHashes have no saved results, they will be omitted in the output
         Collection<CommitResult> results = resultAccess.getResultsFromCommits(commitHashes);
         Map<String, CommitResult> resultsMap = new HashMap<>();
 
         for (CommitResult result : results) {
             resultsMap.put(result.getCommitHash(), result);
-
-            if (benchmarkIdToKeep != KEEP_ALL_BENCHMARK_DATA) {
-                // remove unwanted benchmarks if benchmarkIdToKeep is not KEEP_ALL_BENCHMARK_DATA
-                List<BenchmarkResult> benchmarksToRemove = new LinkedList<>();
-
-                for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
-                    if (benchmarkResult.getBenchmark().getId() != benchmarkIdToKeep) {
-                        benchmarksToRemove.add(benchmarkResult);
-                    }
-                }
-
-                for (BenchmarkResult benchmarkToRemove : benchmarksToRemove) {
-                    // don't worry
-                    // this does not alter the result in the database
-                    result.removeBenchmarkResult(benchmarkToRemove);
-                }
-            }
         }
 
         return resultsMap;

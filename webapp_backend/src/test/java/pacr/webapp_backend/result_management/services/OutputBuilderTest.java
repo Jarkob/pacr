@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.shared.ICommit;
@@ -17,22 +18,22 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 public class OutputBuilderTest {
 
     public static final String HASH_TWO = "hash2";
     public static final String MSG = "msg";
-    public static final String REPO_NAME = "repo";
-    public static final String BRANCH_NAME = "branch";
-    public static final String URL = "url";
     public static final int REPO_ID = 1;
+    public static final int BENCHMARK_ID_ONE = 1;
+    public static final int BENCHMARK_ID_TWO = 2;
     public static final LocalDateTime NOW = LocalDateTime.now();
     public static final String BENCHMARK_NAME_TWO = "benchmark2";
     public static final String GROUP_NAME = "group";
     public static final int NO_GROUP_ID = -1;
     public static final int GROUP_ID = 0;
     public static final int EXPECTED_NUM_OF_BENCHMARKS = 2;
-    public static final int EXPECTED_NUM_OF_PROPERTIES = 2;
+    public static final int EXPECTED_NUM_OF_PROPERTIES = 1;
     public static final int FIRST = 0;
     public static final int SECOND = 1;
     public static final String COMPARISON_HASH = "adlifi";
@@ -55,8 +56,15 @@ public class OutputBuilderTest {
 
     @BeforeEach
     public void setUp() {
-        benchmark = new Benchmark(SimpleBenchmarkingResult.BENCHMARK_NAME);
-        benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
+        //benchmark = new Benchmark(SimpleBenchmarkingResult.BENCHMARK_NAME);
+        //benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
+
+        benchmark = Mockito.mock(Benchmark.class);
+        benchmarkTwo = Mockito.mock(Benchmark.class);
+        when(benchmark.getOriginalName()).thenReturn(SimpleBenchmarkingResult.BENCHMARK_NAME);
+        when(benchmarkTwo.getOriginalName()).thenReturn(BENCHMARK_NAME_TWO);
+        when(benchmark.getId()).thenReturn(BENCHMARK_ID_ONE);
+        when(benchmarkTwo.getId()).thenReturn(BENCHMARK_ID_TWO);
 
         property = new BenchmarkProperty(SimpleBenchmark.PROPERTY_NAME, SimpleBenchmarkProperty.UNIT,
                 ResultInterpretation.LESS_IS_BETTER);
@@ -100,32 +108,6 @@ public class OutputBuilderTest {
         assertEquals(NO_GROUP_ID, outputResult.getBenchmarksList().get(SECOND).getGroupId());
     }
 
-    /**
-     * Tests whether buildOutput properly builds two groups for one benchmark with and one without a group.
-     */
-    @Test
-    void buildDetailOutput_twoBenchmarksWithAndWithoutGroup_shouldBuildTwoOutputGroups() {
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
-        benchmarkTwo.setGroup(group);
-
-        OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commitOne, resultOne);
-
-        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, outputResult.getBenchmarksList().size());
-
-        boolean foundNoGroup = false;
-        boolean foundGroup = false;
-
-        for (OutputBenchmark outputBenchmark : outputResult.getBenchmarksList()) {
-            if (outputBenchmark.getGroupId() == NO_GROUP_ID) {
-                foundNoGroup = true;
-            } else if (outputBenchmark.getGroupId() == GROUP_ID) {
-                foundGroup = true;
-            }
-        }
-
-        assertTrue(foundGroup && foundNoGroup);
-    }
-
     @Test
     void buildDetailOutput_differentHashes_shouldThrowException() {
         assertThrows(IllegalArgumentException.class,
@@ -143,15 +125,12 @@ public class OutputBuilderTest {
 
     @Test
     void buildDiagramOutput_shouldCopyData() {
-        DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne, resultOne);
+        DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne, resultOne, benchmark.getId());
 
         assertEquals(EXPECTED_NUM_OF_PROPERTIES , output.getResult().size());
 
         assertEquals(SimpleBenchmarkProperty.MEASUREMENT, output.getResult().get(SimpleBenchmark.PROPERTY_NAME).getResult());
         assertNull(output.getResult().get(SimpleBenchmark.PROPERTY_NAME).getErrorMessage());
-
-        assertEquals(ERROR, output.getResult().get(PROPERTY_NAME_TWO).getErrorMessage());
-        assertNull(output.getResult().get(PROPERTY_NAME_TWO).getResult());
     }
 
     @Test
