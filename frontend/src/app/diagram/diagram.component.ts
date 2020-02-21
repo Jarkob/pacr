@@ -147,7 +147,7 @@ export class DiagramComponent implements OnInit {
             return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
           }
           const label = Math.round(item.yLabel * 100) / 100;
-          console.log(this.selectedBenchmarkProperty);
+
           return label + ' ' + this.selectedBenchmarkProperty.unit;
         }
       }
@@ -282,22 +282,25 @@ export class DiagramComponent implements OnInit {
     notYetImage.src = 'assets/run.svg';
     Chart.pluginService.register({
       afterUpdate: (chart) => {
-        // tslint:disable-next-line:prefer-for-of
-        for (let i = 0; i < chart.config.data.datasets.length; i++) {
-          const dataset: any = chart.config.data.datasets[i];
-          // key of dataset._meta has a random name
-          for (let j = 0; j < dataset._meta[Object.keys(dataset._meta)[0]].data.length; j++) {
-            const element = dataset._meta[Object.keys(dataset._meta)[0]].data[j];
-            if (!dataset.code[j].result) {
-              element._model.pointStyle = notYetImage;
-            } else if (dataset.code[j].globalError) {
-              element._model.pointStyle = globalErrorImage;
-            } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
-              element._model.pointStyle = errorImage;
+        // this method is called globally so make sure it only updates for this chart
+        if (this.chart.chart === chart) {
+          // tslint:disable-next-line:prefer-for-of
+          for (let i = 0; i < chart.config.data.datasets.length; i++) {
+            const dataset: any = chart.config.data.datasets[i];
+            // key of dataset._meta has a random name
+            for (let j = 0; j < dataset._meta[Object.keys(dataset._meta)[0]].data.length; j++) {
+              const element = dataset._meta[Object.keys(dataset._meta)[0]].data[j];
+              if (!dataset.code[j].result) {
+                element._model.pointStyle = notYetImage;
+              } else if (dataset.code[j].globalError) {
+                element._model.pointStyle = globalErrorImage;
+              } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
+                element._model.pointStyle = errorImage;
+              }
             }
           }
+          this.legendData = chart.generateLegend();
         }
-        this.legendData = chart.generateLegend();
       }
     });
     this.chart.update();

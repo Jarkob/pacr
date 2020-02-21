@@ -71,7 +71,7 @@
 
         {{ benchmarkingResult?.commitEntryDate | date }}
     </mat-expansion-panel>
-    <mat-expansion-panel *ngIf="benchmarkingResult.hasGlobalError" hideToggle>
+    <mat-expansion-panel *ngIf="benchmarkingResult?.globalError" hideToggle>
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ strings?.globalError }}

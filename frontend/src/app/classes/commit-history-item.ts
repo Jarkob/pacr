@@ -5,7 +5,6 @@ export interface CommitHistoryItem {
     authorDate: Date;
     entryDate: Date;
     commitMessage: string;
-    compared: boolean;
     significant: boolean;
     globalError: boolean;
     globalErrorMessage: string;

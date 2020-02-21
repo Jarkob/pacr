@@ -14,7 +14,7 @@
             </div>
             <div *ngIf="selected" class="labelContainer">
                 <mat-chip-list>
-                    <mat-chip *ngIf="benchmarkingResult.hasGlobalError" selected selectable="false" class="label idle"
+                    <mat-chip *ngIf="benchmarkingResult.globalError" selected selectable="false" color="warn" class="label"
                         matTooltip="{{ strings.globalErrorLabelTooltip }}">
                         {{ strings.globalErrorLabel }}
                     </mat-chip>

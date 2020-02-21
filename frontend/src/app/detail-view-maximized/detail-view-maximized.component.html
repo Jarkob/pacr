@@ -12,7 +12,7 @@
             </span>
             <div class="labelContainer">
                 <mat-chip-list>
-                    <mat-chip *ngIf="benchmarkingResult?.hasGlobalError" selected selectable="false" color="warn" class="label"
+                    <mat-chip *ngIf="benchmarkingResult?.globalError" selected selectable="false" color="warn" class="label"
                         matTooltip="{{ strings?.globalErrorLabelTooltip }}">
                         {{ strings?.globalErrorLabel }}
                     </mat-chip>
@@ -51,9 +51,12 @@
 
                 <app-system-environment-display [systemEnvironment]="benchmarkingResult?.systemEnvironment"></app-system-environment-display>
             </mat-tab>
-            <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.hasGlobalError">
-                <app-benchmarking-result-table [commitHash]="benchmarkingResult.commitHash" #resultTable></app-benchmarking-result-table>
+            <mat-tab label="{{ strings?.tabCommitResults }}" [disabled]="benchmarkingResult?.globalError">
+                <app-benchmarking-result-table *ngIf="benchmarkingResult" [commitHash]="benchmarkingResult.commitHash" #resultTable></app-benchmarking-result-table>
             </mat-tab>
+        <mat-tab label="Data Details">
+            <app-property-boxplot fxFill></app-property-boxplot>
+        </mat-tab>
         </mat-tab-group>
     </mat-card-content>
     
