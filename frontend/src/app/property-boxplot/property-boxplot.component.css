@@ -1,0 +1,14 @@
+.chart-wrapper {    
+    min-height: 480px;
+}
+
+.container {
+    margin-top: 10px;
+    margin-left: 15px;
+    margin-right: 15px;
+    width: 100%;
+}
+
+.rowItem {
+    margin-left: 15px;
+}

@@ -63,7 +63,7 @@ export class DiagramComponent implements OnInit {
   @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
   options = {
     maintainAspectRatio: false,
-    lineTension: 0.3,
+    lineTension: 0,
     scales: {
       xAxes: [{
           type: 'time',

@@ -1,0 +1,27 @@
+<div fxLayout="column" fxLayoutAlign="center center">
+    <div fxLayout="row" class="container" fxLayoutAlign="start center">
+        <mat-form-field>
+            <mat-label>Benchmark</mat-label>
+            <mat-select [(value)]="selectedBenchmark" (selectionChange)="selectBenchmark(selectedBenchmark)">
+                <mat-optgroup *ngFor="let group of this.benchmarks | keyvalue" [label]="group.key">
+                    <mat-option *ngFor="let benchmark of group.value" [value]="benchmark">
+                        {{ benchmark.customName }}
+                    </mat-option>
+                </mat-optgroup>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="rowItem">
+            <mat-label>Property</mat-label>
+            <mat-select [(value)]="selectedBenchmarkProperty" (selectionChange)="selectProperty(selectedBenchmarkProperty)">
+                <mat-option *ngFor="let property of this.selectedBenchmark?.properties" [value]="property">
+                    {{ property.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <p class="rowItem" *ngIf="!hasMeasurements">No measurements avialable for this property.</p>
+    </div>
+
+    <div class="chart-wrapper container">
+        <canvas></canvas>
+    </div>    
+</div>

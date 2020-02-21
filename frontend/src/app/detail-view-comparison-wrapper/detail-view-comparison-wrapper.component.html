@@ -1,5 +1,5 @@
 <mat-card [style.overflow]="'auto'">
-    <button mat-mini-fab class="maximize-button" *ngIf="tabGroup.selectedIndex == 0" 
+    <button mat-mini-fab class="maximize-button" *ngIf="tabGroup.selectedIndex == 0" [disabled]="!commitHash"
         (click)="this.maximizeDetailView()">
         <mat-icon>fullscreen</mat-icon>
     </button>

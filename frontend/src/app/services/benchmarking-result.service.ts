@@ -65,4 +65,14 @@ export class BenchmarkingResultService {
     return this.http.get<any>(this.globalService.url + '/results/pageable/repository/' + repositoryId + '?page=' + page + '&size=' + size);
   }
 
+  /**
+   * get all measurements of a benchmark property that were measured for a commit.
+   * @param commitHash the commit hash
+   * @param benchmarkId the id of the benchmark
+   * @param propertyName the name of the benchmark property
+   */
+  public getBenchmarkPropertyMeasurements(commitHash: string, benchmarkId: number, propertyName: string): Observable<any> {
+    return this.http.get<any>(this.globalService.url + '/results/commit/' + commitHash + '/' + benchmarkId + '/' + propertyName);
+  }
+
 }

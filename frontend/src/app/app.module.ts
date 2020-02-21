@@ -1,3 +1,4 @@
+import { PropertyBoxplotComponent } from './property-boxplot/property-boxplot.component';
 import { AdminImportExportComponent } from './admin-import-export/admin-import-export.component';
 import { DetailViewComparisonWrapperComponent } from './detail-view-comparison-wrapper/detail-view-comparison-wrapper.component';
 import { TimeAgoPipe } from 'time-ago-pipe';
@@ -91,7 +92,8 @@ import { DateAdapter } from '@angular/material';
     EnumPipe,
     CommitHistoryJobQueueWrapperComponent,
     DetailViewComparisonWrapperComponent,
-    AdminImportExportComponent
+    AdminImportExportComponent,
+    PropertyBoxplotComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
