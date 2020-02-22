@@ -164,17 +164,11 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
     }
 
     @Override
-    public BenchmarkerJob getCurrentBenchmarkerJob(String address) {
+    public IJob getCurrentBenchmarkerJob(String address) {
         if (!StringUtils.hasText(address)) {
             throw new IllegalArgumentException("The address cannot be null or empty.");
         }
 
-        IJob job = currentJobs.get(address);
-
-        if (job != null) {
-            return new BenchmarkerJob(address, job.getJobGroupTitle(), job.getJobID());
-        }
-
-        return null;
+        return currentJobs.get(address);
     }
 }

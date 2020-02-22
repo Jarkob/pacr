@@ -1,5 +1,7 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
+import pacr.webapp_backend.shared.IJob;
+
 /**
  * Manages all jobs that are currently dispatched to PACR-Benchmarkers.
  */
@@ -11,6 +13,6 @@ public interface IJobRegistry {
      * @param address the address of the benchmarker.
      * @return the current job of the benchmarker or null if no job is assigned.
      */
-    BenchmarkerJob getCurrentBenchmarkerJob(String address);
+    IJob getCurrentBenchmarkerJob(String address);
 
 }

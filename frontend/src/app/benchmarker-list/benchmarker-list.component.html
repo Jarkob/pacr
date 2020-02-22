@@ -4,23 +4,23 @@
     </mat-card-title>
     <mat-card-content>
         <mat-accordion class="valgin-center">
-            <mat-expansion-panel *ngFor="let benchmarker of benchmarkers">
+            <mat-expansion-panel *ngFor="let benchmarker of benchmarkers; trackBy: trackBenchmarker">
                 <mat-expansion-panel-header>
-                    <mat-panel-title> {{ benchmarker.computerName }} </mat-panel-title>
-                    <mat-panel-description> {{ benchmarker.os }} </mat-panel-description>
+                    <mat-panel-title> {{ benchmarker.systemEnvironment.computerName }} </mat-panel-title>
+                    <mat-panel-description> {{ benchmarker.systemEnvironment.os }} </mat-panel-description>
                 </mat-expansion-panel-header>
 
-                <p class="mat-h3"> {{ strings?.computerName }} {{ benchmarker.computerName }} </p>
+                <p class="mat-h3"> {{ strings?.computerName }} {{ benchmarker.systemEnvironment.computerName }} </p>
 
-                <p class="mat-h3"> {{ strings?.os }} {{ benchmarker.os }} </p>
+                <p class="mat-h3"> {{ strings?.os }} {{ benchmarker.systemEnvironment.os }} </p>
 
-                <p class="mat-h3"> {{ strings?.processor }} {{ benchmarker.processor }} </p>
+                <p class="mat-h3"> {{ strings?.processor }} {{ benchmarker.systemEnvironment.processor }} </p>
 
-                <p class="mat-h3"> {{ strings?.kernel }} {{ benchmarker.kernel }} </p>
+                <p class="mat-h3"> {{ strings?.kernel }} {{ benchmarker.systemEnvironment.kernel }} </p>
                
-                <p class="mat-h3"> {{ strings?.cores }} {{ benchmarker.cores }} </p>
+                <p class="mat-h3"> {{ strings?.cores }} {{ benchmarker.systemEnvironment.cores }} </p>
 
-                <p class="mat-h3"> {{ strings?.ram }} {{ benchmarker.ramMemory }} {{ strings?.ramUnit }} </p>
+                <p class="mat-h3"> {{ strings?.ram }} {{ benchmarker.systemEnvironment.ramMemory }} {{ strings?.ramUnit }} </p>
 
             </mat-expansion-panel>
         </mat-accordion>

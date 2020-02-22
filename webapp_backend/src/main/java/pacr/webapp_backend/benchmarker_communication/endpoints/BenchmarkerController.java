@@ -17,6 +17,7 @@ import pacr.webapp_backend.benchmarker_communication.services.IBenchmarkerConfig
 import pacr.webapp_backend.benchmarker_communication.services.IBenchmarkerHandler;
 import pacr.webapp_backend.benchmarker_communication.services.IJobRegistry;
 import pacr.webapp_backend.benchmarker_communication.services.SystemEnvironment;
+import pacr.webapp_backend.shared.IJob;
 
 /**
  * Handles the registration and configuration of PACR-Benchmarkers.
@@ -102,9 +103,9 @@ public class BenchmarkerController
 
         for (String address : allBenchmarkerAddresses) {
             SystemEnvironment systemEnvironment = benchmarkerHandler.getBenchmarkerSystemEnvironment(address);
-            BenchmarkerJob currentJob = jobRegistry.getCurrentBenchmarkerJob(address);
+            IJob currentJob = jobRegistry.getCurrentBenchmarkerJob(address);
 
-            allBenchmarkers.add(new Benchmarker(systemEnvironment, currentJob));
+            allBenchmarkers.add(new Benchmarker(address, systemEnvironment, currentJob));
         }
 
         return allBenchmarkers;

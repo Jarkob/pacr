@@ -335,15 +335,14 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
         jobHandler.executeJob();
 
-        BenchmarkerJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
-        assertEquals(JOB_GROUP, currentJob.getRepository());
-        assertEquals(JOB_ID, currentJob.getCommitHash());
-        assertEquals(ADDRESS, currentJob.getAddress());
+        IJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
+        assertEquals(JOB_GROUP, currentJob.getJobGroupTitle());
+        assertEquals(JOB_ID, currentJob.getJobID());
     }
 
     @Test
     void getCurrentBenchmarkerJob_noJobDispatched() {
-        BenchmarkerJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
+        IJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
 
         assertNull(currentJob);
     }

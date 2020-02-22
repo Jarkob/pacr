@@ -17,6 +17,7 @@ import pacr.webapp_backend.benchmarker_communication.services.BenchmarkerJob;
 import pacr.webapp_backend.benchmarker_communication.services.IBenchmarkerHandler;
 import pacr.webapp_backend.benchmarker_communication.services.IJobRegistry;
 import pacr.webapp_backend.benchmarker_communication.services.SystemEnvironment;
+import pacr.webapp_backend.shared.IJob;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -50,7 +51,7 @@ public class BenchmarkerControllerTest {
     private SystemEnvironment systemEnvironment;
 
     @Mock
-    private BenchmarkerJob benchmarkerJob;
+    private IJob benchmarkerJob;
 
     @BeforeEach
     void setUp() {
@@ -242,5 +243,6 @@ public class BenchmarkerControllerTest {
 
         assertEquals(systemEnvironment, benchmarker.getSystemEnvironment());
         assertEquals(benchmarkerJob, benchmarker.getCurrentJob());
+        assertEquals(ADDRESS, benchmarker.getAddress());
     }
 }

@@ -1,4 +1,4 @@
-import { SystemEnvironment } from './../classes/system-environment';
+import { Benchmarker } from './../classes/benchmarker';
 import { Observable } from 'rxjs';
 import { GlobalService } from './global.service';
 import { HttpHeaders, HttpClient } from '@angular/common/http';
@@ -21,8 +21,8 @@ constructor(
     /**
      * get all online benchmarkers
      */
-    public getOnlineBenchmarkers(): Observable<SystemEnvironment[]> {
-        return this.http.get<SystemEnvironment[]>(this.globalService.url + '/benchmarkers');
+    public getOnlineBenchmarkers(): Observable<Benchmarker[]> {
+        return this.http.get<Benchmarker[]>(this.globalService.url + '/benchmarkers');
     }
 
 }

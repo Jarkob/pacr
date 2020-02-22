@@ -1,5 +1,5 @@
+import { Benchmarker } from './../classes/benchmarker';
 import { Subscription, interval } from 'rxjs';
-import { SystemEnvironment } from './../classes/system-environment';
 import { BenchmarkerCommunicationService } from './../services/benchmarker-communication.service';
 import { StringService } from './../services/strings.service';
 import { Component, OnInit } from '@angular/core';
@@ -20,10 +20,10 @@ export class BenchmarkerListComponent implements OnInit {
   ) { }
 
   strings: any;
-  benchmarkers: SystemEnvironment[];
+  benchmarkers: Benchmarker[];
 
   benchmarkerSubscription: Subscription;
-  benchmarkerUpdateInterval = 300;
+  benchmarkerUpdateInterval = 10;
 
   ngOnInit() {
     this.stringService.getBenchmarkerListStrings().subscribe(
@@ -48,6 +48,17 @@ export class BenchmarkerListComponent implements OnInit {
         );
       }
     );
+  }
+
+  /**
+   * Assign each displayed benchmarker a unique identifier so it doesn't need to
+   * be rendered again if it doesn't change.
+   *
+   * @param index index of the item in the list.
+   * @param item the benchmarker.
+   */
+  public trackBenchmarker(index: number, item: Benchmarker): string {
+    return item.address;
   }
 
 }
