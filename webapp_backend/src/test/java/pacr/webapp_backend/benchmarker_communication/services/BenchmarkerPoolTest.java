@@ -1,6 +1,5 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,11 +44,12 @@ public class BenchmarkerPoolTest {
 
         boolean result = benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
-        Collection<SystemEnvironment> systemEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
+        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
 
         assertFalse(result);
-        assertEquals(1, systemEnvironments.size());
-        assertTrue(systemEnvironments.contains(environment));
+
+        assertEquals(1, addresses.size());
+        assertTrue(addresses.contains(ADDRESS));
     }
 
     @Test
@@ -78,13 +78,30 @@ public class BenchmarkerPoolTest {
     }
 
     @Test
-    void unregisterBenchmarker_noError() {
+    void unregisterBenchmarker_freeBenchmarker() {
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
         boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
 
         assertTrue(result);
         assertFalse(benchmarkerPool.hasFreeBenchmarkers());
+
+        Collection<String> allBenchmarkers = benchmarkerPool.getAllBenchmarkerAddresses();
+        assertEquals(0, allBenchmarkers.size());
+    }
+
+    @Test
+    void unregisterBenchmarker_occupiedBenchmarker() {
+        benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
+        benchmarkerPool.occupyBenchmarker(ADDRESS);
+
+        boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
+
+        assertTrue(result);
+        assertFalse(benchmarkerPool.hasFreeBenchmarkers());
+
+        Collection<String> allBenchmarkers = benchmarkerPool.getAllBenchmarkerAddresses();
+        assertEquals(0, allBenchmarkers.size());
     }
 
     @Test
@@ -203,8 +220,8 @@ public class BenchmarkerPoolTest {
 
         assertFalse(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<SystemEnvironment> systemEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-        assertEquals(0, systemEnvironments.size());
+        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        assertEquals(0, addresses.size());
     }
 
     @Test
@@ -215,8 +232,8 @@ public class BenchmarkerPoolTest {
 
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<SystemEnvironment> systemEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-        assertEquals(1, systemEnvironments.size());
+        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        assertEquals(1, addresses.size());
     }
 
     @Test
@@ -227,8 +244,8 @@ public class BenchmarkerPoolTest {
 
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<SystemEnvironment> systemEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-        assertEquals(1, systemEnvironments.size());
+        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        assertEquals(1, addresses.size());
     }
 
     @Test
@@ -264,8 +281,8 @@ public class BenchmarkerPoolTest {
 
         assertFalse(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<SystemEnvironment> systemEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-        assertEquals(0, systemEnvironments.size());
+        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        assertEquals(0, addresses.size());
     }
 
     @Test
@@ -276,8 +293,8 @@ public class BenchmarkerPoolTest {
 
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<SystemEnvironment> systemEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-        assertEquals(1, systemEnvironments.size());
+        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        assertEquals(1, addresses.size());
     }
 
     @Test
@@ -299,83 +316,35 @@ public class BenchmarkerPoolTest {
     }
 
     @Test
-    void getBenchmarkerSystemEnvironments_onlyFree() {
-        ArrayList<SystemEnvironment> environments = new ArrayList<>();
+    void getBenchmarkerSystemEnvironment_noError() {
+        SystemEnvironment expectedSystemEnvironment = new SystemEnvironment();
 
-        int amtEnvironments = 5;
-        for (int i = 0; i < amtEnvironments; i++) {
-            environments.add(new SystemEnvironment());
-        }
+        benchmarkerPool.registerBenchmarker(ADDRESS, expectedSystemEnvironment);
 
-        for (int i = 0; i < amtEnvironments; i++) {
-            benchmarkerPool.registerBenchmarker(ADDRESS + i, environments.get(i));
-        }
+        SystemEnvironment systemEnvironment = benchmarkerPool.getBenchmarkerSystemEnvironment(ADDRESS);
 
-        Collection<SystemEnvironment> benchmarkerEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-
-        assertEquals(amtEnvironments, benchmarkerEnvironments.size());
-
-        for (SystemEnvironment environment : benchmarkerEnvironments) {
-            assertTrue(environments.contains(environment));
-            environments.remove(environment);
-        }
+        assertEquals(expectedSystemEnvironment, systemEnvironment);
     }
 
     @Test
-    void getBenchmarkerSystemEnvironments_onlyOccupied() {
-        ArrayList<SystemEnvironment> environments = new ArrayList<>();
+    void getBenchmarkerSystemEnvironment_unknownAddress() {
+        SystemEnvironment systemEnvironment = benchmarkerPool.getBenchmarkerSystemEnvironment(ADDRESS);
 
-        int amtEnvironments = 5;
-        for (int i = 0; i < amtEnvironments; i++) {
-            environments.add(new SystemEnvironment());
-        }
-
-        for (int i = 0; i < amtEnvironments; i++) {
-            benchmarkerPool.registerBenchmarker(ADDRESS + i, environments.get(i));
-            benchmarkerPool.occupyBenchmarker(ADDRESS + i);
-        }
-
-        Collection<SystemEnvironment> benchmarkerEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-
-        assertEquals(amtEnvironments, benchmarkerEnvironments.size());
-
-        for (SystemEnvironment environment : benchmarkerEnvironments) {
-            assertTrue(environments.contains(environment));
-            environments.remove(environment);
-        }
+        assertNull(systemEnvironment);
     }
 
     @Test
-    void getBenchmarkerSystemEnvironments_freeAndOccupied() {
-        ArrayList<SystemEnvironment> environments = new ArrayList<>();
+    void getBenchmarkerSystemEnvironment_invalidAddress() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            benchmarkerPool.getBenchmarkerSystemEnvironment("");
+        });
 
-        int amtEnvironmentsFree = 5;
-        for (int i = 0; i < amtEnvironmentsFree; i++) {
-            environments.add(new SystemEnvironment());
-        }
+        assertThrows(IllegalArgumentException.class, () -> {
+            benchmarkerPool.getBenchmarkerSystemEnvironment(" ");
+        });
 
-        int amtEnvironmentsOccupied = 5;
-        for (int i = 0; i < amtEnvironmentsOccupied; i++) {
-            environments.add(new SystemEnvironment());
-        }
-
-        for (int i = 0; i < amtEnvironmentsFree; i++) {
-            benchmarkerPool.registerBenchmarker(ADDRESS + i, environments.get(i));
-        }
-
-        for (int i = 0; i < amtEnvironmentsOccupied; i++) {
-            int addressSuffix = amtEnvironmentsFree + i;
-            benchmarkerPool.registerBenchmarker(ADDRESS + addressSuffix, environments.get(addressSuffix));
-            benchmarkerPool.occupyBenchmarker(ADDRESS + addressSuffix);
-        }
-
-        Collection<SystemEnvironment> benchmarkerEnvironments = benchmarkerPool.getBenchmarkerSystemEnvironment();
-
-        assertEquals(amtEnvironmentsFree + amtEnvironmentsOccupied, benchmarkerEnvironments.size());
-
-        for (SystemEnvironment environment : benchmarkerEnvironments) {
-            assertTrue(environments.contains(environment));
-            environments.remove(environment);
-        }
+        assertThrows(IllegalArgumentException.class, () -> {
+            benchmarkerPool.getBenchmarkerSystemEnvironment(null);
+        });
     }
 }

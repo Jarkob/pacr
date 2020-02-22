@@ -1,15 +1,21 @@
 package pacr.webapp_backend.benchmarker_communication.endpoints;
 
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.web.socket.messaging.SessionDisconnectEvent;
+import pacr.webapp_backend.benchmarker_communication.services.Benchmark;
+import pacr.webapp_backend.benchmarker_communication.services.BenchmarkerJob;
 import pacr.webapp_backend.benchmarker_communication.services.IBenchmarkerHandler;
+import pacr.webapp_backend.benchmarker_communication.services.IJobRegistry;
 import pacr.webapp_backend.benchmarker_communication.services.SystemEnvironment;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,6 +38,9 @@ public class BenchmarkerControllerTest {
     private IBenchmarkerHandler benchmarkerHandler;
 
     @Mock
+    private IJobRegistry jobRegistry;
+
+    @Mock
     private SimpMessagingTemplate template;
 
     @Mock
@@ -39,6 +48,9 @@ public class BenchmarkerControllerTest {
 
     @Mock
     private SystemEnvironment systemEnvironment;
+
+    @Mock
+    private BenchmarkerJob benchmarkerJob;
 
     @BeforeEach
     void setUp() {
@@ -48,8 +60,11 @@ public class BenchmarkerControllerTest {
 
         when(benchmarkerHandler.registerBenchmarker(any(), any())).thenReturn(true);
         when(benchmarkerHandler.unregisterBenchmarker(any())).thenReturn(true);
+        when(benchmarkerHandler.getBenchmarkerSystemEnvironment(ADDRESS)).thenReturn(systemEnvironment);
 
-        benchmarkerController = new BenchmarkerController(benchmarkerHandler, template);
+        when(jobRegistry.getCurrentBenchmarkerJob(ADDRESS)).thenReturn(benchmarkerJob);
+
+        benchmarkerController = new BenchmarkerController(benchmarkerHandler, jobRegistry, template);
     }
 
     @Test
@@ -173,27 +188,6 @@ public class BenchmarkerControllerTest {
     }
 
     @Test
-    void getBenchmarkerSystemEnvironments_noError() {
-        Collection<SystemEnvironment> expectedEnvironmentsCollection = mock(Collection.class);
-        when(benchmarkerHandler.getBenchmarkerSystemEnvironment()).thenReturn(expectedEnvironmentsCollection);
-
-        Collection<SystemEnvironment> environments = benchmarkerController.getBenchmarkerSystemEnvironments();
-
-        verify(benchmarkerHandler).getBenchmarkerSystemEnvironment();
-        assertEquals(expectedEnvironmentsCollection, environments);
-    }
-
-    @Test
-    void getBenchmarkerSystemEnvironments_nullEnvironments() {
-        when(benchmarkerHandler.getBenchmarkerSystemEnvironment()).thenReturn(null);
-
-        Collection<SystemEnvironment> environments = benchmarkerController.getBenchmarkerSystemEnvironments();
-
-        verify(benchmarkerHandler).getBenchmarkerSystemEnvironment();
-        assertNotNull(environments);
-    }
-
-    @Test
     void sendSSHKey_noError() {
         final String sshKey = "sshKey";
         final String expectedPath = "/topic/sshKey";
@@ -234,4 +228,19 @@ public class BenchmarkerControllerTest {
         verify(template, never()).convertAndSend(any(Object.class), any());
     }
 
+    @Test
+    void getBenchmarkers_noError() {
+        when(benchmarkerHandler.getAllBenchmarkerAddresses()).thenReturn(List.of(ADDRESS));
+
+        Collection<Benchmarker> benchmarkers = benchmarkerController.getBenchmarkers();
+
+        assertNotNull(benchmarkers);
+        assertEquals(1, benchmarkers.size());
+
+        Benchmarker benchmarker = benchmarkers.stream().findFirst().orElse(null);
+        assertNotNull(benchmarker);
+
+        assertEquals(systemEnvironment, benchmarker.getSystemEnvironment());
+        assertEquals(benchmarkerJob, benchmarker.getCurrentJob());
+    }
 }

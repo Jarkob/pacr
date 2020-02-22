@@ -21,6 +21,7 @@ import pacr.webapp_backend.shared.IResultSaver;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -323,6 +324,43 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         jobHandler.connectionLostFor(" ");
 
         verify(jobProvider, never()).returnJob(any(IJob.class));
+    }
+
+    @Test
+    void getCurrentBenchmarkerJob_noError() {
+        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
+        when(benchmarkerPool.getFreeBenchmarker()).thenReturn(ADDRESS);
+        when(jobSender.sendJob(any(BenchmarkerJob.class))).thenReturn(true);
+
+        jobHandler.executeJob();
+
+        BenchmarkerJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
+        assertEquals(JOB_GROUP, currentJob.getRepository());
+        assertEquals(JOB_ID, currentJob.getCommitHash());
+        assertEquals(ADDRESS, currentJob.getAddress());
+    }
+
+    @Test
+    void getCurrentBenchmarkerJob_noJobDispatched() {
+        BenchmarkerJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
+
+        assertNull(currentJob);
+    }
+
+    @Test
+    void getCurrentBenchmarkerJob_invalidAddress() {
+        assertThrows(IllegalArgumentException.class, () -> {
+           jobHandler.getCurrentBenchmarkerJob("");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            jobHandler.getCurrentBenchmarkerJob(" ");
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            jobHandler.getCurrentBenchmarkerJob(null);
+        });
     }
 
     private static class BenchmarkerJobMatcher implements ArgumentMatcher<BenchmarkerJob> {
