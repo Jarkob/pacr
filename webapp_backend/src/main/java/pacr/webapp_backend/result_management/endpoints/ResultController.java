@@ -30,7 +30,8 @@ import java.util.Objects;
 @RestController
 public class ResultController {
 
-    private static final int PAGE_SIZE = 200;
+    private static final int DIAGRAM_PAGE_SIZE = 200;
+    private static final int HISTORY_PAGE_SIZE = 50;
 
     private IAuthenticator authenticator;
     private ResultGetter resultGetter;
@@ -100,7 +101,7 @@ public class ResultController {
     public Map<String, DiagramOutputResult> getResultPageForBranchAndBenchmark(@PathVariable int benchmarkId,
                                                    @PathVariable int repositoryId,
                                                    @NotNull @PathVariable String branch,
-                                                   @PageableDefault(size = PAGE_SIZE, page = 0) Pageable pageable) {
+                                                   @PageableDefault(size = DIAGRAM_PAGE_SIZE, page = 0) Pageable pageable) {
         Objects.requireNonNull(branch);
 
         return resultGetter.getBenchmarkResultsSubset(benchmarkId, repositoryId, branch,
@@ -108,12 +109,14 @@ public class ResultController {
     }
 
     /**
-     * Gets up to 100 of the newest saved benchmarking results.
+     * Gets the newest saved benchmarking results.
+     * @param pageable the requested page. Default page is 0 and default size is HISTORY_PAGE_SIZE.
      * @return the newest results.
      */
     @GetMapping("/history")
-    public List<CommitHistoryItem> getNewBenchmarkingResults() {
-        return resultGetter.getNewestResults();
+    public List<CommitHistoryItem> getNewBenchmarkingResults(
+            @PageableDefault(size = HISTORY_PAGE_SIZE, page = 0) Pageable pageable) {
+        return resultGetter.getNewestResults(pageable);
     }
 
     /**

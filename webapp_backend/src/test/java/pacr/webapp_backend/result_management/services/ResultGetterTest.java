@@ -233,7 +233,9 @@ public class ResultGetterTest {
         CommitResult resultMockTwo = Mockito.mock(CommitResult.class);
         results.add(resultMockTwo);
 
-        when(resultAccessMock.getNewestResults()).thenReturn(results);
+        PageRequest pageRequest = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+
+        when(resultAccessMock.getNewestResults(pageRequest)).thenReturn(results);
 
         when(resultMock.getCommitHash()).thenReturn(HASH);
         when(resultMockTwo.getCommitHash()).thenReturn(HASH_TWO);
@@ -242,15 +244,15 @@ public class ResultGetterTest {
         GitCommit commitTwo = Mockito.mock(GitCommit.class);
         when(commitAccessMock.getCommit(HASH_TWO)).thenReturn(commitTwo);
 
-        when(commitMock.getEntryDate()).thenReturn(LocalDateTime.now());
+        when(resultMock.getEntryDate()).thenReturn(LocalDateTime.now());
         when(commitMock.getCommitDate()).thenReturn(LocalDateTime.now());
         when(commitMock.getAuthorDate()).thenReturn(LocalDateTime.now());
-        when(commitTwo.getEntryDate()).thenReturn(LocalDateTime.now());
+        when(resultMockTwo.getEntryDate()).thenReturn(LocalDateTime.now());
         when(commitTwo.getCommitDate()).thenReturn(LocalDateTime.now());
         when(commitTwo.getAuthorDate()).thenReturn(LocalDateTime.now());
 
 
-        List<CommitHistoryItem> newestResults = resultGetter.getNewestResults();
+        List<CommitHistoryItem> newestResults = resultGetter.getNewestResults(pageRequest);
 
         assertEquals(EXPECTED_NUM_OF_NEW_RESULTS, newestResults.size());
     }

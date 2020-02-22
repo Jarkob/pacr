@@ -93,12 +93,14 @@ public class ResultControllerTest {
      */
     @Test
     void getNewResults_shouldCallResultGetter() {
+        PageRequest pageRequest = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+
         List<CommitHistoryItem> getterOutput = new LinkedList<>();
-        when(resultGetterMock.getNewestResults()).thenReturn(getterOutput);
+        when(resultGetterMock.getNewestResults(pageRequest)).thenReturn(getterOutput);
 
-        List<CommitHistoryItem> testOutput = resultController.getNewBenchmarkingResults();
+        List<CommitHistoryItem> testOutput = resultController.getNewBenchmarkingResults(pageRequest);
 
-        verify(resultGetterMock).getNewestResults();
+        verify(resultGetterMock).getNewestResults(pageRequest);
         assertEquals(getterOutput, testOutput);
     }
 

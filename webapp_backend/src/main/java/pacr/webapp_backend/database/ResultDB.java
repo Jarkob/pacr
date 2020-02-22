@@ -19,8 +19,8 @@ import java.util.Objects;
 @Component
 public interface ResultDB extends PagingAndSortingRepository<CommitResult, String>, IResultAccess {
     @Override
-    default List<CommitResult> getNewestResults() {
-        return this.findFirst100ByOrderByEntryDateDesc();
+    default List<CommitResult> getNewestResults(Pageable pageable) {
+        return this.findAllByOrderByEntryDateDesc(pageable).getContent();
     }
 
     @Override
@@ -80,9 +80,9 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
 
     /**
      * This is a method that is automatically created by jpa based on its method name.
-     * @return the latest 100 commit results in descending order by entry date.
+     * @return the requested page of the latest commit results in descending order by entry date.
      */
-    List<CommitResult> findFirst100ByOrderByEntryDateDesc();
+    Page<CommitResult> findAllByOrderByEntryDateDesc(Pageable pageable);
 
     /**
      * This is a method that is automatically created by jpa based on its method name.

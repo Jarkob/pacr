@@ -11,11 +11,11 @@ import org.springframework.data.domain.Pageable;
  */
 public interface IResultAccess {
     /**
-     * Gets the newest commit results (up to 100) that are saved in the database. The entry date is taken for
-     * comparison.
+     * Gets the newest commit results that are saved in the database. The entry date is taken for comparison.
+     * @param pageable the requested page.
      * @return a list of results that is sorted by entry date in descending order.
      */
-    List<CommitResult> getNewestResults();
+    List<CommitResult> getNewestResults(Pageable pageable);
 
     /**
      * Gets the newest saved commit result for a repository.

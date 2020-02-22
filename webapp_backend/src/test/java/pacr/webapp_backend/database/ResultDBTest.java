@@ -227,7 +227,9 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
 
         LocalDateTime previousTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-        List<CommitResult> orderedResults = this.resultDB.getNewestResults();
+        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
+
+        List<CommitResult> orderedResults = this.resultDB.getNewestResults(pageRequest);
 
         int i = 0;
 

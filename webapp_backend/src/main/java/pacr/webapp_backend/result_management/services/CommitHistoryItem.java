@@ -36,7 +36,7 @@ public class CommitHistoryItem {
         this.commitMessage = commit.getCommitMessage();
         this.commitDate = commit.getCommitDate().toString();
         this.authorDate = commit.getAuthorDate().toString();
-        this.entryDate = commit.getEntryDate().toString();
+        this.entryDate = result.getEntryDate().toString();
 
         this.compared = result.getComparisonCommitHash() != null;
         this.significant = result.isSignificant();

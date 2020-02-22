@@ -129,10 +129,12 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     /**
-     * @return Gets up to 100 of the newest saved results.
+     * Gets the newest saved results.
+     * @param pageable the requested page.
+     * @return the results.
      */
-    public List<CommitHistoryItem> getNewestResults() {
-        List<CommitResult> results = resultAccess.getNewestResults();
+    public List<CommitHistoryItem> getNewestResults(Pageable pageable) {
+        List<CommitResult> results = resultAccess.getNewestResults(pageable);
 
         return resultsToHistoryItems(results);
     }

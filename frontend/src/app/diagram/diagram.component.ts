@@ -143,6 +143,9 @@ export class DiagramComponent implements OnInit {
           if (this.datasets[item.datasetIndex].code[item.index].globalError) {
             return 'Global Error: ' + this.datasets[item.datasetIndex].code[item.index];
           }
+          if (Object.keys(this.datasets[item.datasetIndex].code[item.index].result).length === 0) {
+            return 'No benchmarks available';
+          }
           if (this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage) {
             return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
           }
@@ -252,6 +255,9 @@ export class DiagramComponent implements OnInit {
       for (let j = 0; j < this.datasets[i].data.length; j++) {
         if (!this.datasets[i].code[j].result) {
           this.datasets[i].data[j].y = last;
+        } else if (Object.keys(this.datasets[i].code[j].result).length === 0) {
+          // is empty
+          this.datasets[i].data[j].y = last;
         } else if (this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].errorMessage && j > 0) {
           this.datasets[i].data[j].y = last;
         } else {
@@ -261,6 +267,9 @@ export class DiagramComponent implements OnInit {
       }
       for (let j = this.datasets[i].data.length - 1; j > -1; j--) {
         if (!this.datasets[i].code[j].result) {
+          this.datasets[i].data[j].y = last;
+        } else if (Object.keys(this.datasets[i].code[j].result).length === 0) {
+          // is empty
           this.datasets[i].data[j].y = last;
         } else if (this.datasets[i].code[j].result[this.selectedBenchmarkProperty.name].errorMessage && j > 0) {
           this.datasets[i].data[j].y = last;
@@ -277,9 +286,11 @@ export class DiagramComponent implements OnInit {
     const errorImage = new Image(20, 20);
     const globalErrorImage = new Image(20, 20);
     const notYetImage = new Image(20, 20);
+    const noBenchmarks = new Image(20, 20);
     errorImage.src = 'assets/clear.svg';
     globalErrorImage.src = 'assets/block.svg';
     notYetImage.src = 'assets/run.svg';
+    noBenchmarks.src = 'assets/disabled.svg';
     Chart.pluginService.register({
       afterUpdate: (chart) => {
         // this method is called globally so make sure it only updates for this chart
@@ -294,6 +305,8 @@ export class DiagramComponent implements OnInit {
                 element._model.pointStyle = notYetImage;
               } else if (dataset.code[j].globalError) {
                 element._model.pointStyle = globalErrorImage;
+              } else if (Object.keys(dataset.code[j].result).length === 0) {
+                element._model.pointStyle = noBenchmarks;
               } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
                 element._model.pointStyle = errorImage;
               }
