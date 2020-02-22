@@ -52,7 +52,7 @@ public class ImportExportController {
      * @param token a jwt token which is checked before executing the method.
      * @return a list of benchmarking results or null if the token is invalid.
      */
-    @RequestMapping("/exportResults")
+    @RequestMapping("/export-results")
     public Collection<OutputBenchmarkingResult> exportBenchmarkingResults(@RequestHeader(name = "jwt") String token) {
         if (authenticator.authenticate(token)) {
             return resultsExporter.exportBenchmarkingResults();
@@ -67,7 +67,7 @@ public class ImportExportController {
      * @param token a jwt token which is checked before executing the method.
      * @param results the results which are imported.
      */
-    @PostMapping("/importResults")
+    @PostMapping("/import-results")
     public void importBenchmarkingResults(@RequestBody Collection<OutputBenchmarkingResult> results, @RequestHeader(name = "jwt") String token) {
         if (authenticator.authenticate(token)) {
             resultsImporter.importBenchmarkingResults(results);

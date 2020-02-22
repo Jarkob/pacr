@@ -23,13 +23,13 @@ export class ImportExportService {
    * @param results the results to be imported in json format
    */
   public import(results: any): Observable<{}> {
-    return this.http.post<{}>(this.globalService.url + '/importResults', results, httpOptions);
+    return this.http.post<{}>(this.globalService.url + '/import-results', results, httpOptions);
   }
 
   /**
    * export benchmarking results
    */
   public export(): Observable<any> {
-    return this.http.get<any>(this.globalService.url + '/exportResults');
+    return this.http.get<any>(this.globalService.url + '/export-results');
   }
 }

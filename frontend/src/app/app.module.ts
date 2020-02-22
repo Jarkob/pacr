@@ -52,7 +52,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
-import { CommonModule, PercentPipe } from '@angular/common';
+import { CommonModule, PercentPipe, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
@@ -120,6 +120,7 @@ import { DateAdapter } from '@angular/material';
     BenchmarkingResultService,
     BenchmarkService,
     EventService,
+    DatePipe,
     ImportExportService,
     RepositoryService,
     SchedulerService,

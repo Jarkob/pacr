@@ -1,5 +1,7 @@
 import { ImportExportService } from './../services/import-export.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, SecurityContext } from '@angular/core';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-admin-import-export',
@@ -9,11 +11,17 @@ import { Component, OnInit } from '@angular/core';
 export class AdminImportExportComponent implements OnInit {
 
   constructor(
-    private importExportService: ImportExportService
+    private importExportService: ImportExportService,
+    private sanitizer: DomSanitizer,
+    private datePipe: DatePipe
   ) { }
 
   file: any;
-  loading = false;
+  loadingImport = false;
+  loadingExport = false;
+
+  exportedResults: string;
+  exportedFileUrl: SafeResourceUrl;
 
   ngOnInit() {
 
@@ -25,21 +33,42 @@ export class AdminImportExportComponent implements OnInit {
   }
 
   import() {
-    this.loading = true;
+    this.loadingImport = true;
     const fileReader = new FileReader();
 
     fileReader.onload = (e) => {
       this.importExportService.import(fileReader.result).subscribe(
         data => {
-          this.loading = false;
+          this.loadingImport = false;
         },
         err => {
-          this.loading = false;
+          this.loadingImport = false;
         }
       );
     };
 
     fileReader.readAsText(this.file);
+  }
+
+  export() {
+    this.loadingExport = true;
+
+    this.importExportService.export().subscribe(
+      data => {
+        this.exportedResults = JSON.stringify(data, null, 2);
+
+        const blob = new Blob([this.exportedResults], { type: 'application/json' });
+
+        this.exportedFileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+
+        this.loadingExport = false;
+      }
+    );
+  }
+
+  getExportFileName() {
+    const date = this.datePipe.transform(new Date(), 'yyyy-MM-dd');
+    return date + '-pacr-export.json';
   }
 
 }

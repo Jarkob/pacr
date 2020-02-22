@@ -1,8 +1,8 @@
 <mat-tab-group animationDuration="0ms" #importExportTabs>
 
     <mat-tab label="Import">
-        <p class="mat-h1 tabTitle">{{ loading ? "Importing:" : "Select a file to import:" }}</p>
-        <div *ngIf="!loading" fxLayout="column">
+        <p class="mat-h1 tabTitle">{{ loadingImport ? "Importing:" : "Select a file to import:" }}</p>
+        <div *ngIf="!loadingImport" fxLayout="column">
             <input hidden="true" type='file' onclick="this.value=null" accept=".json" (change)="fileChanged($event)" #fileInput>
 
             <div id="selectContainer" fxLayout="row" fxFlexAlign="center" fxLayoutAlign="start center"
@@ -12,14 +12,28 @@
             
             <button [disabled]="!file" class="action-button" mat-raised-button color="primary" (click)="import()">Import</button>
         </div>
-        <div *ngIf="loading" fxLayout="row" style="height: 71px;">
+        <div *ngIf="loadingImport" fxLayout="row" style="height: 71px;">
             <mat-spinner id="spinner" [diameter]="50"></mat-spinner>
             <p>Importing may take a while...</p>
         </div>
     </mat-tab>
 
     <mat-tab label="Export">
+        <p class="mat-h1 tabTitle">Export:</p>
 
+        <div fxLayout="column">
+            <a *ngIf="exportedFileUrl && !loadingExport" [href]="exportedFileUrl" 
+                [download]="getExportFileName()">
+                Download
+            </a>
+
+            <button *ngIf="!loadingExport" class="action-button" mat-raised-button color="primary" (click)="export()">Export</button>
+        </div>
+
+        <div *ngIf="loadingExport" fxLayout="row" style="height: 71px;">
+            <mat-spinner id="spinner" [diameter]="50"></mat-spinner>
+            <p>Exporting may take a while...</p>
+        </div>
     </mat-tab>
 
 </mat-tab-group>
