@@ -35,7 +35,7 @@
     
         {{ benchmarkingResult?.commitBranchNames.join(strings?.listSeparator) }}
     </mat-expansion-panel>
-    <mat-expansion-panel hideToggle>
+    <mat-expansion-panel hideToggle class="disabled-pointer">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ strings?.authorDate }}
@@ -47,7 +47,7 @@
     
         {{ benchmarkingResult?.commitAuthorDate | date }}
     </mat-expansion-panel>
-    <mat-expansion-panel hideToggle>
+    <mat-expansion-panel hideToggle class="disabled-pointer">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ strings?.commitDate }}
@@ -59,7 +59,7 @@
     
         {{ benchmarkingResult?.commitCommitDate | date }}
     </mat-expansion-panel>
-    <mat-expansion-panel hideToggle>
+    <mat-expansion-panel hideToggle class="disabled-pointer">
         <mat-expansion-panel-header>
             <mat-panel-title>
                 {{ strings?.entryDate }}

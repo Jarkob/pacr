@@ -123,3 +123,7 @@ a {
 .textAlignRow .textAlignItem {
   padding-left: 10px;
 }
+
+.disabled-pointer {
+  pointer-events: none;
+}

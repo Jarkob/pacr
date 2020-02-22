@@ -90,7 +90,7 @@
                 <!-- Display Results -->
                 <mat-accordion *ngIf="selectedBenchmarkProperty && !selectedBenchmarkProperty[1].hadLocalError" 
                     class="headers-align">
-                    <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel hideToggle class="disabled-pointer">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ strings?.median }}
@@ -108,7 +108,7 @@
 
                         {{ selectedBenchmarkProperty[1].median | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
                     </mat-expansion-panel>
-                    <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel hideToggle class="disabled-pointer">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ strings?.lowerQuartile }}
@@ -120,7 +120,7 @@
 
                         {{ selectedBenchmarkProperty[1].lowerQuartile | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
                     </mat-expansion-panel>
-                    <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel hideToggle class="disabled-pointer">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ strings?.upperQuartile }}
@@ -132,7 +132,7 @@
 
                         {{ selectedBenchmarkProperty[1].upperQuartile | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
                     </mat-expansion-panel>
-                    <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel hideToggle class="disabled-pointer">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ strings?.standardDeviation }}
@@ -144,7 +144,7 @@
 
                         {{ selectedBenchmarkProperty[1].standardDeviation | number:'1.3-6' }} {{ selectedBenchmarkProperty[1].unit }}
                     </mat-expansion-panel>
-                    <mat-expansion-panel hideToggle>
+                    <mat-expansion-panel hideToggle class="disabled-pointer">
                         <mat-expansion-panel-header>
                             <mat-panel-title>
                                 {{ strings?.mean }}
