@@ -16,7 +16,7 @@ import pacr.webapp_backend.shared.IBenchmarkingResult;
 @Getter
 public class JobResult implements IBenchmarkingResult {
 
-    private static final String BENCHMARKING_RESULT_MISSING_ERROR = "Results could not be sent to the server.";
+    public static final String BENCHMARKING_RESULT_MISSING_ERROR = "Results could not be sent to the server.";
 
     private long executionTime;
     private String repository;

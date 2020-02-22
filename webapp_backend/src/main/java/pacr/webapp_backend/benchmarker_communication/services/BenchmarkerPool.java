@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 /**
  * Manages a collection of PACR-Benchmarkers and ensures that a Benchmarker is only given out
@@ -75,17 +76,22 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
         return true;
     }
 
-    private boolean containsBenchmarker(String address) {
-        return allBenchmarkers.containsKey(address);
+    @Override
+    public SystemEnvironment getBenchmarkerSystemEnvironment(String address) {
+        if (!StringUtils.hasText(address)) {
+            throw new IllegalArgumentException("The address cannot be null or empty.");
+        }
+
+        return allBenchmarkers.get(address);
     }
 
     @Override
-    public Collection<SystemEnvironment> getBenchmarkerSystemEnvironment() {
-        Collection<SystemEnvironment> systemEnvironments = new ArrayList<>();
+    public Collection<String> getAllBenchmarkerAddresses() {
+        return new ArrayList<>(allBenchmarkers.keySet());
+    }
 
-        systemEnvironments.addAll(allBenchmarkers.values());
-
-        return systemEnvironments;
+    private boolean containsBenchmarker(String address) {
+        return allBenchmarkers.containsKey(address);
     }
 
     @Override

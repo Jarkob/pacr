@@ -24,8 +24,16 @@ public interface IBenchmarkerHandler {
     boolean unregisterBenchmarker(String address);
 
     /**
-     * @return the system environment of each registered Benchmarker.
+     * Gets the system environment of the benchmarker with the given address.
+     *
+     * @param address address of the benchmarker.
+     * @return the system environment.
      */
-    Collection<SystemEnvironment> getBenchmarkerSystemEnvironment();
+    SystemEnvironment getBenchmarkerSystemEnvironment(String address);
+
+    /**
+     * @return the addresses of all registered benchmarkers.
+     */
+    Collection<String> getAllBenchmarkerAddresses();
 
 }

@@ -6,13 +6,14 @@ import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IJobProvider;
 import pacr.webapp_backend.shared.IObserver;
 import pacr.webapp_backend.shared.IResultSaver;
 
 @Component
-public class JobHandler implements INewRegistrationListener, IObserver {
+public class JobHandler implements INewRegistrationListener, IObserver, IJobRegistry {
 
     private static final Logger LOGGER = LogManager.getLogger(JobHandler.class);
 
@@ -162,4 +163,18 @@ public class JobHandler implements INewRegistrationListener, IObserver {
         }
     }
 
+    @Override
+    public BenchmarkerJob getCurrentBenchmarkerJob(String address) {
+        if (!StringUtils.hasText(address)) {
+            throw new IllegalArgumentException("The address cannot be null or empty.");
+        }
+
+        IJob job = currentJobs.get(address);
+
+        if (job != null) {
+            return new BenchmarkerJob(address, job.getJobGroupTitle(), job.getJobID());
+        }
+
+        return null;
+    }
 }

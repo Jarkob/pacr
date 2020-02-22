@@ -34,7 +34,7 @@ public class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
         if (attributes.containsKey(ATTR_PRINCIPAL)) {
             name = (String) attributes.get(ATTR_PRINCIPAL);
         } else {
-            name = generateRandomUsername();
+            name = generateUsername();
             attributes.put(ATTR_PRINCIPAL, name);
         }
 
@@ -47,7 +47,7 @@ public class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
      *
      * @return a unique name.
      */
-    private String generateRandomUsername() {
+    private String generateUsername() {
         return CLIENT_PREFIX + clientID++;
     }
 }

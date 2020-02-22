@@ -1,6 +1,7 @@
 package pacr.webapp_backend.benchmarker_communication.endpoints;
 
 import java.security.Principal;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -40,9 +41,7 @@ public class BenchmarkingJobsController implements IJobSender, ApplicationListen
      */
     @Autowired
     public void setJobHandler(@NotNull JobHandler jobHandler) {
-        if (jobHandler == null) {
-            throw new IllegalArgumentException("The jobHandler cannot be null.");
-        }
+        Objects.requireNonNull(jobHandler, "The jobHandler cannot be null.");
 
         this.jobHandler = jobHandler;
     }
