@@ -26,3 +26,23 @@ mat-panel-title {
 .mat-expanded mat-panel-description {
     display: none;
 }
+
+.itemRow {
+    margin-bottom: 5px;
+}
+
+.itemRow span + span {
+    margin-left: 7px;
+}
+
+.label {
+    font-size: 12px;
+    padding: 0, 4px;
+    border-radius: 3px;
+    min-width: 70px;
+    justify-content: center;
+}
+
+#benchmarkerTitle {
+    margin-left: 10px;
+}

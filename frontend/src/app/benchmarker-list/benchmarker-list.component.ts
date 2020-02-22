@@ -1,3 +1,6 @@
+import { DetailViewMaximizerService } from './../detail-view/detail-view-maximizer.service';
+import { DetailViewMaximizedRef } from './../detail-view/detail-view-maximized-ref';
+import { DetailViewService } from './../services/detail-view.service';
 import { Benchmarker } from './../classes/benchmarker';
 import { Subscription, interval } from 'rxjs';
 import { BenchmarkerCommunicationService } from './../services/benchmarker-communication.service';
@@ -16,14 +19,16 @@ export class BenchmarkerListComponent implements OnInit {
 
   constructor(
     private stringService: StringService,
-    private benchmarkerService: BenchmarkerCommunicationService
+    private benchmarkerService: BenchmarkerCommunicationService,
+    private detailViewService: DetailViewService,
+    private previewDialog: DetailViewMaximizerService
   ) { }
 
   strings: any;
   benchmarkers: Benchmarker[];
 
   benchmarkerSubscription: Subscription;
-  benchmarkerUpdateInterval = 10;
+  benchmarkerUpdateInterval = 15;
 
   ngOnInit() {
     this.stringService.getBenchmarkerListStrings().subscribe(
@@ -59,6 +64,20 @@ export class BenchmarkerListComponent implements OnInit {
    */
   public trackBenchmarker(index: number, item: Benchmarker): string {
     return item.address;
+  }
+
+  public selectCommit(commitHash: string) {
+    this.detailViewService.selectCommit(commitHash);
+    this.maximizeDetailView(commitHash);
+  }
+
+  /**
+   * maximize the detail view
+   */
+  public maximizeDetailView(selectedCommitHash: string) {
+    const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
+      commitHash: selectedCommitHash
+    });
   }
 
 }

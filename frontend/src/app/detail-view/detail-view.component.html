@@ -14,7 +14,7 @@
             </div>
             <div *ngIf="selected" class="labelContainer">
                 <mat-chip-list>
-                    <mat-chip *ngIf="benchmarkingResult.hasGlobalError" selected selectable="false" color="warn" class="label"
+                    <mat-chip *ngIf="benchmarkingResult.hasGlobalError" selected selectable="false" class="label idle"
                         matTooltip="{{ strings.globalErrorLabelTooltip }}">
                         {{ strings.globalErrorLabel }}
                     </mat-chip>
@@ -32,7 +32,7 @@
             <span *ngIf="selected && benchmarkingResult?.comparisonCommitHash">
                 {{ strings?.comparedTo }}                    
             </span> 
-            <a *ngIf="selected && benchmarkingResult?.comparisonCommitHash" (click)="updateSelectedCommit(benchmarkingResult?.comparisonCommitHash)" 
+            <a *ngIf="selected && benchmarkingResult?.comparisonCommitHash" (click)="selectCommit(benchmarkingResult?.comparisonCommitHash)" 
                 matTooltip="{{benchmarkingResult?.comparisonCommitHash}}" matTooltipPosition="left">
                 {{ benchmarkingResult?.comparisonCommitHash | shortenString:7 }}
             </a>            

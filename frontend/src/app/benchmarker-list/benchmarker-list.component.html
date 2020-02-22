@@ -6,22 +6,66 @@
         <mat-accordion class="valgin-center">
             <mat-expansion-panel *ngFor="let benchmarker of benchmarkers; trackBy: trackBenchmarker">
                 <mat-expansion-panel-header>
-                    <mat-panel-title> {{ benchmarker.systemEnvironment.computerName }} </mat-panel-title>
-                    <mat-panel-description> {{ benchmarker.systemEnvironment.os }} </mat-panel-description>
+                    <mat-panel-title>
+                        <div fxLayout="row" fxLayoutAlign="start center">
+                            <mat-chip-list>
+                                <mat-chip *ngIf="!benchmarker.currentJob" selected selectable="false" color="accent" class="label">
+                                    Idle
+                                </mat-chip>
+                                <mat-chip *ngIf="benchmarker.currentJob" selected selectable="false" color="primary" class="label">
+                                    Running
+                                </mat-chip>
+                            </mat-chip-list>   
+
+                            <span id="benchmarkerTitle">
+                                {{ benchmarker.systemEnvironment.computerName }}
+                            </span>
+                                                    
+                        </div>
+                    </mat-panel-title>
                 </mat-expansion-panel-header>
 
-                <p class="mat-h3"> {{ strings?.computerName }} {{ benchmarker.systemEnvironment.computerName }} </p>
+                <div *ngIf="benchmarker.currentJob" class="itemRow">
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3">Currently benchmarking:</span>
+                    <p *ngIf="benchmarker.systemEnvironment" class="mat-h3 valueText">
+                        <a (click)="selectCommit(benchmarker.currentJob.jobID)" 
+                            matTooltip="{{ benchmarker.currentJob.jobID }}" matTooltipPosition="left">
+                            {{ benchmarker.currentJob.jobID | shortenString:7 }}
+                        </a> 
+                        from 
+                        {{ benchmarker.currentJob.jobGroupTitle }}</p>
+                </div>
 
-                <p class="mat-h3"> {{ strings?.os }} {{ benchmarker.systemEnvironment.os }} </p>
+                <div class="itemRow">
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3">{{ strings?.computerName }}</span>
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3 valueText">{{ benchmarker.systemEnvironment.computerName }}</span>
+                </div>
 
-                <p class="mat-h3"> {{ strings?.processor }} {{ benchmarker.systemEnvironment.processor }} </p>
+                <div class="itemRow">
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3">{{ strings?.os }}</span>
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3 valueText">{{ benchmarker.systemEnvironment.os }}</span>
+                </div>
 
-                <p class="mat-h3"> {{ strings?.kernel }} {{ benchmarker.systemEnvironment.kernel }} </p>
-               
-                <p class="mat-h3"> {{ strings?.cores }} {{ benchmarker.systemEnvironment.cores }} </p>
+                <div class="itemRow">
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3">{{ strings?.processor }}</span>
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3 valueText">{{ benchmarker.systemEnvironment.processor }}</span>
+                </div>
 
-                <p class="mat-h3"> {{ strings?.ram }} {{ benchmarker.systemEnvironment.ramMemory }} {{ strings?.ramUnit }} </p>
+                <div class="itemRow">
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3">{{ strings?.kernel }}</span>
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3 valueText">{{ benchmarker.systemEnvironment.kernel }}</span>
+                </div>
 
+                <div class="itemRow">
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3">{{ strings?.cores }}</span>
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3 valueText">{{ benchmarker.systemEnvironment.cores }}</span>
+                </div>
+
+                <div class="itemRow">
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3">{{ strings?.ram }}</span>
+                    <span *ngIf="benchmarker.systemEnvironment" class="mat-h3 valueText">{{ benchmarker.systemEnvironment.ramMemory }} {{ strings?.ramUnit }}</span>
+                </div>
+                
             </mat-expansion-panel>
         </mat-accordion>
     </mat-card-content>
