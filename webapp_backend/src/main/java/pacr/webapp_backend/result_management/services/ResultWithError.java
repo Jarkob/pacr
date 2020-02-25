@@ -2,6 +2,9 @@ package pacr.webapp_backend.result_management.services;
 
 import org.springframework.lang.Nullable;
 
+import javax.validation.constraints.NotNull;
+import java.util.Objects;
+
 /**
  * A single result with an optional error message.
  */
@@ -11,13 +14,19 @@ public class ResultWithError {
     private String errorMessage;
 
     /**
-     * Creates a ResultWithError.
-     * @param result the result. May be null if there was an error. Otherwise no error is assumed.
-     * @param errorMessage the error message. May be null if there was no error. Otherwise an error is assumed.
+     * Creates a ResultWithError. The result is only copied from the property result if there is no error.
+     * @param propertyResult the result. Cannot be null.
      */
-    ResultWithError(@Nullable Double result, @Nullable String errorMessage) {
-        this.result = result;
-        this.errorMessage = errorMessage;
+    ResultWithError(@NotNull BenchmarkPropertyResult propertyResult) {
+        Objects.requireNonNull(propertyResult);
+
+        if (propertyResult.isError()) {
+            this.result = null;
+            this.errorMessage = propertyResult.getError();
+        } else {
+            this.result = propertyResult.getMedian();
+            this.errorMessage = null;
+        }
     }
 
     /**

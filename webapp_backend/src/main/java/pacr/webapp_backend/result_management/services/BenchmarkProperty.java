@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
 import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
@@ -18,8 +19,9 @@ import java.util.Objects;
  */
 @Entity(name = "BenchmarkProperty")
 @Table(name = "benchmark_property")
-@Getter
-@Setter
+@Getter(AccessLevel.PUBLIC)
+@Setter(AccessLevel.PACKAGE)
+@EqualsAndHashCode
 public class BenchmarkProperty {
 
     @Id
@@ -54,25 +56,5 @@ public class BenchmarkProperty {
         this.name = name;
         this.unit = unit;
         this.interpretation = interpretation;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-        BenchmarkProperty property = (BenchmarkProperty) obj;
-        return id == property.getId()
-                && Objects.equals(name, property.getName())
-                && Objects.equals(unit, property.getUnit())
-                && interpretation == property.getInterpretation();
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, unit, interpretation);
     }
 }

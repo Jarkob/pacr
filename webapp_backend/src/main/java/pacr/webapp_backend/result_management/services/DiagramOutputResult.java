@@ -4,6 +4,7 @@ import lombok.Getter;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -18,13 +19,13 @@ public class DiagramOutputResult {
     private String commitDate;
     private String authorDate;
     private HashMap<String, ResultWithError> result;
-    private String[] parents;
-    private String[] labels;
+    private Collection<String> parents;
+    private Collection<String> labels;
     private String globalError;
 
     /**
      * Creates a DiagramOutputResult from a specific benchmark of a commit result and its commit. The result and commit
-     * must belong to the same hash.
+     * must belong to the same commit hash.
      * @param commitResult the result. Cannot be null.
      * @param commit the commit. Cannot be null.
      * @param benchmarkId the id of the benchmark that is supposed to be included in this DiagramOutputResult.
@@ -45,20 +46,14 @@ public class DiagramOutputResult {
         for (BenchmarkResult benchmarkResult : commitResult.getBenchmarkResults()) {
             if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
                 for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
-                    ResultWithError resultAndErrorMessage;
-                    if (propertyResult.isError()) {
-                        resultAndErrorMessage = new ResultWithError(null, propertyResult.getError());
-                    } else {
-                        resultAndErrorMessage = new ResultWithError(propertyResult.getMedian(), null);
-                    }
-                    result.put(propertyResult.getName(), resultAndErrorMessage);
+                    result.put(propertyResult.getName(), new ResultWithError(propertyResult));
                 }
                 break;
             }
         }
 
-        this.labels = commit.getLabels().toArray(new String[0]);
-        this.parents = commit.getParentHashes().toArray(new String[0]);
+        this.labels = commit.getLabels();
+        this.parents = commit.getParentHashes();
         this.globalError = commitResult.getGlobalError();
     }
 
@@ -75,8 +70,8 @@ public class DiagramOutputResult {
 
         this.result = null;
 
-        this.labels = commit.getLabels().toArray(new String[0]);
-        this.parents = commit.getParentHashes().toArray(new String[0]);
+        this.labels = commit.getLabels();
+        this.parents = commit.getParentHashes();
         this.globalError = null;
     }
 }
