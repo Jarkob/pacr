@@ -35,4 +35,9 @@ public class BenchmarkProperty implements IBenchmarkProperty {
         return error;
     }
 
+    @Override
+    public boolean isError() {
+        return error != null;
+    }
+
 }

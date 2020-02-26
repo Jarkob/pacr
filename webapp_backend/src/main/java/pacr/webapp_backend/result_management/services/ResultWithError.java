@@ -1,7 +1,5 @@
 package pacr.webapp_backend.result_management.services;
 
-import org.springframework.lang.Nullable;
-
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 

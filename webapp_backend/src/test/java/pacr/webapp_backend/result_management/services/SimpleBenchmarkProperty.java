@@ -70,6 +70,11 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
         return error;
     }
 
+    @Override
+    public boolean isError() {
+        return error != null;
+    }
+
     /**
      * @param error Sets the error message. May be null. This implies there was no error.
      */

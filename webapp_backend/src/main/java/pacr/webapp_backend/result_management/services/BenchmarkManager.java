@@ -93,7 +93,7 @@ public class BenchmarkManager {
             Benchmark savedBenchmark = benchmarkAccess.getBenchmark(benchmark.getId());
             for (BenchmarkProperty savedProperty : savedBenchmark.getProperties()) {
                 for (BenchmarkProperty property : benchmark.getProperties()) {
-                    if (property.getName().equals(savedProperty.getName())) {
+                    if (property.equals(savedProperty)) {
                         property.setId(savedProperty.getId());
                         break;
                     }

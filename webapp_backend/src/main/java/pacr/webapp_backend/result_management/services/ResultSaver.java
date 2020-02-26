@@ -175,10 +175,10 @@ abstract class ResultSaver {
                 propertyResult.getResultInterpretation());
 
         for (BenchmarkProperty savedProperty : benchmark.getProperties()) {
-            if (savedProperty.getName().equals(propertyName)) {
+            if (savedProperty.equals(property)) {
                 // update the saved property only if this new property does not have an error
                 // otherwise the fields such as ResultInterpretation might not be set correctly
-                if (propertyResult.getError() == null) {
+                if (!propertyResult.isError()) {
                     updateProperty(savedProperty, propertyResult);
                 }
                 

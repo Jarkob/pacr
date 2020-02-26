@@ -27,4 +27,8 @@ public interface IBenchmarkProperty {
      */
     String getError();
 
+    /**
+     * @return {@code true} if an error occurred, otherwise {@code false}.
+     */
+    boolean isError();
 }

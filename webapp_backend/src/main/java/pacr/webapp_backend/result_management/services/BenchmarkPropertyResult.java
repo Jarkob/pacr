@@ -74,7 +74,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      */
     public BenchmarkPropertyResult(IBenchmarkProperty measurement, BenchmarkProperty property) {
         this.property = property;
-        if (measurement.getError() != null) {
+        if (measurement.isError()) {
             this.error = true;
             this.errorMessage = measurement.getError();
 

@@ -21,7 +21,7 @@ import java.util.Objects;
 @Table(name = "benchmark_property")
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
-@EqualsAndHashCode
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class BenchmarkProperty {
 
     @Id
@@ -29,6 +29,7 @@ public class BenchmarkProperty {
     private int id;
 
     @Setter(AccessLevel.NONE)
+    @EqualsAndHashCode.Include
     private String name;
     private String unit;
     private ResultInterpretation interpretation;
