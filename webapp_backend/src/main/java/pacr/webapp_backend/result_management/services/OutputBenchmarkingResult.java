@@ -63,7 +63,9 @@ public class OutputBenchmarkingResult {
         this.commitHash = commit.getCommitHash();
         this.commitURL = commit.getCommitURL();
         this.commitMessage = commit.getCommitMessage();
-        this.comparisonCommitHash = result.getComparisonCommitHash();
+        if (result.isCompared()) {
+            this.comparisonCommitHash = result.getComparisonCommitHash();
+        }
 
         this.commitEntryDate = commit.getEntryDate().toString();
         this.commitCommitDate = commit.getCommitDate().toString();

@@ -1,23 +1,19 @@
 package pacr.webapp_backend.result_management.services;
 
-import javassist.NotFoundException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
 import pacr.webapp_backend.database.BenchmarkGroupDB;
 import pacr.webapp_backend.database.RepositoryDB;
 import pacr.webapp_backend.database.ResultDB;
-import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,14 +21,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static pacr.webapp_backend.result_management.services.SimpleCommit.REPO_ID;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ResultManagerTest extends SpringBootTestWithoutShell {
 
@@ -40,6 +33,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     private static final String MSG = "msg";
     private static final LocalDateTime NOW = LocalDateTime.now();
     private static final String REPO_NAME = "repo";
+    private static final int EXPECTED_TWO_RESULTS = 2;
 
     private ResultManager resultManager;
     private ResultDB resultDB;
@@ -82,7 +76,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     }
 
     @AfterEach
-    public void cleanUp() throws NotFoundException {
+    public void cleanUp() {
         gitTrackingAccess.removeRepository(repository.getId());
         repositoryDB.deleteAll();
         resultDB.deleteAll();
@@ -185,5 +179,36 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         resultToSave.setCommitHash(HASH_TWO);
 
         assertThrows(IllegalArgumentException.class, () -> resultManager.saveBenchmarkingResults(resultToSave));
+    }
+
+    /**
+     * A comparison cannot be executed if the comparison commit has no saved result yet. However, as soon as that result
+     * is saved, the results with that comparison commit hash should get updated with a comparison.
+     */
+    @Test
+    void saveBenchmarkingResults_comparisonResultSavedAfterChild_shouldUpdateComparisonOfChild() {
+        GitCommit commitToCompare = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
+        commitToCompare.addParent(SimpleBenchmarkingResult.COMMIT_HASH);
+        gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(commitToCompare)));
+
+        SimpleBenchmarkingResult resultToCompare = new SimpleBenchmarkingResult();
+        resultToCompare.setCommitHash(HASH_TWO);
+
+        resultManager.saveBenchmarkingResults(resultToCompare);
+
+        CommitResult resultBeforeComparison = resultDB.getResultFromCommit(HASH_TWO);
+
+        assertEquals(SimpleBenchmarkingResult.COMMIT_HASH, resultBeforeComparison.getComparisonCommitHash());
+        assertFalse(resultBeforeComparison.isCompared());
+
+        resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
+
+        CommitResult resultAfterComparison = resultDB.getResultFromCommit(HASH_TWO);
+
+        assertEquals(SimpleBenchmarkingResult.COMMIT_HASH, resultAfterComparison.getComparisonCommitHash());
+        assertTrue(resultAfterComparison.isCompared());
+
+        Collection<CommitResult> allResults = resultDB.getAllResults();
+        assertEquals(EXPECTED_TWO_RESULTS, allResults.size());
     }
 }

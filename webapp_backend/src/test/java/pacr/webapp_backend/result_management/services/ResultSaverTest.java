@@ -30,7 +30,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     private static final String BENCHMARK_NAME_TWO = "benchmark2";
     private static final String COMMIT_HASH = SimpleBenchmarkingResult.COMMIT_HASH;
     private static final String COMMIT_HASH_TWO = "hash2";
-    private static final CommitResult NO_COMPARISON_RESULT = null;
+    private static final String NO_COMPARISON_RESULT = null;
     private static final String ERROR = "error";
     private static final double MEASUREMENT = SimpleBenchmarkProperty.MEASUREMENT;
     private static final int EXPECTED_NUM_OF_PROPERTIES = 1;

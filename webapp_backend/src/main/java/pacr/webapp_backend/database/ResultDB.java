@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pacr.webapp_backend.result_management.services.CommitResult;
 import pacr.webapp_backend.result_management.services.IResultAccess;
 
+import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,6 +71,13 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
         return findAllByRepositoryID(repositoryId, pageable);
     }
 
+    @Override
+    default List<CommitResult> getResultsWithComparisionCommitHash(@NotNull String commitHash) {
+        Objects.requireNonNull(commitHash);
+
+        return findAllByComparisonCommitHash(commitHash);
+    }
+
     /**
      * This is a method that is automatically created by jpa based on its method name.
      * @param repositoryId the id of the repository.
@@ -90,6 +98,13 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
      * @return the newest saved result for the repository.
      */
     CommitResult findFirstByRepositoryIDOrderByEntryDateDesc(int repositoryId);
+
+    /**
+     * This is a method that is automatically created by jpa based on its method name.
+     * @param comparisionCommitHash the hash of the comparision commit.
+     * @return the results with the given comparision commit hash.
+     */
+    List<CommitResult> findAllByComparisonCommitHash(String comparisionCommitHash);
 
     /**
      * This is a method that is automatically created by jpa based on its method name.

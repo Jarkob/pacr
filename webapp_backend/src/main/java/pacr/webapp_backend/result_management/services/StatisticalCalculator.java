@@ -1,9 +1,12 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.springframework.lang.Nullable;
+
 import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Calculates statistical information for a given amount of values.
@@ -13,6 +16,8 @@ public final class StatisticalCalculator {
      * This is returned if no calculations could be made on the given input (due to being null, empty, etc.)
      */
     public static final int ERROR_CODE = -1;
+
+    private static final double SIGNIFICANCE_FACTOR = 3d;
 
     /**
      * No instance of this class can be created because all methods are static.
@@ -76,5 +81,39 @@ public final class StatisticalCalculator {
             sumOfResultsMinusMeanSquared += Math.pow(value - mean, 2);
         }
         return Math.sqrt(sumOfResultsMinusMeanSquared / values.size());
+    }
+
+    /**
+     * Compares the two results and sets the ratio and significance in the result.
+     * @param result the result that is compared and whose ratio is set. Cannot be null.
+     * @param comparisonResult the result that is used for comparison. This object is not altered. No comparison is done
+     *                         if this is null.
+     */
+    static void compare(@NotNull BenchmarkPropertyResult result, @Nullable BenchmarkPropertyResult comparisonResult) {
+        Objects.requireNonNull(result);
+
+        if (comparisonResult != null && !result.isError() && !comparisonResult.isError()) {
+            result.setRatio(result.getMedian() / comparisonResult.getMedian());
+            result.setCompared(true);
+
+            if (significantChange(result, comparisonResult)) {
+                result.setSignificant(true);
+            }
+        }
+    }
+
+    /**
+     * A result is considered significant if the median strays at least SIGNIFICANCE_FACTOR standard deviations from the
+     * previous result.
+     */
+    private static boolean significantChange(BenchmarkPropertyResult result, BenchmarkPropertyResult comparison) {
+        double standardDeviation = result.getStandardDeviation();
+        if (comparison.getStandardDeviation() > standardDeviation) {
+            standardDeviation = comparison.getStandardDeviation();
+        }
+
+        double insignificanceInterval = SIGNIFICANCE_FACTOR * standardDeviation;
+
+        return Math.abs(result.getMedian() - comparison.getMedian()) > insignificanceInterval;
     }
 }

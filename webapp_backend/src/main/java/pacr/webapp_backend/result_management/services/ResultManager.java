@@ -9,6 +9,7 @@ import pacr.webapp_backend.shared.IResultSaver;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import java.util.Collection;
 import java.util.Map;
@@ -68,7 +69,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
 
         for (IBenchmarkingResult result : results) {
             ICommit commit = resultsWithCommits.get(result);
-            resultImportSaver.saveResult(result, commit, getComparisonResult(commit));
+            resultImportSaver.saveResult(result, commit, getComparisonCommitHash(commit));
+            updateComparisonsForChildren(result.getCommitHash());
         }
     }
 
@@ -82,10 +84,11 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             throw new IllegalArgumentException("could not find commit with hash " + benchmarkingResult.getCommitHash());
         }
 
-        resultBenchmarkSaver.saveResult(benchmarkingResult, commit, getComparisonResult(commit));
+        resultBenchmarkSaver.saveResult(benchmarkingResult, commit, getComparisonCommitHash(commit));
+        updateComparisonsForChildren(benchmarkingResult.getCommitHash());
     }
 
-    private CommitResult getComparisonResult(ICommit commit) {
+    private String getComparisonCommitHash(ICommit commit) {
         if (commit == null) {
             return null;
         }
@@ -104,18 +107,50 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
 
         ICommit comparisonCommit = getCommitLatestCommitDate(parents);
 
-        return resultAccess.getResultFromCommit(comparisonCommit.getCommitHash());
+        return comparisonCommit.getCommitHash();
     }
 
     private ICommit getCommitLatestCommitDate(Collection<? extends ICommit> commits) {
         LocalDateTime latestTime = LocalDateTime.MIN;
         ICommit latestCommit = null;
         for (ICommit commit : commits) {
-            if (commit.getCommitDate().compareTo(latestTime) >= 0) {
+            if (commit.getCommitDate().isAfter(latestTime)) {
                 latestCommit = commit;
                 latestTime = commit.getCommitDate();
             }
         }
         return latestCommit;
+    }
+
+    private void updateComparisonsForChildren(String commitHash) {
+        List<CommitResult> resultsToUpdate = resultAccess.getResultsWithComparisionCommitHash(commitHash);
+
+        CommitResult comparisonResult = resultAccess.getResultFromCommit(commitHash);
+        if (comparisonResult == null) {
+            return;
+        }
+
+        for (CommitResult resultToUpdate : resultsToUpdate) {
+            if (!resultToUpdate.isCompared()) {
+                resultToUpdate.setCompared(true);
+
+                for (BenchmarkResult benchmarkResult : resultToUpdate.getBenchmarkResults()) {
+                    BenchmarkResult comparisonBenchmarkResult = comparisonResult.getBenchmarks()
+                            .get(benchmarkResult.getName());
+
+                    if (comparisonBenchmarkResult != null) {
+                        for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+                            BenchmarkPropertyResult comparisonPropertyResult = comparisonBenchmarkResult
+                                    .getBenchmarkProperties().get(propertyResult.getName());
+                            StatisticalCalculator.compare(propertyResult, comparisonPropertyResult);
+                        }
+                    }
+                }
+
+                synchronized (CommitResult.class) {
+                    resultAccess.saveResult(resultToUpdate);
+                }
+            }
+        }
     }
 }

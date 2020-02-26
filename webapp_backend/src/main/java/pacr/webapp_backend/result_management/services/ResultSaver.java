@@ -22,7 +22,6 @@ abstract class ResultSaver {
 
     private static final String NO_RESULT_ERROR = "PACR received no benchmarking result for this commit";
     private static final String NO_PROPERTY_RESULT_ERROR = "PACR received no measurements for this property";
-    private static final double SIGNIFICANCE_FACTOR = 3d;
 
     protected IResultAccess resultAccess;
     private BenchmarkManager benchmarkManager;
@@ -45,21 +44,26 @@ abstract class ResultSaver {
      * Enters Benchmark.class monitor and exits it. Then enters CommitResult.class monitor.
      * @param result the benchmarking result that is saved. Cannot be null.
      * @param commit the commit of the benchmarking result. Cannot be null.
-     * @param comparisonResult the result that is used for comparison. May be null. In that case no comparison will be
-     *                         executed.
+     * @param comparisonCommitHash the hash of the commit that is used for comparison. May be null. In that case no
+     *                             comparison will be executed.
      */
     void saveResult(@NotNull IBenchmarkingResult result, @NotNull ICommit commit,
-                    @Nullable CommitResult comparisonResult) {
+                    @Nullable String comparisonCommitHash) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 
-        String comparisonCommitHash = null;
-        if (comparisonResult != null) {
-            comparisonCommitHash = comparisonResult.getCommitHash();
+        CommitResult comparisonResult = null;
+        if (comparisonCommitHash != null) {
+            comparisonResult = resultAccess.getResultFromCommit(comparisonCommitHash);
         }
 
         CommitResult resultToSave = new CommitResult(result, commit.getRepositoryID(), commit.getCommitDate(),
                 comparisonCommitHash);
+
+        // indicates that the new result was compared if a result for the comparison commit hash was found
+        if (comparisonResult != null) {
+            resultToSave.setCompared(true);
+        }
 
         boolean significantPropertyResultExists = false;
 
@@ -152,15 +156,9 @@ abstract class ResultSaver {
             }
 
             // comparison to previous result
-            if (comparisonPropertyResult != null && !propertyResultToSave.isError()
-                    && !comparisonPropertyResult.isError()) {
-                propertyResultToSave.setRatio(propertyResultToSave.getMedian() / comparisonPropertyResult.getMedian());
-                propertyResultToSave.setCompared(true);
-
-                if (significantChange(propertyResultToSave, comparisonPropertyResult)) {
-                    propertyResultToSave.setSignificant(true);
-                    significantPropertyResultExists = true;
-                }
+            StatisticalCalculator.compare(propertyResultToSave, comparisonPropertyResult);
+            if (propertyResultToSave.isSignificant()) {
+                significantPropertyResultExists = true;
             }
 
             benchmarkResult.addPropertyResult(propertyResultToSave);
@@ -215,20 +213,5 @@ abstract class ResultSaver {
         for (Benchmark benchmarkToUpdate : benchmarksToUpdate) {
             benchmarkManager.createOrUpdateBenchmark(benchmarkToUpdate);
         }
-    }
-
-    /**
-     * A result is considered significant if the median strays at least SIGNIFICANCE_FACTOR standard deviations from the
-     * previous result.
-     */
-    private boolean significantChange(BenchmarkPropertyResult result, BenchmarkPropertyResult comparison) {
-        double standardDeviation = result.getStandardDeviation();
-        if (comparison.getStandardDeviation() > standardDeviation) {
-            standardDeviation = comparison.getStandardDeviation();
-        }
-
-        double insignificanceInterval = SIGNIFICANCE_FACTOR * standardDeviation;
-
-        return Math.abs(result.getMedian() - comparison.getMedian()) > insignificanceInterval;
     }
 }

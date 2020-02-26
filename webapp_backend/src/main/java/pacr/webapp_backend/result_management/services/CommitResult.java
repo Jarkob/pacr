@@ -3,6 +3,9 @@ package pacr.webapp_backend.result_management.services;
 import java.util.HashSet;
 import java.util.Objects;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
@@ -26,6 +29,7 @@ import java.util.Set;
  */
 @Entity(name = "CommitResult")
 @Table(name = "commit_result")
+@Getter
 public class CommitResult implements IBenchmarkingResult {
 
     private static final int MAX_STRING_LENGTH = 2000;
@@ -34,6 +38,7 @@ public class CommitResult implements IBenchmarkingResult {
     private String commitHash;
 
     private int repositoryID;
+    @Setter(AccessLevel.PACKAGE)
     private boolean error;
 
     @Column(length = MAX_STRING_LENGTH)
@@ -47,8 +52,12 @@ public class CommitResult implements IBenchmarkingResult {
 
     private LocalDateTime entryDate;
     private LocalDateTime commitDate;
-    private String comparisonCommitHash;
 
+    private String comparisonCommitHash;
+    @Setter(AccessLevel.PACKAGE)
+    private boolean compared;
+
+    @Setter(AccessLevel.PACKAGE)
     private boolean significant;
 
     /**
@@ -93,21 +102,6 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     @Override
-    public int getRepositoryID() {
-        return repositoryID;
-    }
-
-    @Override
-    public String getCommitHash() {
-        return commitHash;
-    }
-
-    @Override
-    public ISystemEnvironment getSystemEnvironment() {
-        return systemEnvironment;
-    }
-
-    @Override
     public Map<String, BenchmarkResult> getBenchmarks() {
         Map<String, BenchmarkResult> benchmarks = new HashMap<>();
 
@@ -127,47 +121,11 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     /**
-     * @return the entry date into the system of the result.
-     */
-    public LocalDateTime getEntryDate() {
-        return entryDate;
-    }
-
-    /**
-     * Gets all the measurements for each benchmark.
-     * @return the BenchmarkResults.
-     */
-    public Set<BenchmarkResult> getBenchmarkResults() {
-        return benchmarkResults;
-    }
-
-    /**
      * Indicates whether a global error occurred while benchmarking the commit.
      * @return true if an error occurred, otherwise false.
      */
     public boolean hasGlobalError() {
         return error;
-    }
-
-    /**
-     * @return The hash of the commit that was used for comparison. May be null if no comparison has taken place.
-     */
-    public String getComparisonCommitHash() {
-        return comparisonCommitHash;
-    }
-
-    /**
-     * @param error {@code true} if there was an error with this result, otherwise {@code false}
-     */
-    public void setError(boolean error) {
-        this.error = error;
-    }
-
-    /**
-     * @return the commit date of the commit.
-     */
-    public LocalDateTime getCommitDate() {
-        return commitDate;
     }
 
     /**
@@ -177,20 +135,6 @@ public class CommitResult implements IBenchmarkingResult {
         Objects.requireNonNull(benchmarkResult);
 
         benchmarkResults.add(benchmarkResult);
-    }
-
-    /**
-     * @param significant sets whether this commit result is significant compared to the previous result.
-     */
-    public void setSignificant(boolean significant) {
-        this.significant = significant;
-    }
-
-    /**
-     * @return {@code true} if this result is significant compared to the previous result, otherwise {@code false}.
-     */
-    public boolean isSignificant() {
-        return significant;
     }
 
     /**

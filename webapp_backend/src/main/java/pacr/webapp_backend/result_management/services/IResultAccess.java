@@ -47,6 +47,13 @@ public interface IResultAccess {
     CommitResult getResultFromCommit(@NotNull String commitHash);
 
     /**
+     * Gets all saved results with the given comparision commit hash.
+     * @param commitHash the hash of the comparision commit.
+     * @return all the applicable results.
+     */
+    List<CommitResult> getResultsWithComparisionCommitHash(@NotNull String commitHash);
+
+    /**
      * @return All saved results.
      */
     List<CommitResult> getAllResults();
