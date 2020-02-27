@@ -1,12 +1,10 @@
-import { BenchmarkGroup } from './../classes/benchmark-group';
-import { BenchmarkService } from './../services/benchmark.service';
+import { BenchmarkingResultTableComponent } from './../benchmarking-result-table/benchmarking-result-table.component';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { BenchmarkingResultService } from './../services/benchmarking-result.service';
 import { StringService } from './../services/strings.service';
 import { COMMIT_HASH_DATA } from './../detail-view/detail-view-maximized.tokens';
 import { DetailViewMaximizedRef } from './../detail-view/detail-view-maximized-ref';
-import { Component, Inject, HostListener, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material';
+import { Component, Inject, HostListener, OnInit, ViewChild } from '@angular/core';
 
 const ESCAPE_KEY = 27;
 
@@ -19,6 +17,7 @@ export class DetailViewMaximizedComponent implements OnInit {
 
   strings: any;
   benchmarkingResult: CommitBenchmarkingResult;
+  @ViewChild('resultTable', {static: true}) resultTable: BenchmarkingResultTableComponent;
 
   constructor(
     @Inject(COMMIT_HASH_DATA) public commitHash: string,
