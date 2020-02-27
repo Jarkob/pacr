@@ -37,7 +37,7 @@ public class BenchmarkProperty implements IBenchmarkProperty {
 
     @Override
     public boolean isError() {
-        return error != null;
+        return StringUtils.hasText(error);
     }
 
 }
