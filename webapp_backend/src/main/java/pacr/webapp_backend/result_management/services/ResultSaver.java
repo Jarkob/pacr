@@ -200,7 +200,7 @@ abstract class ResultSaver {
         // new Benchmark is created or it is found in saved benchmarks.
         Benchmark benchmark = new Benchmark(benchmarkName);
         for (Benchmark savedBenchmark : savedBenchmarks) {
-            if (savedBenchmark.getOriginalName().equals(benchmarkName)) {
+            if (savedBenchmark.equals(benchmark)) {
                 benchmark = savedBenchmark;
                 break;
             }

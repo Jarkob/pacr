@@ -1,11 +1,14 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Getter;
+
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 /**
  * A single result with an optional error message.
  */
+@Getter
 public class ResultWithError {
 
     private Double result;
@@ -25,19 +28,5 @@ public class ResultWithError {
             this.result = propertyResult.getMedian();
             this.errorMessage = null;
         }
-    }
-
-    /**
-     * @return gets the result. Null if there was an error.
-     */
-    public Double getResult() {
-        return result;
-    }
-
-    /**
-     * @return gets the error message. Null if there was no error.
-     */
-    public String getErrorMessage() {
-        return errorMessage;
     }
 }

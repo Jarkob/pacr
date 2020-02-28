@@ -116,14 +116,6 @@ public class OutputBenchmarkingResult {
         this.benchmarksList = new OutputBenchmark[0];
     }
 
-    /**
-     * Gets all benchmarks (for output) that were executed on the commit.
-     * @return the benchmarks.
-     */
-    public List<OutputBenchmark> getBenchmarksList() {
-        return Arrays.asList(benchmarksList);
-    }
-
     private boolean belongToSameCommit(ICommit commit, CommitResult result) {
         if (commit != null && result != null) {
             return commit.getCommitHash().equals(result.getCommitHash());

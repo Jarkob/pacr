@@ -1,5 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.util.StringUtils;
@@ -20,6 +22,8 @@ import java.util.Set;
  * This entity is saved in the database.
  */
 @Entity(name = "Benchmark")
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Benchmark {
 
     @Id
@@ -29,6 +33,7 @@ public class Benchmark {
     /**
      * The name this benchmark object was created with. Cannot be changed after creating the benchmark.
      */
+    @EqualsAndHashCode.Include
     private String originalName;
 
     /**
@@ -69,60 +74,12 @@ public class Benchmark {
     }
 
     /**
-     * Gets the unique id of the benchmark.
-     * @return the id.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Gets the original name of the benchmark with which it was created.
-     * @return the original name.
-     */
-    public String getOriginalName() {
-        return originalName;
-    }
-
-    /**
-     * Gets the custom name of the benchmark.
-     * @return the custom name.
-     */
-    public String getCustomName() {
-        return customName;
-    }
-
-    /**
-     * Gets the description of the benchmark.
-     * @return the description.
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * Gets the list of all properties that are part of this benchmark.
-     * @return the list of properties.
-     */
-    public Set<BenchmarkProperty> getProperties() {
-        return properties;
-    }
-
-    /**
-     * Gets the BenchmarkGroup of this benchmark.
-     * @return the group.
-     */
-    public BenchmarkGroup getGroup() {
-        return group;
-    }
-
-    /**
      * Sets the custom name to a new name as long as its not null, empty or blank. Otherwise the custom name remains the
      * same.
      * @param customName the new custom name.
      */
     public void setCustomName(String customName) {
-        if (customName != null && !customName.isEmpty() && !customName.isBlank()) {
+        if (StringUtils.hasText(customName)) {
             this.customName = customName;
         }
     }
@@ -138,7 +95,7 @@ public class Benchmark {
     }
 
     /**
-     * Sets the group that this benchmark belongs to to a new group.
+     * Sets the group of this benchmark to a new group.
      * @param group the new group. Cannot be null.
      */
     public void setGroup(@NotNull BenchmarkGroup group) {
@@ -155,26 +112,5 @@ public class Benchmark {
         if (property != null) {
             this.properties.add(property);
         }
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        }
-        if (obj == null || obj.getClass() != this.getClass()) {
-            return false;
-        }
-        Benchmark benchmark = (Benchmark) obj;
-        return id == benchmark.getId()
-                && Objects.equals(originalName, benchmark.getOriginalName())
-                && Objects.equals(customName, benchmark.getCustomName())
-                && Objects.equals(description, benchmark.getDescription())
-                && Objects.equals(group, benchmark.getGroup());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, originalName, customName, description, group);
     }
 }

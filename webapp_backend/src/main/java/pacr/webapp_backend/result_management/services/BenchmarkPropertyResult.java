@@ -1,6 +1,9 @@
 package pacr.webapp_backend.result_management.services;
 
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -25,6 +28,7 @@ import java.util.Objects;
  * This entity is saved in the database.
  */
 @Entity
+@Getter
 public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private static final int DEFAULT_RATIO = 1;
     private static final int MAX_STRING_LENGTH = 2000;
@@ -41,17 +45,21 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private double median;
     private double upperQuartile;
     private double standardDeviation;
+    @Setter(AccessLevel.PACKAGE)
     private boolean error;
 
     @Column(length = MAX_STRING_LENGTH)
     private String errorMessage;
 
+    @Setter(AccessLevel.PACKAGE)
     private double ratio;
+    @Setter(AccessLevel.PACKAGE)
     private boolean compared;
 
     /**
      * A result is considered significant if the median strays at least 3 standard deviations from the previous result.
      */
+    @Setter(AccessLevel.PACKAGE)
     private boolean significant;
 
     @ManyToOne
@@ -137,6 +145,11 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     @Override
+    public boolean isError() {
+        return error;
+    }
+
+    @Override
     public String getUnit() {
         return property.getUnit();
     }
@@ -147,112 +160,11 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     /**
-     * Gets the mean of the measurements.
-     * @return the mean.
-     */
-    public double getMean() {
-        return mean;
-    }
-
-    /**
-     * Gets the lower quartile of the measurements.
-     * @return the lower quartile.
-     */
-    double getLowerQuartile() {
-        return lowerQuartile;
-    }
-
-    /**
-     * Gets the median of the measurements.
-     * @return the median.
-     */
-    public double getMedian() {
-        return median;
-    }
-
-    /**
-     * Gets the upper quartile of the measurements.
-     * @return the upper quartile.
-     */
-    double getUpperQuartile() {
-        return upperQuartile;
-    }
-
-    /**
-     * Gets the standard deviation of the measurements.
-     * @return the standard deviation.
-     */
-    double getStandardDeviation() {
-        return standardDeviation;
-    }
-
-    /**
-     * Indicates whether an error occurred while benchmarking the property.
-     * @return true if such an error occurred. otherwise false.
-     */
-    public boolean isError() {
-        return error;
-    }
-
-    /**
      * Gets the name of the property.
      * @return the name.
      */
     public String getName() {
         return property.getName();
-    }
-
-    /**
-     * @return The ratio of this property result with the property result of the previous commit.
-     */
-    public double getRatio() {
-        return ratio;
-    }
-
-    /**
-     * @return {@code true} if this property result was compared to another one, otherwise {@code false}
-     */
-    public boolean isCompared() {
-        return compared;
-    }
-
-    /**
-     * @return {@code true} if the change from this result compared to the previous result was significant, otherwise
-     * {@code false}.
-     */
-    public boolean isSignificant() {
-        return significant;
-    }
-
-    /**
-     * Sets the ratio of this results mean to a result for comparison.
-     * @param ratio the ratio between the two means.
-     */
-    public void setRatio(double ratio) {
-        this.ratio = ratio;
-    }
-
-    /**
-     * Sets whether this property result was compared to another result (with a ratio between the means) or not.
-     * @param compared the boolean value.
-     */
-    public void setCompared(boolean compared) {
-        this.compared = compared;
-    }
-
-    /**
-     * Sets whether the change of this result from the previous result was significant.
-     * @param significant the boolean value.
-     */
-    public void setSignificant(boolean significant) {
-        this.significant = significant;
-    }
-
-    /**
-     * @param error {@code true} if there was an error measuring this property, otherwise {@code false}.
-     */
-    public void setError(boolean error) {
-        this.error = error;
     }
 
     /**

@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Getter;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import java.util.Objects;
  * Represents the specification of a computer system that was used to benchmark a certain commit.
  */
 @Entity
+@Getter
 public class SystemEnvironment implements ISystemEnvironment {
     @Id
     @GeneratedValue
@@ -48,26 +50,6 @@ public class SystemEnvironment implements ISystemEnvironment {
     @Override
     public String getComputerName() {
         return name;
-    }
-
-    @Override
-    public String getOs() {
-        return this.os;
-    }
-
-    @Override
-    public String getProcessor() {
-        return processor;
-    }
-
-    @Override
-    public String getKernel() {
-        return this.kernel;
-    }
-
-    @Override
-    public int getCores() {
-        return this.cores;
     }
 
     @Override

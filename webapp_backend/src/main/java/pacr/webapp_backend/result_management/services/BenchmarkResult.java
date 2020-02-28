@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import lombok.Getter;
 import pacr.webapp_backend.shared.IBenchmark;
 
 import javax.persistence.CascadeType;
@@ -23,6 +24,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "benchmark_result")
+@Getter
 public class BenchmarkResult implements IBenchmark {
 
     @Id
@@ -65,27 +67,11 @@ public class BenchmarkResult implements IBenchmark {
     }
 
     /**
-     * Gets all measured data for the properties.
-     * @return the property results.
-     */
-    public Set<BenchmarkPropertyResult> getPropertyResults() {
-        return propertyResults;
-    }
-
-    /**
      * Gets the original name of the benchmark.
      * @return the name.
      */
     public String getName() {
         return benchmark.getOriginalName();
-    }
-
-    /**
-     * Gets the benchmark that was executed for the measurements.
-     * @return the benchmark.
-     */
-    public Benchmark getBenchmark() {
-        return benchmark;
     }
 
     /**
