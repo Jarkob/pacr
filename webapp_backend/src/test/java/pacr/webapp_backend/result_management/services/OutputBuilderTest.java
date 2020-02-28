@@ -103,9 +103,9 @@ public class OutputBuilderTest {
 
         assertNotNull(outputResult);
 
-        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, outputResult.getBenchmarksList().size());
-        assertEquals(NO_GROUP_ID, outputResult.getBenchmarksList().get(FIRST).getGroupId());
-        assertEquals(NO_GROUP_ID, outputResult.getBenchmarksList().get(SECOND).getGroupId());
+        assertEquals(EXPECTED_NUM_OF_BENCHMARKS, outputResult.getBenchmarksList().length);
+        assertEquals(NO_GROUP_ID, outputResult.getBenchmarksList()[FIRST].getGroupId());
+        assertEquals(NO_GROUP_ID, outputResult.getBenchmarksList()[SECOND].getGroupId());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class OutputBuilderTest {
         OutputBenchmarkingResult output = outputBuilder.buildDetailOutput(commitOne);
 
         assertEquals(commitOne.getCommitHash(), output.getCommitHash());
-        assertTrue(output.getBenchmarksList().isEmpty());
+        assertEquals(0, output.getBenchmarksList().length);
         assertFalse(output.isGlobalError());
     }
 

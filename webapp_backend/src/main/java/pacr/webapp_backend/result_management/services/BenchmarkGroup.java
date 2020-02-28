@@ -56,7 +56,7 @@ public class BenchmarkGroup {
     /**
      * Sets this to the standard group.
      */
-    void setToStandardGroup() {
+    public void setToStandardGroup() {
         this.standardGroup = true;
     }
 
@@ -65,7 +65,7 @@ public class BenchmarkGroup {
      * the same.
      * @param name the new name.
      */
-    void setName(String name) {
+    public void setName(String name) {
         if (StringUtils.hasText(name)) {
             this.name = name;
         }
