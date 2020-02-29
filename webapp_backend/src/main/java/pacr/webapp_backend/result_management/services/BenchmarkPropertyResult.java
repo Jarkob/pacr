@@ -168,6 +168,13 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     }
 
     /**
+     * @return {@code true} if this property result has no measurements, otherwise {@code false}
+     */
+    boolean hasNoMeasurements() {
+        return measurements.isEmpty();
+    }
+
+    /**
      * @param errorMessage the error message if there was an error. May be null if there was no error.
      */
     public void setErrorMessage(@Nullable String errorMessage) {

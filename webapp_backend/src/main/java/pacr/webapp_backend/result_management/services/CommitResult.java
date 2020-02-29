@@ -138,6 +138,29 @@ public class CommitResult implements IBenchmarkingResult {
     }
 
     /**
+     * @return {@code true} if this commit result has no benchmark results, otherwise {@code false}
+     */
+    boolean hasNoBenchmarkResults() {
+        return benchmarkResults.isEmpty();
+    }
+
+    /**
+     * Checks whether this commit result should be considered significant (if at least one property result is
+     * significant). Sets this results significance accordingly.
+     */
+    void updateSignificance() {
+        for (BenchmarkResult benchmarkResult : benchmarkResults) {
+            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+                if (propertyResult.isSignificant()) {
+                    significant = true;
+                    return;
+                }
+            }
+        }
+        significant = false;
+    }
+
+    /**
      * @param errorMessage the error message if there was an error with this result. May be null if there was no error.
      */
     public void setErrorMessage(@Nullable String errorMessage) {
