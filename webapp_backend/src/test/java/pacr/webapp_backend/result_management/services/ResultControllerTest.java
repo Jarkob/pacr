@@ -91,19 +91,19 @@ public class ResultControllerTest {
     }
 
     /**
-     * Tests whether getNewResults correctly calls the ResultGetter. @TODO Martin
+     * Tests whether getNewResults correctly calls the ResultGetter.
      */
-    @Test @Disabled
+    @Test
     void getNewResults_shouldCallResultGetter() {
-        /*PageRequest pageRequest = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+        PageRequest pageRequest = PageRequest.of(PAGE_NUM, PAGE_SIZE);
 
-        List<CommitHistoryItem> getterOutput = new LinkedList<>();
+        Page<CommitHistoryItem> getterOutput = new PageImpl<>(new LinkedList<>());
         when(resultGetterMock.getNewestResults(pageRequest)).thenReturn(getterOutput);
 
-        List<CommitHistoryItem> testOutput = resultController.getNewBenchmarkingResults(pageRequest);
+        Page<CommitHistoryItem> testOutput = resultController.getNewBenchmarkingResults(pageRequest);
 
         verify(resultGetterMock).getNewestResults(pageRequest);
-        assertEquals(getterOutput, testOutput);*/
+        assertEquals(getterOutput, testOutput);
     }
 
     /**

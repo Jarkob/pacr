@@ -231,18 +231,19 @@ public class ResultGetterTest {
 
     /**
      * Tests whether getNewestResults properly builds the output objects and keeps their order from the database.
-     * @TODO Martin
      */
-    @Test @Disabled
+    @Test
     void getNewestResults_shouldBuildOutputObjects() {
-        /*List<CommitResult> results = new LinkedList<>();
+        List<CommitResult> results = new LinkedList<>();
         results.add(resultMock);
         CommitResult resultMockTwo = Mockito.mock(CommitResult.class);
         results.add(resultMockTwo);
 
+        Page<CommitResult> page = new PageImpl<>(results);
+
         PageRequest pageRequest = PageRequest.of(PAGE_NUM, PAGE_SIZE);
 
-        when(resultAccessMock.getNewestResults(pageRequest)).thenReturn(results);
+        when(resultAccessMock.getNewestResults(pageRequest)).thenReturn(page);
 
         when(resultMock.getCommitHash()).thenReturn(HASH);
         when(resultMockTwo.getCommitHash()).thenReturn(HASH_TWO);
@@ -261,7 +262,7 @@ public class ResultGetterTest {
 
         Page<CommitHistoryItem> newestResults = resultGetter.getNewestResults(pageRequest);
 
-        assertEquals(EXPECTED_NUM_OF_NEW_RESULTS, newestResults.getContent().size());*/
+        assertEquals(EXPECTED_NUM_OF_NEW_RESULTS, newestResults.getContent().size());
     }
 
     /**

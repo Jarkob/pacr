@@ -203,11 +203,11 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
     /**
      * Tests whether multiple saved results are returned in the correct order by getNewestResult (even if a result is
      * deleted in between)
-     * @throws InterruptedException if sleep fails. @TODO Martin
+     * @throws InterruptedException if sleep fails.
      */
-    @Test @Disabled
+    @Test
     public void getNewestResults_multipleResultsSavedOneDeleted_shouldReturnOrdered() throws InterruptedException {
-        /*this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE));
+        this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE));
 
         CommitResult resultToDelete = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultToDelete);
@@ -230,7 +230,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
 
         PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
-        List<CommitResult> orderedResults = this.resultDB.getNewestResults(pageRequest);
+        Page<CommitResult> orderedResults = this.resultDB.getNewestResults(pageRequest);
 
         int i = 0;
 
@@ -241,7 +241,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
                             + " is not before " + previousTime.toString());
             previousTime = result.getEntryDate();
             i++;
-        }*/
+        }
     }
 
     /**
