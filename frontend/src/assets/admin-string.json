@@ -2,6 +2,5 @@
     "tabRepositories": "Repositories",
     "tabBenchmarks": "Benchmarks",
     "tabSSH": "SSH",
-    "tabImportExport": "Import/Export",
-    "tabDashboards": "Dashboards"
+    "tabImportExport": "Import/Export"
 }
