@@ -1,7 +1,9 @@
 package pacr.webapp_backend.authentication.services;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -10,15 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Token {
-
     private String token;
-
-    /**
-     * Creates a new token
-     * @param token the value of the token
-     */
-    public Token(String token) {
-        this.token = token;
-    }
 }

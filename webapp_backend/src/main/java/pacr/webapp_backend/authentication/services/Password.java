@@ -1,6 +1,9 @@
 package pacr.webapp_backend.authentication.services;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -8,20 +11,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Password {
-
     private String password;
-
-    /**
-     * Creates an empty password
-     */
-    public Password() { }
-
-    /**
-     * Creates a new password
-     * @param password the value of the password
-     */
-    public Password(String password) {
-        this.password = password;
-    }
 }
