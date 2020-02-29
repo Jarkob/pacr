@@ -20,8 +20,8 @@ import java.util.Objects;
 @Component
 public interface ResultDB extends PagingAndSortingRepository<CommitResult, String>, IResultAccess {
     @Override
-    default List<CommitResult> getNewestResults(Pageable pageable) {
-        return this.findAllByOrderByEntryDateDesc(pageable).getContent();
+    default Page<CommitResult> getNewestResults(Pageable pageable) {
+        return this.findAllByOrderByEntryDateDesc(pageable);
     }
 
     @Override

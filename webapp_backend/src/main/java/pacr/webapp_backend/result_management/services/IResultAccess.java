@@ -15,7 +15,7 @@ public interface IResultAccess {
      * @param pageable the requested page.
      * @return a list of results that is sorted by entry date in descending order.
      */
-    List<CommitResult> getNewestResults(Pageable pageable);
+    Page<CommitResult> getNewestResults(Pageable pageable);
 
     /**
      * Gets the newest saved commit result for a repository.

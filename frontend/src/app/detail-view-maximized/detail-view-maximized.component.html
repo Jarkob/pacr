@@ -29,7 +29,7 @@
             <span *ngIf="benchmarkingResult?.comparisonCommitHash">
                 {{ strings?.comparedTo }}                    
             </span> 
-            <a *ngIf="benchmarkingResult?.comparisonCommitHash" (click)="selectCommit(benchmarkingResult?.comparisonCommitHash); resultTable.selectCommit(benchmarkingResult?.comparisonCommitHash)" 
+            <a *ngIf="benchmarkingResult?.comparisonCommitHash" (click)="selectCommit(benchmarkingResult?.comparisonCommitHash);" 
                 matTooltip="{{benchmarkingResult?.comparisonCommitHash}}" matTooltipPosition="left">
                 {{ benchmarkingResult?.comparisonCommitHash | shortenString:7 }}
             </a>            

@@ -141,10 +141,24 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param pageable the requested page.
      * @return the results.
      */
-    public List<CommitHistoryItem> getNewestResults(Pageable pageable) {
-        List<CommitResult> results = resultAccess.getNewestResults(pageable);
+    public Page<CommitHistoryItem> getNewestResults(Pageable pageable) {
+        Page<CommitResult> resultsPage = resultAccess.getNewestResults(pageable);
 
-        return resultsToHistoryItems(results);
+        List<CommitHistoryItem> historyItems = resultsToHistoryItems(resultsPage.getContent());
+
+        return new PageImpl<>(historyItems, pageable, resultsPage.getTotalElements());
+    }
+
+    private List<CommitHistoryItem> resultsToHistoryItems(List<CommitResult> results) {
+        List<CommitHistoryItem> history = new LinkedList<>();
+
+        for (CommitResult result : results) {
+            ICommit commit = commitAccess.getCommit(result.getCommitHash());
+            CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
+            history.add(historyItem);
+        }
+
+        return history;
     }
 
     /**

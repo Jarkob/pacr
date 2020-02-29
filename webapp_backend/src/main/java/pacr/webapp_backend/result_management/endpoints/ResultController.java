@@ -114,7 +114,7 @@ public class ResultController {
      * @return the newest results.
      */
     @GetMapping("/history")
-    public List<CommitHistoryItem> getNewBenchmarkingResults(
+    public Page<CommitHistoryItem> getNewBenchmarkingResults(
             @PageableDefault(size = HISTORY_PAGE_SIZE, page = 0) Pageable pageable) {
         return resultGetter.getNewestResults(pageable);
     }

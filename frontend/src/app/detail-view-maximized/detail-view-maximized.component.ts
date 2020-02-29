@@ -17,7 +17,7 @@ export class DetailViewMaximizedComponent implements OnInit {
 
   strings: any;
   benchmarkingResult: CommitBenchmarkingResult;
-  @ViewChild('resultTable', {static: true}) resultTable: BenchmarkingResultTableComponent;
+  @ViewChild('resultTable', {static: false}) resultTable: BenchmarkingResultTableComponent;
 
   constructor(
     @Inject(COMMIT_HASH_DATA) public commitHash: string,
@@ -52,12 +52,18 @@ export class DetailViewMaximizedComponent implements OnInit {
 
     this.commitHash = commitHash;
 
+    if (this.resultTable) {
+      this.resultTable.selectCommit(commitHash);
+    }
+
     this.benchmarkingResultService.getBenchmarkingResultsForCommit(commitHash).subscribe(
       data => {
         this.benchmarkingResult = data;
       }
     );
   }
+
+
 
   /**
    * close the maximized view
