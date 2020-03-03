@@ -149,9 +149,19 @@ export class DiagramComponent implements OnInit {
           if (this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage) {
             return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
           }
-          const label = Math.round(item.yLabel * 100) / 100;
+          let label = '' + Math.round(item.yLabel * 100) / 100;
+          label += ' ' + this.selectedBenchmarkProperty.unit;
 
-          return label + ' ' + this.selectedBenchmarkProperty.unit;
+          // add labels to diagram entry
+          if (this.datasets[item.datasetIndex].code[item.index].labels.length !== 0) {
+            label += '<br>Labels:';
+            let prefix = '';
+            for (const el of this.datasets[item.datasetIndex].code[item.index].labels) {
+              label += prefix + el;
+              prefix = ', ';
+            }
+          }
+          return label;
         }
       }
     }
@@ -220,6 +230,7 @@ export class DiagramComponent implements OnInit {
     if (this.selectedBenchmark == null) {
       return;
     }
+
     this.loading = true;
     const repositoryIds = Array.from(this.repositories.keys());
     this.getBenchmarkingResults(repositoryIds);
@@ -227,8 +238,14 @@ export class DiagramComponent implements OnInit {
     this.deleteLine();
   }
 
+  // tslint:disable-next-line:member-ordering
+  allLines = [];
+
   private getBenchmarkingResults(repositoryIds: number[]) {
     if (repositoryIds.length === 0) {
+      // remove null object
+      this.datasets = this.datasets.splice(1);
+      this.chart.update();
       this.loadProperty();
       return;
     }
@@ -238,7 +255,8 @@ export class DiagramComponent implements OnInit {
         const lines = this.calculateLines(repositoryIds[0]);
         // both is important, otherwise event listening for change of legend gets messed up
         this.chart.datasets.concat(lines);
-        this.datasets = lines;
+        this.allLines.concat(lines);
+        this.datasets = this.datasets.concat(lines);
         this.chart.update();
         this.getBenchmarkingResults(repositoryIds.splice(1));
       }
@@ -249,6 +267,7 @@ export class DiagramComponent implements OnInit {
    * load the selected benchmark property
    */
   public loadProperty() {
+    this.options.scales.yAxes[0].scaleLabel.labelString = this.selectedBenchmarkProperty.name;
     let last = 0;
     // tslint:disable-next-line:prefer-for-of
     for (let i = 0; i < this.datasets.length; i++) {
