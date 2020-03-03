@@ -29,6 +29,7 @@ import { ImportExportService } from './services/import-export.service';
 import { EventService } from './services/event.service';
 import { BenchmarkService } from './services/benchmark.service';
 import { BenchmarkingResultService } from './services/benchmarking-result.service';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AppComponent } from './app.component';
 import { BenchmarkerListComponent } from './benchmarker-list/benchmarker-list.component';
@@ -58,7 +59,6 @@ import { FormsModule } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { DragDropModule} from '@angular/cdk/drag-drop';
-import { DateAdapter } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -127,6 +127,7 @@ import { DateAdapter } from '@angular/material';
     RepositoryService,
     SchedulerService,
     DetailViewService,
+    CookieService,
     GlobalService,
     {
       provide: HTTP_INTERCEPTORS,

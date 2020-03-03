@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { PageEvent } from '@angular/material';
 import { Subscription, interval } from 'rxjs';
 import { CommitHistoryItem } from './../classes/commit-history-item';
@@ -22,7 +23,8 @@ export class CommitHistoryComponent implements OnInit {
     private detailViewService: DetailViewService,
     private eventService: EventService,
     private previewDialog: CommitHistoryMaximizerService,
-    private stringService: StringService
+    private stringService: StringService,
+    private cookieService: CookieService
   ) { }
 
   commitsPage: any;
@@ -35,6 +37,8 @@ export class CommitHistoryComponent implements OnInit {
 
   commitHistoryInterval = 20; // in seconds
   commitHistorySubscription: Subscription;
+
+  lastVisit: Date = null;
 
   /**
    * select a commit
@@ -51,6 +55,8 @@ export class CommitHistoryComponent implements OnInit {
       }
     );
 
+    this.updateLastVisit();
+
     this.getCommitHistory(this.commitsPageEvent);
     this.commitHistorySubscription = interval(this.commitHistoryInterval * 1000).subscribe(
       val => {
@@ -59,6 +65,27 @@ export class CommitHistoryComponent implements OnInit {
         }
       }
     );
+
+    console.log(this.lastVisit);
+  }
+
+  private updateLastVisit() {
+    const cookieKey = 'last-visit';
+
+    const lastVisit = this.cookieService.get(cookieKey);
+    if (!isNaN(Date.parse(lastVisit))) {
+      this.lastVisit = new Date(lastVisit);
+    }
+
+    this.cookieService.set(cookieKey, new Date().toDateString());
+  }
+
+  public isNewCommit(commit: CommitHistoryItem): boolean {
+    if (!this.lastVisit || !commit) {
+      return true;
+    }
+
+    return this.lastVisit < commit.entryDate;
   }
 
   /**

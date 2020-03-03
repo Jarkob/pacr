@@ -9,7 +9,7 @@
         <mat-expansion-panel *ngFor="let commit of commits; trackBy: trackCommitHistoryItem">
             <mat-expansion-panel-header>
                 <mat-panel-title> 
-                    {{ commit.entryDate | timeAgo }}                         
+                    <span [ngStyle]="{'text-decoration': isNewCommit(commit) ? 'underline' : 'none'}">{{ commit.entryDate | timeAgo }}</span>
                 </mat-panel-title>
                 
                 <mat-panel-description>
