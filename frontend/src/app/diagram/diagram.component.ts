@@ -53,7 +53,6 @@ export class DiagramComponent implements OnInit {
   // if a list should show up in the diagram
   checked: boolean[] = [];
 
-
   @Input() maximized: boolean;
   dialogRef: DiagramMaximizedRef;
 
@@ -130,40 +129,116 @@ export class DiagramComponent implements OnInit {
       }
     },
     tooltips: {
-      callbacks: {
-        title: (items: any[], ) => {
-          return this.datasets[items[0].datasetIndex].repositoryName + ': '
-          + this.datasets[items[0].datasetIndex].code[items[0].index].commitHash.substring(0, 8);
-        },
-        label: (item, data) => {
-          // if there is an error, show it
-          if (!this.datasets[item.datasetIndex].code[item.index].result) {
-            return 'Not yet benchmarked';
-          }
-          if (this.datasets[item.datasetIndex].code[item.index].globalError) {
-            return 'Global Error: ' + this.datasets[item.datasetIndex].code[item.index];
-          }
-          if (Object.keys(this.datasets[item.datasetIndex].code[item.index].result).length === 0) {
-            return 'No benchmarks available';
-          }
-          if (this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage) {
-            return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
-          }
-          let label = '' + Math.round(item.yLabel * 100) / 100;
-          label += ' ' + this.selectedBenchmarkProperty.unit;
+      enabled: false,
+      custom: tooltipModel => {
+        // Tooltip Element
+        let tooltipEl = document.getElementById('chartjs-tooltip');
 
-          // add labels to diagram entry
-          if (this.datasets[item.datasetIndex].code[item.index].labels.length !== 0) {
-            label += '<br>Labels:';
-            let prefix = '';
-            for (const el of this.datasets[item.datasetIndex].code[item.index].labels) {
-              label += prefix + el;
-              prefix = ', ';
-            }
-          }
-          return label;
+        // Create element on first render
+        if (!tooltipEl) {
+            tooltipEl = document.createElement('div');
+            tooltipEl.id = 'chartjs-tooltip';
+            tooltipEl.innerHTML = '<table></table>';
+            document.body.appendChild(tooltipEl);
         }
-      }
+
+        // Hide if no tooltip
+        if (tooltipModel.opacity === 0) {
+            tooltipEl.style.opacity = '0';
+            return;
+        }
+
+        // Set caret Position
+        tooltipEl.classList.remove('above', 'below', 'no-transform');
+        if (tooltipModel.yAlign) {
+            tooltipEl.classList.add(tooltipModel.yAlign);
+        } else {
+            tooltipEl.classList.add('no-transform');
+        }
+
+        function getBody(bodyItem) {
+            return bodyItem.lines;
+        }
+
+        // Set Text
+        if (tooltipModel.body) {
+          console.log('body: ', tooltipModel);
+          const titleLines = tooltipModel.title || [];
+          const bodyLines = tooltipModel.body.map(getBody);
+
+          let innerHtml = '<thead>';
+
+          titleLines.forEach(title => {
+              innerHtml += '<tr><th>' + title + '</th></tr>';
+          });
+          innerHtml += '</thead><tbody>';
+
+          bodyLines.forEach((body, i) => {
+              const colors = tooltipModel.labelColors[i];
+              let style = 'background:' + colors.backgroundColor;
+              style += '; border-color:' + colors.borderColor;
+              style += '; border-width: 2px';
+              const span = '<span style="' + style + '"></span>';
+              innerHtml += '<tr><td>' + span + body + '</td></tr>';
+          });
+          innerHtml += '</tbody>';
+
+          const tableRoot = tooltipEl.querySelector('table');
+          tableRoot.innerHTML = innerHtml;
+        }
+
+        // `this` will be the overall tooltip
+        const position = this.chart.chart.canvas.getBoundingClientRect();
+
+        // Display, position, and set styles for font
+        tooltipEl.style.opacity = '1';
+        tooltipEl.style.position = 'absolute';
+        tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
+        tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
+        tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
+        tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
+        tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
+        tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
+        tooltipEl.style.pointerEvents = 'none';
+      },
+
+      // callbacks: {
+      //   title: (items: any[], ) => {
+      //     return this.datasets[items[0].datasetIndex].repositoryName + ': '
+      //     + this.datasets[items[0].datasetIndex].code[items[0].index].commitHash.substring(0, 8);
+      //   },
+      //   label: (item, data) => {
+      //     // if there is an error, show it
+      //     if (!this.datasets[item.datasetIndex].code[item.index].result) {
+      //       return 'Not yet benchmarked';
+      //     }
+      //     if (this.datasets[item.datasetIndex].code[item.index].globalError) {
+      //       return 'Global Error: ' + this.datasets[item.datasetIndex].code[item.index];
+      //     }
+      //     if (Object.keys(this.datasets[item.datasetIndex].code[item.index].result).length === 0) {
+      //       return 'No benchmarks available';
+      //     }
+      //     if (this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage) {
+      //       return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
+      //     }
+      //     let label = '' + Math.round(item.yLabel * 100) / 100;
+      //     label += ' ' + this.selectedBenchmarkProperty.unit;
+
+      //     label += '<br>' + this.datasets[item.datasetIndex].code[item.index].author;
+      //     label += '<br>' + this.datasets[item.datasetIndex].code[item.index].authorDate;
+
+      //     // add labels to diagram entry
+      //     if (this.datasets[item.datasetIndex].code[item.index].labels.length !== 0) {
+      //       label += '<br>Labels:';
+      //       let prefix = '';
+      //       for (const el of this.datasets[item.datasetIndex].code[item.index].labels) {
+      //         label += prefix + el;
+      //         prefix = ', ';
+      //       }
+      //     }
+      //     return label;
+      //   }
+      // }
     }
   };
   labels = [];
@@ -238,9 +313,6 @@ export class DiagramComponent implements OnInit {
     this.deleteLine();
   }
 
-  // tslint:disable-next-line:member-ordering
-  allLines = [];
-
   private getBenchmarkingResults(repositoryIds: number[]) {
     if (repositoryIds.length === 0) {
       // remove null object
@@ -255,7 +327,6 @@ export class DiagramComponent implements OnInit {
         const lines = this.calculateLines(repositoryIds[0]);
         // both is important, otherwise event listening for change of legend gets messed up
         this.chart.datasets.concat(lines);
-        this.allLines.concat(lines);
         this.datasets = this.datasets.concat(lines);
         this.chart.update();
         this.getBenchmarkingResults(repositoryIds.splice(1));
