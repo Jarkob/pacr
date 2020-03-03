@@ -26,6 +26,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static pacr.webapp_backend.result_management.services.SimpleBenchmark.PROPERTY_NAME;
 
 public class ResultControllerTest {
     public static final int REPO_ID = 1;
@@ -162,5 +163,21 @@ public class ResultControllerTest {
         resultController.getResultsForRepository(REPO_ID, pageRequest);
 
         verify(resultGetterMock).getFullRepositoryResults(REPO_ID, pageRequest);
+    }
+
+    @Test
+    void getMeasurementsOfPropertyForCommit_shouldCallResultGetter() {
+        when(resultGetterMock.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME))
+                .thenReturn(Arrays.asList(0d));
+
+        resultController.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME);
+
+        verify(resultGetterMock).getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME);
+    }
+
+    @Test
+    void getMeasurementsOfPropertyForCommit_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> resultController
+                .getMeasurementsOfPropertyForCommit(null, 0, null));
     }
 }

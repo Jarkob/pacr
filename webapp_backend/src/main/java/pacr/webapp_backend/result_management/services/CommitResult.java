@@ -39,9 +39,11 @@ public class CommitResult implements IBenchmarkingResult {
 
     private int repositoryID;
     @Setter(AccessLevel.PACKAGE)
+    @Getter(AccessLevel.NONE)
     private boolean error;
 
     @Column(length = MAX_STRING_LENGTH)
+    @Getter(AccessLevel.NONE)
     private String errorMessage;
 
     @OneToOne(cascade = CascadeType.ALL)

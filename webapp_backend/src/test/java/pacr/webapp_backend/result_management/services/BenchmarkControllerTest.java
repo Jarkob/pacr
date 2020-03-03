@@ -137,6 +137,12 @@ public class BenchmarkControllerTest {
     }
 
     @Test
+    void benchmarkInputConstructor_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class,
+                () -> new BenchmarkInput(0, null, null, 0));
+    }
+
+    @Test
     void updateBenchmark_benchmarkNotFound_shouldReturnNotFoundCode() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
         doThrow(new NoSuchElementException())

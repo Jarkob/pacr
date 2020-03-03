@@ -109,6 +109,17 @@ public class OutputBuilderTest {
     }
 
     @Test
+    void buildDetailOutput_benchmarkWithGroup_shouldContainGroupID() {
+        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        when(benchmark.getGroup()).thenReturn(group);
+        when(benchmarkTwo.getGroup()).thenReturn(group);
+
+        OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commitOne, resultOne);
+
+        assertEquals(group.getId(), outputResult.getBenchmarksList()[0].getGroupId());
+    }
+
+    @Test
     void buildDetailOutput_differentHashes_shouldThrowException() {
         assertThrows(IllegalArgumentException.class,
                 () -> outputBuilder.buildDetailOutput(commitDifferentHash, resultOne));
@@ -140,5 +151,14 @@ public class OutputBuilderTest {
         assertEquals(commitOne.getCommitHash(), output.getCommitHash());
         assertNull(output.getResult());
         assertNull(output.getGlobalError());
+    }
+
+    @Test
+    void buildDiagramOutput_resultIsCompared_outputShouldHaveComparisonHash() {
+        resultOne.setCompared(true);
+
+        OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commitOne, resultOne);
+
+        assertEquals(COMPARISON_HASH, outputResult.getComparisonCommitHash());
     }
 }
