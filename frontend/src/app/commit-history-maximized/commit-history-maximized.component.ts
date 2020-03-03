@@ -1,3 +1,5 @@
+import { Subscription, interval } from 'rxjs';
+import { PageEvent } from '@angular/material';
 import { CommitHistoryItem } from './../classes/commit-history-item';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { EventService } from './../services/event.service';
@@ -21,7 +23,15 @@ export class CommitHistoryMaximizedComponent implements OnInit {
   ) { }
 
   strings: any;
+
+  commitsPage: any;
   commits: CommitHistoryItem[];
+  commitsPageEvent: PageEvent = new PageEvent();
+
+  pageSizeOptions = [5, 10, 15, 20, 50];
+
+  commitHistoryInterval = 20; // in seconds
+  commitHistorySubscription: Subscription;
 
   ngOnInit() {
     this.stringService.getCommitHistoryStrings().subscribe(
@@ -29,9 +39,13 @@ export class CommitHistoryMaximizedComponent implements OnInit {
         this.strings = data;
       }
     );
-    this.eventService.getCommitHistory().subscribe(
-      data => {
-        this.commits = data;
+
+    this.getCommitHistory(this.commitsPageEvent);
+    this.commitHistorySubscription = interval(this.commitHistoryInterval * 1000).subscribe(
+      val => {
+        if (this.commitsPageEvent.pageIndex === 0)  {
+          this.getCommitHistory(this.commitsPageEvent);
+        }
       }
     );
   }
@@ -49,6 +63,23 @@ export class CommitHistoryMaximizedComponent implements OnInit {
   public selectCommit(commitHash: string) {
     this.dialogRef.selectCommit(commitHash);
     this.close();
+  }
+
+  /**
+   * Fetches all available latest commits in a page.
+   *
+   * @param pagingEvent pageable event containing paging information.
+   * @returns the pagination event.
+   */
+  public getCommitHistory(event: any): any {
+    this.eventService.getCommitHistory(event.pageIndex, event.pageSize).subscribe(
+      data => {
+        this.commitsPage = data;
+        this.commits = data.content;
+      }
+    );
+
+    return event;
   }
 
   /**

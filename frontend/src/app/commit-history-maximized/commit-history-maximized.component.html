@@ -10,6 +10,12 @@
         </button>
     </mat-card-header>
     <mat-card-content>
+        <mat-paginator [length]="this.commitsPage?.totalElements"
+            [pageSize]="this.commitsPage?.size"
+            [pageSizeOptions]="this.pageSizeOptions"
+            (page)="this.benchmarkingPageEvent = this.getCommitHistory($event)">                    
+        </mat-paginator>
+        
         <mat-accordion id="history" class="headers-align">
             <mat-expansion-panel *ngFor="let commit of commits; trackBy: trackCommitHistoryItem">
                 <mat-expansion-panel-header>

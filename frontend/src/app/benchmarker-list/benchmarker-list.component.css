@@ -1,5 +1,5 @@
 mat-card {
-    height: 96%;
+    height: calc(100% - 1em);
     width: 100%;
     overflow: hidden;
     overflow-y: scroll;
