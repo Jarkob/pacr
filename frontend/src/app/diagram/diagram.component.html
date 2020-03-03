@@ -4,6 +4,7 @@
     </button>
     <div fxLayout="row" fxFlexFill>
         <div fxFlex="15%">
+            <button mat-button (click)="resetZoom()">Reset zoom</button>
             <mat-form-field>
                 <mat-label>Benchmark</mat-label>
                 <mat-select [(value)]="selectedBenchmark" (selectionChange)="loadBenchmark()">
