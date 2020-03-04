@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Is responsible for handling JGit. Pulls from repositories, clones repositories.
@@ -50,6 +52,10 @@ import java.util.HashMap;
 public class GitHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(GitHandler.class);
+
+    private static final String LABEL_TAG_REGEX = ".*#pacr-label\\((.*)\\).*";
+    private static final int FIRST_CATCH_GROUP = 1;
+    private static final Pattern pattern = Pattern.compile(LABEL_TAG_REGEX);
 
     private String pathToWorkingDir;
 
@@ -389,8 +395,9 @@ public class GitHandler {
 
             GitCommit commit = createCommit(gitRepository, revCommit);
 
-            if (revCommit.getFullMessage().contains("#pacr-label")) {
-                commit.addLabel(searchForLabel(revCommit.getFullMessage()));
+            Matcher m = pattern.matcher(revCommit.getFullMessage());
+            if (m.matches()) {
+                commit.addLabel(m.group(FIRST_CATCH_GROUP));
             }
 
             commit.addBranch(gitBranch);
@@ -399,16 +406,6 @@ public class GitHandler {
         }
 
         return new HashSet<>(commitsToAdd);
-    }
-
-    private String searchForLabel(String message) {
-        int startIndex = message.indexOf("#pacr-label");
-        int endIndex = message.indexOf(" ", startIndex);
-        if (endIndex == -1) {
-            endIndex = message.length();
-        }
-
-        return message.substring(startIndex, endIndex);
     }
 
     /**
