@@ -7,6 +7,7 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
@@ -22,7 +23,7 @@ public interface IGitTrackingAccess {
      * Returns all repositories.
      * @return repositories.
      */
-    Set<GitRepository> getAllRepositories();
+    List<GitRepository> getAllRepositories();
 
     /**
      * Finds a repository by its repositoryID.

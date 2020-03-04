@@ -14,6 +14,7 @@ import pacr.webapp_backend.shared.IResultDeleter;
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.HashSet;
@@ -73,7 +74,7 @@ public class GitTracking implements IRepositoryImporter {
      */
     @PostConstruct
     private void initializeColorPicker() {
-        Set<GitRepository> repositories = gitTrackingAccess.getAllRepositories();
+        List<GitRepository> repositories = gitTrackingAccess.getAllRepositories();
 
         for (GitRepository repository : repositories) {
             colorPicker.setColorToUsed(repository.getColor());
@@ -131,7 +132,7 @@ public class GitTracking implements IRepositoryImporter {
      * Returns all repositories.
      * @return collection of repositories.
      */
-    public Set<GitRepository> getAllRepositories() {
+    public List<GitRepository> getAllRepositories() {
         return gitTrackingAccess.getAllRepositories();
     }
 

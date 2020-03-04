@@ -24,6 +24,8 @@ import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.NoSuchElementException;
@@ -63,10 +65,10 @@ public class RepositoryManagerController {
      */
     @RequestMapping(value = "/repositories", method = RequestMethod.GET,
     produces = APPLICATION_JSON_VALUE)
-    public Set<TransferRepository> getAllRepositories() {
-        Set<GitRepository> repositories = gitTracking.getAllRepositories();
+    public List<TransferRepository> getAllRepositories() {
+        List<GitRepository> repositories = gitTracking.getAllRepositories();
 
-        Set<TransferRepository> transferRepositories = new HashSet<>();
+        List<TransferRepository> transferRepositories = new LinkedList<>();
         for (GitRepository repository : repositories) {
             transferRepositories.add(createTransferRepository(repository));
         }

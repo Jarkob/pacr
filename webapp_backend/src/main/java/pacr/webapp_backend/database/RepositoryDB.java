@@ -1,7 +1,11 @@
 package pacr.webapp_backend.database;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
@@ -45,5 +49,10 @@ public interface RepositoryDB extends CrudRepository<GitRepository, Integer>, IE
 
         return null;
     }
+
+    /**
+     * @return all saved repositories ordered by their name.
+     */
+    List<GitRepository> findAllByOrderByName();
 
 }

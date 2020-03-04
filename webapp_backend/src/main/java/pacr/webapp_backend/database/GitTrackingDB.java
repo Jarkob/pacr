@@ -11,6 +11,7 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.Objects;
 import java.util.Collection;
 import java.util.Set;
@@ -113,13 +114,8 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public Set<GitRepository> getAllRepositories() {
-        Set<GitRepository> repositories = new HashSet<>();
-
-        Iterable<GitRepository> iterable = repositoryDB.findAll();
-        iterable.forEach(repositories::add);
-
-        return repositories;
+    public List<GitRepository> getAllRepositories() {
+        return repositoryDB.findAllByOrderByName();
     }
 
     @Override

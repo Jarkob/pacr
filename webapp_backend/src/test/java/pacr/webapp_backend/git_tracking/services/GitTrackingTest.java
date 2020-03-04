@@ -70,7 +70,7 @@ public class GitTrackingTest {
     @Test
     public void getAllRepositories() {
         GitRepository repository = Mockito.mock(GitRepository.class);
-        when(gitTrackingAccess.getAllRepositories()).thenReturn(new HashSet<>(Arrays.asList(repository)));
+        when(gitTrackingAccess.getAllRepositories()).thenReturn(Arrays.asList(repository));
 
         Collection<GitRepository> repositories = gitTracking.getAllRepositories();
         assertEquals(1, repositories.size());
@@ -149,7 +149,7 @@ public class GitTrackingTest {
         when(repository2.isHookSet()).thenReturn(false);
         when(repository2.getId()).thenReturn(2);
 
-        when(gitTrackingAccess.getAllRepositories()).thenReturn(new HashSet<>(Arrays.asList(repository1, repository2)));
+        when(gitTrackingAccess.getAllRepositories()).thenReturn(Arrays.asList(repository1, repository2));
         when(gitTrackingAccess.getRepository(1)).thenReturn(repository1);
         when(gitTrackingAccess.getRepository(2)).thenReturn(repository2);
         when(gitHandler.pullFromRepository(any())).thenReturn(new HashSet<>());
