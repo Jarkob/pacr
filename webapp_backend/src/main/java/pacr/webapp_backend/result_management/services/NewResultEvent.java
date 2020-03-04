@@ -49,9 +49,9 @@ public class NewResultEvent extends EventTemplate {
      *                             characters. May be null (in this case it is assumed no comparison has taken place and
      *                             averageImprovementPercentage is ignored).
      */
-    NewResultEvent(@NotNull EventCategory category, @NotNull String commitHash, @NotNull String repositoryName,
-                          @Nullable String globalError, int averageImprovementPercentage,
-                          @Nullable String comparisonCommitHash) {
+    NewResultEvent(@NotNull final EventCategory category, @NotNull final String commitHash, @NotNull final String repositoryName,
+                   @Nullable final String globalError, final int averageImprovementPercentage,
+                   @Nullable final String comparisonCommitHash) {
         super(category);
 
         Objects.requireNonNull(category);
@@ -90,12 +90,12 @@ public class NewResultEvent extends EventTemplate {
         }
         // I only assume there was no error if the field globalError is null.
 
-        StringBuilder descriptionBuilder = new StringBuilder();
+        final StringBuilder descriptionBuilder = new StringBuilder();
 
         if (comparisonCommitHash == null) {
             descriptionBuilder.append(resources.getString(NO_COMPARISON_DESCRIPTION));
         } else {
-            String positiveOrNegative = averageImprovementPercentage < 0 ? resources.getString(NEGATIVE)
+            final String positiveOrNegative = averageImprovementPercentage < 0 ? resources.getString(NEGATIVE)
                     : resources.getString(POSITIVE);
 
             descriptionBuilder.append(String.format(resources.getString(COMPARISON_DESCRIPTION),
@@ -105,7 +105,7 @@ public class NewResultEvent extends EventTemplate {
         return descriptionBuilder.toString();
     }
 
-    private String shortenHash(String commitHash) {
+    private String shortenHash(final String commitHash) {
         if (commitHash != null && commitHash.length() > HASH_LENGTH) {
             return commitHash.substring(0, HASH_LENGTH);
         }

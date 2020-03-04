@@ -28,7 +28,7 @@ public class DatabaseTalkerTest extends SpringBootTestWithoutShell {
     private static final String VIEW_KEY = "view key";
 
     @Autowired
-    DatabaseTalkerTest (DatabaseTalker databaseTalker) {
+    DatabaseTalkerTest (final DatabaseTalker databaseTalker) {
         this.databaseTalker = databaseTalker;
     }
 
@@ -48,10 +48,10 @@ public class DatabaseTalkerTest extends SpringBootTestWithoutShell {
     void cleanUpDatabase() {
         databaseTalker.deletionIntervalAccess.delete();
 
-        for (Dashboard d : databaseTalker.getAllDashboards()) {
+        for (final Dashboard d : databaseTalker.getAllDashboards()) {
             try {
                 databaseTalker.deleteDashboard(d.getEditKey());
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 e.printStackTrace();
             }
         }

@@ -26,7 +26,7 @@ public class BenchmarkingResultsExporter {
      * @param resultExporter the resultExporter used to get the results which are exported.
      * @param repositoryAccess the repositoryAccess used to fetch metadata from repositories.
      */
-    public BenchmarkingResultsExporter(IResultExporter resultExporter, IExportRepositoryAccess repositoryAccess) {
+    public BenchmarkingResultsExporter(final IResultExporter resultExporter, final IExportRepositoryAccess repositoryAccess) {
         Objects.requireNonNull(resultExporter, "The resultExporter cannot be null.");
         Objects.requireNonNull(repositoryAccess, "The repositoryAccess cannot be null.");
 
@@ -38,10 +38,10 @@ public class BenchmarkingResultsExporter {
      * @return a list of all benchmarking results to be exported.
      */
     public Collection<OutputBenchmarkingResult> exportBenchmarkingResults() {
-        Map<Integer, List<IBenchmarkingResult>> exportedResults = new HashMap<>();
+        final Map<Integer, List<IBenchmarkingResult>> exportedResults = new HashMap<>();
 
         // sort results into buckets. Each bucket is for one repository which is identified by its id.
-        for (IBenchmarkingResult result : resultExporter.exportAllBenchmarkingResults()) {
+        for (final IBenchmarkingResult result : resultExporter.exportAllBenchmarkingResults()) {
             final int repositoryID = result.getRepositoryID();
 
             if (!exportedResults.containsKey(repositoryID)) {
@@ -51,10 +51,10 @@ public class BenchmarkingResultsExporter {
             exportedResults.get(repositoryID).add(result);
         }
 
-        List<OutputBenchmarkingResult> outputResults = new ArrayList<>();
+        final List<OutputBenchmarkingResult> outputResults = new ArrayList<>();
 
-        for (int repositoryID : exportedResults.keySet()) {
-            IRepository repository = repositoryAccess.findGitRepositoryById(repositoryID);
+        for (final int repositoryID : exportedResults.keySet()) {
+            final IRepository repository = repositoryAccess.findGitRepositoryById(repositoryID);
 
             if (repository != null) {
                 OutputBenchmarkingResult outputResult = new OutputBenchmarkingResult(exportedResults.get(repositoryID),

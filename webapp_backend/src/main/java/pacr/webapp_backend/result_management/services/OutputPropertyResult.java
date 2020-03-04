@@ -33,7 +33,7 @@ public class OutputPropertyResult {
      * property.
      * @param result the BenchmarkPropertyResult that this OutputPropertyResult is cloned from. Cannot be null.
      */
-    OutputPropertyResult(@NotNull BenchmarkPropertyResult result) {
+    OutputPropertyResult(@NotNull final BenchmarkPropertyResult result) {
         Objects.requireNonNull(result);
 
         this.name = result.getName();

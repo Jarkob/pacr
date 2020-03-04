@@ -65,10 +65,10 @@ public class ResultControllerTest {
      */
     @Test
     void getResultForCommit_shouldCallResultGetter() {
-        OutputBenchmarkingResult outputMock = Mockito.mock(OutputBenchmarkingResult.class);
+        final OutputBenchmarkingResult outputMock = Mockito.mock(OutputBenchmarkingResult.class);
         when(resultGetterMock.getCommitResult(HASH)).thenReturn(outputMock);
 
-        OutputBenchmarkingResult testOutput = resultController.getBenchmarkingResultForCommit(HASH);
+        final OutputBenchmarkingResult testOutput = resultController.getBenchmarkingResultForCommit(HASH);
 
         verify(resultGetterMock).getCommitResult(HASH);
         assertEquals(outputMock, testOutput);
@@ -85,10 +85,10 @@ public class ResultControllerTest {
      */
     @Test
     void getResultForRepoAndBenchmark_shouldCallResultGetter() {
-        HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
+        final HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
         when(resultGetterMock.getBenchmarkResults(REPO_ID, BENCHMARK_ID)).thenReturn(getterOutput);
 
-        Map<String, DiagramOutputResult> testOutput = resultController.getResultsForRepositoryAndBenchmark(REPO_ID,
+        final Map<String, DiagramOutputResult> testOutput = resultController.getResultsForRepositoryAndBenchmark(REPO_ID,
                 BENCHMARK_ID);
         verify(resultGetterMock).getBenchmarkResults(REPO_ID, BENCHMARK_ID);
         assertEquals(getterOutput, testOutput);
@@ -99,7 +99,7 @@ public class ResultControllerTest {
      */
     @Test
     void getNewResults_shouldCallResultGetter() {
-        PageRequest pageRequest = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+        final PageRequest pageRequest = PageRequest.of(PAGE_NUM, PAGE_SIZE);
 
         Page<CommitHistoryItem> getterOutput = new PageImpl<>(new LinkedList<>());
         when(resultGetterMock.getNewestResults(pageRequest)).thenReturn(getterOutput);
@@ -137,7 +137,7 @@ public class ResultControllerTest {
     void deleteResult_authenticationSucceeds_shouldCallResultManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
-        ResponseEntity<Object> response = resultController.deleteBenchmarkingResult(HASH, TOKEN);
+        final ResponseEntity<Object> response = resultController.deleteBenchmarkingResult(HASH, TOKEN);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -151,7 +151,7 @@ public class ResultControllerTest {
     void deleteResult_authenticationFails_shouldNotCallResultManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
-        ResponseEntity<Object> response = resultController.deleteBenchmarkingResult(HASH, TOKEN);
+        final ResponseEntity<Object> response = resultController.deleteBenchmarkingResult(HASH, TOKEN);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -166,7 +166,7 @@ public class ResultControllerTest {
 
     @Test
     void getResultsForRepository_pageable_shouldCallResultGetter() {
-        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
+        final PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
         resultController.getResultsForRepository(REPO_ID, pageRequest);
 
         verify(resultGetterMock).getFullRepositoryResults(REPO_ID, pageRequest);

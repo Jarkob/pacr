@@ -54,10 +54,10 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     private BenchmarkManager benchmarkManager;
 
     @Autowired
-    public ResultBenchmarkSaverTest(ResultManager resultManager, GitTrackingDB gitTrackingDB,
-                                    EventHandler eventHandler, EventDB eventDB, ResultDB resultDB, CommitDB commitDB,
-                                    RepositoryDB repositoryDB, BenchmarkGroupDB benchmarkGroupDB,
-                                    BenchmarkDB benchmarkDB, ResultGetter resultGetter) {
+    public ResultBenchmarkSaverTest(final ResultManager resultManager, final GitTrackingDB gitTrackingDB,
+                                    final EventHandler eventHandler, final EventDB eventDB, final ResultDB resultDB, final CommitDB commitDB,
+                                    final RepositoryDB repositoryDB, final BenchmarkGroupDB benchmarkGroupDB,
+                                    final BenchmarkDB benchmarkDB, final ResultGetter resultGetter) {
         this.resultManager = resultManager;
         this.gitTrackingAccess = gitTrackingDB;
         this.eventHandler = eventHandler;
@@ -79,16 +79,16 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
         eventDB.deleteAll();
 
         // repository
-        GitRepository repository = new GitRepository();
+        final GitRepository repository = new GitRepository();
         repository.setName(REPO_NAME);
         repository.createBranchIfNotExists(MASTER_BRANCH);
         repository.createBranchIfNotExists(BRANCH_NAME);
 
         // commit
-        GitCommit commit = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, repository);
+        final GitCommit commit = new GitCommit(SimpleBenchmarkingResult.COMMIT_HASH, MSG, NOW, NOW, repository);
         commit.addBranch(repository.getTrackedBranch(MASTER_BRANCH));
 
-        GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
+        final GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
         commitTwo.addParent(SimpleBenchmarkingResult.COMMIT_HASH);
         commitTwo.addBranch(repository.getTrackedBranch(BRANCH_NAME));
 
@@ -115,21 +115,21 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     public void updateOtherComponents_shouldCreateEvent() {
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 
-        SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
         resultTwo.setCommitHash(HASH_TWO);
 
-        List<Double> results = new LinkedList<>();
+        final List<Double> results = new LinkedList<>();
         results.add(18d);
         resultTwo.getBenchmark(SimpleBenchmarkingResult.BENCHMARK_NAME)
                 .getProperty(SimpleBenchmark.PROPERTY_NAME).setResults(results);
 
         resultManager.saveBenchmarkingResults(resultTwo);
 
-        List<Event> events = eventHandler.getEvents(EventCategory.BENCHMARKING);
+        final List<Event> events = eventHandler.getEvents(EventCategory.BENCHMARKING);
 
         boolean foundEvent = false;
 
-        for (Event event : events) {
+        for (final Event event : events) {
             if (event.getDescription().equals(EXPECTED_EVENT_DESCRIPTION)) {
                 foundEvent = true;
                 break;
@@ -141,7 +141,7 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
 
     @Test
     void updateOtherComponents_commitOnBranchMaster_shouldUpdateObservers() {
-        IObserver observer = Mockito.mock(IObserver.class);
+        final IObserver observer = Mockito.mock(IObserver.class);
         resultGetter.subscribe(observer);
 
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
@@ -152,10 +152,10 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     @Test
     void updateOtherComponents_commitNotOnBranchMaster_shouldNotUpdateObservers() {
 
-        IObserver observer = Mockito.mock(IObserver.class);
+        final IObserver observer = Mockito.mock(IObserver.class);
         resultGetter.subscribe(observer);
 
-        SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
         resultTwo.setCommitHash(HASH_TWO);
 
         resultManager.saveBenchmarkingResults(resultTwo);

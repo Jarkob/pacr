@@ -40,7 +40,7 @@ public class BenchmarkerController
      * @param jobRegistry provides information about all currently dispatched jobs.
      * @param template a messaging template to send messages to clients.
      */
-    public BenchmarkerController(IBenchmarkerHandler benchmarkerHandler, @Lazy IJobRegistry jobRegistry, SimpMessagingTemplate template) {
+    public BenchmarkerController(final IBenchmarkerHandler benchmarkerHandler, @Lazy final IJobRegistry jobRegistry, final SimpMessagingTemplate template) {
         this.benchmarkerHandler = benchmarkerHandler;
         this.jobRegistry = jobRegistry;
         this.template = template;
@@ -56,7 +56,7 @@ public class BenchmarkerController
      */
     @MessageMapping("/register")
     @SendToUser("/queue/registered")
-    public boolean registerBenchmarker(SystemEnvironment systemEnvironment, Principal principal) {
+    public boolean registerBenchmarker(final SystemEnvironment systemEnvironment, final Principal principal) {
         if (principal == null || systemEnvironment == null) {
             return false;
         }
@@ -79,7 +79,7 @@ public class BenchmarkerController
      */
     @MessageMapping("/unregister")
     @SendToUser("/queue/unregistered")
-    public boolean unregisterBenchmarker(Principal principal) {
+    public boolean unregisterBenchmarker(final Principal principal) {
         if (principal == null) {
             return false;
         }
@@ -97,14 +97,14 @@ public class BenchmarkerController
      * @return a list of the system environments of all registered benchmarkers.
      */
     @RequestMapping("/benchmarkers")
-    public List<Benchmarker> getBenchmarkers() {
-        Collection<String> allBenchmarkerAddresses = benchmarkerHandler.getAllBenchmarkerAddresses();
+    public Collection<Benchmarker> getBenchmarkers() {
+        final Collection<String> allBenchmarkerAddresses = benchmarkerHandler.getAllBenchmarkerAddresses();
 
-        List<Benchmarker> allBenchmarkers = new ArrayList<>();
+        final Collection<Benchmarker> allBenchmarkers = new ArrayList<>();
 
-        for (String address : allBenchmarkerAddresses) {
-            SystemEnvironment systemEnvironment = benchmarkerHandler.getBenchmarkerSystemEnvironment(address);
-            IJob currentJob = jobRegistry.getCurrentBenchmarkerJob(address);
+        for (final String address : allBenchmarkerAddresses) {
+            final SystemEnvironment systemEnvironment = benchmarkerHandler.getBenchmarkerSystemEnvironment(address);
+            final IJob currentJob = jobRegistry.getCurrentBenchmarkerJob(address);
 
             allBenchmarkers.add(new Benchmarker(address, systemEnvironment, currentJob));
         }
@@ -120,13 +120,13 @@ public class BenchmarkerController
      * @param sshKey the current private ssh key.
      */
     @Override
-    public void sendSSHKey(String sshKey) {
+    public void sendSSHKey(final String sshKey) {
         if (stringIsValid(sshKey)) {
             template.convertAndSend("/topic/sshKey", new SSHKeyMessage(sshKey));
         }
     }
 
-    private boolean stringIsValid(String str) {
+    private boolean stringIsValid(final String str) {
         return str != null && !str.isEmpty() && !str.isBlank();
     }
 
@@ -137,8 +137,8 @@ public class BenchmarkerController
      * @param sessionDisconnectEvent the event that is created when a client disconnects.
      */
     @Override
-    public void onApplicationEvent(SessionDisconnectEvent sessionDisconnectEvent) {
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(sessionDisconnectEvent.getMessage());
+    public void onApplicationEvent(final SessionDisconnectEvent sessionDisconnectEvent) {
+        final StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(sessionDisconnectEvent.getMessage());
 
         if (headerAccessor.getSessionAttributes() != null) {
             final String address = (String) headerAccessor.getSessionAttributes().get("__principal__");

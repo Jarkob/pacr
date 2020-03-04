@@ -27,7 +27,7 @@ public class PasswordCreator {
      * @param authenticationAccess access to authentication information.
      * @param hashGenerator generator of hashes.
      */
-    PasswordCreator(IAuthenticationAccess authenticationAccess, HashGenerator hashGenerator) {
+    PasswordCreator(final IAuthenticationAccess authenticationAccess, final HashGenerator hashGenerator) {
         this.authenticationAccess = authenticationAccess;
         this.hashGenerator = hashGenerator;
     }
@@ -38,9 +38,9 @@ public class PasswordCreator {
      */
     @ShellMethod("generates a new admin password and saves its hash")
     public synchronized String newPassword() {
-        String password = generatePassword();
+        final String password = generatePassword();
         
-        String passwordHash = hashGenerator.hashPassword(password);
+        final String passwordHash = hashGenerator.hashPassword(password);
 
         authenticationAccess.setAdminPasswordHash(passwordHash);
 
@@ -48,13 +48,13 @@ public class PasswordCreator {
     }
 
     private String generatePassword() {
-        List<CharacterRule> rules = Arrays.asList(
+        final List<CharacterRule> rules = Arrays.asList(
                 new CharacterRule(EnglishCharacterData.UpperCase, MIN_NUM_OF_CHARS),
                 new CharacterRule(EnglishCharacterData.LowerCase, MIN_NUM_OF_CHARS),
                 new CharacterRule(EnglishCharacterData.Digit, MIN_NUM_OF_CHARS)
         );
 
-        PasswordGenerator generator = new PasswordGenerator();
+        final PasswordGenerator generator = new PasswordGenerator();
 
         return generator.generatePassword(PASSWORD_LENGTH, rules);
     }

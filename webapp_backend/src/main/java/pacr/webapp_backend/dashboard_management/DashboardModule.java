@@ -30,7 +30,7 @@ public abstract class DashboardModule {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
 
         return o != null && this.getClass() == o.getClass();
     }

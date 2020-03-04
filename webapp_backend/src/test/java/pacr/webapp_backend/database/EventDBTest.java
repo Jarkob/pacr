@@ -28,7 +28,7 @@ public class EventDBTest extends SpringBootTestWithoutShell {
     Pageable pageable;
 
     @Autowired
-    public EventDBTest(EventDB eventDB) {
+    public EventDBTest(final EventDB eventDB) {
         MockitoAnnotations.initMocks(this);
 
         this.eventDB = eventDB;
@@ -46,20 +46,20 @@ public class EventDBTest extends SpringBootTestWithoutShell {
 
     @Test
     void saveEvent_noError() {
-        LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        Event expectedEvent = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
+        final LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        final Event expectedEvent = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
 
         eventDB.saveEvent(expectedEvent);
 
-        List<Event> events = eventDB.findByCategory(pageable, category).getContent();
+        final List<Event> events = eventDB.findByCategory(pageable, category).getContent();
         assertEquals(1, events.size());
 
-        Event event = events.get(0);
+        final Event event = events.get(0);
 
         assertEquals(EVENT_TITLE, event.getTitle());
         assertEquals(EVENT_DESCRIPTION, event.getDescription());
 
-        Duration delta = Duration.between(expectedCreated, event.getCreated());
+        final Duration delta = Duration.between(expectedCreated, event.getCreated());
         assertTrue(delta.toMillis() < 1500);
     }
 
@@ -68,23 +68,23 @@ public class EventDBTest extends SpringBootTestWithoutShell {
         EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.UNDEFINED;
 
-        LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-        Event expectedEvent = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
+        final LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        final Event expectedEvent = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
 
-        Event otherEvent = new Event(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
+        final Event otherEvent = new Event(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
 
         eventDB.saveEvent(expectedEvent);
         eventDB.saveEvent(otherEvent);
 
-        List<Event> events = eventDB.findByCategory(pageable, category).getContent();
+        final List<Event> events = eventDB.findByCategory(pageable, category).getContent();
         assertEquals(1, events.size());
 
-        Event event = events.get(0);
+        final Event event = events.get(0);
 
         assertEquals(EVENT_TITLE, event.getTitle());
         assertEquals(EVENT_DESCRIPTION, event.getDescription());
 
-        Duration delta = Duration.between(expectedCreated, event.getCreated());
+        final Duration delta = Duration.between(expectedCreated, event.getCreated());
         assertTrue(delta.toMillis() < 1500);
     }
 }

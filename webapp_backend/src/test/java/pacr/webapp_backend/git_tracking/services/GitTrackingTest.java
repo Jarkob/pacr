@@ -51,11 +51,11 @@ public class GitTrackingTest {
 
     @Test
     public void addRepository() {
-        int repositoryId = 10;
+        final int repositoryId = 10;
         when(gitTrackingAccess.addRepository(any())).thenReturn(repositoryId);
         when(colorPicker.getNextColor()).thenReturn("#000000");
 
-        ArgumentCaptor<GitRepository> repositoryCaptor = ArgumentCaptor.forClass(GitRepository.class);
+        final ArgumentCaptor<GitRepository> repositoryCaptor = ArgumentCaptor.forClass(GitRepository.class);
 
         assertEquals(repositoryId,
                 gitTracking.addRepository("git@git.scc.kit.edu:pacr/pacr.git", null,
@@ -73,7 +73,7 @@ public class GitTrackingTest {
         GitRepository repository = Mockito.mock(GitRepository.class);
         when(gitTrackingAccess.getAllRepositories()).thenReturn(Arrays.asList(repository));
 
-        Collection<GitRepository> repositories = gitTracking.getAllRepositories();
+        final Collection<GitRepository> repositories = gitTracking.getAllRepositories();
         assertEquals(1, repositories.size());
         assertEquals(repository, repositories.iterator().next());
 
@@ -82,14 +82,14 @@ public class GitTrackingTest {
 
     @Test
     public void removeRepository() {
-        int repositoryId = 42;
+        final int repositoryId = 42;
 
-        GitCommit commit1 = Mockito.mock(GitCommit.class);
-        GitCommit commit2 = Mockito.mock(GitCommit.class);
+        final GitCommit commit1 = Mockito.mock(GitCommit.class);
+        final GitCommit commit2 = Mockito.mock(GitCommit.class);
         when(commit1.getCommitHash()).thenReturn("hash1");
         when(commit2.getCommitHash()).thenReturn("hash2");
 
-        GitRepository repository = Mockito.mock(GitRepository.class);
+        final GitRepository repository = Mockito.mock(GitRepository.class);
 
         when(gitTrackingAccess.getRepository(repositoryId)).thenReturn(repository);
         when(gitTrackingAccess.getAllCommits(repositoryId)).thenReturn(Arrays.asList(commit1, commit2));
@@ -108,7 +108,7 @@ public class GitTrackingTest {
 
     @Test
     public void updateRepository() {
-        GitRepository repository = Mockito.mock(GitRepository.class);
+        final GitRepository repository = Mockito.mock(GitRepository.class);
 
         gitTracking.updateRepository(repository);
 
@@ -121,8 +121,8 @@ public class GitTrackingTest {
         when(repository.getPullURL()).thenReturn("pull url");
         when(gitTrackingAccess.getRepository(anyInt())).thenReturn(repository);
 
-        String hash1 = "hash 1";
-        String hash2 = "hash 2";
+        final String hash1 = "hash 1";
+        final String hash2 = "hash 2";
 
         when(gitHandler.pullFromRepository(repository)).thenReturn(new HashSet<>(Arrays.asList(hash1, hash2)));
 
@@ -146,7 +146,7 @@ public class GitTrackingTest {
         when(repository1.isHookSet()).thenReturn(true);
         when(repository1.getId()).thenReturn(1);
 
-        GitRepository repository2 = mock(GitRepository.class);
+        final GitRepository repository2 = mock(GitRepository.class);
         when(repository2.isHookSet()).thenReturn(false);
         when(repository2.getId()).thenReturn(2);
 

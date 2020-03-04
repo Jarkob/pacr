@@ -31,7 +31,7 @@ public class BenchmarkingJobsController implements IJobSender, ApplicationListen
      *
      * @param template a messaging template to send messages to clients.
      */
-    public BenchmarkingJobsController(SimpMessagingTemplate template) {
+    public BenchmarkingJobsController(final SimpMessagingTemplate template) {
         this.template = template;
     }
 
@@ -41,7 +41,7 @@ public class BenchmarkingJobsController implements IJobSender, ApplicationListen
      * @param jobHandler the used jobHandler.
      */
     @Autowired
-    public void setJobHandler(@NotNull JobHandler jobHandler) {
+    public void setJobHandler(@NotNull final JobHandler jobHandler) {
         Objects.requireNonNull(jobHandler, "The jobHandler cannot be null.");
 
         this.jobHandler = jobHandler;
@@ -56,7 +56,7 @@ public class BenchmarkingJobsController implements IJobSender, ApplicationListen
      * @return if the results were received correctly.
      */
     @MessageMapping("/receiveResults")
-    public boolean receiveBenchmarkingResults(JobResult result, Principal principal) {
+    public boolean receiveBenchmarkingResults(final JobResult result, final Principal principal) {
         if (principal == null || result == null) {
             return false;
         }
@@ -72,26 +72,26 @@ public class BenchmarkingJobsController implements IJobSender, ApplicationListen
     }
 
     @Override
-    public boolean sendJob(BenchmarkerJob benchmarkerJob) {
+    public boolean sendJob(final BenchmarkerJob benchmarkerJob) {
         if (!benchmarkerJobIsValid(benchmarkerJob)) {
             return false;
         }
 
-        JobMessage jobMessage = new JobMessage(benchmarkerJob.getRepository(), benchmarkerJob.getCommitHash());
+        final JobMessage jobMessage = new JobMessage(benchmarkerJob.getRepository(), benchmarkerJob.getCommitHash());
 
         template.convertAndSendToUser(benchmarkerJob.getAddress(), "/queue/newJob", jobMessage);
 
         return true;
     }
 
-    private boolean benchmarkerJobIsValid(BenchmarkerJob benchmarkerJob) {
+    private boolean benchmarkerJobIsValid(final BenchmarkerJob benchmarkerJob) {
         return benchmarkerJob != null
                 && stringIsValid(benchmarkerJob.getAddress())
                 && stringIsValid(benchmarkerJob.getRepository())
                 && stringIsValid(benchmarkerJob.getCommitHash());
     }
 
-    private boolean stringIsValid(String str) {
+    private boolean stringIsValid(final String str) {
         return str != null && !str.isEmpty() && !str.isBlank();
     }
 
@@ -102,8 +102,8 @@ public class BenchmarkingJobsController implements IJobSender, ApplicationListen
      * @param sessionDisconnectEvent the event that is created when a client disconnects.
      */
     @Override
-    public void onApplicationEvent(SessionDisconnectEvent sessionDisconnectEvent) {
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(sessionDisconnectEvent.getMessage());
+    public void onApplicationEvent(final SessionDisconnectEvent sessionDisconnectEvent) {
+        final StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(sessionDisconnectEvent.getMessage());
 
         if (headerAccessor.getSessionAttributes() != null) {
             final String address = (String) headerAccessor.getSessionAttributes().get("__principal__");

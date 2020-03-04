@@ -18,11 +18,11 @@ public class CommitResultTest {
      */
     @Test
     void constructor_errorTooLong_shouldTruncateError() {
-        String errorTooLong = "0".repeat(MAX_STRING_LENGTH * 2);
-        SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
+        final String errorTooLong = "0".repeat(MAX_STRING_LENGTH * 2);
+        final SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
         result.setGlobalError(errorTooLong);
 
-        CommitResult commitResult = new CommitResult(result, REPO_ID, LocalDateTime.now(), null);
+        final CommitResult commitResult = new CommitResult(result, REPO_ID, LocalDateTime.now(), null);
 
         assertEquals(MAX_STRING_LENGTH, commitResult.getGlobalError().length());
         assertEquals(errorTooLong.substring(0, MAX_STRING_LENGTH), commitResult.getGlobalError());
@@ -30,9 +30,9 @@ public class CommitResultTest {
 
     @Test
     void setErrorMessage_errorTooLong_shouldTruncateError() {
-        String errorTooLong = "0".repeat(MAX_STRING_LENGTH * 2);
+        final String errorTooLong = "0".repeat(MAX_STRING_LENGTH * 2);
 
-        CommitResult commitResult = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID,
+        final CommitResult commitResult = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID,
                 LocalDateTime.now(), null);
         commitResult.setError(true);
         commitResult.setErrorMessage(errorTooLong);

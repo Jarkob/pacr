@@ -20,7 +20,7 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
     private BenchmarkGroupDB groupDB;
 
     @Autowired
-    public BenchmarkGroupDBTest(BenchmarkGroupDB groupDB, BenchmarkDB benchmarkDB) {
+    public BenchmarkGroupDBTest(final BenchmarkGroupDB groupDB, final BenchmarkDB benchmarkDB) {
         this.groupDB = groupDB;
     }
 
@@ -34,11 +34,11 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void saveGroup_saveInDatabase_getGroupShouldReturnGroup() {
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         groupDB.saveBenchmarkGroup(group);
-        int id = group.getId();
+        final int id = group.getId();
 
-        BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(id);
+        final BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(id);
 
         assertEquals(GROUP_NAME, savedGroup.getName());
     }
@@ -48,12 +48,12 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void getAllGroups_multipleGroupsSaved_shouldReturnAllGroups() {
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         groupDB.saveBenchmarkGroup(group);
-        BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+        final BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
         groupDB.saveBenchmarkGroup(groupTwo);
 
-        Collection<BenchmarkGroup> groups = groupDB.getAllGroups();
+        final Collection<BenchmarkGroup> groups = groupDB.getAllGroups();
 
         assertEquals(EXPECTED_NUM_OF_GROUPS, groups.size());
     }
@@ -63,13 +63,13 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void deleteGroup_groupSaved_shouldRemoveGroup() {
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         groupDB.saveBenchmarkGroup(group);
-        int id = group.getId();
+        final int id = group.getId();
 
         groupDB.deleteGroup(group);
 
-        BenchmarkGroup deletedGroup = groupDB.getBenchmarkGroup(id);
+        final BenchmarkGroup deletedGroup = groupDB.getBenchmarkGroup(id);
 
         assertNull(deletedGroup);
     }
@@ -79,16 +79,16 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void getStandardGroup_shouldReturnStandardGroup() {
-        BenchmarkGroup standard = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup standard = new BenchmarkGroup(GROUP_NAME);
         standard.setToStandardGroup();
-        BenchmarkGroup normal = new BenchmarkGroup(GROUP_NAME_TWO);
-        BenchmarkGroup normalTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+        final BenchmarkGroup normal = new BenchmarkGroup(GROUP_NAME_TWO);
+        final BenchmarkGroup normalTwo = new BenchmarkGroup(GROUP_NAME_TWO);
 
         groupDB.saveBenchmarkGroup(normal);
         groupDB.saveBenchmarkGroup(standard);
         groupDB.saveBenchmarkGroup(normalTwo);
 
-        BenchmarkGroup standardOutput = groupDB.getStandardGroup();
+        final BenchmarkGroup standardOutput = groupDB.getStandardGroup();
 
         assertEquals(standard.getId(), standardOutput.getId());
     }

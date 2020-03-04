@@ -25,41 +25,41 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
     }
 
     @Override
-    default CommitResult getNewestResult(int repositoryId) {
+    default CommitResult getNewestResult(final int repositoryId) {
         return this.findFirstByRepositoryIDOrderByEntryDateDesc(repositoryId);
     }
 
     @Override
-    default Collection<CommitResult> getResultsFromCommits(Collection<String> commitHashes) {
+    default Collection<CommitResult> getResultsFromCommits(final Collection<String> commitHashes) {
         Objects.requireNonNull(commitHashes);
 
-        List<CommitResult> commitResults = new LinkedList<>();
+        final List<CommitResult> commitResults = new LinkedList<>();
         this.findAllById(commitHashes).forEach(commitResults::add);
         return commitResults;
     }
 
     @Override
-    default CommitResult getResultFromCommit(String commitHash) {
+    default CommitResult getResultFromCommit(final String commitHash) {
         Objects.requireNonNull(commitHash);
         return this.findById(commitHash).orElse(null);
     }
 
     @Override
-    default void saveResult(CommitResult result) {
+    default void saveResult(final CommitResult result) {
         Objects.requireNonNull(result);
         this.save(result);
     }
 
     @Override
-    default void deleteResults(Collection<String> commitHashes) {
+    default void deleteResults(final Collection<String> commitHashes) {
         this.removeCommitResultsByCommitHashIn(commitHashes);
     }
 
     @Override
     default List<CommitResult> getAllResults() {
-        List<CommitResult> results = new LinkedList<>();
+        final List<CommitResult> results = new LinkedList<>();
 
-        for (CommitResult result : this.findAll()) {
+        for (final CommitResult result : this.findAll()) {
             results.add(result);
         }
 
@@ -67,12 +67,12 @@ public interface ResultDB extends PagingAndSortingRepository<CommitResult, Strin
     }
 
     @Override
-    default Page<CommitResult> getFullRepositoryResults(int repositoryId, Pageable pageable) {
+    default Page<CommitResult> getFullRepositoryResults(final int repositoryId, final Pageable pageable) {
         return findAllByRepositoryID(repositoryId, pageable);
     }
 
     @Override
-    default List<CommitResult> getResultsWithComparisionCommitHash(@NotNull String commitHash) {
+    default List<CommitResult> getResultsWithComparisionCommitHash(@NotNull final String commitHash) {
         Objects.requireNonNull(commitHash);
 
         return findAllByComparisonCommitHash(commitHash);

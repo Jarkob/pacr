@@ -72,15 +72,15 @@ public class OutputBuilderTest {
         propertyTwo = new BenchmarkProperty(PROPERTY_NAME_TWO, SimpleBenchmarkProperty.UNIT,
                 ResultInterpretation.LESS_IS_BETTER);
 
-        BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(new SimpleBenchmarkProperty(), property);
+        final BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(new SimpleBenchmarkProperty(), property);
 
-        SimpleBenchmarkProperty iPropResult = new SimpleBenchmarkProperty();
+        final SimpleBenchmarkProperty iPropResult = new SimpleBenchmarkProperty();
         iPropResult.setError(ERROR);
-        BenchmarkPropertyResult propertyResultTwo = new BenchmarkPropertyResult(iPropResult, propertyTwo);
+        final BenchmarkPropertyResult propertyResultTwo = new BenchmarkPropertyResult(iPropResult, propertyTwo);
 
-        BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
+        final BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
         benchmarkResult.addPropertyResult(propertyResult);
-        BenchmarkResult benchmarkResultTwo = new BenchmarkResult(benchmarkTwo);
+        final BenchmarkResult benchmarkResultTwo = new BenchmarkResult(benchmarkTwo);
         benchmarkResultTwo.addPropertyResult(propertyResultTwo);
 
         resultOne = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID, LocalDateTime.now(), COMPARISON_HASH);
@@ -99,7 +99,7 @@ public class OutputBuilderTest {
     @Test
     void buildDetailOutput_twoBenchmarksWithNoGroup_shouldBuildOneOutputGroupWithTwoBenchmarks() {
 
-        OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commitOne, resultOne);
+        final OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commitOne, resultOne);
 
         assertNotNull(outputResult);
 
@@ -127,7 +127,7 @@ public class OutputBuilderTest {
 
     @Test
     void buildDetailOutput_onlyCommit_shouldReturnObjectWithNoResultAndNoError() {
-        OutputBenchmarkingResult output = outputBuilder.buildDetailOutput(commitOne);
+        final OutputBenchmarkingResult output = outputBuilder.buildDetailOutput(commitOne);
 
         assertEquals(commitOne.getCommitHash(), output.getCommitHash());
         assertEquals(0, output.getBenchmarksList().length);
@@ -136,7 +136,7 @@ public class OutputBuilderTest {
 
     @Test
     void buildDiagramOutput_shouldCopyData() {
-        DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne, resultOne, benchmark.getId());
+        final DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne, resultOne, benchmark.getId());
 
         assertEquals(EXPECTED_NUM_OF_PROPERTIES , output.getResult().size());
 
@@ -146,7 +146,7 @@ public class OutputBuilderTest {
 
     @Test
     void buildDiagramOutput_onlyCommit_shouldReturnObjectWithNoResult() {
-        DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne);
+        final DiagramOutputResult output = outputBuilder.buildDiagramOutput(commitOne);
 
         assertEquals(commitOne.getCommitHash(), output.getCommitHash());
         assertNull(output.getResult());

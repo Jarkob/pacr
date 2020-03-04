@@ -19,7 +19,7 @@ public class PasswordChecker {
      * @param authenticationAccess access to authentication information.
      * @param hashGenerator generator of hashes.
      */
-    PasswordChecker(IAuthenticationAccess authenticationAccess, HashGenerator hashGenerator) {
+    PasswordChecker(final IAuthenticationAccess authenticationAccess, final HashGenerator hashGenerator) {
         this.authenticationAccess = authenticationAccess;
         this.hashGenerator = hashGenerator;
     }
@@ -29,17 +29,18 @@ public class PasswordChecker {
      * @param enteredPassword the entered password. Cannot be null, empty or blank.
      * @return {@code true} if the entered password matches the admin password, otherwise {@code false}.
      */
-    public boolean checkPassword(@NotNull String enteredPassword) {
+    public boolean checkPassword(@NotNull final String enteredPassword) {
         if (!StringUtils.hasText(enteredPassword)) {
             throw new IllegalArgumentException("the entered password cannot be null, empty or blank");
         }
 
-        String passwordHash = hashGenerator.hashPassword(enteredPassword);
-        String adminPasswordHash = authenticationAccess.getAdminPasswordHash();
+        final String adminPasswordHash = authenticationAccess.getAdminPasswordHash();
 
         if (!StringUtils.hasText(adminPasswordHash)) {
             throw new IllegalStateException("no password has been set yet");
         }
+
+        final String passwordHash = hashGenerator.hashPassword(enteredPassword);
 
         return adminPasswordHash.equals(passwordHash);
     }

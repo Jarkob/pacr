@@ -84,7 +84,7 @@ public class BenchmarkingResultsExporterTest {
         this.properties = new HashMap();
         final int amtProperties = 5;
         for (int i = 0; i < amtProperties; i++) {
-            IBenchmarkProperty property = mock(IBenchmarkProperty.class);
+            final IBenchmarkProperty property = mock(IBenchmarkProperty.class);
 
             properties.put(PROPERTY_NAME + i, new BenchmarkProperty(property));
         }
@@ -93,7 +93,7 @@ public class BenchmarkingResultsExporterTest {
 
         final int amtBenchmarks = 5;
         for (int i = 0; i < amtBenchmarks; i++) {
-            IBenchmark benchmark = mock(IBenchmark.class);
+            final IBenchmark benchmark = mock(IBenchmark.class);
 
             when(benchmark.getBenchmarkProperties()).thenReturn(properties);
 
@@ -136,7 +136,7 @@ public class BenchmarkingResultsExporterTest {
 
     @Test
     void exportBenchmarkingResults_noError() {
-        Collection<OutputBenchmarkingResult> exportedResults = benchmarkingResultsExporter.exportBenchmarkingResults();
+        final Collection<OutputBenchmarkingResult> exportedResults = benchmarkingResultsExporter.exportBenchmarkingResults();
 
         assertNotNull(exportedResults);
         assertEquals(2, exportedResults.size());
@@ -144,7 +144,7 @@ public class BenchmarkingResultsExporterTest {
         OutputBenchmarkingResult resultRepo1 = null;
         OutputBenchmarkingResult resultRepo2 = null;
 
-        for (OutputBenchmarkingResult result : exportedResults) {
+        for (final OutputBenchmarkingResult result : exportedResults) {
             if (result.getRepositoryName().equals(REPO_1_NAME)) {
                 resultRepo1 = result;
             } else if (result.getRepositoryName().equals(REPO_2_NAME)) {

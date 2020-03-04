@@ -23,19 +23,19 @@ public class HashGenerator {
      * @param password the password.
      * @return the hash of the password.
      */
-    String hashPassword(String password) {
+    String hashPassword(final String password) {
         MessageDigest messageDigest = null;
 
         try {
             messageDigest = MessageDigest.getInstance(ALGORITHM);
-        } catch (NoSuchAlgorithmException e) {
+        } catch (final NoSuchAlgorithmException e) {
             throw new IllegalStateException("no hashing algorithm " + ALGORITHM);
         }
 
-        byte[] hashBytes = messageDigest.digest(password.getBytes());
-        StringBuilder hashBuilder = new StringBuilder();
+        final byte[] hashBytes = messageDigest.digest(password.getBytes());
+        final StringBuilder hashBuilder = new StringBuilder();
 
-        for (byte hashByte : hashBytes) {
+        for (final byte hashByte : hashBytes) {
             // convert bytes to hexadecimal
             hashBuilder.append(String.format(FORMAT_TWO_DIGIT_HEX, hashByte));
         }

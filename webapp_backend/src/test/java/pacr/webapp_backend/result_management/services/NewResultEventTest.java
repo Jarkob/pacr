@@ -32,11 +32,11 @@ public class NewResultEventTest {
      */
     @Test
     void getTitleGetDescription_successfulBenchmark_shouldReturnNormalTitle() {
-        EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, NO_ERROR, IMPROVEMENT,
+        final EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, NO_ERROR, IMPROVEMENT,
                 COMPARISON_HASH);
 
-        String title = eventTemplate.getTitle();
-        String description = eventTemplate.getDescription();
+        final String title = eventTemplate.getTitle();
+        final String description = eventTemplate.getDescription();
 
         System.out.println(title);
         System.out.println(description);
@@ -50,11 +50,11 @@ public class NewResultEventTest {
      */
     @Test
     void getTitleGetDescription_errorBenchmark_shouldReturnErrorTitle() {
-        EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, ERROR, IMPROVEMENT,
+        final EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, ERROR, IMPROVEMENT,
                 COMPARISON_HASH);
 
-        String title = eventTemplate.getTitle();
-        String description = eventTemplate.getDescription();
+        final String title = eventTemplate.getTitle();
+        final String description = eventTemplate.getDescription();
 
         System.out.println(title);
         System.out.println(description);
@@ -68,11 +68,11 @@ public class NewResultEventTest {
      */
     @Test
     void getTitleGetDescription_noComparison_shouldReturnDescriptionWithoutComparison() {
-        EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, NO_ERROR, IMPROVEMENT,
+        final EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, NO_ERROR, IMPROVEMENT,
                 NO_COMPARISON);
 
-        String title = eventTemplate.getTitle();
-        String description = eventTemplate.getDescription();
+        final String title = eventTemplate.getTitle();
+        final String description = eventTemplate.getDescription();
 
         System.out.println(title);
         System.out.println(description);
@@ -88,11 +88,11 @@ public class NewResultEventTest {
      */
     @Test
     void getTitleGetDescription_errorAndNoComparison_shouldReturnErrorTitle() {
-        EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, ERROR, IMPROVEMENT,
+        final EventTemplate eventTemplate = new NewResultEvent(EventCategory.BENCHMARKING, HASH, REPO, ERROR, IMPROVEMENT,
                 NO_COMPARISON);
 
-        String title = eventTemplate.getTitle();
-        String description = eventTemplate.getDescription();
+        final String title = eventTemplate.getTitle();
+        final String description = eventTemplate.getDescription();
 
         System.out.println(title);
         System.out.println(description);

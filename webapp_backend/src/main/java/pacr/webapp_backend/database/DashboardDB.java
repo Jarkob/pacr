@@ -28,7 +28,7 @@ public interface DashboardDB extends CrudRepository<Dashboard, Integer>, IDashbo
 
 
     @Override
-    default void storeDashboard(@NotNull Dashboard dashboard) {
+    default void storeDashboard(@NotNull final Dashboard dashboard) {
         this.save(dashboard);
     }
 

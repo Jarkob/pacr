@@ -15,18 +15,18 @@ public class BenchmarkerConfigurator implements IBenchmarkerConfigurator {
      * Creates a new BenchmarkerConfigurator with a ConfigurationSender.
      * @param configurationSender is used to send the configuration data to all registered Benchmarkers.
      */
-    public BenchmarkerConfigurator(IBenchmarkerConfigurationSender configurationSender) {
+    public BenchmarkerConfigurator(final IBenchmarkerConfigurationSender configurationSender) {
         this.configurationSender = configurationSender;
     }
 
     @Override
-    public void updateSSHKey(String sshKey) {
+    public void updateSSHKey(final String sshKey) {
         verifySSHKey(sshKey);
 
         configurationSender.sendSSHKey(sshKey);
     }
 
-    private void verifySSHKey(String sshKey) {
+    private void verifySSHKey(final String sshKey) {
         if (sshKey == null || sshKey.isEmpty() || sshKey.isBlank()) {
             throw new IllegalArgumentException("The sshKey is not valid.");
         }

@@ -62,7 +62,7 @@ public class BenchmarkingResultsImporterTest {
         this.properties = new HashMap();
         final int amtProperties = 5;
         for (int i = 0; i < amtProperties; i++) {
-            IBenchmarkProperty property = mock(IBenchmarkProperty.class);
+            final IBenchmarkProperty property = mock(IBenchmarkProperty.class);
 
             properties.put(PROPERTY_NAME + i, new BenchmarkProperty(property));
         }
@@ -71,7 +71,7 @@ public class BenchmarkingResultsImporterTest {
 
         final int amtBenchmarks = 5;
         for (int i = 0; i < amtBenchmarks; i++) {
-            IBenchmark benchmark = mock(IBenchmark.class);
+            final IBenchmark benchmark = mock(IBenchmark.class);
 
             when(benchmark.getBenchmarkProperties()).thenReturn(properties);
 
@@ -83,10 +83,10 @@ public class BenchmarkingResultsImporterTest {
         final int amtImportedResults = 10;
         for (int i = 0; i < amtImportedResults; i++) {
 
-            Collection<IBenchmarkingResult> benchmarkingResults = new ArrayList<>();
+            final Collection<IBenchmarkingResult> benchmarkingResults = new ArrayList<>();
             final int amtBenchmarkingResults = 10;
             for (int j = 0; j < amtBenchmarkingResults; j++) {
-                BenchmarkingResult benchmarkingResult = spy(BenchmarkingResult.class);
+                final BenchmarkingResult benchmarkingResult = spy(BenchmarkingResult.class);
 
                 when(benchmarkingResult.getCommitHash()).thenReturn(COMMIT_HASH + i + j);
                 when(benchmarkingResult.getGlobalError()).thenReturn(GLOBAL_ERROR + i + j);
@@ -107,12 +107,12 @@ public class BenchmarkingResultsImporterTest {
 
     @Test
     void importBenchmarkingResults_noError() {
-        ArgumentCaptor<String> pullURLCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<String> repoNameCaptor = ArgumentCaptor.forClass(String.class);
-        ArgumentCaptor<LocalDate> observeFromDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
-        ArgumentCaptor<HashSet> selectedBranchesCaptor = ArgumentCaptor.forClass(HashSet.class);
+        final ArgumentCaptor<String> pullURLCaptor = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> repoNameCaptor = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<LocalDate> observeFromDateCaptor = ArgumentCaptor.forClass(LocalDate.class);
+        final ArgumentCaptor<HashSet> selectedBranchesCaptor = ArgumentCaptor.forClass(HashSet.class);
 
-        LocalDate now = LocalDate.now();
+        final LocalDate now = LocalDate.now();
         benchmarkingResultsImporter.importBenchmarkingResults(importedResults);
 
         verify(repositoryImporter, times(importedResults.size())).importRepository(pullURLCaptor.capture(), observeFromDateCaptor.capture(),

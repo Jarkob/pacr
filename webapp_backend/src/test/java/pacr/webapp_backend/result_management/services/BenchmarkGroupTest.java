@@ -12,23 +12,23 @@ public class BenchmarkGroupTest {
 
     @Test
     void equals_sameObject_shouldReturnTrue() {
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         assertTrue(group.equals(group));
         assertEquals(group.hashCode(), group.hashCode());
     }
 
     @Test
     void equals_differentClass_shouldReturnFalse() {
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
-        Benchmark benchmark = new Benchmark();
+        final BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        final Benchmark benchmark = new Benchmark();
 
         assertFalse(group.equals(benchmark));
     }
 
     @Test
     void equals_sameAttributes_shouldReturnTrue() {
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
-        BenchmarkGroup sameGroup = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup sameGroup = new BenchmarkGroup(GROUP_NAME);
 
         assertTrue(group.equals(sameGroup));
         assertEquals(group.hashCode(), sameGroup.hashCode());

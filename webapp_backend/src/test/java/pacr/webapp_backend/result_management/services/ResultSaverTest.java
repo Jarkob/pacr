@@ -44,7 +44,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     private BenchmarkDB benchmarkDB;
 
     @Autowired
-    public ResultSaverTest(ResultImportSaver resultSaver, ResultDB resultDB, BenchmarkDB benchmarkDB) {
+    public ResultSaverTest(final ResultImportSaver resultSaver, final ResultDB resultDB, final BenchmarkDB benchmarkDB) {
         this.resultSaver = resultSaver;
         this.resultDB = resultDB;
         this.benchmarkDB = benchmarkDB;
@@ -64,19 +64,19 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     public void saveResult_shouldBeInDatabaseWithBenchmark() {
         resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
 
-        CommitResult savedResult = resultDB.getResultFromCommit(COMMIT_HASH);
+        final CommitResult savedResult = resultDB.getResultFromCommit(COMMIT_HASH);
 
         assertNotNull(savedResult);
         assertEquals(COMMIT_HASH, savedResult.getCommitHash());
 
-        IBenchmark benchmarkResult = savedResult.getBenchmarks().get(BENCHMARK_NAME);
+        final IBenchmark benchmarkResult = savedResult.getBenchmarks().get(BENCHMARK_NAME);
         assertNotNull(benchmarkResult);
 
-        IBenchmarkProperty benchmarkProperty = benchmarkResult.getBenchmarkProperties().get(PROPERTY_NAME);
+        final IBenchmarkProperty benchmarkProperty = benchmarkResult.getBenchmarkProperties().get(PROPERTY_NAME);
         assertNotNull(benchmarkProperty);
         assertEquals(MEASUREMENT, benchmarkProperty.getResults().iterator().next());
 
-        Benchmark benchmark = benchmarkDB.getAllBenchmarks().iterator().next();
+        final Benchmark benchmark = benchmarkDB.getAllBenchmarks().iterator().next();
         assertNotNull(benchmark);
         assertEquals(BENCHMARK_NAME, benchmark.getOriginalName());
         assertEquals(EXPECTED_NUM_OF_PROPERTIES, benchmark.getProperties().size());
@@ -89,10 +89,10 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     public void saveResult_withNewAndOldBenchmark_shouldOnlySaveNewBenchmark() {
         resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
 
-        SimpleBenchmarkingResult resultWithAddedBenchmark = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultWithAddedBenchmark = new SimpleBenchmarkingResult();
         resultWithAddedBenchmark.setCommitHash(COMMIT_HASH_TWO);
 
-        SimpleBenchmark newBenchmark = new SimpleBenchmark();
+        final SimpleBenchmark newBenchmark = new SimpleBenchmark();
 
         resultWithAddedBenchmark.addBenchmark(BENCHMARK_NAME_TWO, newBenchmark);
 
@@ -108,16 +108,16 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     public void saveResult_withNewAndOldProperty_shouldOnlySaveNewProperty() {
         resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
 
-        SimpleBenchmarkingResult resultWithAddedProperty = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultWithAddedProperty = new SimpleBenchmarkingResult();
         resultWithAddedProperty.setCommitHash(COMMIT_HASH_TWO);
 
-        SimpleBenchmarkProperty newProperty = new SimpleBenchmarkProperty();
+        final SimpleBenchmarkProperty newProperty = new SimpleBenchmarkProperty();
         resultWithAddedProperty.getBenchmark(BENCHMARK_NAME).addProperty(PROPERTY_NAME_TWO, newProperty);
 
         resultSaver.saveResult(resultWithAddedProperty, new SimpleCommit(), NO_COMPARISON_RESULT);
 
         Benchmark benchmark = null;
-        for (Benchmark savedBenchmark : benchmarkDB.getAllBenchmarks()) {
+        for (final Benchmark savedBenchmark : benchmarkDB.getAllBenchmarks()) {
             if (savedBenchmark.getOriginalName().equals(BENCHMARK_NAME)) {
                 benchmark = savedBenchmark;
                 break;
@@ -132,10 +132,10 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     void saveResult_withOldPropertyWithNewInterpretation_shouldUpdateDatabaseProperty() {
         resultSaver.saveResult(new SimpleBenchmarkingResult(), new SimpleCommit(), NO_COMPARISON_RESULT);
 
-        SimpleBenchmarkingResult resultWithChangedProperty = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultWithChangedProperty = new SimpleBenchmarkingResult();
         resultWithChangedProperty.setCommitHash(COMMIT_HASH_TWO);
 
-        SimpleBenchmarkProperty property = resultWithChangedProperty.getBenchmark(BENCHMARK_NAME)
+        final SimpleBenchmarkProperty property = resultWithChangedProperty.getBenchmark(BENCHMARK_NAME)
                 .getProperty(PROPERTY_NAME);
         assertEquals(ResultInterpretation.LESS_IS_BETTER, property.getResultInterpretation());
 
@@ -144,7 +144,7 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
         resultSaver.saveResult(resultWithChangedProperty, new SimpleCommit(), NO_COMPARISON_RESULT);
 
         Benchmark benchmark = null;
-        for (Benchmark savedBenchmark : benchmarkDB.getAllBenchmarks()) {
+        for (final Benchmark savedBenchmark : benchmarkDB.getAllBenchmarks()) {
             if (savedBenchmark.getOriginalName().equals(BENCHMARK_NAME)) {
                 benchmark = savedBenchmark;
                 break;
@@ -158,13 +158,13 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
 
     @Test
     void saveResult_benchmarkWithNoProperties_shouldSkipBenchmarkInCommitResult() {
-        SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
-        SimpleBenchmark benchmarkWithNoProperties = new SimpleBenchmark(new HashMap<>());
+        final SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
+        final SimpleBenchmark benchmarkWithNoProperties = new SimpleBenchmark(new HashMap<>());
         result.addBenchmark(BENCHMARK_NAME_TWO, benchmarkWithNoProperties);
 
         resultSaver.saveResult(result, new SimpleCommit(), null);
 
-        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        final CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
 
         assertEquals(EXPECTED_SINGLE_BENCHMARK, savedResult.getBenchmarks().size());
         assertNotNull(savedResult.getBenchmarks().get(SimpleBenchmarkingResult.BENCHMARK_NAME));
@@ -172,33 +172,33 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
 
     @Test
     void saveResult_resultWithNoBenchmarksAndNoError_shouldSetGlobalError() {
-        ISystemEnvironment sysEnvMock = Mockito.mock(ISystemEnvironment.class);
-        SimpleBenchmarkingResult emptyResult = new SimpleBenchmarkingResult(SimpleBenchmarkingResult.COMMIT_HASH,
+        final ISystemEnvironment sysEnvMock = Mockito.mock(ISystemEnvironment.class);
+        final SimpleBenchmarkingResult emptyResult = new SimpleBenchmarkingResult(SimpleBenchmarkingResult.COMMIT_HASH,
                 new SystemEnvironment(sysEnvMock), new HashMap<>(), null);
 
         resultSaver.saveResult(emptyResult, new SimpleCommit(), null);
 
-        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        final CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
 
         assertTrue(savedResult.hasGlobalError());
     }
 
     @Test
     void saveResult_propertyWithNoResultsAndNoError_shouldSetLocalError() {
-        SimpleBenchmarkProperty emptyProperty = new SimpleBenchmarkProperty(new HashSet<>(),
+        final SimpleBenchmarkProperty emptyProperty = new SimpleBenchmarkProperty(new HashSet<>(),
                 ResultInterpretation.LESS_IS_BETTER, SimpleBenchmarkProperty.UNIT, null);
 
-        HashMap<String, IBenchmarkProperty> propertyMap = new HashMap<>();
+        final HashMap<String, IBenchmarkProperty> propertyMap = new HashMap<>();
         propertyMap.put(PROPERTY_NAME_TWO, emptyProperty);
 
-        SimpleBenchmark benchmarkOfProperty = new SimpleBenchmark(propertyMap);
+        final SimpleBenchmark benchmarkOfProperty = new SimpleBenchmark(propertyMap);
 
-        SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult result = new SimpleBenchmarkingResult();
         result.addBenchmark(BENCHMARK_NAME_TWO, benchmarkOfProperty);
 
         resultSaver.saveResult(result, new SimpleCommit(), null);
 
-        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        final CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
 
         assertTrue(savedResult.getBenchmarks().get(BENCHMARK_NAME_TWO)
                 .getBenchmarkProperties().get(PROPERTY_NAME_TWO).isError());
@@ -206,28 +206,28 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
 
     @Test
     void saveResult_newResultForCommitHashThatAlreadyHasOldResult_shouldOverwriteOldResult() {
-        SimpleCommit commit = new SimpleCommit();
-        SimpleBenchmarkingResult resultWithError = new SimpleBenchmarkingResult();
+        final SimpleCommit commit = new SimpleCommit();
+        final SimpleBenchmarkingResult resultWithError = new SimpleBenchmarkingResult();
         resultWithError.setGlobalError(ERROR);
 
         resultSaver.saveResult(resultWithError, commit, NO_COMPARISON_RESULT);
 
-        SimpleBenchmarkingResult resultWithoutError = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultWithoutError = new SimpleBenchmarkingResult();
 
         resultSaver.saveResult(resultWithoutError, commit, NO_COMPARISON_RESULT);
 
-        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        final CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
         assertFalse(savedResult.hasGlobalError());
 
-        Collection<String> hash = new LinkedList<>();
+        final Collection<String> hash = new LinkedList<>();
         hash.add(SimpleBenchmarkingResult.COMMIT_HASH);
 
-        Collection<CommitResult> savedResults = resultDB.getResultsFromCommits(hash);
+        final Collection<CommitResult> savedResults = resultDB.getResultsFromCommits(hash);
 
         assertEquals(EXPECTED_NUM_OF_RESULTS, savedResults.size());
         assertFalse(savedResults.iterator().next().hasGlobalError());
 
-        CommitResult latestSavedResult = resultDB.getNewestResult(SimpleCommit.REPO_ID);
+        final CommitResult latestSavedResult = resultDB.getNewestResult(SimpleCommit.REPO_ID);
         assertFalse(latestSavedResult.hasGlobalError());
     }
 }

@@ -30,7 +30,7 @@ public class EventHandler implements IEventHandler {
      *
      * @param eventAccess the eventAccess used to save events.
      */
-    public EventHandler(@NotNull IEventAccess eventAccess) {
+    public EventHandler(@NotNull final IEventAccess eventAccess) {
         Objects.requireNonNull(eventAccess, "The eventAccess cannot be null.");
 
         this.eventAccess = eventAccess;
@@ -38,10 +38,10 @@ public class EventHandler implements IEventHandler {
     }
 
     @Override
-    public void addEvent(@NotNull EventTemplate eventTemplate) {
+    public void addEvent(@NotNull final EventTemplate eventTemplate) {
         Objects.requireNonNull(eventTemplate, "The eventTemplate cannot be null.");
 
-        EventCategory category = eventTemplate.getCategory();
+        final EventCategory category = eventTemplate.getCategory();
 
         initializeEventContainer(category);
 
@@ -51,7 +51,7 @@ public class EventHandler implements IEventHandler {
 
     private void initializeEventContainer(EventCategory category) {
         if (!eventContainers.containsKey(category)) {
-            EventContainer eventContainer = new EventContainer(category, eventAccess);
+            final EventContainer eventContainer = new EventContainer(category, eventAccess);
             eventContainers.put(category, eventContainer);
         }
     }
@@ -63,9 +63,9 @@ public class EventHandler implements IEventHandler {
      * @param category category of the returned events.
      * @return a list of events.
      */
-    public Page<Event> getEvents(Pageable pageable, EventCategory category) {
+    public Page<Event> getEvents(final Pageable pageable, final EventCategory category) {
         if (eventContainers.containsKey(category)) {
-            EventContainer eventContainer = eventContainers.get(category);
+            final EventContainer eventContainer = eventContainers.get(category);
 
             return eventContainer.getEvents(pageable);
         }
@@ -79,9 +79,9 @@ public class EventHandler implements IEventHandler {
      * @param category category of the returned events.
      * @return a list of events.
      */
-    public List<Event> getEvents(EventCategory category) {
+    public List<Event> getEvents(final EventCategory category) {
         if (eventContainers.containsKey(category)) {
-            EventContainer eventContainer = eventContainers.get(category);
+            final EventContainer eventContainer = eventContainers.get(category);
 
             return eventContainer.getEvents();
         }

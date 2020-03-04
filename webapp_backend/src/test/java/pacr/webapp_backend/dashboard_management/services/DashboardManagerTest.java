@@ -26,7 +26,7 @@ public class DashboardManagerTest extends SpringBootTestWithoutShell {
     private  String viewKey;
 
     @Autowired
-    DashboardManagerTest (DashboardManager dashboardManager) {
+    DashboardManagerTest (final DashboardManager dashboardManager) {
         this.dashboardManager = dashboardManager;
     }
 
@@ -34,7 +34,7 @@ public class DashboardManagerTest extends SpringBootTestWithoutShell {
     void init() {
         dashboard = new Dashboard("test");
 
-        Pair<String, String> keys = dashboardManager.addDashboard(dashboard);
+        final Pair<String, String> keys = dashboardManager.addDashboard(dashboard);
 
         viewKey = keys.getFirst();
         editKey = keys.getSecond();
@@ -47,10 +47,10 @@ public class DashboardManagerTest extends SpringBootTestWithoutShell {
     void cleanUp() {
         dashboardManager.databaseTalker.deletionIntervalAccess.delete();
 
-        for (Dashboard d : dashboardManager.databaseTalker.getAllDashboards()) {
+        for (final Dashboard d : dashboardManager.databaseTalker.getAllDashboards()) {
             try {
                 dashboardManager.deleteDashboard(d.getEditKey());
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 e.printStackTrace();
             }
         }
@@ -79,9 +79,9 @@ public class DashboardManagerTest extends SpringBootTestWithoutShell {
 
     @Test
     void addDashboard_UninitializedDashboard_ShouldReturnKeys() {
-        Dashboard dashboard = new Dashboard();
+        final Dashboard dashboard = new Dashboard();
 
-        Pair<String,String> keys = dashboardManager.addDashboard(dashboard);
+        final Pair<String,String> keys = dashboardManager.addDashboard(dashboard);
 
         assertNotEquals(null, keys.getFirst());
         assertNotEquals(null, keys.getSecond());
@@ -111,7 +111,7 @@ public class DashboardManagerTest extends SpringBootTestWithoutShell {
 
     @Test
     void updateDashboard_ViewKeyInDashboard_ShouldThrowException() {
-        Dashboard dashboardClone = new Dashboard("title");
+        final Dashboard dashboardClone = new Dashboard("title");
         dashboardClone.initializeKeys(viewKey, editKey);
 
         assertThrows(IllegalAccessException.class, () -> dashboardManager.updateDashboard(dashboardClone));
@@ -119,7 +119,7 @@ public class DashboardManagerTest extends SpringBootTestWithoutShell {
 
     @Test
     void updateDashboard_InvalidKeyInDashboard_ShouldThrowException() {
-        Dashboard dashboardClone = new Dashboard("title");
+        final Dashboard dashboardClone = new Dashboard("title");
         dashboardClone.initializeKeys("404", viewKey);
 
         assertThrows(NoSuchElementException.class, () -> dashboardManager.updateDashboard(dashboardClone));

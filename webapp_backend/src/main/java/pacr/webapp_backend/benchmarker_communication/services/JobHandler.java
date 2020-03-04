@@ -28,8 +28,8 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
     // If there is a communication error with a benchmarker the attempts are counted.
     private Map<String, Integer> executionAttempts;
 
-    public JobHandler(IJobSender jobSender, IBenchmarkerPool benchmarkerPool,
-                        IJobProvider jobProvider, IResultSaver resultSaver) {
+    public JobHandler(final IJobSender jobSender, final IBenchmarkerPool benchmarkerPool,
+                      final IJobProvider jobProvider, final IResultSaver resultSaver) {
         this.jobSender = jobSender;
         this.benchmarkerPool = benchmarkerPool;
         this.jobProvider = jobProvider;
@@ -51,9 +51,9 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
      * @param address the address of the benchmarker.
      * @param result the job result.
      */
-    public void receiveBenchmarkingResults(String address, JobResult result) {
+    public void receiveBenchmarkingResults(final String address, final JobResult result) {
         if (currentJobs.containsKey(address)) {
-            IJob job = currentJobs.remove(address);
+            final IJob job = currentJobs.remove(address);
 
             benchmarkerPool.freeBenchmarker(address);
 
@@ -79,21 +79,21 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
      * This method does nothing if no job is available or all benchmarkers are occupied.
      */
     public void executeJob() {
-        IJob job = jobProvider.popJob();
+        final IJob job = jobProvider.popJob();
 
         if (job == null) {
             return;
         }
 
         if (benchmarkerPool.hasFreeBenchmarkers()) {
-            String address = benchmarkerPool.getFreeBenchmarker();
+            final String address = benchmarkerPool.getFreeBenchmarker();
 
             if (!canExecute(address)) {
                 resetAttempts(address);
                 return;
             }
 
-            BenchmarkerJob benchmarkerJob = new BenchmarkerJob(address, job.getJobGroupTitle(), job.getJobID());
+            final BenchmarkerJob benchmarkerJob = new BenchmarkerJob(address, job.getJobGroupTitle(), job.getJobID());
 
             if (jobSender.sendJob(benchmarkerJob)) {
                 LOGGER.info("Sent job to benchmarker {}.", address);
@@ -126,7 +126,7 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
             resetAttempts(address);
         }
 
-        int attempts = executionAttempts.get(address);
+        final int attempts = executionAttempts.get(address);
         executionAttempts.put(address, attempts + 1);
     }
 
@@ -151,16 +151,16 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
      * If the benchmarker currently had a job the job is returned to the jobProvider.
      * @param address the address of the benchmarker.
      */
-    public void connectionLostFor(String address) {
+    public void connectionLostFor(final String address) {
         if (currentJobs.containsKey(address)) {
-            IJob job = currentJobs.remove(address);
+            final IJob job = currentJobs.remove(address);
 
             jobProvider.returnJob(job);
         }
     }
 
     @Override
-    public IJob getCurrentBenchmarkerJob(String address) {
+    public IJob getCurrentBenchmarkerJob(final String address) {
         if (!StringUtils.hasText(address)) {
             throw new IllegalArgumentException("The address cannot be null or empty.");
         }

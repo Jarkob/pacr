@@ -30,7 +30,7 @@ public class AuthenticationStorageTest {
     public AuthenticationStorageTest() {
         try {
             this.authenticationStorage = new AuthenticationStorage(ADMIN_PW_HASH_PATH, SECRET_PATH);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             fail();
         }
@@ -63,7 +63,7 @@ public class AuthenticationStorageTest {
      */
     @Test
     void getAdminPasswordHash_emptyFile_shouldReturnEmptyString() {
-        String adminPasswordHash = authenticationStorage.getAdminPasswordHash();
+        final String adminPasswordHash = authenticationStorage.getAdminPasswordHash();
 
         assertNotNull(adminPasswordHash);
         assertTrue(adminPasswordHash.isEmpty());
@@ -74,7 +74,7 @@ public class AuthenticationStorageTest {
      */
     @Test
     void getSecret_emptyFile_shouldReturnEmptyString() {
-        byte[] secret = authenticationStorage.getSecret();
+        final byte[] secret = authenticationStorage.getSecret();
 
         assertEquals(0, secret.length);
     }
@@ -87,7 +87,7 @@ public class AuthenticationStorageTest {
     void setAdminPasswordHash_shouldAlterFile() throws IOException {
         authenticationStorage.setAdminPasswordHash(PW_HASH);
 
-        String fileContent = Files.readString(adminPasswordHashFile.toPath());
+        final String fileContent = Files.readString(adminPasswordHashFile.toPath());
 
         assertEquals(PW_HASH, fileContent);
     }
@@ -101,7 +101,7 @@ public class AuthenticationStorageTest {
     void setSecret_shouldAlterFile() throws IOException {
         authenticationStorage.setSecret(SECRET);
 
-        byte[] fileContent = Files.readAllBytes(secretFile.toPath());
+        final byte[] fileContent = Files.readAllBytes(secretFile.toPath());
 
         for (int i = 0; i < fileContent.length; ++i) {
             assertEquals(SECRET[i], fileContent[i]);
@@ -115,7 +115,7 @@ public class AuthenticationStorageTest {
     void getAdminPasswordHash_hasBeenSet_shouldReturnSetValue() {
         authenticationStorage.setAdminPasswordHash(PW_HASH);
 
-        String adminPasswordHash = authenticationStorage.getAdminPasswordHash();
+        final String adminPasswordHash = authenticationStorage.getAdminPasswordHash();
 
         assertEquals(PW_HASH, adminPasswordHash);
     }
@@ -129,7 +129,7 @@ public class AuthenticationStorageTest {
 
         authenticationStorage.setSecret(SECRET);
 
-        byte[] secret = authenticationStorage.getSecret();
+        final byte[] secret = authenticationStorage.getSecret();
 
         for (int i = 0; i < secret.length; ++i) {
             assertEquals(SECRET[i], secret[i]);

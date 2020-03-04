@@ -14,7 +14,7 @@ public class BenchmarkTest {
 
     @Test
     void equals_sameObject_shouldReturnTrue() {
-        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        final Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
 
         assertTrue(benchmark.equals(benchmark));
         assertEquals(benchmark.hashCode(), benchmark.hashCode());
@@ -22,18 +22,18 @@ public class BenchmarkTest {
 
     @Test
     void equals_differentClass_shouldReturnFalse() {
-        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
-        BenchmarkProperty property = new BenchmarkProperty();
+        final Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        final BenchmarkProperty property = new BenchmarkProperty();
 
         assertFalse(benchmark.equals(property));
     }
 
     @Test
     void equals_sameAttributes_shouldReturnTrue() {
-        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
-        Benchmark sameBenchmark = new Benchmark(BENCHMARK_NAME);
+        final Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        final Benchmark sameBenchmark = new Benchmark(BENCHMARK_NAME);
 
-        BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
+        final BenchmarkGroup group = new BenchmarkGroup(GROUP_NAME);
         benchmark.setGroup(group);
         sameBenchmark.setGroup(group);
 

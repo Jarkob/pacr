@@ -42,28 +42,28 @@ public class JobGroupTest {
     @Test
     void JobGroup_invalidTitle() {
         assertThrows(IllegalArgumentException.class, () -> {
-            JobGroup jobGroup = new JobGroup(null);
+            final JobGroup jobGroup = new JobGroup(null);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            JobGroup jobGroup = new JobGroup("");
+            final JobGroup jobGroup = new JobGroup("");
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            JobGroup jobGroup = new JobGroup(" ");
+            final JobGroup jobGroup = new JobGroup(" ");
         });
     }
 
     @Test
     void JobGroup_correctTitle() {
-        JobGroup jobGroup = new JobGroup(GROUP_TITLE);
+        final JobGroup jobGroup = new JobGroup(GROUP_TITLE);
 
         assertEquals(GROUP_TITLE, jobGroup.getTitle());
     }
 
     @Test
     void JobGroup_timeSheetIsZero() {
-        JobGroup jobGroup = new JobGroup(GROUP_TITLE);
+        final JobGroup jobGroup = new JobGroup(GROUP_TITLE);
 
         assertEquals(0, jobGroup.getTimeSheet());
     }

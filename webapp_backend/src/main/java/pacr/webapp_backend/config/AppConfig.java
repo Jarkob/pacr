@@ -13,14 +13,14 @@ public class AppConfig implements WebMvcConfigurer {
 
     private String allowedOrigins;
 
-    public AppConfig(@NotNull @Value("${allowedOrigins}") String allowedOrigins) {
+    public AppConfig(@NotNull @Value("${allowedOrigins}") final String allowedOrigins) {
         Objects.requireNonNull(allowedOrigins);
 
         this.allowedOrigins = allowedOrigins;
     }
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
+    public void addCorsMappings(final CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(allowedOrigins)
                 .allowedHeaders("*")

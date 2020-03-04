@@ -46,7 +46,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     private BenchmarkGroup group;
 
     @Autowired
-    public BenchmarkManagerTest(BenchmarkDB benchmarkDB, BenchmarkGroupDB groupDB) {
+    public BenchmarkManagerTest(final BenchmarkDB benchmarkDB, final BenchmarkGroupDB groupDB) {
         this.benchmarkDB = benchmarkDB;
         this.groupDB = groupDB;
         this.benchmarkManager = new BenchmarkManager(benchmarkDB, groupDB);
@@ -58,7 +58,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
 
         benchmark = new Benchmark(BENCHMARK_NAME);
 
-        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
+        final BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
         benchmark.addProperty(property);
 
         benchmark.setGroup(group);
@@ -79,11 +79,11 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void createOrUpdateBenchmark_benchmarkNotYetSaved_shouldSaveBenchmark() {
-        Benchmark benchmark = new Benchmark(BENCHMARK_NAME_TWO);
+        final Benchmark benchmark = new Benchmark(BENCHMARK_NAME_TWO);
 
         benchmarkManager.createOrUpdateBenchmark(benchmark);
 
-        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+        final Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(BENCHMARK_NAME_TWO, savedBenchmark.getOriginalName());
         assertEquals(benchmark.getId(), savedBenchmark.getId());
@@ -96,14 +96,14 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     public void createOrUpdateBenchmark_addedProperty_shouldAlsoReturnAddedProperty() {
         benchmarkDB.saveBenchmark(benchmark);
 
-        BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
+        final BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
                 ResultInterpretation.LESS_IS_BETTER);
 
         benchmark.addProperty(newProperty);
 
         benchmarkManager.createOrUpdateBenchmark(benchmark);
 
-        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+        final Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(EXPECTED_NUM_OF_PROPERTIES, savedBenchmark.getProperties().size());
     }
@@ -116,14 +116,14 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     public void createOrUpdateBenchmark_createAndAddProperty_shouldAlsoReturnAddedProperty() {
         benchmarkManager.createOrUpdateBenchmark(benchmark);
 
-        BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
+        final BenchmarkProperty newProperty = new BenchmarkProperty(PROPERTY_NAME_TWO, UNIT,
                 ResultInterpretation.LESS_IS_BETTER);
 
         benchmark.addProperty(newProperty);
 
         benchmarkManager.createOrUpdateBenchmark(benchmark);
 
-        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+        final Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(EXPECTED_NUM_OF_PROPERTIES, savedBenchmark.getProperties().size());
         assertNotEquals(NO_ID, newProperty.getId());
@@ -138,7 +138,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
 
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME_TWO, BENCHMARK_DESCRIPTION, group.getId());
 
-        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+        final Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(BENCHMARK_NAME_TWO, savedBenchmark.getCustomName());
         assertEquals(BENCHMARK_NAME, savedBenchmark.getOriginalName());
@@ -153,12 +153,12 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     public void updateBenchmark_newGroup_shouldOnlyChangeGroup() {
         benchmarkDB.saveBenchmark(benchmark);
 
-        BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+        final BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
         groupDB.saveBenchmarkGroup(groupTwo);
 
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME, BENCHMARK_DESCRIPTION, groupTwo.getId());
 
-        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+        final Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(groupTwo.getId(), savedBenchmark.getGroup().getId());
         assertEquals(BENCHMARK_NAME, savedBenchmark.getCustomName());
@@ -176,7 +176,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
         benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME, BENCHMARK_DESCRIPTION,
                 BenchmarkManager.getStandardGroupId());
 
-        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+        final Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(BenchmarkManager.getStandardGroupId(), savedBenchmark.getGroup().getId());
     }
@@ -237,7 +237,7 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     public void updateGroup_newName_shouldChangeName() {
         benchmarkManager.updateGroup(group.getId(), GROUP_NAME_TWO);
 
-        BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(group.getId());
+        final BenchmarkGroup savedGroup = groupDB.getBenchmarkGroup(group.getId());
 
         assertEquals(GROUP_NAME_TWO, savedGroup.getName());
     }
@@ -278,35 +278,35 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
 
         benchmarkManager.deleteGroup(group.getId());
 
-        Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+        final Benchmark savedBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
 
         assertEquals(BenchmarkManager.getStandardGroupId(), savedBenchmark.getGroup().getId());
     }
 
     @Test
     void deleteGroup_attemptToDeleteStandardGroup_shouldThrowException() {
-        BenchmarkGroup standardGroup = groupDB.getStandardGroup();
+        final BenchmarkGroup standardGroup = groupDB.getStandardGroup();
 
         assertThrows(IllegalAccessException.class, () -> benchmarkManager.deleteGroup(standardGroup.getId()));
     }
 
     @Test
     void deleteGroup_noGroupWithGivenIdSaved_shouldThrowException() {
-        BenchmarkGroup standardGroup = groupDB.getStandardGroup();
+        final BenchmarkGroup standardGroup = groupDB.getStandardGroup();
         assertThrows(NoSuchElementException.class,
                 () -> benchmarkManager.deleteGroup(standardGroup.getId() + group.getId()));
     }
 
     @Test
     void getBenchmarksByGroup_twoBenchmarksDifferentGroups_shouldOnlyReturnBenchmarkOfGroup() {
-        BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
-        Benchmark benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
+        final BenchmarkGroup groupTwo = new BenchmarkGroup(GROUP_NAME_TWO);
+        final Benchmark benchmarkTwo = new Benchmark(BENCHMARK_NAME_TWO);
         benchmarkTwo.setGroup(groupTwo);
 
         groupDB.saveBenchmarkGroup(groupTwo);
         benchmarkDB.saveBenchmark(benchmarkTwo);
 
-        Collection<Benchmark> benchmarks = benchmarkManager.getBenchmarksByGroup(groupTwo.getId());
+        final Collection<Benchmark> benchmarks = benchmarkManager.getBenchmarksByGroup(groupTwo.getId());
 
         assertEquals(EXPECTED_SINGLE, benchmarks.size());
         assertEquals(benchmarkTwo, benchmarks.iterator().next());

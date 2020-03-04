@@ -46,7 +46,7 @@ public class BenchmarkGroup {
      * Creates a new BenchmarkGroup with a name.
      * @param name the name. Cannot be null, empty or blank (throws IllegalArgumentException).
      */
-    public BenchmarkGroup(@NotNull String name) {
+    public BenchmarkGroup(@NotNull final String name) {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank.");
         }

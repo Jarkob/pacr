@@ -39,9 +39,9 @@ public class SSHKeyProvider {
      * @throws FileNotFoundException when the SSH Public Key or
      *         the SSH Private Key was not found.
      */
-    public SSHKeyProvider(@NotNull @Value("${privateKeyPath}") String privateKeyPath,
-                          @NotNull @Value("${publicKeyPath}") String publicKeyPath,
-                          @NotNull IBenchmarkerConfigurator configurator) throws FileNotFoundException {
+    public SSHKeyProvider(@NotNull @Value("${privateKeyPath}") final String privateKeyPath,
+                          @NotNull @Value("${publicKeyPath}") final String publicKeyPath,
+                          @NotNull final IBenchmarkerConfigurator configurator) throws FileNotFoundException {
         Objects.requireNonNull(privateKeyPath);
         Objects.requireNonNull(publicKeyPath);
         Objects.requireNonNull(configurator);
@@ -77,15 +77,15 @@ public class SSHKeyProvider {
         configurator.updateSSHKey(readFile(privateKeyFile));
     }
 
-    private String readFile(File file) throws IOException {
+    private String readFile(final File file) throws IOException {
         assert file != null;
 
-        BufferedReader br = new BufferedReader(new FileReader(file));
-        StringBuilder sb = new StringBuilder();
+        final BufferedReader br = new BufferedReader(new FileReader(file));
+        final StringBuilder sb = new StringBuilder();
 
         String line = br.readLine();
         while (line != null) {
-            sb.append(line).append("\n");
+            sb.append(line).append('\n');
             line = br.readLine();
         }
 

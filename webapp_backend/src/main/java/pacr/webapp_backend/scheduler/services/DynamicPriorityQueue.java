@@ -16,7 +16,7 @@ public class DynamicPriorityQueue<E> extends PriorityQueue<E> {
      *
      * @param comparator comparator used to sort the elements.
      */
-    public DynamicPriorityQueue(Comparator<? super E> comparator) {
+    public DynamicPriorityQueue(final Comparator<? super E> comparator) {
         super(comparator);
     }
 
@@ -27,7 +27,7 @@ public class DynamicPriorityQueue<E> extends PriorityQueue<E> {
         }
 
         // it is save to assume that the type of the array elements is E.
-        E[] elements = (E[]) super.toArray();
+        final E[] elements = (E[]) super.toArray();
 
         super.clear();
         super.addAll(Arrays.asList(elements));

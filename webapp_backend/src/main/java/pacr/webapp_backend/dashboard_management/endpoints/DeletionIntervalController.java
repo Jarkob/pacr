@@ -33,8 +33,8 @@ public class DeletionIntervalController {
      * @param authenticator the authenticator, which checks whether admin requests are authorized.
      */
     @Autowired
-    public DeletionIntervalController(@NotNull DashboardManager dashboardManager,
-                                      @NotNull IAuthenticator authenticator) {
+    public DeletionIntervalController(@NotNull final DashboardManager dashboardManager,
+                                      @NotNull final IAuthenticator authenticator) {
         Objects.requireNonNull(dashboardManager, "The dashboard manager must not be null.");
         Objects.requireNonNull(authenticator, "The authenticator must not be null.");
 
@@ -49,7 +49,7 @@ public class DeletionIntervalController {
      */
     @GetMapping("deletion-interval")
     public ResponseEntity<Long> getDeletionInterval() {
-        long deletionInterval = dashboardManager.getDeletionInterval();
+        final long deletionInterval = dashboardManager.getDeletionInterval();
 
         return ResponseEntity.ok(deletionInterval);
     }
@@ -62,15 +62,15 @@ public class DeletionIntervalController {
      * @return a http response, whether the action was successful.
      */
     @PutMapping("deletion-interval/{deletionInterval}")
-    public ResponseEntity<Object> changeDeletionInterval(@PathVariable long deletionInterval,
-                                                         @NotNull @RequestHeader(name = "jwt") String token) {
+    public ResponseEntity<Object> changeDeletionInterval(@PathVariable final long deletionInterval,
+                                                         @NotNull @RequestHeader(name = "jwt") final String token) {
 
         Objects.requireNonNull(token, "The token must not be null.");
 
         if (authenticator.authenticate(token)) {
             try {
                 dashboardManager.setDeletionInterval(deletionInterval);
-            } catch (IllegalArgumentException e) {
+            } catch (final IllegalArgumentException e) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
             }
 

@@ -39,7 +39,7 @@ public class GetCommitDBTest extends GitTrackingDBTest {
     private GetCommitDB getCommitDB;
 
     @Autowired
-    public GetCommitDBTest(GitTrackingDB gitTrackingDB, GetCommitDB getCommitDB) {
+    public GetCommitDBTest(final GitTrackingDB gitTrackingDB, final GetCommitDB getCommitDB) {
         super(gitTrackingDB);
         this.getCommitDB = getCommitDB;
     }
@@ -74,7 +74,7 @@ public class GetCommitDBTest extends GitTrackingDBTest {
     void getCommitsFromBranchTimeFrame_shouldOnlyReturnCommitsInTime() {
         repository.createBranchIfNotExists(BRANCH_NAME);
 
-        GitBranch branch = repository.getTrackedBranch(BRANCH_NAME);
+        final GitBranch branch = repository.getTrackedBranch(BRANCH_NAME);
 
         gitTrackingDB.addRepository(repository);
 

@@ -20,18 +20,18 @@ public class BenchmarkTest {
 
     @Test
     void setProperties_noError() {
-        Map<String, BenchmarkProperty> expectedProperties = new HashMap<>();
+        final Map<String, BenchmarkProperty> expectedProperties = new HashMap<>();
 
         benchmark.setProperties(expectedProperties);
 
-        Map<String, ? extends IBenchmarkProperty> properties = benchmark.getBenchmarkProperties();
+        final Map<String, ? extends IBenchmarkProperty> properties = benchmark.getBenchmarkProperties();
 
         assertEquals(expectedProperties, properties);
     }
 
     @Test
     void getBenchmarkProperties_returnsDefaultValues() {
-        Map<String, ? extends IBenchmarkProperty> properties = benchmark.getBenchmarkProperties();
+        final Map<String, ? extends IBenchmarkProperty> properties = benchmark.getBenchmarkProperties();
 
         assertNull(properties);
     }

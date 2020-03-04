@@ -61,7 +61,7 @@ public class BenchmarkingJobsControllerTest {
 
     @Test
     void receiveBenchmarkingResults_noError() {
-        boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
+        final boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
 
         verify(jobHandler).receiveBenchmarkingResults(ADDRESS, jobResult);
         assertTrue(result);
@@ -69,7 +69,7 @@ public class BenchmarkingJobsControllerTest {
 
     @Test
     void receiveBenchmarkingResults_nullPrincipal() {
-        boolean result = jobsController.receiveBenchmarkingResults(jobResult, null);
+        final boolean result = jobsController.receiveBenchmarkingResults(jobResult, null);
 
         verify(jobHandler, never()).receiveBenchmarkingResults(any(), any());
         assertFalse(result);
@@ -77,7 +77,7 @@ public class BenchmarkingJobsControllerTest {
 
     @Test
     void receiveBenchmarkingResults_nullJobResult() {
-        boolean result = jobsController.receiveBenchmarkingResults(null, principal);
+        final boolean result = jobsController.receiveBenchmarkingResults(null, principal);
 
         verify(jobHandler, never()).receiveBenchmarkingResults(any(), any());
         assertFalse(result);
@@ -87,7 +87,7 @@ public class BenchmarkingJobsControllerTest {
     void receiveBenchmarkingResults_nullAddress() {
         when(principal.getName()).thenReturn(null);
 
-        boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
+        final boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
 
         verify(jobHandler, never()).receiveBenchmarkingResults(any(), any());
         assertFalse(result);
@@ -97,7 +97,7 @@ public class BenchmarkingJobsControllerTest {
     void receiveBenchmarkingResults_emptyAddress() {
         when(principal.getName()).thenReturn("");
 
-        boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
+        final boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
 
         verify(jobHandler, never()).receiveBenchmarkingResults(any(), any());
         assertFalse(result);
@@ -107,7 +107,7 @@ public class BenchmarkingJobsControllerTest {
     void receiveBenchmarkingResults_blankAddress() {
         when(principal.getName()).thenReturn(" ");
 
-        boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
+        final boolean result = jobsController.receiveBenchmarkingResults(jobResult, principal);
 
         verify(jobHandler, never()).receiveBenchmarkingResults(any(), any());
         assertFalse(result);
@@ -122,13 +122,13 @@ public class BenchmarkingJobsControllerTest {
 
     @Test
     void sendJob_noError() {
-        boolean result = jobsController.sendJob(benchmarkerJob);
+        final boolean result = jobsController.sendJob(benchmarkerJob);
 
-        ArgumentCaptor<JobMessage> jobMessageCaptor = ArgumentCaptor.forClass(JobMessage.class);
+        final ArgumentCaptor<JobMessage> jobMessageCaptor = ArgumentCaptor.forClass(JobMessage.class);
 
         verify(template).convertAndSendToUser(eq(ADDRESS), eq("/queue/newJob"), jobMessageCaptor.capture());
 
-        JobMessage jobMessage = jobMessageCaptor.getValue();
+        final JobMessage jobMessage = jobMessageCaptor.getValue();
         assertNotNull(jobMessage);
         assertEquals(COMMIT_HASH, jobMessage.getCommitHash());
         assertEquals(REPOSITORY, jobMessage.getRepository());
@@ -138,7 +138,7 @@ public class BenchmarkingJobsControllerTest {
 
     @Test
     void sendJob_nullBenchmarkerJob() {
-        boolean result = jobsController.sendJob(null);
+        final boolean result = jobsController.sendJob(null);
 
         verify(template, never()).convertAndSendToUser(any(), any(), any());
 

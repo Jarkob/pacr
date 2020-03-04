@@ -47,8 +47,8 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     private GitCommit commit;
 
     @Autowired
-    public ResultManagerTest(ResultManager resultManager, ResultDB resultDB, IGitTrackingAccess gitTrackingAccess,
-                             RepositoryDB repositoryDB, BenchmarkDB benchmarkDB, BenchmarkGroupDB groupDB) {
+    public ResultManagerTest(final ResultManager resultManager, final ResultDB resultDB, final IGitTrackingAccess gitTrackingAccess,
+                             final RepositoryDB repositoryDB, final BenchmarkDB benchmarkDB, final BenchmarkGroupDB groupDB) {
         this.resultManager = resultManager;
         this.resultDB = resultDB;
         this.gitTrackingAccess = gitTrackingAccess;
@@ -92,7 +92,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     void saveBenchmarkingResults_shouldBeSavedInDatabase() {
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 
-        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        final CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
 
         assertNotNull(savedResult);
         assertEquals(SimpleBenchmarkingResult.COMMIT_HASH, savedResult.getCommitHash());
@@ -103,11 +103,11 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
      */
     @Test
     void importBenchmarkingResults_shouldBeSavedInDatabase() {
-        SimpleBenchmarkingResult resultOne = new SimpleBenchmarkingResult();
-        SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultOne = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
         resultTwo.setCommitHash(HASH_TWO);
 
-        Collection<IBenchmarkingResult> results = new LinkedList<>();
+        final Collection<IBenchmarkingResult> results = new LinkedList<>();
         results.add(resultOne);
         results.add(resultTwo);
 
@@ -115,8 +115,8 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
 
         resultManager.importBenchmarkingResults(results);
 
-        CommitResult savedResultOne = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
-        CommitResult savedResultTwo = resultDB.getResultFromCommit(HASH_TWO);
+        final CommitResult savedResultOne = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        final CommitResult savedResultTwo = resultDB.getResultFromCommit(HASH_TWO);
 
         assertNotNull(savedResultOne);
         assertEquals(SimpleBenchmarkingResult.COMMIT_HASH, savedResultOne.getCommitHash());
@@ -130,7 +130,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
         SimpleBenchmarkingResult resultToImport = new SimpleBenchmarkingResult();
         resultToImport.setCommitHash(HASH_TWO);
 
-        Collection<IBenchmarkingResult> resultsToImport = new LinkedList<>();
+        final Collection<IBenchmarkingResult> resultsToImport = new LinkedList<>();
         resultsToImport.add(resultToImport);
 
         resultManager.importBenchmarkingResults(resultsToImport);
@@ -147,7 +147,7 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
 
         resultManager.deleteBenchmarkingResults(Arrays.asList(SimpleBenchmarkingResult.COMMIT_HASH));
 
-        CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
+        final CommitResult savedResult = resultDB.getResultFromCommit(SimpleBenchmarkingResult.COMMIT_HASH);
 
         assertNull(savedResult);
     }
@@ -159,17 +159,17 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     void saveBenchmarkingResults_withParent_shouldSaveAsUsual() {
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 
-        GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
+        final GitCommit commitTwo = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
         commitTwo.addParent(SimpleBenchmarkingResult.COMMIT_HASH);
 
         gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(commitTwo)));
 
-        SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultTwo = new SimpleBenchmarkingResult();
         resultTwo.setCommitHash(HASH_TWO);
 
         resultManager.saveBenchmarkingResults(resultTwo);
 
-        CommitResult savedResultTwo = resultDB.getResultFromCommit(HASH_TWO);
+        final CommitResult savedResultTwo = resultDB.getResultFromCommit(HASH_TWO);
 
         assertNotNull(savedResultTwo);
         assertEquals(HASH_TWO, savedResultTwo.getCommitHash());
@@ -191,28 +191,28 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
      */
     @Test
     void saveBenchmarkingResults_comparisonResultSavedAfterChild_shouldUpdateComparisonOfChild() {
-        GitCommit commitToCompare = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
+        final GitCommit commitToCompare = new GitCommit(HASH_TWO, MSG, NOW, NOW, repository);
         commitToCompare.addParent(SimpleBenchmarkingResult.COMMIT_HASH);
         gitTrackingAccess.addCommits(new HashSet<>(Arrays.asList(commitToCompare)));
 
-        SimpleBenchmarkingResult resultToCompare = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultToCompare = new SimpleBenchmarkingResult();
         resultToCompare.setCommitHash(HASH_TWO);
 
         resultManager.saveBenchmarkingResults(resultToCompare);
 
-        CommitResult resultBeforeComparison = resultDB.getResultFromCommit(HASH_TWO);
+        final CommitResult resultBeforeComparison = resultDB.getResultFromCommit(HASH_TWO);
 
         assertEquals(SimpleBenchmarkingResult.COMMIT_HASH, resultBeforeComparison.getComparisonCommitHash());
         assertFalse(resultBeforeComparison.isCompared());
 
         resultManager.saveBenchmarkingResults(new SimpleBenchmarkingResult());
 
-        CommitResult resultAfterComparison = resultDB.getResultFromCommit(HASH_TWO);
+        final CommitResult resultAfterComparison = resultDB.getResultFromCommit(HASH_TWO);
 
         assertEquals(SimpleBenchmarkingResult.COMMIT_HASH, resultAfterComparison.getComparisonCommitHash());
         assertTrue(resultAfterComparison.isCompared());
 
-        Collection<CommitResult> allResults = resultDB.getAllResults();
+        final Collection<CommitResult> allResults = resultDB.getAllResults();
         assertEquals(EXPECTED_TWO_RESULTS, allResults.size());
     }
 }

@@ -42,7 +42,7 @@ public class TokenManagerTest {
     void generateToken_shouldAccept() {
         when(authenticationAccessMock.getSecret()).thenReturn(SECRET);
 
-        String token = tokenManager.generateToken();
+        final String token = tokenManager.generateToken();
 
         assertTrue(tokenManager.authenticate(token));
     }
@@ -54,9 +54,9 @@ public class TokenManagerTest {
     void generateToken_noSecret_shouldGenerateNewSecret() {
         when(authenticationAccessMock.getSecret()).thenReturn(EMPTY_SECRET);
 
-        String token = tokenManager.generateToken();
+        final String token = tokenManager.generateToken();
 
-        ArgumentCaptor<byte[]> secretCaptor = ArgumentCaptor.forClass(byte[].class);
+        final ArgumentCaptor<byte[]> secretCaptor = ArgumentCaptor.forClass(byte[].class);
         verify(authenticationAccessMock).setSecret(secretCaptor.capture());
 
         when(authenticationAccessMock.getSecret()).thenReturn(secretCaptor.getValue());
@@ -71,11 +71,11 @@ public class TokenManagerTest {
     void authenticate_wrongSignature_shouldReturnFalse() {
         when(authenticationAccessMock.getSecret()).thenReturn(SECRET);
 
-        byte[] foreignSecret = new byte[SECRET.length];
+        final byte[] foreignSecret = new byte[SECRET.length];
         foreignSecret[0] = 127;
         System.arraycopy(SECRET, 1, foreignSecret, 1, foreignSecret.length - 1);
 
-        String foreignToken = generateComparisonToken(foreignSecret, ISSUER, AUDIENCE);
+        final String foreignToken = generateComparisonToken(foreignSecret, ISSUER, AUDIENCE);
 
         assertFalse(tokenManager.authenticate(foreignToken));
     }
@@ -87,7 +87,7 @@ public class TokenManagerTest {
     void authenticate_wrongIssuer_shouldReturnFalse() {
         when(authenticationAccessMock.getSecret()).thenReturn(SECRET);
 
-        String foreignToken = generateComparisonToken(SECRET, FOREIGN_ISSUER, AUDIENCE);
+        final String foreignToken = generateComparisonToken(SECRET, FOREIGN_ISSUER, AUDIENCE);
 
         assertFalse(tokenManager.authenticate(foreignToken));
     }
@@ -96,14 +96,14 @@ public class TokenManagerTest {
     void authenticate_noSecret_shouldReturnFalse() {
         when(authenticationAccessMock.getSecret()).thenReturn(EMPTY_SECRET);
 
-        String token = tokenManager.generateToken();
+        final String token = tokenManager.generateToken();
         assertFalse(tokenManager.authenticate(token));
     }
 
-    private String generateComparisonToken(byte[] secret, String issuer, String audience) {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+    private String generateComparisonToken(final byte[] secret, final String issuer, final String audience) {
+        final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
-        JwtBuilder builder = Jwts.builder()
+        final JwtBuilder builder = Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setIssuer(issuer)
                 .setAudience(audience)

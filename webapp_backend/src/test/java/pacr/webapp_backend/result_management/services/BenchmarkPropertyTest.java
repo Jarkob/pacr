@@ -14,21 +14,21 @@ public class BenchmarkPropertyTest {
 
     @Test
     void equals_sameObject_shouldReturnTrue() {
-        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
+        final BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
         assertTrue(property.equals(property));
         assertEquals(property.hashCode(), property.hashCode());
     }
 
     @Test
     void equals_differentClass_shouldReturnFalse() {
-        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
+        final BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
         assertFalse(property.equals(new Benchmark()));
     }
 
     @Test
     void equals_sameAttributes_shouldReturnTrue() {
-        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
-        BenchmarkProperty sameProperty = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
+        final BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
+        final BenchmarkProperty sameProperty = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
 
         assertTrue(property.equals(sameProperty));
         assertEquals(property.hashCode(), sameProperty.hashCode());

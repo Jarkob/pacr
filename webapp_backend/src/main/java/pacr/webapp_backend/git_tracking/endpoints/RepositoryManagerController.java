@@ -53,7 +53,7 @@ public class RepositoryManagerController {
      * @param gitTracking is the GitTracking component needed to manage the repositories.
      * @param authenticator is the authenticator for checking the token.
      */
-    public RepositoryManagerController(@NotNull GitTracking gitTracking, @NotNull IAuthenticator authenticator) {
+    public RepositoryManagerController(@NotNull final GitTracking gitTracking, @NotNull final IAuthenticator authenticator) {
         Objects.requireNonNull(gitTracking);
         Objects.requireNonNull(authenticator);
         this.gitTracking = gitTracking;
@@ -77,9 +77,9 @@ public class RepositoryManagerController {
         return transferRepositories;
     }
 
-    private TransferRepository createTransferRepository(GitRepository gitRepository) {
+    private TransferRepository createTransferRepository(final GitRepository gitRepository) {
         // convert selected branches to tracked branches
-        Set<String> branchNames = invertSet(gitRepository.getSelectedBranches(),
+        final Set<String> branchNames = invertSet(gitRepository.getSelectedBranches(),
                 gitTracking.getBranches(gitRepository.getPullURL()), gitRepository.isTrackAllBranches());
 
         // sort branch order
@@ -94,7 +94,7 @@ public class RepositoryManagerController {
 
     @RequestMapping(value = "/commits/{repositoryID}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
     public Page<GitCommit> getAllCommits(@PageableDefault(size = 50, page = 0, sort = {"commitDate"},
-            direction = Sort.Direction.ASC) Pageable pageable, @PathVariable("repositoryID") int repositoryID) {
+            direction = Sort.Direction.ASC) final Pageable pageable, @PathVariable("repositoryID") final int repositoryID) {
         return gitTracking.getAllCommits(repositoryID, pageable);
     }
 
@@ -106,17 +106,17 @@ public class RepositoryManagerController {
      * @return all selected branches that are on the white-/blacklist.
      */
     @NotNull
-    private Set<String> invertSet(@NotNull Set<String> subset,
-                                         @NotNull Set<String> allEntries, boolean invert) {
+    private Set<String> invertSet(@NotNull final Set<String> subset,
+                                  @NotNull final Set<String> allEntries, final boolean invert) {
         Objects.requireNonNull(subset);
         Objects.requireNonNull(allEntries);
 
-        Set<String> selectedBranches = new HashSet<>();
+        final Set<String> selectedBranches = new HashSet<>();
 
         if (invert) {
             // all branches are being tracked, repository is in blacklist mode
             selectedBranches.addAll(allEntries);
-            for (String trackedBranch : subset) {
+            for (final String trackedBranch : subset) {
                 selectedBranches.remove(trackedBranch);
             }
         } else {
@@ -134,8 +134,8 @@ public class RepositoryManagerController {
      * @param token is the authentication token.
      */
     @PostMapping(value = "/add-repository")
-    public int addRepository(@NotNull @RequestBody TransferRepository transferRepository,
-                             @NotNull @RequestHeader(name = "jwt") String token) {
+    public int addRepository(@NotNull @RequestBody final TransferRepository transferRepository,
+                             @NotNull @RequestHeader(name = "jwt") final String token) {
         Objects.requireNonNull(transferRepository);
         Objects.requireNonNull(token);
 
@@ -165,8 +165,8 @@ public class RepositoryManagerController {
      *         UNAUTHORIZED (401) if the access is unauthorized.
      */
     @DeleteMapping(value = "/delete-repository/{id}")
-    public ResponseEntity<Object> deleteRepository(@PathVariable("id") int repositoryID,
-                                                   @NotNull @RequestHeader(name = "jwt") String token) {
+    public ResponseEntity<Object> deleteRepository(@PathVariable("id") final int repositoryID,
+                                                   @NotNull @RequestHeader(name = "jwt") final String token) {
         Objects.requireNonNull(token);
         if (!authenticator.authenticate(token)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
@@ -174,7 +174,7 @@ public class RepositoryManagerController {
 
         try {
             gitTracking.removeRepository(repositoryID);
-        } catch (NoSuchElementException e) {
+        } catch (final NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Repository not found.");
         }
         return ResponseEntity.ok().build();
@@ -186,8 +186,8 @@ public class RepositoryManagerController {
      * @param token is the authentication token.
      */
     @PostMapping(value = "/update-repository")
-    public void updateRepository(@NotNull @RequestBody TransferRepository transferRepository,
-                                 @NotNull @RequestHeader(name = "jwt") String token) {
+    public void updateRepository(@NotNull @RequestBody final TransferRepository transferRepository,
+                                 @NotNull @RequestHeader(name = "jwt") final String token) {
         Objects.requireNonNull(transferRepository);
         Objects.requireNonNull(token);
         if (!authenticator.authenticate(token)) {
@@ -196,11 +196,11 @@ public class RepositoryManagerController {
 
         LOGGER.info("Updating repository {}.", transferRepository.getName());
 
-        GitRepository gitRepository = gitTracking.getRepository(transferRepository.getId());
+        final GitRepository gitRepository = gitTracking.getRepository(transferRepository.getId());
 
         // add new color to color picker if necessary
-        String oldColor = gitRepository.getColor();
-        String newColor = transferRepository.getColor();
+        final String oldColor = gitRepository.getColor();
+        final String newColor = transferRepository.getColor();
 
         if (!oldColor.equals(newColor)) {
             LOGGER.info("Changing color from {} to {}.", oldColor, newColor);
@@ -208,8 +208,8 @@ public class RepositoryManagerController {
         }
 
         // change observeFromDate if necessary
-        LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
-        LocalDate newObserveFromDate = transferRepository.getObserveFromDate();
+        final LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
+        final LocalDate newObserveFromDate = transferRepository.getObserveFromDate();
 
         if ((oldObserveFromDate == null && newObserveFromDate != null)
                 || (oldObserveFromDate != null && newObserveFromDate == null)

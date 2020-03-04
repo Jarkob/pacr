@@ -47,7 +47,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param resultAccess access to results.
      * @param outputBuilder builder for output.
      */
-    public ResultGetter(IGetCommitAccess commitAccess, IResultAccess resultAccess, OutputBuilder outputBuilder) {
+    public ResultGetter(final IGetCommitAccess commitAccess, final IResultAccess resultAccess, final OutputBuilder outputBuilder) {
         this.commitAccess = commitAccess;
         this.resultAccess = resultAccess;
         this.outputBuilder = outputBuilder;
@@ -59,18 +59,18 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param commitHash the hash of the commit. Cannot be null, empty or blank.
      * @return the benchmarking result (or just the commit data if no result was found for the commit).
      */
-    public OutputBenchmarkingResult getCommitResult(@NotNull String commitHash) {
+    public OutputBenchmarkingResult getCommitResult(@NotNull final String commitHash) {
         if (!StringUtils.hasText(commitHash)) {
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
 
-        ICommit commit = commitAccess.getCommit(commitHash);
+        final ICommit commit = commitAccess.getCommit(commitHash);
 
         if (commit == null) {
             throw new NoSuchElementException("no commit with hash " + commitHash + " was found.");
         }
 
-        CommitResult result = resultAccess.getResultFromCommit(commitHash);
+        final CommitResult result = resultAccess.getResultFromCommit(commitHash);
 
         if (result == null) {
             return outputBuilder.buildDetailOutput(commit);
@@ -85,12 +85,12 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param pageable the requested page and sort. Cannot be null.
      * @return the page of detailed results with commit information.
      */
-    public Page<OutputBenchmarkingResult> getFullRepositoryResults(int repositoryId, Pageable pageable) {
+    public Page<OutputBenchmarkingResult> getFullRepositoryResults(final int repositoryId, final Pageable pageable) {
         Objects.requireNonNull(pageable);
 
-        Page<CommitResult> results = resultAccess.getFullRepositoryResults(repositoryId, pageable);
+        final Page<CommitResult> results = resultAccess.getFullRepositoryResults(repositoryId, pageable);
 
-        List<OutputBenchmarkingResult> outputBenchmarkingResults = new LinkedList<>();
+        final List<OutputBenchmarkingResult> outputBenchmarkingResults = new LinkedList<>();
 
         for (CommitResult result : results) {
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
@@ -110,8 +110,8 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted)
      */
-    public HashMap<String, DiagramOutputResult> getBenchmarkResults(int repositoryId, int benchmarkId) {
-        Collection<? extends ICommit> commitsFromRepository = commitAccess.getCommitsFromRepository(repositoryId);
+    public HashMap<String, DiagramOutputResult> getBenchmarkResults(final int repositoryId, final int benchmarkId) {
+        final Collection<? extends ICommit> commitsFromRepository = commitAccess.getCommitsFromRepository(repositoryId);
         return commitsToDiagramResults(commitsFromRepository, benchmarkId);
     }
 
@@ -177,23 +177,23 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param propertyName the name of the property. Cannot be null, empty or blank.
      * @return the measurements for this property and commit.
      */
-    public List<Double> getMeasurementsOfPropertyForCommit(@NotNull String commitHash,
-                                                           int benchmarkId,
-                                                           @NotNull String propertyName) {
+    public List<Double> getMeasurementsOfPropertyForCommit(@NotNull final String commitHash,
+                                                           final int benchmarkId,
+                                                           @NotNull final String propertyName) {
         if (!StringUtils.hasText(commitHash) || !StringUtils.hasText(propertyName)) {
             throw new IllegalArgumentException("input cannot be null, empty or blank");
         }
 
-        CommitResult result = resultAccess.getResultFromCommit(commitHash);
+        final CommitResult result = resultAccess.getResultFromCommit(commitHash);
         if (result == null) {
             LOGGER.error("no result found for commit {}", commitHash);
             return new LinkedList<>();
         }
 
-        for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
+        for (final BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
 
             if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
-                for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+                for (final BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                     if (propertyResult.getName().equals(propertyName)) {
                         return propertyResult.getResults();
                     }
@@ -208,7 +208,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     @Override
-    public IBenchmarkingResult getNewestResult(int repositoryID) {
+    public IBenchmarkingResult getNewestResult(final int repositoryID) {
         return resultAccess.getNewestResult(repositoryID);
     }
 
@@ -218,7 +218,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     @Override
-    public boolean isCommitBenchmarked(@NotNull String commitHash) {
+    public boolean isCommitBenchmarked(@NotNull final String commitHash) {
         if (!StringUtils.hasText(commitHash)) {
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
@@ -227,37 +227,37 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     }
 
     @Override
-    public void subscribe(@NotNull IObserver observer) {
+    public void subscribe(@NotNull final IObserver observer) {
         Objects.requireNonNull(observer);
         observers.add(observer);
     }
 
     @Override
-    public void unsubscribe(@NotNull IObserver observer) {
+    public void unsubscribe(@NotNull final IObserver observer) {
         Objects.requireNonNull(observer);
         observers.remove(observer);
     }
 
     @Override
     public void updateAll() {
-        for (IObserver observer : observers) {
+        for (final IObserver observer : observers) {
             observer.update();
         }
     }
 
-    private HashMap<String, DiagramOutputResult> commitsToDiagramResults(Collection<? extends ICommit> commits,
-                                                              int benchmarkId) {
-        Collection<String> hashes = new LinkedList<>();
-        for (ICommit commit : commits) {
+    private HashMap<String, DiagramOutputResult> commitsToDiagramResults(final Collection<? extends ICommit> commits,
+                                                                         final int benchmarkId) {
+        final Collection<String> hashes = new LinkedList<>();
+        for (final ICommit commit : commits) {
             hashes.add(commit.getCommitHash());
         }
 
-        Map<String, CommitResult> results = getResultsMap(hashes);
+        final Map<String, CommitResult> results = getResultsMap(hashes);
 
-        HashMap<String, DiagramOutputResult> outputResults = new HashMap<>();
+        final HashMap<String, DiagramOutputResult> outputResults = new HashMap<>();
 
-        for (ICommit commit : commits) {
-            CommitResult resultForCommit = results.get(commit.getCommitHash());
+        for (final ICommit commit : commits) {
+            final CommitResult resultForCommit = results.get(commit.getCommitHash());
 
             DiagramOutputResult outputResult = null;
 
@@ -273,12 +273,12 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         return outputResults;
     }
 
-    private Map<String, CommitResult> getResultsMap(Collection<String> commitHashes) {
+    private Map<String, CommitResult> getResultsMap(final Collection<String> commitHashes) {
         // if any of the hashes in commitHashes have no saved results, they will be omitted in the output
-        Collection<CommitResult> results = resultAccess.getResultsFromCommits(commitHashes);
-        Map<String, CommitResult> resultsMap = new HashMap<>();
+        final Collection<CommitResult> results = resultAccess.getResultsFromCommits(commitHashes);
+        final Map<String, CommitResult> resultsMap = new HashMap<>();
 
-        for (CommitResult result : results) {
+        for (final CommitResult result : results) {
             resultsMap.put(result.getCommitHash(), result);
         }
 

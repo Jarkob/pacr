@@ -19,7 +19,7 @@ public class PullIntervalSchedulerConfiguration {
      */
     @Bean
     public TaskScheduler poolScheduler() {
-        ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
+        final ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setThreadNamePrefix("ThreadPoolTaskScheduler");
         scheduler.setPoolSize(1);
         scheduler.initialize();

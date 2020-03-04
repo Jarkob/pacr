@@ -29,7 +29,7 @@ public class SchedulerController {
      * @param scheduler the scheduler which is used to handle the requests.
      * @param authenticator the authenticator which provides authentication services for secure methods.
      */
-    public SchedulerController(@NotNull Scheduler scheduler, @NotNull IAuthenticator authenticator) {
+    public SchedulerController(@NotNull final Scheduler scheduler, @NotNull final IAuthenticator authenticator) {
         Objects.requireNonNull(scheduler, "The scheduler cannot be null.");
         Objects.requireNonNull(authenticator, "The authenticator cannot be null.");
 
@@ -44,7 +44,7 @@ public class SchedulerController {
      * @return a list of all jobs and prioritized jobs currently in the scheduler.
      */
     @RequestMapping("/queue/prioritized")
-    public Page<Job> getPrioritizedQueue(@PageableDefault(size = 15) Pageable pageable) {
+    public Page<Job> getPrioritizedQueue(@PageableDefault(size = 15) final Pageable pageable) {
         return scheduler.getPrioritizedQueue(pageable);
     }
 
@@ -55,7 +55,7 @@ public class SchedulerController {
      * @return a list of all jobs and prioritized jobs currently in the scheduler.
      */
     @RequestMapping("/queue/jobs")
-    public Page<Job> getJobsQueue(@PageableDefault(size = 5) Pageable pageable) {
+    public Page<Job> getJobsQueue(@PageableDefault(size = 5) final Pageable pageable) {
         return scheduler.getJobsQueue(pageable);
     }
 
@@ -67,8 +67,8 @@ public class SchedulerController {
      */
     @PostMapping("/prioritize")
     public boolean givePriorityTo(
-            @NotNull @RequestBody PrioritizeMessage prioritizeMessage,
-            @NotNull @RequestHeader(name = "jwt") String token) {
+            @NotNull @RequestBody final PrioritizeMessage prioritizeMessage,
+            @NotNull @RequestHeader(name = "jwt") final String token) {
 
         Objects.requireNonNull(token, "The token cannot be null.");
         Objects.requireNonNull(prioritizeMessage, "The prioritize message cannot be null.");

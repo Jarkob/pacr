@@ -32,7 +32,7 @@ public class EventRSSFeedView extends AbstractRssFeedView {
      * @param category the category the displayed events belong to.
      * @param eventHandler the eventHandler used to retrieve the displayed events.
      */
-    public EventRSSFeedView(@NotNull EventCategory category, @NotNull EventHandler eventHandler) {
+    public EventRSSFeedView(@NotNull final EventCategory category, @NotNull final EventHandler eventHandler) {
         Objects.requireNonNull(category, "The category cannot be null.");
         Objects.requireNonNull(eventHandler, "The eventHandler cannot be null.");
 
@@ -41,7 +41,7 @@ public class EventRSSFeedView extends AbstractRssFeedView {
     }
 
     @Override
-    protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest request) {
+    protected void buildFeedMetadata(final Map<String, Object> model, final Channel feed, final HttpServletRequest request) {
         final String title = "PACR RSS Feed";
         final String description = "Here you can find all events that occurred in the system.";
         final String link = "http://localhost:8080/rss";
@@ -52,22 +52,22 @@ public class EventRSSFeedView extends AbstractRssFeedView {
     }
 
     @Override
-    protected List<Item> buildFeedItems(Map<String, Object> map, HttpServletRequest httpServletRequest,
-                                        HttpServletResponse httpServletResponse) {
+    protected List<Item> buildFeedItems(final Map<String, Object> map, final HttpServletRequest httpServletRequest,
+                                        final HttpServletResponse httpServletResponse) {
 
-        List<Event> events = eventHandler.getEvents(category);
+        final List<Event> events = eventHandler.getEvents(category);
 
-        List<Item> items = new ArrayList<>();
+        final List<Item> items = new ArrayList<>();
 
-        for (Event event : events) {
-            Item item = new Item();
+        for (final Event event : events) {
+            final Item item = new Item();
 
             item.setTitle(event.getTitle());
 
-            Date pubDate = Date.from(event.getCreated().atZone(ZoneId.systemDefault()).toInstant());
+            final Date pubDate = Date.from(event.getCreated().atZone(ZoneId.systemDefault()).toInstant());
             item.setPubDate(pubDate);
 
-            Content content = new Content();
+            final Content content = new Content();
             content.setType("text/plain");
             content.setValue(event.getDescription());
             item.setContent(content);

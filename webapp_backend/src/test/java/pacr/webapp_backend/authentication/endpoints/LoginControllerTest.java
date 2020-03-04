@@ -44,7 +44,7 @@ public class LoginControllerTest {
         when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(true);
         when(tokenManagerMock.generateToken()).thenReturn(JWT);
 
-        ResponseEntity<Token> response = loginController.login(PASSWORD_OBJ);
+        final ResponseEntity<Token> response = loginController.login(PASSWORD_OBJ);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(JWT, response.getBody().getToken());
@@ -57,7 +57,7 @@ public class LoginControllerTest {
     void login_passwordIncorrect_shouldReturnUnauthorizedWithEmptyBody() {
         when(passwordCheckerMock.checkPassword(PASSWORD)).thenReturn(false);
 
-        ResponseEntity<Token> response = loginController.login(PASSWORD_OBJ);
+        final ResponseEntity<Token> response = loginController.login(PASSWORD_OBJ);
 
         verify(tokenManagerMock, never()).generateToken();
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
@@ -66,7 +66,7 @@ public class LoginControllerTest {
 
     @Test
     void login_passwordIsNull_shouldThrowException() {
-        Password withoutPW = new Password();
+        final Password withoutPW = new Password();
 
         assertThrows(IllegalArgumentException.class, () -> loginController.login(withoutPW));
     }

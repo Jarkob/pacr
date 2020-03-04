@@ -48,7 +48,7 @@ public class BenchmarkProperty {
      * @param unit the unit. Cannot be null.
      * @param interpretation the interpretation. Cannot be null.
      */
-    public BenchmarkProperty(String name, String unit, ResultInterpretation interpretation) {
+    public BenchmarkProperty(final String name, final String unit, final ResultInterpretation interpretation) {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }

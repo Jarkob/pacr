@@ -34,9 +34,9 @@ public class ImportExportController {
      * @param resultsImporter the resultsImporter used to import benchmarking results.
      * @param resultsExporter the resultsExporter used to export benchmarking results.
      */
-    public ImportExportController(@NotNull IAuthenticator authenticator,
-                              @NotNull BenchmarkingResultsImporter resultsImporter,
-                              @NotNull BenchmarkingResultsExporter resultsExporter) {
+    public ImportExportController(@NotNull final IAuthenticator authenticator,
+                              @NotNull final BenchmarkingResultsImporter resultsImporter,
+                              @NotNull final BenchmarkingResultsExporter resultsExporter) {
 
         Objects.requireNonNull(authenticator, "The authenticator cannot be null.");
         Objects.requireNonNull(resultsImporter, "The resultsImporter cannot be null.");
@@ -54,7 +54,7 @@ public class ImportExportController {
      * @return a list of benchmarking results or null if the token is invalid.
      */
     @RequestMapping("/export-results")
-    public Collection<OutputBenchmarkingResult> exportBenchmarkingResults(@RequestHeader(name = "jwt") String token) {
+    public Collection<OutputBenchmarkingResult> exportBenchmarkingResults(@RequestHeader(name = "jwt") final String token) {
         if (authenticator.authenticate(token)) {
             return resultsExporter.exportBenchmarkingResults();
         }
@@ -69,7 +69,7 @@ public class ImportExportController {
      * @param results the results which are imported.
      */
     @PostMapping("/import-results")
-    public void importBenchmarkingResults(@RequestBody Collection<OutputBenchmarkingResult> results, @RequestHeader(name = "jwt") String token) {
+    public void importBenchmarkingResults(@RequestBody final Collection<OutputBenchmarkingResult> results, @RequestHeader(name = "jwt") final String token) {
         if (authenticator.authenticate(token)) {
             resultsImporter.importBenchmarkingResults(results);
         } else {

@@ -62,11 +62,11 @@ public class CleanUpCommitsTest {
     }
 
     public static void deleteFolders() {
-        File repos = new File(ABSOLUTE_PATH_TO_REPOS);
+        final File repos = new File(ABSOLUTE_PATH_TO_REPOS);
         if (repos.exists()) {
             try {
                 FileUtils.deleteDirectory(repos);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }
@@ -77,9 +77,9 @@ public class CleanUpCommitsTest {
         unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + REPOSITORY_ID);
         initializeGit();
 
-        String MASTER = "master";
-        String TEST_BRANCH1 = "testbranch1";
-        String TEST_BRANCH2 = "testbranch2";
+        final String MASTER = "master";
+        final String TEST_BRANCH1 = "testbranch1";
+        final String TEST_BRANCH2 = "testbranch2";
 
         // tracked branches
         when(gitRepository.isBranchSelected(MASTER)).thenReturn(true);
@@ -99,18 +99,18 @@ public class CleanUpCommitsTest {
                 HASH_9C8C86,
                 HASH_8926F7)));
 
-        Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
+        final Collection<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
 
         assertNotNull(toDelete);
         assertEquals(1, toDelete.size());
         assertEquals(HASH_8926F7, toDelete.iterator().next());
     }
 
-    private void unzip(String zip, String destination) {
+    private void unzip(final String zip, final String destination) {
         try {
-            ZipFile zipFile = new ZipFile(zip);
+            final ZipFile zipFile = new ZipFile(zip);
             zipFile.extractAll(destination);
-        } catch (ZipException e) {
+        } catch (final ZipException e) {
             e.printStackTrace();
             fail();
         }
@@ -119,8 +119,8 @@ public class CleanUpCommitsTest {
     private void initializeGit() {
         // initialize Git
         try {
-            FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
-            Repository repository = repositoryBuilder.setGitDir(
+            final FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+            final Repository repository = repositoryBuilder.setGitDir(
                     new File(ABSOLUTE_PATH_TO_REPOS + "/" + REPOSITORY_ID + "/.git"))
                     .readEnvironment()
                     .findGitDir()
@@ -131,7 +131,7 @@ public class CleanUpCommitsTest {
             git.fetch().setRemote("origin")
                     .setTransportConfigCallback(new SSHTransportConfigCallback(RSA))
                     .call();
-        } catch (IOException | GitAPIException e) {
+        } catch (final IOException | GitAPIException e) {
             e.printStackTrace();
             fail();
         }

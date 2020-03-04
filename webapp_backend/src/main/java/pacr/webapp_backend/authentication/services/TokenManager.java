@@ -36,7 +36,7 @@ public class TokenManager implements IAuthenticator {
      * Creates a new TokenManager.
      * @param authenticationAccess access to authentication data.
      */
-    public TokenManager(IAuthenticationAccess authenticationAccess) {
+    public TokenManager(final IAuthenticationAccess authenticationAccess) {
         this.authenticationAccess = authenticationAccess;
     }
 
@@ -46,7 +46,7 @@ public class TokenManager implements IAuthenticator {
      * @return the jwt.
      */
     public String generateToken() {
-        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+        final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
         byte[] secret;
 
@@ -60,9 +60,9 @@ public class TokenManager implements IAuthenticator {
             }
         }
 
-        Key signingKey = new SecretKeySpec(secret, signatureAlgorithm.getJcaName());
+        final Key signingKey = new SecretKeySpec(secret, signatureAlgorithm.getJcaName());
 
-        JwtBuilder builder = Jwts.builder()
+        final JwtBuilder builder = Jwts.builder()
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setIssuer(ISSUER_PACR)
                 .setAudience(AUDIENCE_ADMIN)
@@ -72,8 +72,8 @@ public class TokenManager implements IAuthenticator {
     }
 
     @Override
-    public boolean authenticate(String token) {
-        byte[] secret = authenticationAccess.getSecret();
+    public boolean authenticate(final String token) {
+        final byte[] secret = authenticationAccess.getSecret();
 
         if (secret == null || secret.length == 0) {
             // no secret has been set, therefore no one has created a token yet that could be authenticated
@@ -86,7 +86,7 @@ public class TokenManager implements IAuthenticator {
             claims = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token).getBody();
-        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
+        } catch (final ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException
                 | IllegalArgumentException e) {
             LOGGER.error("Exception while parsing claims of token: '{}'", e.getMessage());
 
@@ -101,8 +101,8 @@ public class TokenManager implements IAuthenticator {
     }
 
     private byte[] generateSecret() {
-        byte[] secretBytes = new byte[SECRET_LENGTH];
-        SecureRandom secureRandom = new SecureRandom();
+        final byte[] secretBytes = new byte[SECRET_LENGTH];
+        final SecureRandom secureRandom = new SecureRandom();
 
         secureRandom.nextBytes(secretBytes);
 

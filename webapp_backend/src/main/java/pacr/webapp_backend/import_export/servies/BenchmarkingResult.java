@@ -27,14 +27,14 @@ public class BenchmarkingResult implements IBenchmarkingResult {
      *
      * @param result the IBenchmarkingResult which is used to create the BenchmarkingResult.
      */
-    public BenchmarkingResult(IBenchmarkingResult result) {
+    public BenchmarkingResult(final IBenchmarkingResult result) {
         this.commitHash = result.getCommitHash();
         this.globalError = result.getGlobalError();
         this.systemEnvironment = new SystemEnvironment(result.getSystemEnvironment());
 
         this.benchmarks = new HashMap<>();
-        Map<String, ? extends IBenchmark> resultBenchmarks = result.getBenchmarks();
-        for (String benchmarkName : resultBenchmarks.keySet()) {
+        final Map<String, ? extends IBenchmark> resultBenchmarks = result.getBenchmarks();
+        for (final String benchmarkName : resultBenchmarks.keySet()) {
             this.benchmarks.put(benchmarkName, new Benchmark(resultBenchmarks.get(benchmarkName)));
         }
     }

@@ -17,24 +17,24 @@ public interface BenchmarkGroupDB extends CrudRepository<BenchmarkGroup, Integer
 
     @Override
     default Collection<BenchmarkGroup> getAllGroups() {
-        List<BenchmarkGroup> groups = new LinkedList<>();
+        final List<BenchmarkGroup> groups = new LinkedList<>();
         this.findAll().forEach(groups::add);
         return groups;
     }
 
     @Override
-    default BenchmarkGroup getBenchmarkGroup(int id) {
+    default BenchmarkGroup getBenchmarkGroup(final int id) {
         return this.findById(id).orElse(null);
     }
 
     @Override
-    default int saveBenchmarkGroup(BenchmarkGroup group) {
+    default int saveBenchmarkGroup(final BenchmarkGroup group) {
         this.save(group);
         return group.getId();
     }
 
     @Override
-    default void deleteGroup(BenchmarkGroup group) {
+    default void deleteGroup(final BenchmarkGroup group) {
         this.delete(group);
     }
 

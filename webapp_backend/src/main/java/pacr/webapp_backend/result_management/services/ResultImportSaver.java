@@ -18,7 +18,7 @@ public class ResultImportSaver extends ResultSaver {
      * @param resultAccess access to results in storage.
      * @param benchmarkManager a benchmark manager to add newly detected benchmarks.
      */
-    ResultImportSaver(IResultAccess resultAccess, BenchmarkManager benchmarkManager) {
+    ResultImportSaver(final IResultAccess resultAccess, final BenchmarkManager benchmarkManager) {
         super(resultAccess, benchmarkManager);
     }
 
@@ -27,8 +27,8 @@ public class ResultImportSaver extends ResultSaver {
      * No components get updated for results that are being imported.
      */
     @Override
-    void updateOtherComponents(@NotNull CommitResult result, @NotNull ICommit commit,
-                               @Nullable String comparisonCommitHash) {
+    void updateOtherComponents(@NotNull final CommitResult result, @NotNull final ICommit commit,
+                               @Nullable final String comparisonCommitHash) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
     }

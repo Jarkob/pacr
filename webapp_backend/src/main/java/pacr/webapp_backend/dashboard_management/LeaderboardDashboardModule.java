@@ -25,17 +25,17 @@ public class LeaderboardDashboardModule extends DashboardModule {
 
     }
 
-    public void setLeaderboard(ILeaderboard leaderboard) {
+    public void setLeaderboard(final ILeaderboard leaderboard) {
         this.leaderboard = leaderboard;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (!super.equals(o)) {
             return false;
         }
 
-        LeaderboardDashboardModule otherModule = (LeaderboardDashboardModule) o;
+        final LeaderboardDashboardModule otherModule = (LeaderboardDashboardModule) o;
 
         if (leaderboard == null && otherModule.leaderboard == null) {
             return true;

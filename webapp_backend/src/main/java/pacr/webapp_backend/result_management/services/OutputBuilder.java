@@ -21,7 +21,7 @@ public class OutputBuilder {
      * @param result the result. Cannot be null.
      * @return an {@link OutputBenchmarkingResult} copied from the commit and result.
      */
-    OutputBenchmarkingResult buildDetailOutput(@NotNull ICommit commit, @NotNull CommitResult result) {
+    OutputBenchmarkingResult buildDetailOutput(@NotNull final ICommit commit, @NotNull final CommitResult result) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
 
@@ -29,7 +29,7 @@ public class OutputBuilder {
             throw new IllegalArgumentException("commit and result must have same commit hash");
         }
 
-        List<OutputBenchmark> outputBenchmarks = buildOutputBenchmarks(result);
+        final List<OutputBenchmark> outputBenchmarks = buildOutputBenchmarks(result);
 
         return new OutputBenchmarkingResult(commit, result, outputBenchmarks.toArray(new OutputBenchmark[0]));
     }
@@ -39,7 +39,7 @@ public class OutputBuilder {
      * @param commit the commit. Cannot be null.
      * @return an {@link OutputBenchmarkingResult} copied from the commit and with no result data.
      */
-    OutputBenchmarkingResult buildDetailOutput(@NotNull ICommit commit) {
+    OutputBenchmarkingResult buildDetailOutput(@NotNull final ICommit commit) {
         Objects.requireNonNull(commit);
 
         return new OutputBenchmarkingResult(commit);
@@ -52,7 +52,7 @@ public class OutputBuilder {
      * @param result the result. Cannot be null.
      * @return a {@link DiagramOutputResult} copied from the commit and result.
      */
-    DiagramOutputResult buildDiagramOutput(@NotNull ICommit commit, @NotNull CommitResult result, int benchmarkId) {
+    DiagramOutputResult buildDiagramOutput(@NotNull final ICommit commit, @NotNull final CommitResult result, final int benchmarkId) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
 
@@ -64,19 +64,19 @@ public class OutputBuilder {
      * @param commit the commit. Cannot be null.
      * @return a {@link DiagramOutputResult} copied from the commit and with no result data.
      */
-    DiagramOutputResult buildDiagramOutput(@NotNull ICommit commit) {
+    DiagramOutputResult buildDiagramOutput(@NotNull final ICommit commit) {
         Objects.requireNonNull(commit);
 
         return new DiagramOutputResult(commit);
     }
 
-    private List<OutputBenchmark> buildOutputBenchmarks(CommitResult result) {
-        Iterable<BenchmarkResult> benchmarkResults = result.getBenchmarkResults();
+    private List<OutputBenchmark> buildOutputBenchmarks(final CommitResult result) {
+        final Iterable<BenchmarkResult> benchmarkResults = result.getBenchmarkResults();
 
-        List<OutputBenchmark> outputBenchmarks = new LinkedList<>();
+        final List<OutputBenchmark> outputBenchmarks = new LinkedList<>();
 
-        for (BenchmarkResult benchmarkResult : benchmarkResults) {
-            OutputBenchmark outputBenchmark = buildOutputBenchmark(benchmarkResult);
+        for (final BenchmarkResult benchmarkResult : benchmarkResults) {
+            final OutputBenchmark outputBenchmark = buildOutputBenchmark(benchmarkResult);
 
             outputBenchmarks.add(outputBenchmark);
         }
@@ -84,16 +84,16 @@ public class OutputBuilder {
         return outputBenchmarks;
     }
 
-    private OutputBenchmark buildOutputBenchmark(BenchmarkResult benchmarkResult) {
-        Iterable<BenchmarkPropertyResult> propertyResults = benchmarkResult.getPropertyResults();
-        List<OutputPropertyResult> outputProperties = new LinkedList<>();
+    private OutputBenchmark buildOutputBenchmark(final BenchmarkResult benchmarkResult) {
+        final Iterable<BenchmarkPropertyResult> propertyResults = benchmarkResult.getPropertyResults();
+        final List<OutputPropertyResult> outputProperties = new LinkedList<>();
 
-        for (BenchmarkPropertyResult propertyResult : propertyResults) {
-            OutputPropertyResult outputProperty = new OutputPropertyResult(propertyResult);
+        for (final BenchmarkPropertyResult propertyResult : propertyResults) {
+            final OutputPropertyResult outputProperty = new OutputPropertyResult(propertyResult);
             outputProperties.add(outputProperty);
         }
 
-        Benchmark benchmark = benchmarkResult.getBenchmark();
+        final Benchmark benchmark = benchmarkResult.getBenchmark();
 
         return new OutputBenchmark(outputProperties.toArray(new OutputPropertyResult[0]), benchmark);
     }

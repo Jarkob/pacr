@@ -35,7 +35,7 @@ abstract class ResultSaver {
      * @param resultAccess access to results in storage.
      * @param benchmarkManager a benchmark manager to add newly detected benchmarks.
      */
-    ResultSaver(IResultAccess resultAccess, BenchmarkManager benchmarkManager) {
+    ResultSaver(final IResultAccess resultAccess, final BenchmarkManager benchmarkManager) {
         this.resultAccess = resultAccess;
         this.benchmarkManager = benchmarkManager;
     }
@@ -70,8 +70,8 @@ abstract class ResultSaver {
         }
 
         synchronized (Benchmark.class) {
-            Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
-            Collection<Benchmark> benchmarksFromResult = new HashSet<>();
+            final Collection<Benchmark> savedBenchmarks = benchmarkManager.getAllBenchmarks();
+            final Collection<Benchmark> benchmarksFromResult = new HashSet<>();
 
             Map<String, ? extends IBenchmark> inputBenchmarkResultsMap = inputResult.getBenchmarks();
 
@@ -80,19 +80,19 @@ abstract class ResultSaver {
                 comparisonBenchmarkResultsMap = comparisonResult.getBenchmarks();
             }
 
-            for (String inputBenchmarkName : inputBenchmarkResultsMap.keySet()) {
-                IBenchmark inputBenchmarkResult = inputBenchmarkResultsMap.get(inputBenchmarkName);
+            for (final String inputBenchmarkName : inputBenchmarkResultsMap.keySet()) {
+                final IBenchmark inputBenchmarkResult = inputBenchmarkResultsMap.get(inputBenchmarkName);
 
                 if (inputBenchmarkResult.getBenchmarkProperties().isEmpty()) {
                     // skips this benchmark if it has no properties
                     continue;
                 }
 
-                Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
+                final Benchmark benchmark = getBenchmark(inputBenchmarkName, savedBenchmarks);
                 benchmarksFromResult.add(benchmark);
 
-                BenchmarkResult benchmarkResultToSave = new BenchmarkResult(benchmark);
-                BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
+                final BenchmarkResult benchmarkResultToSave = new BenchmarkResult(benchmark);
+                final BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResultsMap.get(inputBenchmarkName);
 
                 addPropertyResults(inputBenchmarkResult, benchmarkResultToSave,
                         comparisonBenchmarkResult);
@@ -146,9 +146,9 @@ abstract class ResultSaver {
 
         Benchmark benchmark = benchmarkResult.getBenchmark();
 
-        for (String inputPropertyName : inputPropertyResultsMap.keySet()) {
-            IBenchmarkProperty inputPropertyResult = inputPropertyResultsMap.get(inputPropertyName);
-            BenchmarkPropertyResult comparisonPropertyResult = comparisonPropertyResultsMap.get(inputPropertyName);
+        for (final String inputPropertyName : inputPropertyResultsMap.keySet()) {
+            final IBenchmarkProperty inputPropertyResult = inputPropertyResultsMap.get(inputPropertyName);
+            final BenchmarkPropertyResult comparisonPropertyResult = comparisonPropertyResultsMap.get(inputPropertyName);
 
             BenchmarkProperty property = getProperty(inputPropertyName, inputPropertyResult, benchmark);
             benchmark.addProperty(property);
@@ -174,7 +174,7 @@ abstract class ResultSaver {
         BenchmarkProperty property = new BenchmarkProperty(propertyName, inputPropertyResult.getUnit(),
                 inputPropertyResult.getResultInterpretation());
 
-        for (BenchmarkProperty savedProperty : benchmark.getProperties()) {
+        for (final BenchmarkProperty savedProperty : benchmark.getProperties()) {
             if (savedProperty.equals(property)) {
                 // update the saved property only if this new property does not have an error
                 // otherwise the fields such as ResultInterpretation might not be set correctly
@@ -204,8 +204,8 @@ abstract class ResultSaver {
         return benchmark;
     }
 
-    private void updateSavedBenchmarks(Collection<Benchmark> benchmarksToUpdate) {
-        for (Benchmark benchmarkToUpdate : benchmarksToUpdate) {
+    private void updateSavedBenchmarks(final Collection<Benchmark> benchmarksToUpdate) {
+        for (final Benchmark benchmarkToUpdate : benchmarksToUpdate) {
             benchmarkManager.createOrUpdateBenchmark(benchmarkToUpdate);
         }
     }

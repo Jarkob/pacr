@@ -24,7 +24,7 @@ public class PullIntervalController {
      * Creates a new instance of PullIntervalController.
      * @param pullIntervalAccess is the database access.
      */
-    public PullIntervalController(IPullIntervalAccess pullIntervalAccess) {
+    public PullIntervalController(final IPullIntervalAccess pullIntervalAccess) {
         this.pullIntervalAccess = pullIntervalAccess;
     }
 
@@ -43,7 +43,7 @@ public class PullIntervalController {
      * @return HTTP Response OK (200) if the pull interval was set correctly.
      */
     @PutMapping("/pull-interval/{interval}")
-    public ResponseEntity<Object> setPullInterval(@PathVariable int interval) {
+    public ResponseEntity<Object> setPullInterval(@PathVariable final int interval) {
         pullIntervalAccess.setPullInterval(interval);
         LOGGER.info("Changed pull interval to {} seconds.", interval);
 

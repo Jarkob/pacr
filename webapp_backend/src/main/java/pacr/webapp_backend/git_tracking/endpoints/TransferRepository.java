@@ -60,7 +60,7 @@ public class TransferRepository {
     /**
      * @param trackAllBranches is the option whether all branches are being tracked.
      */
-    public void setTrackAllBranches(boolean trackAllBranches) {
+    public void setTrackAllBranches(final boolean trackAllBranches) {
         this.trackAllBranches = trackAllBranches;
     }
 
@@ -88,7 +88,7 @@ public class TransferRepository {
     /**
      * @param pullURL is the pull URL of the repository.
      */
-    public void setPullURL(String pullURL) {
+    public void setPullURL(final String pullURL) {
         this.pullURL = pullURL;
     }
 
@@ -102,7 +102,7 @@ public class TransferRepository {
     /**
      * @param name is the name of the repository.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -116,7 +116,7 @@ public class TransferRepository {
     /**
      * @param hookSet is whether a hook is set or not for this repository.
      */
-    public void setHookSet(boolean hookSet) {
+    public void setHookSet(final boolean hookSet) {
         isHookSet = hookSet;
     }
 
@@ -137,7 +137,7 @@ public class TransferRepository {
     /**
      * @param color is the color of this repository.
      */
-    public void setColor(String color) {
+    public void setColor(final String color) {
         this.color = color;
     }
 
@@ -151,7 +151,7 @@ public class TransferRepository {
     /**
      * @param observeFromDate is the date from which the commits are being observed.
      */
-    public void setObserveFromDate(LocalDate observeFromDate) {
+    public void setObserveFromDate(final LocalDate observeFromDate) {
         this.observeFromDate = observeFromDate;
     }
 
@@ -165,7 +165,7 @@ public class TransferRepository {
     /**
      * @param commitLinkPrefix is the commit link prefix.
      */
-    public void setCommitLinkPrefix(String commitLinkPrefix) {
+    public void setCommitLinkPrefix(final String commitLinkPrefix) {
         this.commitLinkPrefix = commitLinkPrefix;
     }
 
@@ -180,7 +180,7 @@ public class TransferRepository {
     /**
      * @param id is the ID for this repository.
      */
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 }

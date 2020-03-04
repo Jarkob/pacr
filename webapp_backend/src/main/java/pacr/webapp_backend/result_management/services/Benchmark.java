@@ -62,7 +62,7 @@ public class Benchmark {
      * @param originalName the original name of the benchmark. Throws IllegalArgumentException if it is null, empty or
      *                     blank.
      */
-    public Benchmark(@NotNull String originalName) {
+    public Benchmark(@NotNull final String originalName) {
         if (!StringUtils.hasText(originalName)) {
             throw new IllegalArgumentException("originalName cannot be null, empty or blank");
         }
@@ -88,7 +88,7 @@ public class Benchmark {
      * Sets the description to a new description as long as its not null.
      * @param description the new description.
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         if (description != null) {
             this.description = description;
         }
@@ -98,7 +98,7 @@ public class Benchmark {
      * Sets the group of this benchmark to a new group.
      * @param group the new group. Cannot be null.
      */
-    public void setGroup(@NotNull BenchmarkGroup group) {
+    public void setGroup(@NotNull final BenchmarkGroup group) {
         Objects.requireNonNull(group);
         this.group = group;
     }
@@ -108,7 +108,7 @@ public class Benchmark {
      * If the list already contains this property or the property is null, no action is taken.
      * @param property the new property.
      */
-    public void addProperty(BenchmarkProperty property) {
+    public void addProperty(final BenchmarkProperty property) {
         if (property != null) {
             this.properties.add(property);
         }

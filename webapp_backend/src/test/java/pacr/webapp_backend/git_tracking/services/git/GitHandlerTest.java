@@ -86,17 +86,17 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
     private IResultDeleter resultDeleter;
 
     @Autowired
-    public GitHandlerTest(IGitTrackingAccess gitTrackingAccess) {
+    public GitHandlerTest(final IGitTrackingAccess gitTrackingAccess) {
         this.gitTrackingAccess = gitTrackingAccess;
     }
 
     @BeforeAll
     public static void deleteFolders() {
-        File repos = new File(ABSOLUTE_PATH_TO_REPOS);
+        final File repos = new File(ABSOLUTE_PATH_TO_REPOS);
         if (repos.exists()) {
             try {
                 FileUtils.deleteDirectory(repos);
-            } catch (IOException e) {
+            } catch (final IOException e) {
                 e.printStackTrace();
             }
         }
@@ -134,7 +134,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
     }
 
     private void initializeGitHandler() {
-        TransportConfigCallback transportConfigCallback
+        final TransportConfigCallback transportConfigCallback
                 = new SSHTransportConfigCallback(RSA);
 
         // create GitHandler
@@ -148,10 +148,10 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         }
     }
 
-    private GitCommit initializeCommit(String commitHash, Collection<GitBranch> branches) {
-        GitCommit commit = new GitCommit(commitHash, "msg", LocalDateTime.now(), LocalDateTime.now(),
+    private GitCommit initializeCommit(final String commitHash, final Collection<GitBranch> branches) {
+        final GitCommit commit = new GitCommit(commitHash, "msg", LocalDateTime.now(), LocalDateTime.now(),
                 gitRepository);
-        for (GitBranch branch : branches) {
+        for (final GitBranch branch : branches) {
             commit.addBranch(branch);
         }
         gitTrackingAccess.addCommit(commit);
@@ -164,7 +164,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void cloneRepositoryNoAuthorization() {
-        GitRepository mockRepository = mock(GitRepository.class);
+        final GitRepository mockRepository = mock(GitRepository.class);
 
         when(mockRepository.getPullURL()).thenReturn(PULL_URL_NO_AUTHORIZATION);
 
@@ -177,18 +177,18 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
     @Test
     public void pullNewRepository() throws PullFromRepositoryException {
 
-        Collection<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
+        final Collection<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
 
         assertNotNull(untrackedCommitHashes);
         assertEquals(8, untrackedCommitHashes.size());
 
-        GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
-        GitBranch testBranch1 = gitRepository.getTrackedBranch(TEST_BRANCH1);
+        final GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
+        final GitBranch testBranch1 = gitRepository.getTrackedBranch(TEST_BRANCH1);
 
         assertEquals(HASH_AC7821, masterBranch.getHeadHash());
         assertEquals(HASH_6FDE0D, testBranch1.getHeadHash());
 
-        Collection<GitCommit> untrackedCommits = gitTrackingAccess.getAllCommits(gitRepository.getId());
+        final Collection<GitCommit> untrackedCommits = gitTrackingAccess.getAllCommits(gitRepository.getId());
 
         assertCommit(getCommitWithHash(HASH_E68151, untrackedCommits),
                 1, Arrays.asList(masterBranch, testBranch1));
@@ -218,29 +218,29 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         // repository is already cloned
         unzip(NEW_COMMITS_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
-        GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
-        GitBranch testBranch1 = gitRepository.getTrackedBranch(TEST_BRANCH1);
+        final GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
+        final GitBranch testBranch1 = gitRepository.getTrackedBranch(TEST_BRANCH1);
 
         // commits until e68151 already tracked for testbranch1, until 9c8c86 for master
         initializeCommit(HASH_39E1A8, Arrays.asList(masterBranch, testBranch1));
-        GitCommit headMaster = initializeCommit(HASH_9C8C86, Arrays.asList(masterBranch, testBranch1));
-        GitCommit headTestBranch1 = initializeCommit(HASH_E68151, Collections.singletonList(testBranch1));
+        final GitCommit headMaster = initializeCommit(HASH_9C8C86, Arrays.asList(masterBranch, testBranch1));
+        final GitCommit headTestBranch1 = initializeCommit(HASH_E68151, Collections.singletonList(testBranch1));
 
         masterBranch.setHeadHash(headMaster.getCommitHash());
         testBranch1.setHeadHash(headTestBranch1.getCommitHash());
         gitTrackingAccess.updateRepository(gitRepository);
 
-        Set<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
+        final Set<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
 
-        GitCommit updatedTracked3 = gitTrackingAccess.getCommit(HASH_E68151);
+        final GitCommit updatedTracked3 = gitTrackingAccess.getCommit(HASH_E68151);
 
         assertEquals(2, updatedTracked3.getBranches().size());
 
         assertNotNull(untrackedCommitHashes);
         assertEquals(5, untrackedCommitHashes.size());
 
-        Collection<GitCommit> untrackedCommits = new HashSet<>();
-        for (String commitHash : untrackedCommitHashes) {
+        final Collection<GitCommit> untrackedCommits = new HashSet<>();
+        for (final String commitHash : untrackedCommitHashes) {
             untrackedCommits.add(gitTrackingAccess.getCommit(commitHash));
         }
 
@@ -265,12 +265,12 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         // repository is already cloned
         unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
-        GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
+        final GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
 
         // commits until 9c8c86 already tracked and commit 8926f7 is not on origin anymore
         initializeCommit(HASH_39E1A8, Collections.singletonList(masterBranch));
         initializeCommit(HASH_9C8C86, Collections.singletonList(masterBranch));
-        GitCommit masterHead = initializeCommit(HASH_8926F7, Collections.singletonList(masterBranch));
+        final GitCommit masterHead = initializeCommit(HASH_8926F7, Collections.singletonList(masterBranch));
 
         masterBranch.setHeadHash(masterHead.getCommitHash());
         gitTrackingAccess.updateRepository(gitRepository);
@@ -278,11 +278,11 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         when(cleanUpCommits.cleanUp(any(), eq(gitRepository), eq(gitTrackingAccess)))
                 .thenReturn(new HashSet<>(Collections.singletonList(HASH_8926F7)));
 
-        Collection<String> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
+        final Collection<String> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
 
         assertNotNull(untrackedCommits);
 
-        Collection<String> commitHashes = gitTrackingAccess.getAllCommitHashes(gitRepository.getId());
+        final Collection<String> commitHashes = gitTrackingAccess.getAllCommitHashes(gitRepository.getId());
         assertEquals(8, commitHashes.size());
         assertFalse(commitHashes.contains(HASH_8926F7));
 
@@ -307,16 +307,16 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         gitTrackingAccess.updateRepository(gitRepository);
         gitRepository = gitTrackingAccess.getRepository(gitRepository.getId());
 
-        GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
+        final GitBranch masterBranch = gitRepository.getTrackedBranch(MASTER);
 
-        Collection<String> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
+        final Collection<String> untrackedCommits = gitHandler.pullFromRepository(gitRepository);
 
         // account for the known commit
         final int expectedCommits = 13724;
         assertEquals(expectedCommits, untrackedCommits.size());
     }
 
-    private void assertCommit(GitCommit commit, int parentCount, Collection<GitBranch> branches) {
+    private void assertCommit(final GitCommit commit, final int parentCount, final Collection<GitBranch> branches) {
         assertNotNull(commit);
         assertNotNull(commit.getCommitHash());
         assertNotNull(commit.getCommitDate());
@@ -330,16 +330,16 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         assertGitBranchCollectionEquals(branches, commit.getBranches());
     }
 
-    private void assertGitBranchCollectionEquals(Collection<GitBranch> expected, Collection<GitBranch> actual) {
+    private void assertGitBranchCollectionEquals(final Collection<GitBranch> expected, final Collection<GitBranch> actual) {
         assertEquals(expected.size(), actual.size());
-        for (GitBranch expectedBranch : expected) {
-            GitBranch actualBranch = getBranchFromCollection(actual, expectedBranch.getName());
+        for (final GitBranch expectedBranch : expected) {
+            final GitBranch actualBranch = getBranchFromCollection(actual, expectedBranch.getName());
             assertNotNull(actualBranch);
         }
     }
 
-    private GitBranch getBranchFromCollection(Collection<GitBranch> branches, String name) {
-        for (GitBranch branch : branches) {
+    private GitBranch getBranchFromCollection(final Collection<GitBranch> branches, final String name) {
+        for (final GitBranch branch : branches) {
             if (branch.getName().equals(name)) {
                 return branch;
             }
@@ -347,18 +347,18 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         return null;
     }
 
-    private void unzip(String zip, String destination) {
+    private void unzip(final String zip, final String destination) {
         try {
-            ZipFile zipFile = new ZipFile(zip);
+            final ZipFile zipFile = new ZipFile(zip);
             zipFile.extractAll(destination);
-        } catch (ZipException e) {
+        } catch (final ZipException e) {
             e.printStackTrace();
             fail();
         }
     }
 
-    private GitCommit getCommitWithHash(String startsWith, Collection<GitCommit> commits) {
-        for (GitCommit commit : commits) {
+    private GitCommit getCommitWithHash(final String startsWith, final Collection<GitCommit> commits) {
+        for (final GitCommit commit : commits) {
             if (commit.getCommitHash().startsWith(startsWith)) {
                 return commit;
             }

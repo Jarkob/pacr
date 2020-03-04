@@ -18,7 +18,7 @@ public class ResultWithError {
      * Creates a ResultWithError. The result is only copied from the property result if there is no error.
      * @param propertyResult the result. Cannot be null.
      */
-    ResultWithError(@NotNull BenchmarkPropertyResult propertyResult) {
+    ResultWithError(@NotNull final BenchmarkPropertyResult propertyResult) {
         Objects.requireNonNull(propertyResult);
 
         if (propertyResult.isError()) {

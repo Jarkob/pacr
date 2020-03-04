@@ -16,7 +16,7 @@ public class PullIntervalDBTest extends SpringBootTestWithoutShell {
     private PullIntervalDB pullIntervalDB;
 
     @Autowired
-    public PullIntervalDBTest(PullIntervalDB pullIntervalDB) {
+    public PullIntervalDBTest(final PullIntervalDB pullIntervalDB) {
         this.pullIntervalDB = pullIntervalDB;
     }
 

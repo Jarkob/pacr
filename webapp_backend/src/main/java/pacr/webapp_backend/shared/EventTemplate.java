@@ -18,7 +18,7 @@ public abstract class EventTemplate {
      *
      * @param category the category of the created events.
      */
-    public EventTemplate(EventCategory category) {
+    public EventTemplate(final EventCategory category) {
         Objects.requireNonNull(category, "The category cannot be null.");
 
         this.category = category;
@@ -35,7 +35,7 @@ public abstract class EventTemplate {
      * @return the title of the event.
      */
     public final String getTitle() {
-        String title = buildTitle();
+        final String title = buildTitle();
 
         if (StringUtils.hasText(title)) {
             return title;
@@ -53,7 +53,7 @@ public abstract class EventTemplate {
      * @return the description of the created events.
      */
     public final String getDescription() {
-        String description = buildDescription();
+        final String description = buildDescription();
 
         if (StringUtils.hasText(description)) {
             return description;

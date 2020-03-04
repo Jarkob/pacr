@@ -31,8 +31,8 @@ public class ResultBenchmarkSaver extends ResultSaver {
      * @param resultGetter the result getter that is the subject for observers that need to be updated.
      * @param eventHandler the event handler that events can be added to.
      */
-    ResultBenchmarkSaver(IResultAccess resultAccess, BenchmarkManager benchmarkManager, ResultGetter resultGetter,
-                         IEventHandler eventHandler) {
+    ResultBenchmarkSaver(final IResultAccess resultAccess, final BenchmarkManager benchmarkManager, final ResultGetter resultGetter,
+                         final IEventHandler eventHandler) {
         super(resultAccess, benchmarkManager);
         this.subjectForObservers = resultGetter;
         this.eventHandler = eventHandler;
@@ -47,16 +47,16 @@ public class ResultBenchmarkSaver extends ResultSaver {
      *                             done).
      */
     @Override
-    void updateOtherComponents(@NotNull CommitResult result, @NotNull ICommit commit,
-                               @Nullable String comparisonCommitHash) {
+    void updateOtherComponents(@NotNull final CommitResult result, @NotNull final ICommit commit,
+                               @Nullable final String comparisonCommitHash) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 
         double totalImprovementPercentage = 0;
         int numberOfComparisons = 0;
 
-        for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
-            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+        for (final BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
+            for (final BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                 if (propertyResult.isCompared()) {
                     totalImprovementPercentage += (propertyResult.getRatio() - 1d) * 100d;
                     ++numberOfComparisons;
@@ -69,7 +69,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
             averageImprovementPercentage = (int) Math.round(totalImprovementPercentage / numberOfComparisons);
         }
 
-        NewResultEvent benchmarkingEvent = new NewResultEvent(EventCategory.BENCHMARKING, commit.getCommitHash(),
+        final NewResultEvent benchmarkingEvent = new NewResultEvent(EventCategory.BENCHMARKING, commit.getCommitHash(),
                 commit.getRepositoryName(), result.getGlobalError(), averageImprovementPercentage,
                 comparisonCommitHash);
 

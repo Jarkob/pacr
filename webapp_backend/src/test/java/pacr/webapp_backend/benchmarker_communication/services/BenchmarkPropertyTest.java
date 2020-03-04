@@ -36,19 +36,19 @@ public class BenchmarkPropertyTest {
         final Collection<Double> expectedResults = new ArrayList<>();
 
         benchmarkProperty.setUnit(expectedUnit);
-        String unit = benchmarkProperty.getUnit();
+        final String unit = benchmarkProperty.getUnit();
         assertEquals(expectedUnit, unit);
 
         benchmarkProperty.setError(expectedError);
-        String error = benchmarkProperty.getError();
+        final String error = benchmarkProperty.getError();
         assertEquals(expectedError, error);
 
         benchmarkProperty.setResultInterpretation(expectedInterpretation);
-        ResultInterpretation interpretation = benchmarkProperty.getResultInterpretation();
+        final ResultInterpretation interpretation = benchmarkProperty.getResultInterpretation();
         assertEquals(expectedInterpretation, interpretation);
 
         benchmarkProperty.setResults(expectedResults);
-        Collection<Double> results = benchmarkProperty.getResults();
+        final Collection<Double> results = benchmarkProperty.getResults();
         assertEquals(expectedResults, results);
     }
 

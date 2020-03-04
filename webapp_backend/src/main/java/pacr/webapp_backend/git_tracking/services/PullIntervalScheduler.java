@@ -66,7 +66,7 @@ public class PullIntervalScheduler implements SchedulingConfigurer, NextExecutio
     }
 
     @Override
-    public void configureTasks(@NotNull ScheduledTaskRegistrar taskRegistrar) {
+    public void configureTasks(@NotNull final ScheduledTaskRegistrar taskRegistrar) {
         Objects.requireNonNull(taskRegistrar);
 
         taskRegistrar.setScheduler(poolScheduler);

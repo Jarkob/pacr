@@ -28,8 +28,8 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
      * @param benchmarks the measured benchmarks.
      * @param globalError an error message.
      */
-    public SimpleBenchmarkingResult(String commitHash, ISystemEnvironment systemEnvironment,
-                                    Map<String, SimpleBenchmark> benchmarks, String globalError) {
+    public SimpleBenchmarkingResult(final String commitHash, final ISystemEnvironment systemEnvironment,
+                                    final Map<String, SimpleBenchmark> benchmarks, final String globalError) {
         this.commitHash = commitHash;
         this.systemEnvironment = systemEnvironment;
         this.benchmarks = benchmarks;
@@ -40,7 +40,7 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
      * Creates a SimpleBenchmarkingResult with a default configuration (no error).
      */
     public SimpleBenchmarkingResult() {
-        HashMap<String, SimpleBenchmark> benchmarks = new HashMap<>();
+        final HashMap<String, SimpleBenchmark> benchmarks = new HashMap<>();
         benchmarks.put(BENCHMARK_NAME, new SimpleBenchmark());
 
         this.commitHash = COMMIT_HASH;
@@ -79,7 +79,7 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
      * @param name the name of the benchmark.
      * @param benchmark the benchmark.
      */
-    public void addBenchmark(String name, SimpleBenchmark benchmark) {
+    public void addBenchmark(final String name, final SimpleBenchmark benchmark) {
         benchmarks.put(name, benchmark);
     }
 
@@ -87,7 +87,7 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
      * Sets the commit hash of this result.
      * @param commitHash the commit hash.
      */
-    public void setCommitHash(String commitHash) {
+    public void setCommitHash(final String commitHash) {
         this.commitHash = commitHash;
     }
 
@@ -95,14 +95,14 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
      * @param name the name of the benchmark.
      * @return Gets the benchmark of this results with the given name. Returns null if there is none.
      */
-    public SimpleBenchmark getBenchmark(String name) {
+    public SimpleBenchmark getBenchmark(final String name) {
         return benchmarks.get(name);
     }
 
     /**
      * @param globalError the new global error.
      */
-    public void setGlobalError(String globalError) {
+    public void setGlobalError(final String globalError) {
         this.globalError = globalError;
     }
 }

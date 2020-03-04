@@ -28,7 +28,7 @@ public class SSHKeyController {
      *                 SSH Public Key and sends the private Key
      *                 to the benchmarkers.
      */
-    public SSHKeyController(SSHKeyProvider provider) {
+    public SSHKeyController(final SSHKeyProvider provider) {
         this.provider = provider;
     }
 
@@ -40,7 +40,7 @@ public class SSHKeyController {
     public ResponseEntity<String> getSSHPublicKey() {
         try {
             return ResponseEntity.ok(provider.getSSHPublicKey());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -54,7 +54,7 @@ public class SSHKeyController {
     public ResponseEntity<Object> sendPrivateKeyToBenchmarker() {
         try {
             provider.sendPrivateKeyToBenchmarker();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return ResponseEntity.ok().build();

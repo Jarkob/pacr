@@ -34,8 +34,8 @@ public class OutputBenchmarkingResult {
      * @param repositoryName the display name of the repository.
      * @param trackedBranches the tracked branches of the repository.
      */
-    public OutputBenchmarkingResult(Collection<IBenchmarkingResult> benchmarkingResults,
-                                        String repositoryPullUrl, String repositoryName, Set<String> trackedBranches) {
+    public OutputBenchmarkingResult(final Collection<IBenchmarkingResult> benchmarkingResults,
+                                    final String repositoryPullUrl, final String repositoryName, final Set<String> trackedBranches) {
 
         Objects.requireNonNull(benchmarkingResults, "The benchmarkingResults cannot be null.");
         Objects.requireNonNull(trackedBranches, "The trackedBranches cannot be null.");
@@ -49,7 +49,7 @@ public class OutputBenchmarkingResult {
         }
 
         this.benchmarkingResults = new ArrayList<>();
-        for (IBenchmarkingResult result : benchmarkingResults) {
+        for (final IBenchmarkingResult result : benchmarkingResults) {
             this.benchmarkingResults.add(new BenchmarkingResult(result));
         }
 

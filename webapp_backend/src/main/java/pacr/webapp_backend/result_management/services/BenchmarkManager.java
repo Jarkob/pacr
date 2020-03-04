@@ -31,7 +31,7 @@ public class BenchmarkManager {
      * @param benchmarkAccess the injected benchmark access object.
      * @param groupAccess the injected benchmark group access object.
      */
-    public BenchmarkManager(IBenchmarkAccess benchmarkAccess, IBenchmarkGroupAccess groupAccess) {
+    public BenchmarkManager(final IBenchmarkAccess benchmarkAccess, final IBenchmarkGroupAccess groupAccess) {
         this.benchmarkAccess = benchmarkAccess;
         this.groupAccess = groupAccess;
 
@@ -64,8 +64,8 @@ public class BenchmarkManager {
      * @param groupId the id of the group.
      * @return the benchmarks of the group.
      */
-    public Collection<Benchmark> getBenchmarksByGroup(int groupId) {
-        BenchmarkGroup group = groupAccess.getBenchmarkGroup(groupId);
+    public Collection<Benchmark> getBenchmarksByGroup(final int groupId) {
+        final BenchmarkGroup group = groupAccess.getBenchmarkGroup(groupId);
 
         return benchmarkAccess.getBenchmarksOfGroup(group);
     }
@@ -84,7 +84,7 @@ public class BenchmarkManager {
      * Enters Benchmark.class monitor.
      * @param benchmark the benchmark. Throws IllegalArgumentException if this is null.
      */
-    void createOrUpdateBenchmark(@NotNull Benchmark benchmark) {
+    void createOrUpdateBenchmark(@NotNull final Benchmark benchmark) {
         Objects.requireNonNull(benchmark);
 
         if (benchmark.getGroup() == null) {
@@ -97,9 +97,9 @@ public class BenchmarkManager {
             // saveBenchmark creates a merge between the java object and the database representation. The problem is:
             // persist is not called directly on the children, but rather copies of them. so the id is never set in the
             // original java object. This is a workaround to fix this by setting the ids manually after the fact.
-            Benchmark savedBenchmark = benchmarkAccess.getBenchmark(benchmark.getId());
-            for (BenchmarkProperty savedProperty : savedBenchmark.getProperties()) {
-                for (BenchmarkProperty property : benchmark.getProperties()) {
+            final Benchmark savedBenchmark = benchmarkAccess.getBenchmark(benchmark.getId());
+            for (final BenchmarkProperty savedProperty : savedBenchmark.getProperties()) {
+                for (final BenchmarkProperty property : benchmark.getProperties()) {
                     if (property.equals(savedProperty)) {
                         property.setId(savedProperty.getId());
                         break;
@@ -120,20 +120,20 @@ public class BenchmarkManager {
      * @param description The new description. Throws IllegalArgumentException if it is null.
      * @param groupID the id of the new group.
      */
-    public void updateBenchmark(int benchmarkID, @NotNull String name, @NotNull String description, int groupID) {
+    public void updateBenchmark(final int benchmarkID, @NotNull final String name, @NotNull final String description, final int groupID) {
         Objects.requireNonNull(description);
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
 
         synchronized (Benchmark.class) {
-            Benchmark benchmark = benchmarkAccess.getBenchmark(benchmarkID);
+            final Benchmark benchmark = benchmarkAccess.getBenchmark(benchmarkID);
             if (benchmark == null) {
                 LOGGER.error("no benchmark with id {} - unable to update", benchmarkID);
                 return;
             }
 
-            BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(groupID);
+            final BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(groupID);
             if (group == null) {
                 LOGGER.error("no benchmark group with id {} - unable to update benchmark {}", groupID, benchmarkID);
                 return;
@@ -154,12 +154,12 @@ public class BenchmarkManager {
      * Enters Benchmark.class monitor.
      * @param name the name of the new benchmark group. Throws IllegalArgumentException if this is null, empty or blank.
      */
-    public void addGroup(@NotNull String name) {
+    public void addGroup(@NotNull final String name) {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
 
-        BenchmarkGroup group = new BenchmarkGroup(name);
+        final BenchmarkGroup group = new BenchmarkGroup(name);
 
         synchronized (Benchmark.class) {
             this.groupAccess.saveBenchmarkGroup(group);
@@ -174,13 +174,13 @@ public class BenchmarkManager {
      * @param id the id of the group.
      * @param name the new name of the group. Throws IllegalArgumentException if this is null, empty or blank.
      */
-    public void updateGroup(int id, @NotNull String name) {
+    public void updateGroup(final int id, @NotNull final String name) {
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");
         }
 
         synchronized (Benchmark.class) {
-            BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
+            final BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
 
             if (group == null) {
                 LOGGER.error("no benchmark group with id {} - unable to update", id);
@@ -201,19 +201,19 @@ public class BenchmarkManager {
      * @param id the id of the group.
      * @throws IllegalAccessException if it is attempted to delete the standard group.
      */
-    public void deleteGroup(int id) throws IllegalAccessException {
+    public void deleteGroup(final int id) throws IllegalAccessException {
         if (standardGroup.getId() == id) {
             throw new IllegalAccessException("the standard group cannot be deleted");
         }
 
         synchronized (Benchmark.class) {
-            BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
+            final BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
 
             if (group == null) {
                 throw new NoSuchElementException("no group with id " + id);
             }
 
-            for (Benchmark benchmark : this.getAllBenchmarks()) {
+            for (final Benchmark benchmark : this.getAllBenchmarks()) {
                 if (group.equals(benchmark.getGroup())) {
                     benchmark.setGroup(standardGroup);
                     this.benchmarkAccess.saveBenchmark(benchmark);

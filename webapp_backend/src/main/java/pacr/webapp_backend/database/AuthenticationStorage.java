@@ -38,8 +38,8 @@ public class AuthenticationStorage implements IAuthenticationAccess {
      * @param secretPath path to the secret file.
      * @throws IOException if creating a new file fails.
      */
-    public AuthenticationStorage(@NotNull @Value("${adminPasswordHashPath}") String adminPasswordHashPath,
-                                 @NotNull @Value("${secretPath}") String secretPath) throws IOException {
+    public AuthenticationStorage(@NotNull @Value("${adminPasswordHashPath}") final String adminPasswordHashPath,
+                                 @NotNull @Value("${secretPath}") final String secretPath) throws IOException {
         Objects.requireNonNull(adminPasswordHashPath);
         Objects.requireNonNull(secretPath);
 
@@ -55,7 +55,7 @@ public class AuthenticationStorage implements IAuthenticationAccess {
     public String getAdminPasswordHash() {
         try {
             return Files.readString(adminPasswordHashFile.toPath());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(READ_ERROR + adminPasswordHashFile.getPath());
         }
     }
@@ -64,33 +64,33 @@ public class AuthenticationStorage implements IAuthenticationAccess {
     public byte[] getSecret() {
         try {
             return Files.readAllBytes(secretFile.toPath());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(READ_ERROR + secretFile.getPath());
         }
     }
 
     @Override
-    public void setAdminPasswordHash(@NotNull String passwordHash) {
+    public void setAdminPasswordHash(@NotNull final String passwordHash) {
         Objects.requireNonNull(passwordHash);
         try {
-            FileWriter writer = new FileWriter(adminPasswordHashFile, false);
+            final FileWriter writer = new FileWriter(adminPasswordHashFile, false);
             writer.write(passwordHash);
             writer.close();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(WRITE_ERROR + adminPasswordHashFile.getPath());
         }
     }
 
     @Override
-    public void setSecret(@NotNull byte[] secret) {
+    public void setSecret(@NotNull final byte[] secret) {
         Objects.requireNonNull(secret);
         try {
-            OutputStream os = new FileOutputStream(secretFile);
+            final OutputStream os = new FileOutputStream(secretFile);
             os.write(secret);
             os.close();
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             throw new IllegalStateException("could not find file " + secretFile.getPath());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new IllegalStateException(WRITE_ERROR + secretFile.getPath());
         }
     }

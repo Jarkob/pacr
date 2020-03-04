@@ -25,7 +25,7 @@ public class SystemEnvironment implements ISystemEnvironment {
      *
      * @param environment the ISystemEnvironment which is used to create the SystemEnvironment.
      */
-    public SystemEnvironment(ISystemEnvironment environment) {
+    public SystemEnvironment(final ISystemEnvironment environment) {
         this.cores = environment.getCores();
         this.computerName = environment.getComputerName();
         this.os = environment.getOs();

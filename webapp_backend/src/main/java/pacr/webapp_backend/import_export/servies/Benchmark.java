@@ -19,11 +19,11 @@ public class Benchmark implements IBenchmark {
      *
      * @param benchmark the IBenchmark which is used to create the Benchmark.
      */
-    public Benchmark(IBenchmark benchmark) {
+    public Benchmark(final IBenchmark benchmark) {
         this.benchmarkProperties = new HashMap<>();
-        Map<String, ? extends IBenchmarkProperty> properties = benchmark.getBenchmarkProperties();
+        final Map<String, ? extends IBenchmarkProperty> properties = benchmark.getBenchmarkProperties();
 
-        for (String propertyName : properties.keySet()) {
+        for (final String propertyName : properties.keySet()) {
             this.benchmarkProperties.put(propertyName, new BenchmarkProperty(properties.get(propertyName)));
         }
     }

@@ -68,8 +68,8 @@ public class GitCommit implements ICommit {
      * @param authorDate is the author date.
      * @param repository is the repository this commit belongs to.
      */
-    public GitCommit(@NotNull String commitHash, @NotNull String commitMessage, @NotNull LocalDateTime commitDate,
-                     @NotNull LocalDateTime authorDate, @NotNull GitRepository repository) {
+    public GitCommit(@NotNull final String commitHash, @NotNull final String commitMessage, @NotNull final LocalDateTime commitDate,
+                     @NotNull final LocalDateTime authorDate, @NotNull final GitRepository repository) {
         Objects.requireNonNull(commitHash);
         Objects.requireNonNull(commitMessage);
         Objects.requireNonNull(commitDate);
@@ -135,7 +135,7 @@ public class GitCommit implements ICommit {
 
     @Override
     public boolean isOnMaster() {
-        for (GitBranch branch : branches) {
+        for (final GitBranch branch : branches) {
             if (branch.isMaster()) {
                 return true;
             }
@@ -147,7 +147,7 @@ public class GitCommit implements ICommit {
      * Sets the branch for this commit.
      * @param branch is the branch being set.
      */
-    public void addBranch(@NotNull GitBranch branch) {
+    public void addBranch(@NotNull final GitBranch branch) {
         Objects.requireNonNull(branch);
 
         branches.add(branch);
@@ -165,7 +165,7 @@ public class GitCommit implements ICommit {
      * Sets the repository for this commit.
      * @param repository is the repository being added.
      */
-    public void setRepository(@NotNull GitRepository repository) {
+    public void setRepository(@NotNull final GitRepository repository) {
         Objects.requireNonNull(repository);
 
         if (repository == this.repository) {
@@ -175,14 +175,14 @@ public class GitCommit implements ICommit {
     }
 
     @Override
-    public void addLabel(@NotNull String label) {
+    public void addLabel(@NotNull final String label) {
         Objects.requireNonNull(label);
 
         labels.add(label);
     }
 
     @Override
-    public void removeLabel(@NotNull String label) {
+    public void removeLabel(@NotNull final String label) {
         Objects.requireNonNull(label);
 
         labels.remove(label);
@@ -195,8 +195,8 @@ public class GitCommit implements ICommit {
 
     @Override
     public Collection<String> getBranchNames() {
-        Collection<String> branchNames = new HashSet<>();
-        for (GitBranch branch : branches) {
+        final Collection<String> branchNames = new HashSet<>();
+        for (final GitBranch branch : branches) {
             branchNames.add(branch.getName());
         }
         return branchNames;
@@ -219,7 +219,7 @@ public class GitCommit implements ICommit {
      * Adds a parent hash to this commit.
      * @param commitHash is the parent hash.
      */
-    public void addParent(@NotNull String commitHash) {
+    public void addParent(@NotNull final String commitHash) {
         Objects.requireNonNull(commitHash);
 
         parentHashes.add(commitHash);

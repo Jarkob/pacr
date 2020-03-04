@@ -41,7 +41,7 @@ public class JobGroup {
      * Creates a new job group.
      * @param title the title of the job group (cannot be null or empty).
      */
-    JobGroup(@NotNull String title) {
+    JobGroup(@NotNull final String title) {
         if (!StringUtils.hasText(title)) {
             throw new IllegalArgumentException("Title cannot be null or empty.");
         }
@@ -54,7 +54,7 @@ public class JobGroup {
      * Adds the given time to the group's time sheet.
      * @param time the time in seconds. (>= 0)
      */
-    void addToTimeSheet(long time) {
+    void addToTimeSheet(final long time) {
         if (time < 0) {
             throw new IllegalArgumentException("Time cannot be less than zero.");
         }

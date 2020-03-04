@@ -130,7 +130,7 @@ public class GitHandler {
         deleteBranches(git, gitRepository);
 
         // get branches
-        List<Ref> branches = getBranches(git);
+        final List<Ref> branches = getBranches(git);
         if (branches == null) {
             LOGGER.error("Could not get branches from repository {} ({}).",
                     gitRepository.getName(), gitRepository.getId());
@@ -228,15 +228,15 @@ public class GitHandler {
         List<Ref> tags;
         try {
             tags = git.tagList().call();
-        } catch (GitAPIException e) {
+        } catch (final GitAPIException e) {
             LOGGER.error("Could not get Git-Tags.");
             return;
         }
 
-        for (Ref tag : tags) {
-            String taggedHash = tag.getObjectId().getName();
+        for (final Ref tag : tags) {
+            final String taggedHash = tag.getObjectId().getName();
 
-            GitCommit tagged = gitTrackingAccess.getCommit(taggedHash);
+            final GitCommit tagged = gitTrackingAccess.getCommit(taggedHash);
 
             if (tagged != null) {
                 tagged.addLabel(getNameOfRef(tag));
@@ -250,23 +250,23 @@ public class GitHandler {
      * @param git is the access to origin.
      * @param gitRepository is the git repository with the selected and tracked branches.
      */
-    private void deleteBranches(Git git, GitRepository gitRepository) {
+    private void deleteBranches(final Git git, final GitRepository gitRepository) {
         // garbage collection for trackedBranches
         Map<String, Boolean> branchNotDeleted = new HashMap<>();
 
-        for (GitBranch branch : gitRepository.getTrackedBranches()) {
+        for (final GitBranch branch : gitRepository.getTrackedBranches()) {
             branchNotDeleted.put(branch.getName(), Boolean.FALSE);
         }
 
-        for (String branchName : getBranchNames(git)) {
+        for (final String branchName : getBranchNames(git)) {
             if (branchNotDeleted.containsKey(branchName)) {
                 branchNotDeleted.put(branchName, Boolean.TRUE);
             }
         }
 
-        for (Map.Entry<String, Boolean> entry : branchNotDeleted.entrySet()) {
+        for (final Map.Entry<String, Boolean> entry : branchNotDeleted.entrySet()) {
             if (!entry.getValue()) {
-                GitBranch branch = gitRepository.getTrackedBranch(entry.getKey());
+                final GitBranch branch = gitRepository.getTrackedBranch(entry.getKey());
 
                 gitRepository.removeBranchFromSelection(branch);
             }
@@ -274,19 +274,19 @@ public class GitHandler {
 
         // garbage collection for selectedBranches
         branchNotDeleted = new HashMap<>();
-        Set<String> selectedBranches = gitRepository.getSelectedBranches();
+        final Set<String> selectedBranches = gitRepository.getSelectedBranches();
 
-        for (String branch : selectedBranches) {
+        for (final String branch : selectedBranches) {
             branchNotDeleted.put(branch, Boolean.FALSE);
         }
 
-        for (String branchName : getBranchNames(git)) {
+        for (final String branchName : getBranchNames(git)) {
             if (branchNotDeleted.containsKey(branchName)) {
                 branchNotDeleted.put(branchName, Boolean.TRUE);
             }
         }
 
-        for (Map.Entry<String, Boolean> entry : branchNotDeleted.entrySet()) {
+        for (final Map.Entry<String, Boolean> entry : branchNotDeleted.entrySet()) {
             if (!entry.getValue()) {
                 selectedBranches.remove(entry.getKey());
             }
@@ -294,8 +294,8 @@ public class GitHandler {
 
     }
 
-    private File cloneRepositoryIfNotExists(GitRepository gitRepository) {
-        File repositoryFolder = getRepositoryWorkingDir(gitRepository);
+    private File cloneRepositoryIfNotExists(final GitRepository gitRepository) {
+        final File repositoryFolder = getRepositoryWorkingDir(gitRepository);
 
         if (!repositoryFolder.exists()) {
             repositoryFolder.mkdirs();
@@ -309,8 +309,8 @@ public class GitHandler {
         return repositoryFolder;
     }
 
-    private Git initializeGit(File repositoryDir) {
-        Repository repository;
+    private Git initializeGit(final File repositoryDir) {
+        final Repository repository;
         try {
             repository = getRepository(repositoryDir.getAbsolutePath());
         } catch (IOException e) {
@@ -321,13 +321,13 @@ public class GitHandler {
         return new Git(repository);
     }
 
-    private void fetchRepository(Git git) throws GitAPIException {
+    private void fetchRepository(final Git git) throws GitAPIException {
         git.fetch().setRemote("origin")
                 .setTransportConfigCallback(transportConfigCallback)
                 .call();
     }
 
-    private List<Ref> getBranches(Git git) {
+    private List<Ref> getBranches(final Git git) {
         List<Ref> branches = null;
         try {
             branches = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
@@ -337,12 +337,12 @@ public class GitHandler {
         return branches;
     }
 
-    private List<String> getBranchNames(Git git) {
-        List<Ref> branches = getBranches(git);
+    private List<String> getBranchNames(final Git git) {
+        final List<Ref> branches = getBranches(git);
 
-        List<String> branchNames = new ArrayList<>();
+        final List<String> branchNames = new ArrayList<>();
 
-        for (Ref branch : branches) {
+        for (final Ref branch : branches) {
             branchNames.add(getNameOfRef(branch));
         }
 
@@ -382,26 +382,26 @@ public class GitHandler {
 
     private void setBranchHead(Ref branch, GitBranch gitBranch) {
 
-        String headHash = branch.getObjectId().getName();
+        final String headHash = branch.getObjectId().getName();
 
         LOGGER.info("Setting head {} for branch {}.", headHash, gitBranch.getName());
 
         gitBranch.setHeadHash(headHash);
     }
 
-    private GitCommit createCommit(GitRepository gitRepository, RevCommit commit) {
-        String commitHash = commit.getName();
-        String commitMessage = commit.getShortMessage();
+    private GitCommit createCommit(final GitRepository gitRepository, final RevCommit commit) {
+        final String commitHash = commit.getName();
+        final String commitMessage = commit.getShortMessage();
 
-        PersonIdent authorIdent = commit.getAuthorIdent();
-        Date authorDateDate = authorIdent.getWhen();
-        LocalDateTime authorDate = LocalDateTime.ofInstant(authorDateDate.toInstant(), ZoneId.systemDefault());
+        final PersonIdent authorIdent = commit.getAuthorIdent();
+        final Date authorDateDate = authorIdent.getWhen();
+        final LocalDateTime authorDate = LocalDateTime.ofInstant(authorDateDate.toInstant(), ZoneId.systemDefault());
 
-        long commitTime = commit.getCommitTime();
-        LocalDateTime commitDate = LocalDateTime.ofEpochSecond(commitTime, 0,
+        final long commitTime = commit.getCommitTime();
+        final LocalDateTime commitDate = LocalDateTime.ofEpochSecond(commitTime, 0,
                 ZoneOffset.systemDefault().getRules().getOffset(Instant.now()));
 
-        GitCommit gitCommit = new GitCommit(commitHash, commitMessage, commitDate, authorDate, gitRepository);
+        final GitCommit gitCommit = new GitCommit(commitHash, commitMessage, commitDate, authorDate, gitRepository);
 
         for (int i = 0; i < commit.getParentCount(); ++i) {
             gitCommit.addParent(commit.getParent(i).getName());
@@ -410,24 +410,25 @@ public class GitHandler {
         return gitCommit;
     }
 
-    private Set<GitCommit> searchForNewCommitsInBranch(Git git, GitRepository gitRepository, Ref branch)
+    private Set<GitCommit> searchForNewCommitsInBranch(final Git git, final GitRepository gitRepository, final Ref branch)
             throws ForcePushException {
 
         assert git != null;
         assert gitRepository != null;
         assert branch != null;
 
-        String branchName = getNameOfRef(branch);
-        GitBranch gitBranch = gitRepository.getTrackedBranch(branchName);
+        final String branchName = getNameOfRef(branch);
 
         // iterate over all commits from branch
-        Iterable<RevCommit> commitsIterable;
+        final Iterable<RevCommit> commitsIterable;
         try {
             commitsIterable = git.log().add(branch.getObjectId()).call();
-        } catch (MissingObjectException | IncorrectObjectTypeException | GitAPIException e) {
+        } catch (final MissingObjectException | IncorrectObjectTypeException | GitAPIException e) {
             LOGGER.error("Could not get commits from branch {}", branchName);
             return new HashSet<>();
         }
+
+        final GitBranch gitBranch = gitRepository.getTrackedBranch(branchName);
 
         // add all new commits to commits ordered by their commit history
         List<RevCommit> commits = getNewCommits(commitsIterable, gitBranch);
@@ -458,7 +459,7 @@ public class GitHandler {
      * @return list of new commits.
      * @throws ForcePushException if a force push was detected.
      */
-    private List<RevCommit> getNewCommits(Iterable<RevCommit> commitsIterable, GitBranch branch)
+    private List<RevCommit> getNewCommits(final Iterable<RevCommit> commitsIterable, final GitBranch branch)
             throws ForcePushException {
         List<RevCommit> commits;
 
@@ -538,10 +539,10 @@ public class GitHandler {
         return commits;
     }
 
-    private Repository getRepository(String path) throws IOException {
+    private Repository getRepository(final String path) throws IOException {
         assert path != null;
 
-        FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
+        final FileRepositoryBuilder repositoryBuilder = new FileRepositoryBuilder();
         return repositoryBuilder.setGitDir(
                 new File(path + "/.git"))
                 .readEnvironment()
@@ -555,14 +556,14 @@ public class GitHandler {
      * @param gitRepository is the repository being cloned.
      * @throws GitAPIException if the Git authentication fails.
      */
-    public void cloneRepository(@NotNull GitRepository gitRepository) throws GitAPIException {
+    public void cloneRepository(@NotNull final GitRepository gitRepository) throws GitAPIException {
         Objects.requireNonNull(gitRepository);
 
         LOGGER.info("Cloning repository {} ({}). URL: {}. This may take a while.",
                 gitRepository.getName(), gitRepository.getId(),
                 gitRepository.getPullURL());
 
-        Git git = Git.cloneRepository()
+        final Git git = Git.cloneRepository()
                 .setDirectory(getRepositoryWorkingDir(gitRepository))
                 .setTransportConfigCallback(transportConfigCallback)
                 .setURI(gitRepository.getPullURL())
@@ -572,9 +573,9 @@ public class GitHandler {
         git.close();
     }
 
-    private File getRepositoryWorkingDir(GitRepository repository) {
+    private File getRepositoryWorkingDir(final GitRepository repository) {
         assert repository != null;
-        String repositoryFolderPath = pathToWorkingDir + "/" + repository.getPullURL().hashCode();
+        final String repositoryFolderPath = pathToWorkingDir + "/" + repository.getPullURL().hashCode();
         return new File(repositoryFolderPath);
     }
 
@@ -583,18 +584,18 @@ public class GitHandler {
      * @param branch is the branch of which the name should be returned.
      * @return branch name
      */
-    public static String getNameOfRef(@NotNull Ref branch) {
+    public static String getNameOfRef(@NotNull final Ref branch) {
         Objects.requireNonNull(branch);
 
         // remove the "refs/remotes/origin/" part
-        String branchName = branch.getName();
-        int lastIndexOfSlash = branchName.lastIndexOf("/");
+        final String branchName = branch.getName();
+        final int lastIndexOfSlash = branchName.lastIndexOf('/');
         return branch.getName().substring(lastIndexOfSlash + 1);
     }
 
-    public Set<String> getBranchesOfRepository(String pullURL) {
-        Collection<Ref> refs;
-        Set<String> branches = new HashSet<>();
+    public Set<String> getBranchesOfRepository(final String pullURL) {
+        final Collection<Ref> refs;
+        final Set<String> branches = new HashSet<>();
 
         try {
             refs = Git.lsRemoteRepository()
@@ -603,23 +604,23 @@ public class GitHandler {
                     .setTransportConfigCallback(transportConfigCallback)
                     .call();
 
-            for (Ref ref : refs) {
+            for (final Ref ref : refs) {
                 branches.add(getNameOfRef(ref));
             }
-        } catch (InvalidRemoteException e) {
+        } catch (final InvalidRemoteException e) {
             LOGGER.error("InvalidRemoteException occurred in getBranchesOfRepository", e);
-        } catch (TransportException e) {
+        } catch (final TransportException e) {
             LOGGER.error("TransportException occurred in getBranchesOfRepository", e);
-        } catch (GitAPIException e) {
+        } catch (final GitAPIException e) {
             LOGGER.error("GitAPIException occurred in getBranchesOfRepository", e);
         }
 
         return branches;
     }
 
-    public void setBranchesToRepo(GitRepository gitRepository) {
-        Set<String> branchNames = getBranchesOfRepository(gitRepository.getPullURL());
-        for (String branchName : branchNames) {
+    public void setBranchesToRepo(final GitRepository gitRepository) {
+        final Set<String> branchNames = getBranchesOfRepository(gitRepository.getPullURL());
+        for (final String branchName : branchNames) {
             if (gitRepository.isBranchSelected(branchName)) {
                 gitRepository.createBranchIfNotExists(branchName);
             }

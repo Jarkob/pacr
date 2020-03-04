@@ -14,27 +14,27 @@ import pacr.webapp_backend.scheduler.services.Job;
 public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAccess {
 
     @Override
-    default void saveJob(Job job) {
+    default void saveJob(final Job job) {
         this.save(job);
     }
 
     @Override
-    default void saveJobs(Collection<Job> jobs) {
+    default void saveJobs(final Collection<Job> jobs) {
         this.saveAll(jobs);
     }
 
     @Override
-    default void deleteJob(Job job) {
+    default void deleteJob(final Job job) {
         this.delete(job);
     }
 
     @Override
-    default void deleteJobs(Collection<Job> jobs) {
+    default void deleteJobs(final Collection<Job> jobs) {
         this.deleteAll(jobs);
     }
 
     @Override
-    default Page<Job> findJobs(Pageable pageable) {
+    default Page<Job> findJobs(final Pageable pageable) {
         return findAllByPrioritizedOrderByQueuedDesc(false, pageable);
     }
 
@@ -44,7 +44,7 @@ public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAcc
     }
 
     @Override
-    default Page<Job> findPrioritized(Pageable pageable) {
+    default Page<Job> findPrioritized(final Pageable pageable) {
         return findAllByPrioritizedOrderByQueuedAsc(true, pageable);
     }
 
@@ -54,7 +54,7 @@ public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAcc
     }
 
     @Override
-    default Collection<Job> findAllJobs(String groupTitle) {
+    default Collection<Job> findAllJobs(final String groupTitle) {
         return findAllByGroup_Title(groupTitle);
     }
 

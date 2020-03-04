@@ -28,14 +28,14 @@ public class DBUnitTest extends SpringBootTestWithoutShell {
     @Test
     @DatabaseSetup(value = "/group-four-data.xml")
     public void getAllGroups_fourSaved_shouldReturnFour() {
-        Collection<BenchmarkGroup> groups = benchmarkManager.getAllGroups();
+        final Collection<BenchmarkGroup> groups = benchmarkManager.getAllGroups();
         assertEquals(4, groups.size());
     }
 
     @Test
     @DatabaseSetup(value = "/group-three-data.xml")
     public void getAllGroups_threeSaved_shouldReturnThree() {
-        Collection<BenchmarkGroup> groups = benchmarkManager.getAllGroups();
+        final Collection<BenchmarkGroup> groups = benchmarkManager.getAllGroups();
         assertEquals(3, groups.size());
     }
 

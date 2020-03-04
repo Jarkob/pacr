@@ -9,7 +9,7 @@ import java.util.Comparator;
 class AdvancedSchedulingAlgorithm implements Comparator<Job> {
 
     @Override
-    public int compare(Job job1, Job job2) {
+    public int compare(final Job job1, final Job job2) {
         if (job1 == null) {
             return 1;
         }
@@ -17,7 +17,7 @@ class AdvancedSchedulingAlgorithm implements Comparator<Job> {
             return -1;
         }
 
-        int timeSheetCompare = Long.compare(job1.getGroupTimeSheet(), job2.getGroupTimeSheet());
+        final int timeSheetCompare = Long.compare(job1.getGroupTimeSheet(), job2.getGroupTimeSheet());
 
         if (timeSheetCompare == 0) {
             return job2.getQueued().compareTo(job1.getQueued());

@@ -42,7 +42,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     @Override
-    public boolean registerBenchmarker(String address, SystemEnvironment sysEnvironment) {
+    public boolean registerBenchmarker(final String address, final SystemEnvironment sysEnvironment) {
         verifyAddress(address);
 
         Objects.requireNonNull(sysEnvironment, "The system environment cannot be null.");
@@ -62,7 +62,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     @Override
-    public boolean unregisterBenchmarker(String address) {
+    public boolean unregisterBenchmarker(final String address) {
         verifyAddress(address);
 
         if (!containsBenchmarker(address)) {
@@ -83,7 +83,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     @Override
-    public SystemEnvironment getBenchmarkerSystemEnvironment(String address) {
+    public SystemEnvironment getBenchmarkerSystemEnvironment(final String address) {
         if (!StringUtils.hasText(address)) {
             throw new IllegalArgumentException("The address cannot be null or empty.");
         }
@@ -96,7 +96,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
         return new ArrayList<>(allBenchmarkers.keySet());
     }
 
-    private boolean containsBenchmarker(String address) {
+    private boolean containsBenchmarker(final String address) {
         return allBenchmarkers.containsKey(address);
     }
 
@@ -109,7 +109,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     public String getFreeBenchmarker() {
         if (hasFreeBenchmarkers()) {
             // get free benchmarker and add it to the end of the queue again.
-            String address = freeBenchmarkers.poll();
+            final String address = freeBenchmarkers.poll();
             freeBenchmarkers.add(address);
 
             return address;
@@ -119,7 +119,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     @Override
-    public void freeBenchmarker(String address) {
+    public void freeBenchmarker(final String address) {
         verifyAddress(address);
 
         if (occupiedBenchmarkers.contains(address)) {
@@ -130,7 +130,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     @Override
-    public void occupyBenchmarker(String address) {
+    public void occupyBenchmarker(final String address) {
         verifyAddress(address);
 
         if (freeBenchmarkers.contains(address)) {
@@ -148,7 +148,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     private void notifyRegistrationListeners() {
-        for (INewRegistrationListener listener : newRegistrationListeners) {
+        for (final INewRegistrationListener listener : newRegistrationListeners) {
             listener.newRegistration();
         }
     }

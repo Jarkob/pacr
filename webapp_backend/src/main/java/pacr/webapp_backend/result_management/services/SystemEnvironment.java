@@ -36,7 +36,7 @@ public class SystemEnvironment implements ISystemEnvironment {
      * Creates a system environment. Copies all data from the given system environment.
      * @param sysEnv the system environment. Cannot be null.
      */
-    SystemEnvironment(@NotNull ISystemEnvironment sysEnv) {
+    SystemEnvironment(@NotNull final ISystemEnvironment sysEnv) {
         Objects.requireNonNull(sysEnv);
 
         this.name = sysEnv.getComputerName();

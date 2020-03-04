@@ -30,7 +30,7 @@ public class SSHTransportConfigCallback implements TransportConfigCallback {
      * Creates an instance of SShTransportConfigCallback.
      * @param pathToPrivateKey is the path (relative from user.dir) to the SSH private key.
      */
-    public SSHTransportConfigCallback(@NotNull @Value("${privateKeyPath}") String pathToPrivateKey) {
+    public SSHTransportConfigCallback(@NotNull @Value("${privateKeyPath}") final String pathToPrivateKey) {
         Objects.requireNonNull(pathToPrivateKey);
 
         this.pathToPrivateKey = System.getProperty("user.dir") + pathToPrivateKey;
@@ -38,13 +38,13 @@ public class SSHTransportConfigCallback implements TransportConfigCallback {
 
     private final SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
         @Override
-        protected void configure(OpenSshConfig.Host hc, Session session) {
+        protected void configure(final OpenSshConfig.Host hc, final Session session) {
             session.setConfig("StrictHostKeyChecking", "no");
         }
 
         @Override
-        protected JSch createDefaultJSch(FS fs) throws JSchException {
-            JSch jSch = super.createDefaultJSch(fs);
+        protected JSch createDefaultJSch(final FS fs) throws JSchException {
+            final JSch jSch = super.createDefaultJSch(fs);
             // removes all ssh identities of the pc
             jSch.removeAllIdentity();
             jSch.addIdentity(pathToPrivateKey);
@@ -54,8 +54,8 @@ public class SSHTransportConfigCallback implements TransportConfigCallback {
 
 
     @Override
-    public void configure(Transport transport) {
-        SshTransport sshTransport = (SshTransport) transport;
+    public void configure(final Transport transport) {
+        final SshTransport sshTransport = (SshTransport) transport;
         sshTransport.setSshSessionFactory(sshSessionFactory);
     }
 }

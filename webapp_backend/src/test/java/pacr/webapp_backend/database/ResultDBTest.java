@@ -56,7 +56,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
     private Benchmark benchmarkTwo;
 
     @Autowired
-    public ResultDBTest(ResultDB resultDB, BenchmarkDB benchmarkDB) {
+    public ResultDBTest(final ResultDB resultDB, final BenchmarkDB benchmarkDB) {
         this.resultDB = resultDB;
         this.benchmarkDB = benchmarkDB;
         this.benchmark = new Benchmark(BENCHMARK_NAME);
@@ -80,10 +80,10 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void saveResult_saveInDatabase_getResultShouldReturnResult() {
-        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
-        CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
+        final CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
 
         assertEquals(COMMIT_HASH, savedResult.getCommitHash());
         assertEquals(BENCHMARK_NAME, savedResult.getBenchmarkResults().iterator().next().getName());
@@ -94,13 +94,13 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void saveResult_alreadySavedForCommit_shouldReplaceResult() {
-        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
-        CommitResult newResultForSameCommit = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_TWO);
+        final CommitResult newResultForSameCommit = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_TWO);
         this.resultDB.saveResult(newResultForSameCommit);
 
-        CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
+        final CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
         assertEquals(REPO_ID_TWO, savedResult.getRepositoryID());
     }
 
@@ -109,20 +109,20 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void getAllResults_multipleResultsSaved_shouldReturnAllResults() {
-        CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
-        CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_TWO);
+        final CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_TWO);
 
         this.resultDB.saveResult(resultOne);
         this.resultDB.saveResult(resultTwo);
 
-        List<CommitResult> allSavedResults = this.resultDB.getAllResults();
+        final List<CommitResult> allSavedResults = this.resultDB.getAllResults();
 
         assertEquals(2, allSavedResults.size());
 
         boolean foundResultOne = false;
         boolean foundResultTwo = false;
 
-        for (CommitResult savedResult : allSavedResults) {
+        for (final CommitResult savedResult : allSavedResults) {
             if (savedResult.getCommitHash().equals(COMMIT_HASH)) {
                 foundResultOne = true;
             } else if (savedResult.getCommitHash().equals(COMMIT_HASH_TWO)) {
@@ -138,13 +138,13 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void getResult_changedBenchmark_ShouldReturnChangedBenchmark() {
-        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
         benchmark.setCustomName(BENCHMARK_NAME_TWO);
         this.benchmarkDB.saveBenchmark(benchmark);
 
-        CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
+        final CommitResult savedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
 
         assertEquals(BENCHMARK_NAME_TWO,
                 savedResult.getBenchmarkResults().iterator().next().getBenchmark().getCustomName());
@@ -155,16 +155,16 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void getResultsFromCommits_multipleHashesAsInput_ShouldReturnAllResults() {
-        CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultOne);
-        CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
+        final CommitResult resultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultTwo);
 
-        List<String> commitHashes = new LinkedList<>();
+        final List<String> commitHashes = new LinkedList<>();
         commitHashes.add(COMMIT_HASH);
         commitHashes.add(COMMIT_HASH_TWO);
 
-        Collection<CommitResult> savedResults = this.resultDB.getResultsFromCommits(commitHashes);
+        final Collection<CommitResult> savedResults = this.resultDB.getResultsFromCommits(commitHashes);
 
         assertEquals(2, savedResults.size());
     }
@@ -174,14 +174,14 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void getResultsFromCommits_oneHashHasResultOtherDoesNot_shouldReturnSavedResult() {
-        CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult resultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultOne);
 
-        List<String> commitHashes = new LinkedList<>();
+        final List<String> commitHashes = new LinkedList<>();
         commitHashes.add(COMMIT_HASH);
         commitHashes.add(COMMIT_HASH_TWO);
 
-        Collection<CommitResult> savedResults = this.resultDB.getResultsFromCommits(commitHashes);
+        final Collection<CommitResult> savedResults = this.resultDB.getResultsFromCommits(commitHashes);
 
         assertEquals(EXPECTED_NUM_OF_RESULTS_ONE_NOT_SAVED, savedResults.size());
     }
@@ -191,11 +191,11 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void deleteResult_resultSaved_shouldRemoveResult() {
-        CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult result = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(result);
 
         this.resultDB.delete(result);
-        CommitResult deletedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
+        final CommitResult deletedResult = this.resultDB.getResultFromCommit(COMMIT_HASH);
 
         assertNull(deletedResult);
     }
@@ -209,7 +209,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
     public void getNewestResults_multipleResultsSavedOneDeleted_shouldReturnOrdered() throws InterruptedException {
         this.resultDB.saveResult(createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE));
 
-        CommitResult resultToDelete = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
+        final CommitResult resultToDelete = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         this.resultDB.saveResult(resultToDelete);
 
         TimeUnit.SECONDS.sleep(1);
@@ -228,14 +228,14 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
 
         LocalDateTime previousTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
-        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
+        final PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE);
 
         Page<CommitResult> orderedResults = this.resultDB.getNewestResults(pageRequest);
 
         int i = 0;
 
-        for (CommitResult result : orderedResults) {
-            LocalDateTime currentTime = result.getEntryDate();
+        for (final CommitResult result : orderedResults) {
+            final LocalDateTime currentTime = result.getEntryDate();
             assertTrue(currentTime.isBefore(previousTime) || currentTime.equals(previousTime),
                     "result number " + i + ": " + result.getCommitHash() + ": " + currentTime.toString()
                             + " is not before " + previousTime.toString());
@@ -250,17 +250,17 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     void getNewestResult_multipleResultsForRepository_shouldReturnNewest() throws InterruptedException {
-        CommitResult commitResultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult commitResultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         resultDB.saveResult(commitResultOne);
 
         TimeUnit.SECONDS.sleep(1);
 
-        CommitResult commitResultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
+        final CommitResult commitResultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         resultDB.saveResult(commitResultTwo);
 
         TimeUnit.SECONDS.sleep(1);
 
-        CommitResult commitResultThree = createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_TWO);
+        final CommitResult commitResultThree = createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_TWO);
         resultDB.saveResult(commitResultThree);
 
         CommitResult newestResult = this.resultDB.getNewestResult(REPO_ID_ONE);
@@ -281,16 +281,16 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     void deleteAllByCommitHash_deletesCorrectResults() {
-        CommitResult commitResultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
+        final CommitResult commitResultOne = createNewCommitResult(COMMIT_HASH, benchmark, REPO_ID_ONE);
         resultDB.saveResult(commitResultOne);
 
-        CommitResult commitResultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
+        final CommitResult commitResultTwo = createNewCommitResult(COMMIT_HASH_TWO, benchmark, REPO_ID_ONE);
         resultDB.saveResult(commitResultTwo);
 
-        CommitResult commitResultThree = createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_TWO);
+        final CommitResult commitResultThree = createNewCommitResult(COMMIT_HASH_THREE, benchmark, REPO_ID_TWO);
         resultDB.saveResult(commitResultThree);
 
-        Collection<String> hashes = new HashSet<>();
+        final Collection<String> hashes = new HashSet<>();
         hashes.add(COMMIT_HASH);
         hashes.add(COMMIT_HASH_THREE);
 
@@ -298,7 +298,7 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
 
         hashes.add(COMMIT_HASH_TWO);
 
-        Collection<CommitResult> savedResults = resultDB.getResultsFromCommits(hashes);
+        final Collection<CommitResult> savedResults = resultDB.getResultsFromCommits(hashes);
 
         assertEquals(1, savedResults.size());
         assertEquals(COMMIT_HASH_TWO, savedResults.iterator().next().getCommitHash());
@@ -307,21 +307,21 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
     @Test
     void getFullRepositoryResults_shouldOnlyReturnRequestedPage() {
         for (int i = 0; i < PAGE_SIZE + 1; ++i) {
-            CommitResult commitResult = createNewCommitResult(COMMIT_HASH + i, benchmark, REPO_ID_ONE);
-            CommitResult commitResult2 = createNewCommitResult(COMMIT_HASH + i + i, benchmark, REPO_ID_TWO);
+            final CommitResult commitResult = createNewCommitResult(COMMIT_HASH + i, benchmark, REPO_ID_ONE);
+            final CommitResult commitResult2 = createNewCommitResult(COMMIT_HASH + i + i, benchmark, REPO_ID_TWO);
 
             resultDB.saveResult(commitResult);
             resultDB.saveResult(commitResult2);
         }
 
-        PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE, Sort.by("commitDate").descending());
-        Page<CommitResult> results = resultDB.getFullRepositoryResults(REPO_ID_ONE, pageRequest);
+        final PageRequest pageRequest = PageRequest.of(0, PAGE_SIZE, Sort.by("commitDate").descending());
+        final Page<CommitResult> results = resultDB.getFullRepositoryResults(REPO_ID_ONE, pageRequest);
 
         assertEquals(PAGE_SIZE, results.getContent().size());
 
         LocalDateTime previousTime = LocalDateTime.now().plusSeconds(1);
 
-        for (CommitResult result : results.getContent()) {
+        for (final CommitResult result : results.getContent()) {
             assertEquals(REPO_ID_ONE, result.getRepositoryID());
 
             assertTrue(result.getCommitDate().isBefore(previousTime)
@@ -332,16 +332,16 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
         }
     }
 
-    private CommitResult createNewCommitResult(String commitHash, Benchmark benchmark, int repositoryId) {
-        BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult();
+    private CommitResult createNewCommitResult(final String commitHash, final Benchmark benchmark, final int repositoryId) {
+        final BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult();
 
-        BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
+        final BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
         benchmarkResult.addPropertyResult(propertyResult);
 
-        SimpleBenchmarkingResult resultInput = new SimpleBenchmarkingResult();
+        final SimpleBenchmarkingResult resultInput = new SimpleBenchmarkingResult();
         resultInput.setCommitHash(commitHash);
 
-        CommitResult result = new CommitResult(resultInput, repositoryId, LocalDateTime.now(),
+        final CommitResult result = new CommitResult(resultInput, repositoryId, LocalDateTime.now(),
                 null);
         result.addBenchmarkResult(benchmarkResult);
 

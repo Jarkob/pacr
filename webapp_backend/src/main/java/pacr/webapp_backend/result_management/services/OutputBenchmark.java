@@ -27,7 +27,7 @@ public class OutputBenchmark {
      * @param results the properties with results. Cannot be null.
      * @param benchmark the benchmark that metadata is copied from. Cannot be null.
      */
-    OutputBenchmark(@NotNull OutputPropertyResult[] results, @NotNull Benchmark benchmark) {
+    OutputBenchmark(@NotNull final OutputPropertyResult[] results, @NotNull final Benchmark benchmark) {
         Objects.requireNonNull(results);
         Objects.requireNonNull(benchmark);
 
@@ -38,7 +38,7 @@ public class OutputBenchmark {
         this.customName = benchmark.getCustomName();
         this.description = benchmark.getDescription();
 
-        BenchmarkGroup group = benchmark.getGroup();
+        final BenchmarkGroup group = benchmark.getGroup();
 
         if (group != null) {
             this.groupId = group.getId();

@@ -52,39 +52,39 @@ public class EventContainerTest {
     @Test
     void EventContainer_noError() {
         assertDoesNotThrow(() -> {
-            EventContainer container = new EventContainer(category, eventAccess);
+            final EventContainer container = new EventContainer(category, eventAccess);
         });
     }
 
     @Test
     void EventContainer_nullCategory() {
         assertThrows(NullPointerException.class, () -> {
-            EventContainer container = new EventContainer(null, eventAccess);
+            final EventContainer container = new EventContainer(null, eventAccess);
         });
     }
 
     @Test
     void EventContainer_nullIEventAccess() {
         assertThrows(NullPointerException.class, () -> {
-            EventContainer container = new EventContainer(category, null);
+            final EventContainer container = new EventContainer(category, null);
         });
     }
 
     @Test
     void addEvent_noError() {
-        LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        final LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
 
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(List.of(new Event(category, EVENT_TITLE, EVENT_DESCRIPTION)));
         eventContainer.addEvent(EVENT_TITLE, EVENT_DESCRIPTION);
 
-        ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
+        final ArgumentCaptor<Event> captor = ArgumentCaptor.forClass(Event.class);
         verify(eventAccess).saveEvent(captor.capture());
 
-        Event event = captor.getValue();
+        final Event event = captor.getValue();
 
         assertEvent(event, expectedCreated);
 
-        List<Event> events = eventContainer.getEvents();
+        final List<Event> events = eventContainer.getEvents();
         assertEquals(1, events.size());
 
         assertEvent(events.get(0), expectedCreated);
@@ -122,8 +122,8 @@ public class EventContainerTest {
 
     @Test
     void getEvents_noError() throws InterruptedException {
-        int amtEvents = 5;
-        List<Event> expectedEvents = new ArrayList<>();
+        final int amtEvents = 5;
+        final List<Event> expectedEvents = new ArrayList<>();
         for (int i = 0; i < amtEvents; i++) {
             eventContainer.addEvent(EVENT_TITLE + i, EVENT_DESCRIPTION + i);
             expectedEvents.add(new Event(category, EVENT_TITLE + i, EVENT_DESCRIPTION + i));
@@ -131,14 +131,14 @@ public class EventContainerTest {
         }
 
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(expectedEvents);
-        List<Event> events = eventContainer.getEvents();
+        final List<Event> events = eventContainer.getEvents();
 
         assertEquals(amtEvents, events.size());
 
         for (int i = 1; i < events.size(); i++) {
             for (int j = 0; j < i; j++) {
-                Event eventAtJ = events.get(j);
-                Event eventAtI = events.get(i);
+                final Event eventAtJ = events.get(j);
+                final Event eventAtI = events.get(i);
 
                 assertTrue(eventAtJ.getCreated().isBefore(eventAtI.getCreated()));
             }
@@ -147,7 +147,7 @@ public class EventContainerTest {
 
     @Test
     void getEvents_noEventsAdded() {
-        List<Event> events = eventContainer.getEvents();
+        final List<Event> events = eventContainer.getEvents();
 
         assertNotNull(events);
         assertEquals(0, events.size());
@@ -158,20 +158,20 @@ public class EventContainerTest {
         // define new category so the method findByCategory(category) is only called once
         EventCategory category = EventCategory.UNDEFINED;
 
-        List<Event> expectedEvents = new ArrayList<>();
+        final List<Event> expectedEvents = new ArrayList<>();
 
-        int amtEvents = 20;
+        final int amtEvents = 20;
         for (int i = 0; i < amtEvents; i++) {
             expectedEvents.add(new Event(category, EVENT_TITLE + i, EVENT_DESCRIPTION + i));
         }
 
-        List<Event> sorted = expectedEvents;
+        final List<Event> sorted = expectedEvents;
         Collections.sort(sorted);
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(sorted);
 
-        EventContainer eventContainer = new EventContainer(category, eventAccess);
+        final EventContainer eventContainer = new EventContainer(category, eventAccess);
 
-        List<Event> events = eventContainer.getEvents();
+        final List<Event> events = eventContainer.getEvents();
 
         assertEquals(expectedEvents, events);
     }
@@ -202,7 +202,7 @@ public class EventContainerTest {
         assertEquals(EVENT_TITLE, event.getTitle());
         assertEquals(EVENT_DESCRIPTION, event.getDescription());
 
-        LocalDateTime created = event.getCreated().truncatedTo(ChronoUnit.SECONDS);
+        final LocalDateTime created = event.getCreated().truncatedTo(ChronoUnit.SECONDS);
 
         assertEquals(expectedCreated, created);
     }

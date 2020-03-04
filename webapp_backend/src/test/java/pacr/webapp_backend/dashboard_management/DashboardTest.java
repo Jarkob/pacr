@@ -87,7 +87,7 @@ public class DashboardTest {
 
     @Test
     void addModule_NullDashboardModule_ShouldThrowException() {
-        DashboardModuleDummy dashboardModule = null;
+        final DashboardModuleDummy dashboardModule = null;
 
         assertThrows(NullPointerException.class, () -> dashboard.addModule(dashboardModule));
         assertThrows(NullPointerException.class, () -> dashboard.addModule(dashboardModule, 4));
@@ -95,7 +95,7 @@ public class DashboardTest {
 
     @Test
     void removeModule_EmptyPositionGiven_ShouldReturnFalse() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
+        final DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
         assertFalse(dashboard.removeModule(7));
@@ -112,7 +112,7 @@ public class DashboardTest {
 
     @Test
     void removeModule_PositionTooSmallGiven_ShouldThrowException() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
+        final DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
         assertThrows(IndexOutOfBoundsException.class, () -> dashboard.removeModule(-1));
@@ -120,7 +120,7 @@ public class DashboardTest {
 
     @Test
     void removeModule_PositionTooBigGiven_ShouldThrowException() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
+        final DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
         assertThrows(IndexOutOfBoundsException.class, () -> dashboard.removeModule(15));
@@ -128,7 +128,7 @@ public class DashboardTest {
 
     @Test
     void removeModule_ExistingDashboardModuleGiven_ShouldReturnTrue() {
-        DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
+        final DashboardModuleDummy dashboardModule = new DashboardModuleDummy();
 
         dashboard.addModule(dashboardModule);
         assertTrue(dashboard.removeModule(dashboardModule));
@@ -136,14 +136,14 @@ public class DashboardTest {
 
     @Test
     void removeModule_NullDashboardModuleGiven_ShouldReturnFalse() {
-        DashboardModuleDummy dashboardModule = null;
+        final DashboardModuleDummy dashboardModule = null;
 
         assertThrows(NullPointerException.class, () -> dashboard.removeModule(dashboardModule));
     }
 
     @Test
     void updateLastAccess_ShouldUpdateLastAccess() {
-        LocalDate now = LocalDate.now();
+        final LocalDate now = LocalDate.now();
         dashboard.updateLastAccess();
         assertEquals(now, dashboard.getLastAccess());
     }
@@ -155,8 +155,8 @@ public class DashboardTest {
 
         dashboard.initializeKeys(EDIT_KEY, VIEW_KEY);
 
-        String actualEditKey = dashboard.getEditKey();
-        String actualViewKey = dashboard.getViewKey();
+        final String actualEditKey = dashboard.getEditKey();
+        final String actualViewKey = dashboard.getViewKey();
 
         assertEquals(EDIT_KEY, actualEditKey);
         assertEquals(VIEW_KEY, actualViewKey);
@@ -204,8 +204,8 @@ public class DashboardTest {
 
     @Test
     void equals_DifferentSimpleObjectSameAttributes_ShouldReturnTrue() {
-        Dashboard dashboard1 = new Dashboard();
-        Dashboard dashboard2 = new Dashboard();
+        final Dashboard dashboard1 = new Dashboard();
+        final Dashboard dashboard2 = new Dashboard();
 
         assertEquals(dashboard1, dashboard2);
     }
@@ -223,8 +223,8 @@ public class DashboardTest {
     @Test
     void equals_DifferentTitles_ShouldReturnFalse() {
 
-        Dashboard dashboard1 = new Dashboard("title_a");
-        Dashboard dashboard2 = new Dashboard("title_b");
+        final Dashboard dashboard1 = new Dashboard("title_a");
+        final Dashboard dashboard2 = new Dashboard("title_b");
 
         assertNotEquals(dashboard1, dashboard2);
     }
@@ -232,8 +232,8 @@ public class DashboardTest {
     @Test
     void equals_DifferentViewKey_ShouldReturnFalse() {
 
-        Dashboard dashboard1 = new Dashboard("title");
-        Dashboard dashboard2 = new Dashboard("title");
+        final Dashboard dashboard1 = new Dashboard("title");
+        final Dashboard dashboard2 = new Dashboard("title");
 
         dashboard1.initializeKeys("Different", "Same");
         dashboard2.initializeKeys("Not The Same", "Same");
@@ -244,8 +244,8 @@ public class DashboardTest {
     @Test
     void equals_DifferentEditKey_ShouldReturnFalse() {
 
-        Dashboard dashboard1 = new Dashboard("title");
-        Dashboard dashboard2 = new Dashboard("title");
+        final Dashboard dashboard1 = new Dashboard("title");
+        final Dashboard dashboard2 = new Dashboard("title");
 
         dashboard1.initializeKeys("Same", "Different");
         dashboard2.initializeKeys("Same", "Not The Same");
@@ -256,8 +256,8 @@ public class DashboardTest {
     @Test
     void equals_DifferentAmountOfModules_ShouldReturnFalse() {
 
-        Dashboard dashboard1 = new Dashboard("title");
-        Dashboard dashboard2 = new Dashboard("title");
+        final Dashboard dashboard1 = new Dashboard("title");
+        final Dashboard dashboard2 = new Dashboard("title");
 
         dashboard1.addModule(commitHistoryModule);
 
@@ -267,8 +267,8 @@ public class DashboardTest {
 
     @Test
     void equals_DifferentModules_ShouldReturnFalse() {
-        Dashboard dashboard1 = new Dashboard("title");
-        Dashboard dashboard2 = new Dashboard("title");
+        final Dashboard dashboard1 = new Dashboard("title");
+        final Dashboard dashboard2 = new Dashboard("title");
 
         dashboard1.addModule(leaderboardModule);
         dashboard2.addModule(lineDiagramModule);
@@ -279,8 +279,8 @@ public class DashboardTest {
 
     @Test
     void equals_DifferentComplexObjectSameAttributes_ShouldReturnTrue() {
-        Dashboard dashboard1 = new Dashboard("test_title");
-        Dashboard dashboard2 = new Dashboard("test_title");
+        final Dashboard dashboard1 = new Dashboard("test_title");
+        final Dashboard dashboard2 = new Dashboard("test_title");
 
         dashboard1.initializeKeys("test_edit_key", "test_view_key");
         dashboard2.initializeKeys("test_edit_key", "test_view_key");

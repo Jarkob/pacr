@@ -38,8 +38,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
      * @param resultImportSaver Component for saving imported benchmarking results.
      * @param resultBenchmarkSaver Component for saving generated benchmarking results.
      */
-    ResultManager(IResultAccess resultAccess, IGetCommitAccess commitAccess, ResultImportSaver resultImportSaver,
-                  ResultBenchmarkSaver resultBenchmarkSaver) {
+    ResultManager(final IResultAccess resultAccess, final IGetCommitAccess commitAccess, final ResultImportSaver resultImportSaver,
+                  final ResultBenchmarkSaver resultBenchmarkSaver) {
         this.resultAccess = resultAccess;
         this.commitAccess = commitAccess;
         this.resultImportSaver = resultImportSaver;
@@ -47,7 +47,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     }
 
     @Override
-    public void deleteBenchmarkingResults(@NotNull Collection<String> commitHashes) {
+    public void deleteBenchmarkingResults(@NotNull final Collection<String> commitHashes) {
         Objects.requireNonNull(commitHashes);
 
         synchronized (CommitResult.class) {
@@ -58,13 +58,13 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     }
 
     @Override
-    public void importBenchmarkingResults(@NotNull Collection<IBenchmarkingResult> results) {
+    public void importBenchmarkingResults(@NotNull final Collection<IBenchmarkingResult> results) {
         Objects.requireNonNull(results);
 
-        Map<IBenchmarkingResult, ICommit> resultsWithCommits = new HashMap<>();
+        final Map<IBenchmarkingResult, ICommit> resultsWithCommits = new HashMap<>();
 
-        for (IBenchmarkingResult result : results) {
-            ICommit commit = commitAccess.getCommit(result.getCommitHash());
+        for (final IBenchmarkingResult result : results) {
+            final ICommit commit = commitAccess.getCommit(result.getCommitHash());
 
             if (commit == null) {
                 LOGGER.error("could not find commit with hash {} - its result will not be saved",
@@ -85,10 +85,10 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
     }
 
     @Override
-    public void saveBenchmarkingResults(@NotNull IBenchmarkingResult benchmarkingResult) {
+    public void saveBenchmarkingResults(@NotNull final IBenchmarkingResult benchmarkingResult) {
         Objects.requireNonNull(benchmarkingResult);
 
-        ICommit commit = commitAccess.getCommit(benchmarkingResult.getCommitHash());
+        final ICommit commit = commitAccess.getCommit(benchmarkingResult.getCommitHash());
 
         if (commit == null) {
             LOGGER.error("could not find commit with hash {}", benchmarkingResult.getCommitHash());
@@ -99,16 +99,16 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         updateComparisonsForChildren(benchmarkingResult.getCommitHash());
     }
 
-    private String getComparisonCommitHash(ICommit commit) {
+    private String getComparisonCommitHash(final ICommit commit) {
         if (commit == null) {
             return null;
         }
 
-        Collection<String> parentHashes = commit.getParentHashes();
-        Collection<ICommit> parents = new LinkedList<>();
+        final Collection<String> parentHashes = commit.getParentHashes();
+        final Collection<ICommit> parents = new LinkedList<>();
 
-        for (String parentHash : parentHashes) {
-            ICommit parent = commitAccess.getCommit(parentHash);
+        for (final String parentHash : parentHashes) {
+            final ICommit parent = commitAccess.getCommit(parentHash);
             parents.add(parent);
         }
 
@@ -116,15 +116,15 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             return null;
         }
 
-        ICommit comparisonCommit = getCommitLatestCommitDate(parents);
+        final ICommit comparisonCommit = getCommitLatestCommitDate(parents);
 
         return comparisonCommit.getCommitHash();
     }
 
-    private ICommit getCommitLatestCommitDate(Collection<? extends ICommit> commits) {
+    private ICommit getCommitLatestCommitDate(final Collection<? extends ICommit> commits) {
         LocalDateTime latestTime = LocalDateTime.MIN;
         ICommit latestCommit = null;
-        for (ICommit commit : commits) {
+        for (final ICommit commit : commits) {
             if (commit.getCommitDate().isAfter(latestTime)) {
                 latestCommit = commit;
                 latestTime = commit.getCommitDate();
@@ -133,15 +133,16 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         return latestCommit;
     }
 
-    private void updateComparisonsForChildren(String commitHash) {
-        List<CommitResult> resultsToUpdate = resultAccess.getResultsWithComparisionCommitHash(commitHash);
+    private void updateComparisonsForChildren(final String commitHash) {
 
-        CommitResult comparisonResult = resultAccess.getResultFromCommit(commitHash);
+        final CommitResult comparisonResult = resultAccess.getResultFromCommit(commitHash);
         if (comparisonResult == null) {
             return;
         }
 
-        for (CommitResult resultToUpdate : resultsToUpdate) {
+        final List<CommitResult> resultsToUpdate = resultAccess.getResultsWithComparisionCommitHash(commitHash);
+
+        for (final CommitResult resultToUpdate : resultsToUpdate) {
             if (!resultToUpdate.isCompared()) {
                 resultToUpdate.setCompared(true);
                 Map<String, BenchmarkResult> comparisonBenchmarkResults = comparisonResult.getBenchmarks();

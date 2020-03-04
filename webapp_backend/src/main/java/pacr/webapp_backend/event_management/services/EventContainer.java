@@ -26,7 +26,7 @@ public class EventContainer {
      * @param category the category of events handles by this event manager.
      * @param eventAccess the event access used to store the events.
      */
-    EventContainer(@NotNull EventCategory category, @NotNull IEventAccess eventAccess) {
+    EventContainer(@NotNull final EventCategory category, @NotNull final IEventAccess eventAccess) {
         Objects.requireNonNull(category, "The category cannot be null.");
         Objects.requireNonNull(eventAccess, "The eventAccess cannot be null.");
 
@@ -40,7 +40,7 @@ public class EventContainer {
      * @param title the title of the event.
      * @param description a description of the event.
      */
-    void addEvent(@NotNull String title, @NotNull String description) {
+    void addEvent(@NotNull final String title, @NotNull final String description) {
         if (!StringUtils.hasText(title)) {
             throw new IllegalArgumentException("title cannot be null or empty.");
         }
@@ -49,7 +49,7 @@ public class EventContainer {
             throw new IllegalArgumentException("description cannot be null or empty.");
         }
 
-        Event event = new Event(category, title, description);
+        final Event event = new Event(category, title, description);
 
         eventAccess.saveEvent(event);
     }

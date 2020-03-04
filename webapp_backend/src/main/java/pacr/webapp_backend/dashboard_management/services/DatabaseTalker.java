@@ -28,8 +28,8 @@ public class DatabaseTalker {
      * @param deletionIntervalAccess The object, implementing {@link IDeletionIntervalAccess}, which allows access
      *                               to dashboards in the database.
      */
-    public DatabaseTalker(@NotNull IDashboardAccess dashboardAccess,
-                          @NotNull IDeletionIntervalAccess deletionIntervalAccess) {
+    public DatabaseTalker(@NotNull final IDashboardAccess dashboardAccess,
+                          @NotNull final IDeletionIntervalAccess deletionIntervalAccess) {
         Objects.requireNonNull(dashboardAccess, "The dashboard access object must not be null.");
         Objects.requireNonNull(deletionIntervalAccess, "The deletion interval access object must not be null");
 
@@ -44,10 +44,10 @@ public class DatabaseTalker {
      * @return -1, if the key does not belong to any dashboard, 0, if the key is a view key
      * and 1 if the key is an edit key.
      */
-    private KeyType checkKeyType(String key) {
+    private KeyType checkKeyType(final String key) {
 
-        boolean isEditKey = dashboardAccess.existsDashboardByEditKey(key);
-        boolean isViewKey = dashboardAccess.existsDashboardByViewKey(key);
+        final boolean isEditKey = dashboardAccess.existsDashboardByEditKey(key);
+        final boolean isViewKey = dashboardAccess.existsDashboardByViewKey(key);
 
         if (isEditKey && !isViewKey) {
             return KeyType.EDIT_KEY;
@@ -65,7 +65,7 @@ public class DatabaseTalker {
      *
      * @param dashboard the dashboard which will be stored.
      */
-    void storeDashboard(Dashboard dashboard) {
+    void storeDashboard(final Dashboard dashboard) {
         dashboardAccess.storeDashboard(dashboard);
     }
 
@@ -76,13 +76,13 @@ public class DatabaseTalker {
      * @throws IllegalAccessException if the dashboard does not contain a valid edit key, for access.
      * @throws NoSuchElementException if the dashboard does not yet exist.
      */
-    void updateDashboard(Dashboard dashboard) throws IllegalAccessException, NoSuchElementException {
-        String editKey = dashboard.getEditKey();
+    void updateDashboard(final Dashboard dashboard) throws IllegalAccessException, NoSuchElementException {
+        final String editKey = dashboard.getEditKey();
         if (editKey == null) {
             throw new IllegalAccessException("The dashboard can only be updated via access with an edit key.");
         }
 
-        KeyType keyType = checkKeyType(editKey);
+        final KeyType keyType = checkKeyType(editKey);
         if (keyType == KeyType.INVALID_KEY) {
             throw new NoSuchElementException("The key ' " + editKey + "' does not belong to an existing dashboard.");
         } else if (keyType == KeyType.VIEW_KEY) {
@@ -100,8 +100,8 @@ public class DatabaseTalker {
      * @throws NoSuchElementException if the key does not exist.
      * @throws IllegalAccessException if the key is a view key and not sufficient to allow the deletion of a dashboard.
      */
-    void deleteDashboard(String key) throws NoSuchElementException, IllegalAccessException {
-        KeyType keyType = checkKeyType(key);
+    void deleteDashboard(final String key) throws NoSuchElementException, IllegalAccessException {
+        final KeyType keyType = checkKeyType(key);
         if (keyType == KeyType.INVALID_KEY) {
             throw new NoSuchElementException("The key '" + key + "' does not belong to an existing dashboard.");
         } else if (keyType == KeyType.VIEW_KEY) {
@@ -117,7 +117,7 @@ public class DatabaseTalker {
      *
      * @param deletionInterval the new deletion interval.
      */
-    void setDeletionInterval(long deletionInterval) {
+    void setDeletionInterval(final long deletionInterval) {
 
         deletionIntervalAccess.setDeletionInterval(deletionInterval);
     }
@@ -129,7 +129,7 @@ public class DatabaseTalker {
     long getDeletionInterval() {
         try {
             return deletionIntervalAccess.getDeletionInterval();
-        } catch (NoSuchElementException e) {
+        } catch (final NoSuchElementException e) {
             setDeletionInterval(DEFAULT_DELETION_INTERVAL);
             return DEFAULT_DELETION_INTERVAL;
         }
@@ -140,12 +140,12 @@ public class DatabaseTalker {
      * @return the requested dashboard
      * @throws NoSuchElementException if the key does not belong to a dashboard.
      */
-    Dashboard getDashboard(String key) throws NoSuchElementException {
-        KeyType keyType = checkKeyType(key);
+    Dashboard getDashboard(final String key) throws NoSuchElementException {
+        final KeyType keyType = checkKeyType(key);
         if (keyType == KeyType.INVALID_KEY) {
             throw new NoSuchElementException("The key '" + key + "' does not belong to an existing dashboard.");
         } else {
-            Dashboard dashboard = keyType == KeyType.VIEW_KEY ? dashboardAccess.findByViewKey(key)
+            final Dashboard dashboard = keyType == KeyType.VIEW_KEY ? dashboardAccess.findByViewKey(key)
                     : dashboardAccess.findByEditKey(key);
             if (keyType == KeyType.VIEW_KEY) {
                 dashboard.prepareForViewAccess();

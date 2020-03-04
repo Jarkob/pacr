@@ -22,14 +22,14 @@ public class CommitHistoryDashboardModuleTest {
 
     @Test
     void equals_DifferentClass_ShouldReturnFalse() {
-        QueueDashboardModule queueModule = new QueueDashboardModule();
+        final QueueDashboardModule queueModule = new QueueDashboardModule();
 
         assertNotEquals(commitHistoryModule, queueModule);
     }
 
     @Test
     void equals_DifferentAmountOfRepositories_ShouldReturnFalse() {
-        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
+        final CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
 
         commitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository"));
         otherCommitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository", "testRepository 2"));
@@ -40,7 +40,7 @@ public class CommitHistoryDashboardModuleTest {
 
     @Test
     void equals_DifferentRepositories_ShouldReturnFalse() {
-        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
+        final CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
 
         commitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository"));
         otherCommitHistoryModule.setTrackedRepositories(Arrays.asList("testRepository 2"));
@@ -52,7 +52,7 @@ public class CommitHistoryDashboardModuleTest {
     void equals_SameRepositories_ShouldReturnTrue() {
         final String REPOSITORY_NAME = "test repository";
 
-        CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
+        final CommitHistoryDashboardModule otherCommitHistoryModule = new CommitHistoryDashboardModule();
 
         commitHistoryModule.setTrackedRepositories(Arrays.asList(REPOSITORY_NAME));
         otherCommitHistoryModule.setTrackedRepositories(Arrays.asList(REPOSITORY_NAME));

@@ -25,7 +25,7 @@ public class DashboardDBTest extends SpringBootTestWithoutShell {
     Dashboard dashboard2;
 
     @Autowired
-    public DashboardDBTest(DashboardDB dashboardDB) {
+    public DashboardDBTest(final DashboardDB dashboardDB) {
         MockitoAnnotations.initMocks(this);
 
         this.dashboardDB = dashboardDB;
@@ -37,7 +37,7 @@ public class DashboardDBTest extends SpringBootTestWithoutShell {
         dashboard1.initializeKeys("editKeyA", "viewKeyA");
 
 
-        LineDiagramDashboardModule ldm = new LineDiagramDashboardModule();
+        final LineDiagramDashboardModule ldm = new LineDiagramDashboardModule();
         ldm.setTrackedBenchmarks(new ArrayList<String>(Arrays.asList("bench1", "benchB")));
         ldm.setTrackedRepositories(new ArrayList<String>(Arrays.asList("repoA", "repo2")));
         dashboard1.addModule(ldm);
@@ -45,7 +45,7 @@ public class DashboardDBTest extends SpringBootTestWithoutShell {
         dashboard2 = new Dashboard();
         dashboard2.initializeKeys("editKeyB", "viewKeyB");
 
-        CommitHistoryDashboardModule chdm = new CommitHistoryDashboardModule();
+        final CommitHistoryDashboardModule chdm = new CommitHistoryDashboardModule();
         chdm.setTrackedRepositories(new ArrayList<String>(Arrays.asList("repo 1", "repo B")));
 
         dashboard2.addModule(chdm);
@@ -100,7 +100,7 @@ public class DashboardDBTest extends SpringBootTestWithoutShell {
         dashboardDB.storeDashboard(dashboard1);
         dashboardDB.storeDashboard(dashboard2);
 
-        Collection<Dashboard> dashboards = dashboardDB.findAll();
+        final Collection<Dashboard> dashboards = dashboardDB.findAll();
 
         assertTrue(dashboards.contains(dashboard1));
         assertTrue(dashboards.contains(dashboard2));

@@ -51,21 +51,21 @@ public class SchedulerControllerTest {
     @Test
     void SchedulerController_noError() {
         assertDoesNotThrow(() -> {
-            SchedulerController schedulerController = new SchedulerController(scheduler, authenticator);
+            final SchedulerController schedulerController = new SchedulerController(scheduler, authenticator);
         });
     }
 
     @Test
     void SchedulerController_nullScheduler() {
         assertThrows(NullPointerException.class, () -> {
-            SchedulerController schedulerController = new SchedulerController(null, authenticator);
+            final SchedulerController schedulerController = new SchedulerController(null, authenticator);
         });
     }
 
     @Test
     void SchedulerController_nullIAuthenticator() {
         assertThrows(NullPointerException.class, () -> {
-            SchedulerController schedulerController = new SchedulerController(scheduler, null);
+            final SchedulerController schedulerController = new SchedulerController(scheduler, null);
         });
     }
 
@@ -90,7 +90,7 @@ public class SchedulerControllerTest {
         when(authenticator.authenticate(jwtToken)).thenReturn(true);
         when(scheduler.givePriorityTo(JOB_GROUP, JOB_ID)).thenReturn(true);
 
-        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
+        final boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
 
         verify(authenticator).authenticate(jwtToken);
         verify(scheduler).givePriorityTo(JOB_GROUP, JOB_ID);
@@ -104,7 +104,7 @@ public class SchedulerControllerTest {
         when(authenticator.authenticate(jwtToken)).thenReturn(false);
         when(scheduler.givePriorityTo(JOB_GROUP, JOB_ID)).thenReturn(true);
 
-        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
+        final boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
 
         verify(authenticator).authenticate(jwtToken);
         verify(scheduler, never()).givePriorityTo(any(), any());
@@ -118,7 +118,7 @@ public class SchedulerControllerTest {
         when(authenticator.authenticate(jwtToken)).thenReturn(true);
         when(scheduler.givePriorityTo(JOB_GROUP, JOB_ID)).thenReturn(false);
 
-        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
+        final boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
 
         verify(authenticator).authenticate(jwtToken);
         verify(scheduler).givePriorityTo(JOB_GROUP, JOB_ID);
@@ -130,7 +130,7 @@ public class SchedulerControllerTest {
         final String jwtToken = "jwt";
         when(prioritizeMessage.validate()).thenReturn(false);
 
-        boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
+        final boolean result = schedulerController.givePriorityTo(prioritizeMessage, jwtToken);
 
         verify(authenticator, never()).authenticate(jwtToken);
         verify(scheduler, never()).givePriorityTo(JOB_GROUP, JOB_ID);

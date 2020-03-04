@@ -26,7 +26,7 @@ public class BenchmarkingResultTest {
         final String expectedError = "error";
 
         benchmarkingResult.setGlobalError(expectedError);
-        String error = benchmarkingResult.getGlobalError();
+        final String error = benchmarkingResult.getGlobalError();
         assertEquals(expectedError, error);
     }
 

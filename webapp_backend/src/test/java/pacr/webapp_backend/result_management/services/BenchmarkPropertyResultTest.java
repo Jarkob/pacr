@@ -98,17 +98,17 @@ public class BenchmarkPropertyResultTest {
 
     @Test
     void constructor_errorMessageTooLong_shouldTruncateErrorMessage() {
-        String error = "0".repeat(MAX_STRING_LENGTH * 2);
-        SimpleBenchmarkProperty result = new SimpleBenchmarkProperty();
+        final String error = "0".repeat(MAX_STRING_LENGTH * 2);
+        final SimpleBenchmarkProperty result = new SimpleBenchmarkProperty();
         result.setError(error);
-        BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(result, propertyMock);
+        final BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(result, propertyMock);
 
         assertEquals(MAX_STRING_LENGTH, propertyResult.getError().length());
     }
 
     @Test
     void setErrorMessage_messageTooLong_shouldTruncateErrorMessage() {
-        String error = "0".repeat(MAX_STRING_LENGTH * 2);
+        final String error = "0".repeat(MAX_STRING_LENGTH * 2);
 
         propertyResultEven.setError(true);
         propertyResultEven.setErrorMessage(error);

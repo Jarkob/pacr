@@ -51,7 +51,7 @@ public class Job implements IJob {
      * @param jobID the id of the job.
      * @param group the group of the job.
      */
-    Job(@NotNull String jobID, @NotNull JobGroup group) {
+    Job(@NotNull final String jobID, @NotNull final JobGroup group) {
         if (!StringUtils.hasText(jobID)) {
             throw new IllegalArgumentException("The jobID cannot be null.");
         }

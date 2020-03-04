@@ -18,7 +18,7 @@ public class PullIntervalDB implements IPullIntervalAccess {
      * Creates an instance of PullIntervalDB.
      * @param configRepo is the JPA ConfigRepository needed to store the configuration.
      */
-    public PullIntervalDB(ConfigRepo configRepo) {
+    public PullIntervalDB(final ConfigRepo configRepo) {
         this.configRepo = configRepo;
     }
 
@@ -28,8 +28,8 @@ public class PullIntervalDB implements IPullIntervalAccess {
     }
 
     @Override
-    public void setPullInterval(int interval) {
-        ConfigItem configItem = new ConfigItem();
+    public void setPullInterval(final int interval) {
+        final ConfigItem configItem = new ConfigItem();
         configItem.setConfigKey(PULL_INTERVAL_IDENTIFIER);
         configItem.setConfigValue(String.valueOf(interval));
         configRepo.save(configItem);

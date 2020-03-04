@@ -24,7 +24,7 @@ public class BenchmarkingResultsImporter {
      * @param resultImporter the resultImporter used to import the benchmarking results.
      * @param repositoryImporter the repositoryImporter used to add new repositories.
      */
-    public BenchmarkingResultsImporter(IResultImporter resultImporter, IRepositoryImporter repositoryImporter) {
+    public BenchmarkingResultsImporter(final IResultImporter resultImporter, final IRepositoryImporter repositoryImporter) {
         Objects.requireNonNull(resultImporter, "The resultImporter cannot be null.");
         Objects.requireNonNull(repositoryImporter, "The repositoryImporter cannot be null.");
 
@@ -37,12 +37,12 @@ public class BenchmarkingResultsImporter {
      *
      * @param results the results to be imported.
      */
-    public void importBenchmarkingResults(Collection<OutputBenchmarkingResult> results) {
-        LocalDate now = LocalDate.now();
+    public void importBenchmarkingResults(final Collection<OutputBenchmarkingResult> results) {
+        final LocalDate now = LocalDate.now();
 
-        Collection<IBenchmarkingResult> benchmarkingResults = new ArrayList<>();
+        final Collection<IBenchmarkingResult> benchmarkingResults = new ArrayList<>();
 
-        for (OutputBenchmarkingResult result : results) {
+        for (final OutputBenchmarkingResult result : results) {
             repositoryImporter.importRepository(result.getRepositoryPullUrl(), now, result.getRepositoryName(),
                     result.getTrackedBranches());
 

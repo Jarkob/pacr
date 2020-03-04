@@ -29,9 +29,9 @@ public class ColorPickerTest {
 
     @Test
     public void getColors() {
-        String color1 = colorPicker.getNextColor();
-        String color2 = colorPicker.getNextColor();
-        String color3 = colorPicker.getNextColor();
+        final String color1 = colorPicker.getNextColor();
+        final String color2 = colorPicker.getNextColor();
+        final String color3 = colorPicker.getNextColor();
 
         assertEquals(COLOR_1, color1);
         assertEquals(COLOR_2, color2);
@@ -40,7 +40,7 @@ public class ColorPickerTest {
 
     @Test
     public void setColorToUnused() {
-        String color = colorPicker.getNextColor();
+        final String color = colorPicker.getNextColor();
         colorPicker.getNextColor();
         colorPicker.setColorToUnused(color);
 

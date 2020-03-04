@@ -30,13 +30,13 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
      * @param commitDB     is the JPA commit access interface.
      * @param repositoryDB is the JPA repository access interface.
      */
-    public GetCommitDB(@NotNull CommitDB commitDB, @NotNull RepositoryDB repositoryDB) {
+    public GetCommitDB(@NotNull final CommitDB commitDB, @NotNull final RepositoryDB repositoryDB) {
         super(commitDB, repositoryDB);
     }
 
 
     @Override
-    public Collection<? extends ICommit> getCommitsFromRepository(int id) {
+    public Collection<? extends ICommit> getCommitsFromRepository(final int id) {
         return commitDB.findGitCommitsByRepository_Id(id);
     }
 
@@ -46,7 +46,7 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
         Objects.requireNonNull(commitDateStart);
         Objects.requireNonNull(commitDateEnd);
 
-        GitBranch branch = getGitBranch(repositoryId, branchName);
+        final GitBranch branch = getGitBranch(repositoryId, branchName);
         if (branch == null) {
             return null;
         }
@@ -56,25 +56,25 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
     }
 
     @Override
-    public GitCommit getCommit(@NotNull String commitHash) {
+    public GitCommit getCommit(@NotNull final String commitHash) {
         Objects.requireNonNull(commitHash);
 
         return commitDB.findById(commitHash).orElse(null);
     }
 
     @Nullable
-    private GitBranch getGitBranch(int id, String branchName) {
-        GitRepository repository = super.repositoryDB.findById(id).orElse(null);
+    private GitBranch getGitBranch(final int id, final String branchName) {
+        final GitRepository repository = super.repositoryDB.findById(id).orElse(null);
 
         if (repository == null) {
             return null;
         }
 
-        Collection<GitBranch> branches = repository.getTrackedBranches();
+        final Collection<GitBranch> branches = repository.getTrackedBranches();
 
         GitBranch match = null;
 
-        for (GitBranch branch : branches) {
+        for (final GitBranch branch : branches) {
             if (branch.getName().equals(branchName)) {
                 match = branch;
                 break;

@@ -22,7 +22,7 @@ public class CommitRepositoryDB {
      * @param commitDB is the JPA commit access interface.
      * @param repositoryDB is the JPA repository access interface.
      */
-    public CommitRepositoryDB(@NotNull CommitDB commitDB, @NotNull RepositoryDB repositoryDB) {
+    public CommitRepositoryDB(@NotNull final CommitDB commitDB, @NotNull final RepositoryDB repositoryDB) {
         Objects.requireNonNull(commitDB);
         Objects.requireNonNull(repositoryDB);
 

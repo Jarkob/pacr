@@ -32,7 +32,7 @@ public class EventManagementController {
      *
      * @param eventHandler the eventHandler used to retrieve events.
      */
-    public EventManagementController(@NotNull EventHandler eventHandler) {
+    public EventManagementController(@NotNull final EventHandler eventHandler) {
         Objects.requireNonNull(eventHandler, "The eventHandler cannot be null.");
 
         this.eventHandler = eventHandler;
@@ -45,7 +45,7 @@ public class EventManagementController {
      */
     @RequestMapping("/events/benchmark")
     public Page<Event> getBenchmarkingEvents(@PageableDefault(size = DEFAULT_PAGE_SIZE) @SortDefault.SortDefaults({
-            @SortDefault(sort = "created", direction = Sort.Direction.DESC)}) Pageable pageable) {
+            @SortDefault(sort = "created", direction = Sort.Direction.DESC)}) final Pageable pageable) {
         return eventHandler.getEvents(pageable, EventCategory.BENCHMARKING);
     }
 

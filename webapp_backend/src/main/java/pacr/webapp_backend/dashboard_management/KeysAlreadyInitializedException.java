@@ -1,7 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
 public class KeysAlreadyInitializedException extends RuntimeException {
-    KeysAlreadyInitializedException(String message) {
+    KeysAlreadyInitializedException(final String message) {
         super(message);
     }
 }

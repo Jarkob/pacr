@@ -52,7 +52,7 @@ public class ImportExportControllerTest {
 
     @Test
     void exportBenchmarkingResults_noError() {
-        Collection<OutputBenchmarkingResult> results = importExportController.exportBenchmarkingResults(JWT);
+        final Collection<OutputBenchmarkingResult> results = importExportController.exportBenchmarkingResults(JWT);
 
         verify(authenticator).authenticate(JWT);
         verify(resultsExporter).exportBenchmarkingResults();
@@ -63,7 +63,7 @@ public class ImportExportControllerTest {
     void exportBenchmarkingResults_wrongJWT() {
         when(authenticator.authenticate(JWT)).thenReturn(false);
 
-        HttpStatus status = assertThrows(ResponseStatusException.class, () -> {
+        final HttpStatus status = assertThrows(ResponseStatusException.class, () -> {
            importExportController.exportBenchmarkingResults(JWT);
         }).getStatus();
 
@@ -84,7 +84,7 @@ public class ImportExportControllerTest {
     void importBenchmarkingResults_wrongJWT() {
         when(authenticator.authenticate(JWT)).thenReturn(false);
 
-        HttpStatus status = assertThrows(ResponseStatusException.class, () -> {
+        final HttpStatus status = assertThrows(ResponseStatusException.class, () -> {
             importExportController.importBenchmarkingResults(importedResults, JWT);
         }).getStatus();
 

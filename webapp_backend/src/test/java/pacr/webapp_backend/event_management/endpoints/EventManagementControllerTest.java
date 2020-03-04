@@ -45,14 +45,14 @@ public class EventManagementControllerTest {
 
     @Test
     void getBenchmarkingEvents_noError() {
-        List<Event> events = eventController.getBenchmarkingEvents(pageable).getContent();
+        final List<Event> events = eventController.getBenchmarkingEvents(pageable).getContent();
 
         assertEquals(expectedBenchmarkingEvents, events);
     }
 
     @Test
     void benchmarkingRSSFeed_noError() {
-        View rssView = eventController.benchmarkingRSSFeed();
+        final View rssView = eventController.benchmarkingRSSFeed();
 
         assertNotNull(rssView);
         assertEquals("application/rss+xml", rssView.getContentType());

@@ -36,7 +36,7 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
     protected GitCommit commit;
 
     @Autowired
-    public GitTrackingDBTest(GitTrackingDB gitTrackingDB) {
+    public GitTrackingDBTest(final GitTrackingDB gitTrackingDB) {
         this.gitTrackingDB = gitTrackingDB;
     }
 
@@ -49,16 +49,16 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
         // repository
         repository = new GitRepository(true, "pullURL", "RepositoryName",
                 "#000000", LocalDate.now());
-        Set<String> selectedBranches = new HashSet<>(Arrays.asList("branch1", "branch2"));
+        final Set<String> selectedBranches = new HashSet<>(Arrays.asList("branch1", "branch2"));
         repository.setSelectedBranches(selectedBranches);
 
         // commit
         commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
-        String message = "commit message";
-        LocalDateTime commitDate = LocalDateTime.now();
-        LocalDateTime authorDate = LocalDateTime.now();
-        GitRepository repositoryForCommit = new GitRepository();
-        GitBranch branch = new GitBranch("test branch");
+        final String message = "commit message";
+        final LocalDateTime commitDate = LocalDateTime.now();
+        final LocalDateTime authorDate = LocalDateTime.now();
+        final GitRepository repositoryForCommit = new GitRepository();
+        final GitBranch branch = new GitBranch("test branch");
 
         commit = new GitCommit(commitHash, message, commitDate, authorDate, repositoryForCommit);
 
@@ -72,12 +72,12 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
     @Test
     public void addRepository() {
         assertFalse(repository.isInDatabase());
-        int id = gitTrackingDB.addRepository(repository);
+        final int id = gitTrackingDB.addRepository(repository);
 
         assertTrue(repository.isInDatabase());
 
         assertEquals(id, repository.getId());
-        GitRepository fromDB = gitTrackingDB.getRepository(id);
+        final GitRepository fromDB = gitTrackingDB.getRepository(id);
 
         assertEquals(repository.getId(), fromDB.getId());
         assertEquals(repository.getColor(), fromDB.getColor());
@@ -92,8 +92,8 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void getAllRepositories() {
-        int id = gitTrackingDB.addRepository(repository);
-        Collection<GitRepository> repositoriesFromDB = gitTrackingDB.getAllRepositories();
+        final int id = gitTrackingDB.addRepository(repository);
+        final Collection<GitRepository> repositoriesFromDB = gitTrackingDB.getAllRepositories();
         assertEquals(1, repositoriesFromDB.size());
     }
 
@@ -102,8 +102,8 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void removeRepository() {
-        int id = gitTrackingDB.addRepository(repository);
-        GitRepository fromDB = gitTrackingDB.getRepository(id);
+        final int id = gitTrackingDB.addRepository(repository);
+        final GitRepository fromDB = gitTrackingDB.getRepository(id);
 
         gitTrackingDB.removeRepository(id);
 
@@ -115,13 +115,13 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void updateRepository() {
-        int id = gitTrackingDB.addRepository(repository);
+        final int id = gitTrackingDB.addRepository(repository);
 
         GitRepository fromDB = gitTrackingDB.getRepository(id);
 
         assertEquals(repository.getName(), fromDB.getName());
 
-        String newName = "New name";
+        final String newName = "New name";
         repository.setName(newName);
 
         // old repository from DB not updated
@@ -143,9 +143,9 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
      */
     @Test
     public void addCommit() {
-        GitRepository repository = new GitRepository(false, "git@github.com:leanprover/lean.git",
+        final GitRepository repository = new GitRepository(false, "git@github.com:leanprover/lean.git",
                 "testingrepo", "#000000", null);
-        String commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
+        final String commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
 
         // first add repository to DB
         gitTrackingDB.addRepository(repository);
@@ -155,9 +155,9 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
 
         gitTrackingDB.addCommit(parent);
 
-        int amountCommits = 3;
+        final int amountCommits = 3;
         for (int i = 0; i < amountCommits - 1; i++) {
-            GitCommit child = new GitCommit(commitHash + i, "commited", LocalDateTime.now(), LocalDateTime.now(),
+            final GitCommit child = new GitCommit(commitHash + i, "commited", LocalDateTime.now(), LocalDateTime.now(),
                     repository);
             child.addParent(parent.getCommitHash());
 
@@ -167,11 +167,11 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
         }
 
         // getting all commits with repository ID
-        Collection<GitCommit> commits = gitTrackingDB.getAllCommits(repository.getId());
+        final Collection<GitCommit> commits = gitTrackingDB.getAllCommits(repository.getId());
         assertEquals(amountCommits, commits.size());
 
         // getting commit with commitHash
-        GitCommit fromDB = gitTrackingDB.getCommit(commitHash);
+        final GitCommit fromDB = gitTrackingDB.getCommit(commitHash);
     }
 
     /**
@@ -185,7 +185,7 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
 
     @AfterEach
     public void cleanUp() {
-        for (GitRepository repository : gitTrackingDB.getAllRepositories()) {
+        for (final GitRepository repository : gitTrackingDB.getAllRepositories()) {
             gitTrackingDB.removeRepository(repository.getId());
         }
     }

@@ -54,30 +54,30 @@ public class EventHandlerTest {
     @Test
     void EventHandler_noError() {
         assertDoesNotThrow(() -> {
-            EventHandler eventHandler = new EventHandler(eventAccess);
+            final EventHandler eventHandler = new EventHandler(eventAccess);
         });
     }
 
     @Test
     void EventHandler_nullIEventAccess() {
         assertThrows(NullPointerException.class, () -> {
-            EventHandler eventHandler = new EventHandler(null);
+            final EventHandler eventHandler = new EventHandler(null);
         });
     }
 
     @Test
     void addEvent_noError() {
-        LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        final LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         eventHandler.addEvent(eventTemplate);
 
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(List.of(
                 new Event(category, EVENT_TITLE, EVENT_DESCRIPTION)));
 
-        List<Event> events = eventHandler.getEvents(category);
+        final List<Event> events = eventHandler.getEvents(category);
 
         assertEquals(1, events.size());
 
-        Event event = events.get(0);
+        final Event event = events.get(0);
 
         assertEquals(EVENT_TITLE, event.getTitle());
         assertEquals(EVENT_DESCRIPTION, event.getDescription());
@@ -86,10 +86,15 @@ public class EventHandlerTest {
 
     @Test
     void addEvent_multipleCategories() {
+<<<<<<< refs/remotes/origin/master
         EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.UNDEFINED;
+=======
+        final EventCategory category = EventCategory.BENCHMARKING;
+        final EventCategory otherCategory = EventCategory.LEADERBOARD;
+>>>>>>> Made efficiency-related improvements
 
-        EventTemplate otherTemplate = createEventTemplate(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
+        final EventTemplate otherTemplate = createEventTemplate(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
 
         eventHandler.addEvent(eventTemplate);
         when(eventAccess.findByCategoryOrderByCreatedDesc(eventTemplate.getCategory())).thenReturn(List.of(
@@ -99,16 +104,16 @@ public class EventHandlerTest {
         when(eventAccess.findByCategoryOrderByCreatedDesc(otherTemplate.getCategory())).thenReturn(List.of(
                 new Event(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION)));
 
-        List<Event> categoryEvents = eventHandler.getEvents(category);
+        final List<Event> categoryEvents = eventHandler.getEvents(category);
         assertEquals(1, categoryEvents.size());
 
-        List<Event> otherCategoryEvents = eventHandler.getEvents(otherCategory);
+        final List<Event> otherCategoryEvents = eventHandler.getEvents(otherCategory);
         assertEquals(1, otherCategoryEvents.size());
     }
 
     @Test
     void getEvents_noEvents() {
-        List<Event> events = eventHandler.getEvents(category);
+        final List<Event> events = eventHandler.getEvents(category);
 
         assertNotNull(events);
         assertEquals(0, events.size());
@@ -116,7 +121,7 @@ public class EventHandlerTest {
 
     @Test
     void getEvents_nullCategory() {
-        List<Event> events = eventHandler.getEvents(null);
+        final List<Event> events = eventHandler.getEvents(null);
 
         assertNotNull(events);
         assertEquals(0, events.size());
@@ -124,22 +129,22 @@ public class EventHandlerTest {
 
     @Test
     void getEvents_noError() {
-        List<Event> expectedEvents = new ArrayList<>();
+        final List<Event> expectedEvents = new ArrayList<>();
 
-        int amtEvents = 10;
+        final int amtEvents = 10;
         for (int i = 0; i < amtEvents; i++) {
             final String title = EVENT_TITLE + i;
             final String description = EVENT_DESCRIPTION + i;
 
             expectedEvents.add(new Event(category, title, description));
 
-            EventTemplate template = createEventTemplate(category, title, description);
+            final EventTemplate template = createEventTemplate(category, title, description);
             eventHandler.addEvent(template);
         }
 
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(expectedEvents);
 
-        List<Event> events = eventHandler.getEvents(category);
+        final List<Event> events = eventHandler.getEvents(category);
         assertEquals(amtEvents, events.size());
 
         assertEquals(expectedEvents, events);
@@ -147,52 +152,62 @@ public class EventHandlerTest {
 
     @Test
     void getEvents_wrongCategory() {
+<<<<<<< refs/remotes/origin/master
         EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.UNDEFINED;
+=======
+        final EventCategory category = EventCategory.BENCHMARKING;
+        final EventCategory otherCategory = EventCategory.LEADERBOARD;
+>>>>>>> Made efficiency-related improvements
 
-        int amtEvents = 10;
+        final int amtEvents = 10;
         for (int i = 0; i < amtEvents; i++) {
             final String title = EVENT_TITLE + i;
             final String description = EVENT_DESCRIPTION + i;
 
-            EventTemplate template = createEventTemplate(category, title, description);
+            final EventTemplate template = createEventTemplate(category, title, description);
             eventHandler.addEvent(template);
         }
 
-        List<Event> events = eventHandler.getEvents(otherCategory);
+        final List<Event> events = eventHandler.getEvents(otherCategory);
         assertEquals(0, events.size());
     }
 
     @Test
     void getEvents_multipleCategories() {
+<<<<<<< refs/remotes/origin/master
         EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.UNDEFINED;
+=======
+        final EventCategory category = EventCategory.BENCHMARKING;
+        final EventCategory otherCategory = EventCategory.LEADERBOARD;
+>>>>>>> Made efficiency-related improvements
 
-        List<Event> expectedEvents = new ArrayList<>();
+        final List<Event> expectedEvents = new ArrayList<>();
 
-        int amtEvents = 10;
+        final int amtEvents = 10;
         for (int i = 0; i < amtEvents; i++) {
             final String title = EVENT_TITLE + i;
             final String description = EVENT_DESCRIPTION + i;
 
             expectedEvents.add(new Event(category, title, description));
 
-            EventTemplate template = createEventTemplate(category, title, description);
+            final EventTemplate template = createEventTemplate(category, title, description);
             eventHandler.addEvent(template);
         }
 
-        int amtOtherEvents = 10;
+        final int amtOtherEvents = 10;
         for (int i = 0; i < amtOtherEvents; i++) {
             final String title = EVENT_TITLE + i;
             final String description = EVENT_DESCRIPTION + i;
 
-            EventTemplate template = createEventTemplate(otherCategory, title, description);
+            final EventTemplate template = createEventTemplate(otherCategory, title, description);
             eventHandler.addEvent(template);
         }
 
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(expectedEvents);
 
-        List<Event> events = eventHandler.getEvents(category);
+        final List<Event> events = eventHandler.getEvents(category);
         assertEquals(amtEvents, events.size());
         assertEquals(expectedEvents, events);
     }

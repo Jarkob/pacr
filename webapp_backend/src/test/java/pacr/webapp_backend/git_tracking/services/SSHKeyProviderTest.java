@@ -36,7 +36,7 @@ public class SSHKeyProviderTest {
 
         try {
             keyProvider = new SSHKeyProvider(privateKeyPath, publicKeyPath, configuratorMock);
-        } catch (FileNotFoundException e) {
+        } catch (final FileNotFoundException e) {
             e.printStackTrace();
             fail("File not found.");
         }
@@ -45,11 +45,11 @@ public class SSHKeyProviderTest {
     @Test
     void getPublicKeyTest() {
         try {
-            BufferedReader expected = new BufferedReader(
+            final BufferedReader expected = new BufferedReader(
                     new FileReader(System.getProperty("user.dir") + publicKeyPath));
-            BufferedReader actual = new BufferedReader(new StringReader(keyProvider.getSSHPublicKey()));
+            final BufferedReader actual = new BufferedReader(new StringReader(keyProvider.getSSHPublicKey()));
             assertReaders(expected, actual);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             fail();
         }
     }
@@ -57,19 +57,19 @@ public class SSHKeyProviderTest {
     @Test
     void getPrivateKeyTest() {
         try {
-            BufferedReader expected = new BufferedReader(
+            final BufferedReader expected = new BufferedReader(
                     new FileReader(System.getProperty("user.dir") + privateKeyPath));
 
-            ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
+            final ArgumentCaptor<String> argumentCaptor = ArgumentCaptor.forClass(String.class);
 
             keyProvider.sendPrivateKeyToBenchmarker();
 
             verify(configuratorMock).updateSSHKey(argumentCaptor.capture());
-            String privateKey = argumentCaptor.getValue();
+            final String privateKey = argumentCaptor.getValue();
 
-            BufferedReader actual = new BufferedReader(new StringReader(privateKey));
+            final BufferedReader actual = new BufferedReader(new StringReader(privateKey));
             assertReaders(expected, actual);
-        } catch (IOException e) {
+        } catch (final IOException e) {
             fail();
         }
     }
@@ -82,8 +82,8 @@ public class SSHKeyProviderTest {
         });
     }
 
-    public static void assertReaders(BufferedReader expected,
-                                     BufferedReader actual) throws IOException {
+    public static void assertReaders(final BufferedReader expected,
+                                     final BufferedReader actual) throws IOException {
         String line;
         while ((line = expected.readLine()) != null) {
             assertEquals(line, actual.readLine());

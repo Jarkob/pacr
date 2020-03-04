@@ -25,7 +25,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      * @param config the message broker configuration.
      */
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry config) {
+    public void configureMessageBroker(final MessageBrokerRegistry config) {
         config.enableSimpleBroker("/topic/", "/queue/");
         config.setApplicationDestinationPrefixes("/app");
     }
@@ -36,7 +36,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      * @param registry the endpoint registry.
      */
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
+    public void registerStompEndpoints(final StompEndpointRegistry registry) {
         registry.addEndpoint("/connect").setHandshakeHandler(new AssignPrincipalHandshakeHandler()).withSockJS();
     }
 

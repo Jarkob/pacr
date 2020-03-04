@@ -15,7 +15,7 @@ public class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
     private static final String ATTR_PRINCIPAL = "__principal__";
 
     private static final String CLIENT_PREFIX = "client";
-    private static int clientID = 0;
+    private static int clientID;
 
     /**
      * Checks whether the client already has a name associated and assigns it to the client.
@@ -28,7 +28,7 @@ public class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
      * @return a principal object that carries the name of the client.
      */
     @Override
-    protected Principal determineUser(ServerHttpRequest request, WebSocketHandler wsHandler, Map<String, Object> attributes) {
+    protected Principal determineUser(final ServerHttpRequest request, final WebSocketHandler wsHandler, final Map<String, Object> attributes) {
         final String name;
 
         if (attributes.containsKey(ATTR_PRINCIPAL)) {

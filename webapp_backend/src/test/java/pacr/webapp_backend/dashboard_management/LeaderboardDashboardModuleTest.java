@@ -18,16 +18,16 @@ public class LeaderboardDashboardModuleTest {
 
     @Test
     void equals_DifferentClass_ShouldReturnFalse() {
-        QueueDashboardModule queueModule = new QueueDashboardModule();
+        final QueueDashboardModule queueModule = new QueueDashboardModule();
 
         assertNotEquals(leaderboardModule, queueModule);
     }
 
     @Test
     void equals_SameLeaderboard_ShouldReturnTrue() {
-        LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule();
+        final LeaderboardDashboardModule otherLeaderboardModule = new LeaderboardDashboardModule();
 
-        ILeaderboard leaderboard = new Leaderboard();
+        final ILeaderboard leaderboard = new Leaderboard();
 
         leaderboardModule.setLeaderboard(leaderboard);
         otherLeaderboardModule.setLeaderboard(leaderboard);

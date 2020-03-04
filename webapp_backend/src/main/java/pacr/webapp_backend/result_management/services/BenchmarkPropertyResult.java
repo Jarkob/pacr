@@ -80,7 +80,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      * @param measurement the measurements.
      * @param property the property of a benchmark that was measured.
      */
-    public BenchmarkPropertyResult(IBenchmarkProperty measurement, BenchmarkProperty property) {
+    public BenchmarkPropertyResult(final IBenchmarkProperty measurement, final BenchmarkProperty property) {
         this.property = property;
         if (measurement.isError()) {
             this.error = true;
@@ -111,8 +111,8 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
      * @param property the property of a benchmark that was measured. Cannot be null.
      * @param errorMessage the error message. May be null. In this case no error is assumed.
      */
-    public BenchmarkPropertyResult(@NotNull List<Double> measurements, @NotNull BenchmarkProperty property,
-                                   @Nullable String errorMessage) {
+    public BenchmarkPropertyResult(@NotNull final List<Double> measurements, @NotNull final BenchmarkProperty property,
+                                   @Nullable final String errorMessage) {
         Objects.requireNonNull(measurements);
         Objects.requireNonNull(property);
 
@@ -177,7 +177,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     /**
      * @param errorMessage the error message if there was an error. May be null if there was no error.
      */
-    public void setErrorMessage(@Nullable String errorMessage) {
+    public void setErrorMessage(@Nullable final String errorMessage) {
         if (errorMessage != null && errorMessage.length() > MAX_STRING_LENGTH) {
             this.errorMessage = errorMessage.substring(0, MAX_STRING_LENGTH);
         } else {

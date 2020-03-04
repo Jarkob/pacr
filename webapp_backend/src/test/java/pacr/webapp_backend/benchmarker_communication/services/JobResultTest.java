@@ -41,7 +41,7 @@ public class JobResultTest {
         assertEquals(0, jobResult.getExecutionTime());
         assertEquals(-1, jobResult.getRepositoryID());
 
-        Map<String, ? extends IBenchmark> benchmarks = jobResult.getBenchmarks();
+        final Map<String, ? extends IBenchmark> benchmarks = jobResult.getBenchmarks();
         assertNotNull(benchmarks);
         assertEquals(0, benchmarks.size());
     }
@@ -59,12 +59,12 @@ public class JobResultTest {
 
     @Test
     void getBenchmarks_benchmarkingResultSet() {
-        Map expectedBenchmarks = new HashMap<>();
+        final Map expectedBenchmarks = new HashMap<>();
         when(benchmarkingResult.getBenchmarks()).thenReturn(expectedBenchmarks);
 
         jobResult.setBenchmarkingResult(benchmarkingResult);
 
-        Map<String, ? extends IBenchmark> benchmarks = jobResult.getBenchmarks();
+        final Map<String, ? extends IBenchmark> benchmarks = jobResult.getBenchmarks();
         assertEquals(expectedBenchmarks, benchmarks);
     }
 
@@ -91,7 +91,7 @@ public class JobResultTest {
 
         when(benchmarkingResult.getGlobalError()).thenReturn(GLOBAL_ERROR);
 
-        String globalError = jobResult.getGlobalError();
+        final String globalError = jobResult.getGlobalError();
         assertEquals(GLOBAL_ERROR, globalError);
     }
 }

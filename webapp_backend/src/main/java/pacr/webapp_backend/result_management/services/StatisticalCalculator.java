@@ -32,15 +32,15 @@ public final class StatisticalCalculator {
      * @param values the values.
      * @return the calculated quantile.
      */
-    static double getQuantile(double p, @NotNull List<Double> values) {
+    static double getQuantile(final double p, @NotNull final List<Double> values) {
         if (values == null || values.isEmpty() || p < 0 || p > 1) {
             return ERROR_CODE;
         }
 
-        List<Double> resultsList = new LinkedList<>(values);
+        final List<Double> resultsList = new LinkedList<>(values);
         Collections.sort(resultsList);
 
-        double index = values.size() * p;
+        final double index = values.size() * p;
 
         if (index == Math.ceil(index)) {
             return (resultsList.get((int) index - 1) + resultsList.get((int) index)) / 2;
@@ -59,7 +59,7 @@ public final class StatisticalCalculator {
             return ERROR_CODE;
         }
         double total = 0;
-        for (double value : values) {
+        for (final double value : values) {
             total += value;
         }
         return total / values.size();
@@ -75,9 +75,9 @@ public final class StatisticalCalculator {
         if (values == null || values.isEmpty()) {
             return ERROR_CODE;
         }
-        double mean = getMean(values);
+        final double mean = getMean(values);
         double sumOfResultsMinusMeanSquared = 0;
-        for (double value : values) {
+        for (final double value : values) {
             sumOfResultsMinusMeanSquared += Math.pow(value - mean, 2);
         }
         return Math.sqrt(sumOfResultsMinusMeanSquared / values.size());
@@ -89,7 +89,7 @@ public final class StatisticalCalculator {
      * @param comparisonResult the result that is used for comparison. This object is not altered. No comparison is done
      *                         if this is null.
      */
-    static void compare(@NotNull BenchmarkPropertyResult result, @Nullable BenchmarkPropertyResult comparisonResult) {
+    static void compare(@NotNull final BenchmarkPropertyResult result, @Nullable final BenchmarkPropertyResult comparisonResult) {
         Objects.requireNonNull(result);
 
         if (comparisonResult != null && !result.isError() && !comparisonResult.isError()) {
@@ -109,13 +109,13 @@ public final class StatisticalCalculator {
      * A result is considered significant if the median strays at least SIGNIFICANCE_FACTOR standard deviations from the
      * previous result.
      */
-    private static boolean significantChange(BenchmarkPropertyResult result, BenchmarkPropertyResult comparison) {
+    private static boolean significantChange(final BenchmarkPropertyResult result, final BenchmarkPropertyResult comparison) {
         double standardDeviation = result.getStandardDeviation();
         if (comparison.getStandardDeviation() > standardDeviation) {
             standardDeviation = comparison.getStandardDeviation();
         }
 
-        double insignificanceInterval = SIGNIFICANCE_FACTOR * standardDeviation;
+        final double insignificanceInterval = SIGNIFICANCE_FACTOR * standardDeviation;
 
         return Math.abs(result.getMedian() - comparison.getMedian()) > insignificanceInterval;
     }

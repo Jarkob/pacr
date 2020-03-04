@@ -59,7 +59,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
     private JobGroupDB jobGroupAccess;
 
     @Autowired
-    public JobHandlerTest(JobDB jobAccess, JobGroupDB jobGroupAccess) {
+    public JobHandlerTest(final JobDB jobAccess, final JobGroupDB jobGroupAccess) {
         this.jobAccess = jobAccess;
         this.jobGroupAccess = jobGroupAccess;
     }
@@ -132,10 +132,10 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         verify(jobSender).sendJob(argThat(new BenchmarkerJobMatcher(job, ADDRESS)));
         verify(benchmarkerPool, never()).occupyBenchmarker(ADDRESS);
 
-        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+        final ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
         verify(jobProvider).returnJob(jobCaptor.capture());
 
-        Job returnedJob = jobCaptor.getValue();
+        final Job returnedJob = jobCaptor.getValue();
         assertEquals(JOB_GROUP, returnedJob.getJobGroupTitle());
         assertEquals(JOB_ID, returnedJob.getJobID());
     }
@@ -151,10 +151,10 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         verify(jobSender, never()).sendJob(any(BenchmarkerJob.class));
         verify(benchmarkerPool, never()).occupyBenchmarker(ADDRESS);
 
-        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+        final ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
         verify(jobProvider).returnJob(jobCaptor.capture());
 
-        Job returnedJob = jobCaptor.getValue();
+        final Job returnedJob = jobCaptor.getValue();
         assertEquals(JOB_GROUP, returnedJob.getJobGroupTitle());
         assertEquals(JOB_ID, returnedJob.getJobID());
     }
@@ -174,7 +174,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
     void executeJob_sendingDifficulties_resolved() {
         addJob(JOB_GROUP, JOB_ID);
 
-        BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
+        final BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
         this.jobHandler = new JobHandler(jobSender, benchmarkerPool, jobProvider, resultSaver);
@@ -183,7 +183,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         when(jobSender.sendJob(any(BenchmarkerJob.class))).thenAnswer(new Answer() {
             private int count = 100;
 
-            public Object answer(InvocationOnMock invocation) {
+            public Object answer(final InvocationOnMock invocation) {
                 count--;
 
                 return count <= 0;
@@ -201,7 +201,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
         scheduler.addJobs(JOB_GROUP, List.of(JOB_ID));
 
-        BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
+        final BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
         this.jobHandler = new JobHandler(jobSender, benchmarkerPool, scheduler, resultSaver);
@@ -221,7 +221,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
         addJob(JOB_GROUP, JOB_ID);
 
-        BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
+        final BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
         benchmarkerPool.registerBenchmarker(ADDRESS_2, new SystemEnvironment());
 
@@ -233,7 +233,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
         jobHandler.executeJob();
 
-        String remainingBenchmarker = benchmarkerPool.getFreeBenchmarker();
+        final String remainingBenchmarker = benchmarkerPool.getFreeBenchmarker();
 
         verify(jobSender, times(2)).sendJob(any(BenchmarkerJob.class));
         assertEquals(ADDRESS, remainingBenchmarker);
@@ -241,7 +241,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void receiveBenchmarkingResults_noError() {
-        JobResult result = new JobResult();
+        final JobResult result = new JobResult();
 
         addJob(JOB_GROUP, JOB_ID);
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
@@ -276,10 +276,10 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         verify(benchmarkerPool).freeBenchmarker(ADDRESS);
         verify(resultSaver, never()).saveBenchmarkingResults(any(JobResult.class));
 
-        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+        final ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
         verify(jobProvider).returnJob(jobCaptor.capture());
 
-        Job returnedJob = jobCaptor.getValue();
+        final Job returnedJob = jobCaptor.getValue();
         assertEquals(JOB_GROUP, returnedJob.getJobGroupTitle());
         assertEquals(JOB_ID, returnedJob.getJobID());
     }
@@ -295,10 +295,10 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
         jobHandler.connectionLostFor(ADDRESS);
 
-        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+        final ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
         verify(jobProvider).returnJob(jobCaptor.capture());
 
-        Job returnedJob = jobCaptor.getValue();
+        final Job returnedJob = jobCaptor.getValue();
         assertEquals(JOB_GROUP, returnedJob.getJobGroupTitle());
         assertEquals(JOB_ID, returnedJob.getJobID());
     }
@@ -335,14 +335,14 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
         jobHandler.executeJob();
 
-        IJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
+        final IJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
         assertEquals(JOB_GROUP, currentJob.getJobGroupTitle());
         assertEquals(JOB_ID, currentJob.getJobID());
     }
 
     @Test
     void getCurrentBenchmarkerJob_noJobDispatched() {
-        IJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
+        final IJob currentJob = jobHandler.getCurrentBenchmarkerJob(ADDRESS);
 
         assertNull(currentJob);
     }
@@ -371,18 +371,18 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         private IJob job;
         private String address;
 
-        public BenchmarkerJobMatcher(IJob job, String address) {
+        public BenchmarkerJobMatcher(final IJob job, final String address) {
             this.job = job;
             this.address = address;
         }
 
-        public BenchmarkerJobMatcher(String address) {
+        public BenchmarkerJobMatcher(final String address) {
             this.address = address;
             this.job = null;
         }
 
         @Override
-        public boolean matches(BenchmarkerJob benchmarkerJob) {
+        public boolean matches(final BenchmarkerJob benchmarkerJob) {
             if (benchmarkerJob == null) {
                 return false;
             }

@@ -9,7 +9,7 @@ import java.util.Comparator;
 class GroupSchedulingAlgorithm implements Comparator<JobGroup> {
 
     @Override
-    public int compare(JobGroup jobGroup1, JobGroup jobGroup2) {
+    public int compare(final JobGroup jobGroup1, final JobGroup jobGroup2) {
         if (jobGroup1 == null) {
             return 1;
         }

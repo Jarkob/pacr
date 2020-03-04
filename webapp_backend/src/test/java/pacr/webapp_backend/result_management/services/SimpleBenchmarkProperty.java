@@ -30,8 +30,8 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
      * @param unit the unit of the results.
      * @param error an error message.
      */
-    public SimpleBenchmarkProperty(Collection<Double> results, ResultInterpretation resultInterpretation, String unit,
-                                   String error) {
+    public SimpleBenchmarkProperty(final Collection<Double> results, final ResultInterpretation resultInterpretation, final String unit,
+                                   final String error) {
         this.results = results;
         this.resultInterpretation = resultInterpretation;
         this.unit = unit;
@@ -42,7 +42,7 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
      * Creates a SimpleBenchmarkProperty with a default configuration.
      */
     public SimpleBenchmarkProperty() {
-        LinkedList<Double> results = new LinkedList<>();
+        final LinkedList<Double> results = new LinkedList<>();
         results.add(MEASUREMENT);
         this.results = results;
         this.resultInterpretation = ResultInterpretation.LESS_IS_BETTER;
@@ -78,11 +78,11 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
     /**
      * @param error Sets the error message. May be null. This implies there was no error.
      */
-    public void setError(@Nullable String error) {
+    public void setError(@Nullable final String error) {
         this.error = error;
     }
 
-    public void setResults(Collection<Double> results) {
+    public void setResults(final Collection<Double> results) {
         this.results = results;
     }
 }

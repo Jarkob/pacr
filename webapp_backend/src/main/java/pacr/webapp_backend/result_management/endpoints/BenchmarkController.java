@@ -34,7 +34,7 @@ public class BenchmarkController {
      * @param authenticator the authenticator to authenticate jwts.
      * @param benchmarkManager the benchmark manager.
      */
-    public BenchmarkController(IAuthenticator authenticator, BenchmarkManager benchmarkManager) {
+    public BenchmarkController(final IAuthenticator authenticator, final BenchmarkManager benchmarkManager) {
         this.authenticator = authenticator;
         this.benchmarkManager = benchmarkManager;
     }
@@ -54,7 +54,7 @@ public class BenchmarkController {
      * @return the benchmarks of the group or with no group.
      */
     @GetMapping("/benchmarks/{groupId}")
-    public Collection<Benchmark> getBenchmarksByGroup(@PathVariable int groupId) {
+    public Collection<Benchmark> getBenchmarksByGroup(@PathVariable final int groupId) {
         return benchmarkManager.getBenchmarksByGroup(groupId);
     }
 
@@ -75,8 +75,8 @@ public class BenchmarkController {
      *         group with the given id could be found. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
     @PutMapping("/benchmark")
-    public ResponseEntity<Object> updateBenchmark(@RequestBody BenchmarkInput benchmark,
-                                                  @NotNull @RequestHeader(name = "jwt") String jwt) {
+    public ResponseEntity<Object> updateBenchmark(@RequestBody final BenchmarkInput benchmark,
+                                                  @NotNull @RequestHeader(name = "jwt") final String jwt) {
         if (!(benchmark.validate() && StringUtils.hasText(jwt))) {
             throw new IllegalArgumentException("jwt or input of benchmark cannot be null, empty or blank");
         }
@@ -85,7 +85,7 @@ public class BenchmarkController {
             try {
                 benchmarkManager.updateBenchmark(benchmark.getId(), benchmark.getCustomName(),
                         benchmark.getDescription(), benchmark.getGroupId());
-            } catch (NoSuchElementException e) {
+            } catch (final NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
             }
 
@@ -102,8 +102,8 @@ public class BenchmarkController {
      * @return HTTP code 200 (ok) if the group was added. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
     @PostMapping("/group")
-    public ResponseEntity<Object> addGroup(@NotNull @RequestBody String name,
-                                           @NotNull @RequestHeader(name = "jwt") String jwt) {
+    public ResponseEntity<Object> addGroup(@NotNull @RequestBody final String name,
+                                           @NotNull @RequestHeader(name = "jwt") final String jwt) {
         if (!StringUtils.hasText(name) || !StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("name and jwt cannot be null, empty or blank");
         }
@@ -126,8 +126,8 @@ public class BenchmarkController {
      *         could be found. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
     @PutMapping("/group/{groupId}")
-    public ResponseEntity<Object> updateGroup(@PathVariable int groupId, @NotNull @RequestBody String name,
-                            @NotNull @RequestHeader(name = "jwt") String jwt) {
+    public ResponseEntity<Object> updateGroup(@PathVariable final int groupId, @NotNull @RequestBody final String name,
+                                              @NotNull @RequestHeader(name = "jwt") final String jwt) {
         if (!StringUtils.hasText(name) || !StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("name and jwt cannot be null, empty or blank");
         }
@@ -135,7 +135,7 @@ public class BenchmarkController {
         if (authenticator.authenticate(jwt)) {
             try {
                 benchmarkManager.updateGroup(groupId, name);
-            } catch (NoSuchElementException e) {
+            } catch (final NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
             }
 
@@ -153,8 +153,8 @@ public class BenchmarkController {
      *         could be found. HTTP code 401 (unauthorized) if the given jwt was invalid.
      */
     @DeleteMapping("/group/{groupId}")
-    public ResponseEntity<Object> deleteGroup(@PathVariable int groupId,
-                                              @NotNull @RequestHeader(name = "jwt") String jwt) {
+    public ResponseEntity<Object> deleteGroup(@PathVariable final int groupId,
+                                              @NotNull @RequestHeader(name = "jwt") final String jwt) {
         if (!StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("jwt cannot be null, empty or blank");
         }
@@ -162,9 +162,9 @@ public class BenchmarkController {
         if (authenticator.authenticate(jwt)) {
             try {
                 benchmarkManager.deleteGroup(groupId);
-            } catch (NoSuchElementException e) {
+            } catch (final NoSuchElementException e) {
                 return ResponseEntity.notFound().build();
-            } catch (IllegalAccessException e) {
+            } catch (final IllegalAccessException e) {
                 return ResponseEntity.badRequest().body(e.getMessage());
             }
 

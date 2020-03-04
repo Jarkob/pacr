@@ -30,7 +30,7 @@ public class DiagramOutputResult {
      * @param commit the commit. Cannot be null.
      * @param benchmarkId the id of the benchmark that is supposed to be included in this DiagramOutputResult.
      */
-    DiagramOutputResult(@NotNull CommitResult commitResult, @NotNull ICommit commit, int benchmarkId) {
+    DiagramOutputResult(@NotNull final CommitResult commitResult, @NotNull final ICommit commit, final int benchmarkId) {
         Objects.requireNonNull(commitResult);
         Objects.requireNonNull(commit);
 
@@ -43,9 +43,9 @@ public class DiagramOutputResult {
         this.authorDate = commit.getAuthorDate().toString();
 
         this.result = new HashMap<>();
-        for (BenchmarkResult benchmarkResult : commitResult.getBenchmarkResults()) {
+        for (final BenchmarkResult benchmarkResult : commitResult.getBenchmarkResults()) {
             if (benchmarkResult.getBenchmark().getId() == benchmarkId) {
-                for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+                for (final BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                     result.put(propertyResult.getName(), new ResultWithError(propertyResult));
                 }
                 break;
@@ -61,7 +61,7 @@ public class DiagramOutputResult {
      * Creates a DiagramOutputResult for a commit that has no results. Adds a global error due to this.
      * @param commit the commit. Cannot be null.
      */
-    DiagramOutputResult(@NotNull ICommit commit) {
+    DiagramOutputResult(@NotNull final ICommit commit) {
         Objects.requireNonNull(commit);
 
         this.commitHash = commit.getCommitHash();

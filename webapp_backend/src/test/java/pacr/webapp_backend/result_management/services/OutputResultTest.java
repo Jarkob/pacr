@@ -28,8 +28,8 @@ public class OutputResultTest {
 
     @Test
     void constructor_differentHashes_shouldThrowException() {
-        CommitResult result = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID, LocalDateTime.now(), null);
-        ICommit commit = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), new GitRepository());
+        final CommitResult result = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID, LocalDateTime.now(), null);
+        final ICommit commit = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), new GitRepository());
 
         assertThrows(IllegalArgumentException.class, () -> new DiagramOutputResult(result, commit, BENCHMARK_ID));
     }
@@ -51,8 +51,8 @@ public class OutputResultTest {
 
     @Test
     void constructorDetail_differentHashes_shouldThrowException() {
-        CommitResult result = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID, LocalDateTime.now(), null);
-        ICommit commit = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), new GitRepository());
+        final CommitResult result = new CommitResult(new SimpleBenchmarkingResult(), REPO_ID, LocalDateTime.now(), null);
+        final ICommit commit = new GitCommit(HASH_TWO, MSG, LocalDateTime.now(), LocalDateTime.now(), new GitRepository());
 
         assertThrows(IllegalArgumentException.class,
                 () -> new OutputBenchmarkingResult(commit, result, new OutputBenchmark[0]));

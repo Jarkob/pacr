@@ -66,7 +66,7 @@ public class Dashboard {
      *
      * @param title The title of the dashboard.
      */
-    public Dashboard(@NotNull String title) {
+    public Dashboard(@NotNull final String title) {
         if (!StringUtils.hasText(title)) {
             throw new IllegalArgumentException("The dashboard title '" + title + "' must not be null, empty or blank.");
         }
@@ -78,10 +78,9 @@ public class Dashboard {
      *
      * @param module The module that will be added.
      */
-    public void addModule(@NotNull DashboardModule module) {
+    public void addModule(@NotNull final DashboardModule module) {
 
         Objects.requireNonNull(module, "The dashboard module must not be null.");
-        int position;
 
         if (modules.size() == SIZE) {
             throw new DashboardFullException();
@@ -96,7 +95,7 @@ public class Dashboard {
      * @param module   The module that will be added.
      * @param position The position, at which the module will be added.
      */
-    public void addModule(@NotNull DashboardModule module, int position) {
+    public void addModule(@NotNull final DashboardModule module, final int position) {
         Objects.requireNonNull(module, "The dashboard module must not be null.");
 
         if (modules.size() == SIZE) {
@@ -113,7 +112,7 @@ public class Dashboard {
      * @param module The module to be removed.
      * @return {@code true} if the module was removed and {@code false} else.
      */
-    public boolean removeModule(@NotNull DashboardModule module) {
+    public boolean removeModule(@NotNull final DashboardModule module) {
         Objects.requireNonNull(module, "The dashboard module must not be null.");
 
         return modules.remove(module);
@@ -126,7 +125,7 @@ public class Dashboard {
      * @param position The position to remove the module from.
      * @return {@code true} if the module at position could be removed and {@code false} else.
      */
-    public boolean removeModule(int position) {
+    public boolean removeModule(final int position) {
         if (position >= SIZE || position < 0) {
             throw new IndexOutOfBoundsException("Dashboard modules can only be positioned in the range"
                     + " [0," + (SIZE - 1) + "].");
@@ -134,7 +133,7 @@ public class Dashboard {
 
         try {
             modules.remove(position);
-        } catch (IndexOutOfBoundsException e) {
+        } catch (final IndexOutOfBoundsException e) {
             return false;
         }
         return true;
@@ -147,7 +146,7 @@ public class Dashboard {
      * @param viewKey The new view key.
      * @throws KeysAlreadyInitializedException if this method is called, when the keys are already initialized.
      */
-    public void initializeKeys(String editKey, String viewKey) throws KeysAlreadyInitializedException {
+    public void initializeKeys(final String editKey, final String viewKey) throws KeysAlreadyInitializedException {
         if (this.editKey != null && this.viewKey != null) {
             throw new KeysAlreadyInitializedException("The keys have already been initialized.");
         } else {
@@ -212,7 +211,7 @@ public class Dashboard {
 
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
 
         if (this == o) {
             return true;
@@ -222,7 +221,7 @@ public class Dashboard {
             return false;
         }
 
-        Dashboard otherDashboard = (Dashboard) o;
+        final Dashboard otherDashboard = (Dashboard) o;
 
 
         //Are the titles equal?

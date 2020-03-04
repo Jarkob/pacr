@@ -27,13 +27,13 @@ public class ShellConfigurator {
      */
     @ShellMethod("toggles whether logs are displayed on the console.")
     public String toggleLogOutput() {
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        Configuration config = ctx.getConfiguration();
+        final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        final Configuration config = ctx.getConfiguration();
 
-        LoggerConfig appLogger = config.getLoggers().get(LOGGER_NAME);
-        LoggerConfig rootLogger = config.getRootLogger();
+        final LoggerConfig appLogger = config.getLoggers().get(LOGGER_NAME);
+        final LoggerConfig rootLogger = config.getRootLogger();
 
-        String output;
+        final String output;
 
         if (logOutput) {
             appLogger.removeAppender(APPENDER_NAME);
@@ -42,7 +42,7 @@ public class ShellConfigurator {
             logOutput = false;
             output = OFF_MESSAGE;
         } else {
-            Appender consoleAppender = config.getAppender(APPENDER_NAME);
+            final Appender consoleAppender = config.getAppender(APPENDER_NAME);
 
             appLogger.addAppender(consoleAppender, appLogger.getLevel(), appLogger.getFilter());
             rootLogger.addAppender(consoleAppender, rootLogger.getLevel(), rootLogger.getFilter());

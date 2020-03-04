@@ -26,7 +26,7 @@ public class ManageDashboardController {
      * @param dashboardManager The {@link DashboardManager}, which proivdes access to the functions of the dashboard
      *                         component.
      */
-    public ManageDashboardController(@NotNull DashboardManager dashboardManager) {
+    public ManageDashboardController(@NotNull final DashboardManager dashboardManager) {
         Objects.requireNonNull(dashboardManager, "The dashboard manager must not be null.");
         this.dashboardManager = dashboardManager;
     }
@@ -40,13 +40,13 @@ public class ManageDashboardController {
      * otherwise an exception response.
      */
     @GetMapping("dashboard/{key}")
-    public ResponseEntity<Object> getDashboard(@PathVariable @NotNull String key) {
+    public ResponseEntity<Object> getDashboard(@PathVariable @NotNull final String key) {
         Objects.requireNonNull(key, "The key must not be null.");
 
         try {
-            Dashboard dashboard = dashboardManager.getDashboard(key);
+            final Dashboard dashboard = dashboardManager.getDashboard(key);
             return ResponseEntity.ok(dashboard);
-        } catch (NoSuchElementException e) {
+        } catch (final NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
@@ -58,14 +58,14 @@ public class ManageDashboardController {
      * @return HTTP code 200 (ok) if the dashboard was added.
      */
     @PutMapping("dashboard/add")
-    public ResponseEntity<Object> addDashboard(@RequestBody @NotNull Dashboard dashboard) {
+    public ResponseEntity<Object> addDashboard(@RequestBody @NotNull final Dashboard dashboard) {
         Objects.requireNonNull(dashboard);
 
-        Pair<String, String> keys;
+        final Pair<String, String> keys;
 
         try {
             keys = dashboardManager.addDashboard(dashboard);
-        } catch (IllegalArgumentException e) {
+        } catch (final IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
 
@@ -80,12 +80,12 @@ public class ManageDashboardController {
      * keys could be found. HTTP code 401 (unauthorized) if the dashboard does not contain a valid edit key.
      */
     @PutMapping("dashboard/update")
-    public ResponseEntity<Object> updateDashboard(@RequestBody @NotNull Dashboard dashboard) {
+    public ResponseEntity<Object> updateDashboard(@RequestBody @NotNull final Dashboard dashboard) {
         try {
             dashboardManager.updateDashboard(dashboard);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             return ResponseEntity.status((HttpStatus.UNAUTHORIZED)).body(e.getMessage());
-        } catch (NoSuchElementException e) {
+        } catch (final NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
             return ResponseEntity.ok().build();
@@ -99,12 +99,12 @@ public class ManageDashboardController {
      * key could be found. HTTP code 401 (unauthorized) if the key is not an edit key.
      */
     @DeleteMapping("dashboard/delete/{editKey}")
-    public ResponseEntity<Object> deleteDashboard(@PathVariable @NotNull String editKey) {
+    public ResponseEntity<Object> deleteDashboard(@PathVariable @NotNull final String editKey) {
         try {
             dashboardManager.deleteDashboard(editKey);
-        } catch (IllegalAccessException e) {
+        } catch (final IllegalAccessException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
-        } catch (NoSuchElementException e) {
+        } catch (final NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
 

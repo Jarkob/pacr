@@ -50,7 +50,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @param jobAccess the access interface to store and retrieve jobs.
      * @param jobGroupAccess the access interface to retrieve job groups.
      */
-    public Scheduler(IJobAccess jobAccess, IJobGroupAccess jobGroupAccess) {
+    public Scheduler(final IJobAccess jobAccess, final IJobGroupAccess jobGroupAccess) {
         this.jobAccess = jobAccess;
         this.jobGroupAccess = jobGroupAccess;
 
@@ -63,14 +63,14 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     @PostConstruct
     void loadJobsFromStorage() {
-        for (JobGroup group : jobGroupAccess.findAllJobGroups()) {
+        for (final JobGroup group : jobGroupAccess.findAllJobGroups()) {
             groupQueue.add(group);
             groups.put(group.getTitle(), group);
         }
     }
 
-    private JobGroup addGroup(@NotNull String groupTitle) {
-        JobGroup group;
+    private JobGroup addGroup(@NotNull final String groupTitle) {
+        final JobGroup group;
         if (!containsGroup(groupTitle)) {
             group = new JobGroup(groupTitle);
             jobGroupAccess.saveJobGroup(group);
@@ -83,11 +83,11 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         return group;
     }
 
-    private boolean containsGroup(@NotNull String groupTitle) {
+    private boolean containsGroup(@NotNull final String groupTitle) {
         return groups.containsKey(groupTitle);
     }
 
-    private JobGroup getGroup(@NotNull String groupTitle) {
+    private JobGroup getGroup(@NotNull final String groupTitle) {
         return groups.get(groupTitle);
     }
 
@@ -95,20 +95,21 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     public IJob popJob() {
         Job job = null;
 
-        Collection<Job> prioritized = jobAccess.findPrioritized();
+        final Collection<Job> prioritized = jobAccess.findPrioritized();
 
         if (!prioritized.isEmpty()) {
             job = prioritized.stream().findFirst().orElse(null);
         } else {
+            final AdvancedSchedulingAlgorithm advancedSchedulingAlgorithm = new AdvancedSchedulingAlgorithm();
             while (job == null && groupQueue.size() > 0) {
-                JobGroup group = groupQueue.peek();
+                final JobGroup group = groupQueue.peek();
 
-                List<Job> jobs = new ArrayList<>(jobAccess.findAllJobs(group.getTitle()));
+                final List<Job> jobs = new ArrayList<>(jobAccess.findAllJobs(group.getTitle()));
 
                 if (jobs.isEmpty()) {
                     removeJobGroup(group.getTitle());
                 } else {
-                    jobs.sort(new AdvancedSchedulingAlgorithm());
+                    jobs.sort(advancedSchedulingAlgorithm);
 
                     job = jobs.stream().findFirst().orElse(null);
                 }
@@ -123,7 +124,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     }
 
     @Override
-    public void returnJob(@NotNull IJob job) {
+    public void returnJob(@NotNull final IJob job) {
         Objects.requireNonNull(job, "The returned job cannot be null.");
 
         LOGGER.info("Job {} | {} was returned to the queue.", job.getJobGroupTitle(), job.getJobID());
@@ -144,9 +145,9 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     }
 
     @Override
-    public void addToGroupTimeSheet(@NotNull String groupTitle, long time) {
+    public void addToGroupTimeSheet(@NotNull final String groupTitle, final long time) {
         if (containsGroup(groupTitle)) {
-            JobGroup group = getGroup(groupTitle);
+            final JobGroup group = getGroup(groupTitle);
 
             group.addToTimeSheet(time);
             jobGroupAccess.saveJobGroup(group);
@@ -184,15 +185,15 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     }
 
     @Override
-    public void removeJobGroup(@NotNull String groupTitle) {
+    public void removeJobGroup(@NotNull final String groupTitle) {
         if (!StringUtils.hasText(groupTitle)) {
             throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
         }
         if (containsGroup(groupTitle)) {
-            Collection<Job> toRemove = new ArrayList<>(jobAccess.findAllJobs(groupTitle));
+            final Collection<Job> toRemove = new ArrayList<>(jobAccess.findAllJobs(groupTitle));
 
             jobAccess.deleteJobs(toRemove);
-            JobGroup group = groups.remove(groupTitle);
+            final JobGroup group = groups.remove(groupTitle);
             groupQueue.remove(group);
             jobGroupAccess.deleteGroup(group);
         }
@@ -219,7 +220,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @param jobID the id of the job.
      * @return if the job was successfully prioritized.
      */
-    public boolean givePriorityTo(@NotNull String groupTitle, @NotNull String jobID) {
+    public boolean givePriorityTo(@NotNull final String groupTitle, @NotNull final String jobID) {
         if (!StringUtils.hasText(groupTitle)) {
             throw new IllegalArgumentException("The groupTitle cannot be null.");
         }
@@ -267,9 +268,9 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @param pageable contains paging information.
      * @return a page of jobs.
      */
-    public Page<Job> getJobsQueue(Pageable pageable) {
-        Page<Job> page = jobAccess.findJobs(pageable);
-        List<Job> jobs = new ArrayList<>(page.getContent());
+    public Page<Job> getJobsQueue(final Pageable pageable) {
+        final Page<Job> page = jobAccess.findJobs(pageable);
+        final List<Job> jobs = new ArrayList<>(page.getContent());
 
         jobs.sort(new AdvancedSchedulingAlgorithm());
 
@@ -281,19 +282,19 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @param pageable contains paging information.
      * @return a page of jobs.
      */
-    public Page<Job> getPrioritizedQueue(Pageable pageable) {
+    public Page<Job> getPrioritizedQueue(final Pageable pageable) {
         return jobAccess.findPrioritized(pageable);
     }
 
     @Override
-    public void subscribe(@NotNull IObserver observer) {
+    public void subscribe(@NotNull final IObserver observer) {
         Objects.requireNonNull(observer);
 
         observers.add(observer);
     }
 
     @Override
-    public void unsubscribe(@NotNull IObserver observer) {
+    public void unsubscribe(@NotNull final IObserver observer) {
         Objects.requireNonNull(observer);
 
         observers.remove(observer);
@@ -301,7 +302,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     @Override
     public void updateAll() {
-        for (IObserver observer : observers) {
+        for (final IObserver observer : observers) {
             observer.update();
         }
     }
@@ -311,7 +312,7 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      */
     @Scheduled(cron = CRON_DAILY)
     void resetJobGroupTimeSheets() {
-        for (JobGroup group : groups.values()) {
+        for (final JobGroup group : groups.values()) {
             group.resetTimeSheet();
             jobGroupAccess.saveJobGroup(group);
         }

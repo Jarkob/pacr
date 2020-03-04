@@ -95,7 +95,7 @@ public class ResultGetterTest {
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
         when(outputBuilderMock.buildDetailOutput(commitMock, resultMock)).thenReturn(outputResultMock);
 
-        OutputBenchmarkingResult outputResult = resultGetter.getCommitResult(HASH);
+        final OutputBenchmarkingResult outputResult = resultGetter.getCommitResult(HASH);
 
         assertEquals(outputResultMock, outputResult);
     }
@@ -122,7 +122,7 @@ public class ResultGetterTest {
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(null);
         when(outputBuilderMock.buildDetailOutput(commitMock)).thenReturn(outputResultMock);
 
-        OutputBenchmarkingResult output = resultGetter.getCommitResult(HASH);
+        final OutputBenchmarkingResult output = resultGetter.getCommitResult(HASH);
 
         assertEquals(outputResultMock, output);
     }
@@ -134,9 +134,9 @@ public class ResultGetterTest {
 
     @Test
     void getFullRepositoryResults_shouldReturnDatabaseAnswer() {
-        PageRequest pageable = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+        final PageRequest pageable = PageRequest.of(PAGE_NUM, PAGE_SIZE);
 
-        List<CommitResult> results = new LinkedList<>();
+        final List<CommitResult> results = new LinkedList<>();
         results.add(resultMock);
 
         when(resultAccessMock.getFullRepositoryResults(REPO_ID, pageable)).thenReturn(new PageImpl<>(results));
@@ -145,7 +145,7 @@ public class ResultGetterTest {
         when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
         when(outputBuilderMock.buildDetailOutput(commitMock, resultMock)).thenReturn(outputResultMock);
 
-        Page<OutputBenchmarkingResult> output = resultGetter.getFullRepositoryResults(REPO_ID, pageable);
+        final Page<OutputBenchmarkingResult> output = resultGetter.getFullRepositoryResults(REPO_ID, pageable);
 
         assertEquals(EXPECTED_SINGLE_RESULT, output.getContent().size());
         assertEquals(outputResultMock, output.getContent().get(0));
@@ -158,7 +158,7 @@ public class ResultGetterTest {
     void getNewestResult_shouldReturnDatabaseAnswer() {
         when(resultAccessMock.getNewestResult(REPO_ID)).thenReturn(resultMock);
 
-        IBenchmarkingResult testResult = resultGetter.getNewestResult(REPO_ID);
+        final IBenchmarkingResult testResult = resultGetter.getNewestResult(REPO_ID);
 
         assertEquals(resultMock, testResult);
     }
@@ -167,8 +167,8 @@ public class ResultGetterTest {
     void exportAllBenchmarkingResults_shouldReturnDatabaseAnswer() {
         when(resultAccessMock.getAllResults()).thenAnswer(new Answer() {
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                List<CommitResult> results = new LinkedList<>();
+            public Object answer(final InvocationOnMock invocationOnMock) {
+                final List<CommitResult> results = new LinkedList<>();
                 results.add(resultMock);
                 return results;
             }
@@ -176,7 +176,7 @@ public class ResultGetterTest {
 
         when(resultMock.getCommitHash()).thenReturn(HASH);
 
-        List<? extends IBenchmarkingResult> testResults = resultGetter.exportAllBenchmarkingResults();
+        final List<? extends IBenchmarkingResult> testResults = resultGetter.exportAllBenchmarkingResults();
 
         assertEquals(EXPECTED_NUM_OF_ALL_RESULTS, testResults.size());
         assertEquals(HASH, testResults.get(0).getCommitHash());
@@ -190,8 +190,8 @@ public class ResultGetterTest {
     void getBenchmarkResults_callWithRepoId_shouldRemoveExtraBenchmark() {
         when(commitAccessMock.getCommitsFromRepository(REPO_ID)).thenAnswer(new Answer() {
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                Collection<GitCommit> commits = new LinkedList<>();
+            public Object answer(final InvocationOnMock invocationOnMock) {
+                final Collection<GitCommit> commits = new LinkedList<>();
                 commits.add(commitMock);
                 return commits;
             }
@@ -199,19 +199,19 @@ public class ResultGetterTest {
 
         when(commitMock.getCommitHash()).thenReturn(HASH);
 
-        List<CommitResult> allResults = new LinkedList<>();
+        final List<CommitResult> allResults = new LinkedList<>();
         allResults.add(resultMock);
         when(resultAccessMock.getResultsFromCommits(any())).thenReturn(allResults);
 
         when(resultMock.getCommitHash()).thenReturn(HASH);
 
-        BenchmarkResult benchmarkResultMock = Mockito.mock(BenchmarkResult.class);
-        BenchmarkResult benchmarkResultMockTwo = Mockito.mock(BenchmarkResult.class);
+        final BenchmarkResult benchmarkResultMock = Mockito.mock(BenchmarkResult.class);
+        final BenchmarkResult benchmarkResultMockTwo = Mockito.mock(BenchmarkResult.class);
 
-        Benchmark benchmarkMock = Mockito.mock(Benchmark.class);
-        Benchmark benchmarkTwoMock = Mockito.mock(Benchmark.class);
+        final Benchmark benchmarkMock = Mockito.mock(Benchmark.class);
+        final Benchmark benchmarkTwoMock = Mockito.mock(Benchmark.class);
 
-        HashSet<BenchmarkResult> benchmarkResults = new HashSet<>();
+        final HashSet<BenchmarkResult> benchmarkResults = new HashSet<>();
         benchmarkResults.add(benchmarkResultMock);
         benchmarkResults.add(benchmarkResultMockTwo);
         when(resultMock.getBenchmarkResults()).thenReturn(benchmarkResults);
@@ -224,7 +224,7 @@ public class ResultGetterTest {
 
         when(outputBuilderMock.buildDiagramOutput(any(), any(), anyInt())).thenReturn(diagramOutputMock);
 
-        Map<String, DiagramOutputResult> results = resultGetter.getBenchmarkResults(REPO_ID, BENCHMARK_ID);
+        final Map<String, DiagramOutputResult> results = resultGetter.getBenchmarkResults(REPO_ID, BENCHMARK_ID);
 
         assertEquals(EXPECTED_SINGLE_RESULT, results.size());
         assertEquals(diagramOutputMock, results.get(HASH));
@@ -235,9 +235,9 @@ public class ResultGetterTest {
      */
     @Test
     void getNewestResults_shouldBuildOutputObjects() {
-        List<CommitResult> results = new LinkedList<>();
+        final List<CommitResult> results = new LinkedList<>();
         results.add(resultMock);
-        CommitResult resultMockTwo = Mockito.mock(CommitResult.class);
+        final CommitResult resultMockTwo = Mockito.mock(CommitResult.class);
         results.add(resultMockTwo);
 
         Page<CommitResult> page = new PageImpl<>(results);
@@ -250,7 +250,7 @@ public class ResultGetterTest {
         when(resultMockTwo.getCommitHash()).thenReturn(HASH_TWO);
 
         when(commitAccessMock.getCommit(HASH)).thenReturn(commitMock);
-        GitCommit commitTwo = Mockito.mock(GitCommit.class);
+        final GitCommit commitTwo = Mockito.mock(GitCommit.class);
         when(commitAccessMock.getCommit(HASH_TWO)).thenReturn(commitTwo);
 
         when(resultMock.getEntryDate()).thenReturn(LocalDateTime.now());
@@ -279,14 +279,14 @@ public class ResultGetterTest {
 
         when(commitAccessMock.getCommitsFromBranchTimeFrame(anyInt(), anyString(), any(), any())).thenAnswer(new Answer() {
             @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
+            public Object answer(final InvocationOnMock invocationOnMock) {
                 return commits;
             }
         });
 
         when(commitMock.getCommitHash()).thenReturn(HASH);
 
-        Collection<CommitResult> results = new LinkedList<>();
+        final Collection<CommitResult> results = new LinkedList<>();
         results.add(resultMock);
 
         when(resultAccessMock.getResultsFromCommits(anyCollection())).thenReturn(results);
@@ -381,7 +381,7 @@ public class ResultGetterTest {
      */
     @Test
     void subscribe_updateObservers_shouldUpdateSubscriber() {
-        IObserver observer = Mockito.mock(IObserver.class);
+        final IObserver observer = Mockito.mock(IObserver.class);
 
         resultGetter.subscribe(observer);
         resultGetter.updateAll();
@@ -396,7 +396,7 @@ public class ResultGetterTest {
      */
     @Test
     void unsubscribe_updateObservers_shouldNotUpdateUnsubscribed() {
-        IObserver observer = Mockito.mock(IObserver.class);
+        final IObserver observer = Mockito.mock(IObserver.class);
 
         resultGetter.subscribe(observer);
         resultGetter.unsubscribe(observer);

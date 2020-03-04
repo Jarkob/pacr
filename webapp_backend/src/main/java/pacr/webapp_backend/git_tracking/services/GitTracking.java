@@ -85,7 +85,7 @@ public class GitTracking implements IRepositoryImporter {
     private void initializeColorPicker() {
         List<GitRepository> repositories = gitTrackingAccess.getAllRepositories();
 
-        for (GitRepository repository : repositories) {
+        for (final GitRepository repository : repositories) {
             colorPicker.setColorToUsed(repository.getColor());
         }
     }
@@ -100,8 +100,8 @@ public class GitTracking implements IRepositoryImporter {
      * @param isHookSet whether a hook is set.
      * @return the ID of the repository.
      */
-    public int addRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
-                             @NotNull Set<String> branchNames, boolean trackAllBranches, boolean isHookSet) {
+    public int addRepository(@NotNull final String repositoryURL, final LocalDate observeFromDate, @NotNull final String name,
+                             @NotNull final Set<String> branchNames, final boolean trackAllBranches, final boolean isHookSet) {
         Objects.requireNonNull(repositoryURL);
         Objects.requireNonNull(name);
 
@@ -118,9 +118,9 @@ public class GitTracking implements IRepositoryImporter {
     }
 
     @Override
-    public int importRepository(@NotNull String repositoryURL, LocalDate observeFromDate, @NotNull String name,
-                                @NotNull Set<String> branchNames) {
-        int id = addRepository(repositoryURL, observeFromDate, name, branchNames, false, false);
+    public int importRepository(@NotNull final String repositoryURL, final LocalDate observeFromDate, @NotNull final String name,
+                                @NotNull final Set<String> branchNames) {
+        final int id = addRepository(repositoryURL, observeFromDate, name, branchNames, false, false);
         pullFromRepository(id);
 
         return id;
@@ -132,7 +132,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param repositoryID the id of the repository.
      * @return a page of commits.
      */
-    public Page<GitCommit> getAllCommits(int repositoryID, Pageable pageable) {
+    public Page<GitCommit> getAllCommits(final int repositoryID, final Pageable pageable) {
         return gitTrackingAccess.getAllCommits(repositoryID, pageable);
     }
 
@@ -149,15 +149,15 @@ public class GitTracking implements IRepositoryImporter {
      * @param repositoryID is the ID of the repository.
      * @throws NoSuchElementException if the repository was not found in the database.
      */
-    public void removeRepository(int repositoryID) throws NoSuchElementException {
+    public void removeRepository(final int repositoryID) throws NoSuchElementException {
         LOGGER.info("Removing repository with ID {}.", repositoryID);
 
-        GitRepository repository = gitTrackingAccess.getRepository(repositoryID);
+        final GitRepository repository = gitTrackingAccess.getRepository(repositoryID);
         if (repository == null) {
             throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
         }
 
-        Set<String> commitHashes = gitTrackingAccess.getAllCommitHashes(repositoryID);
+        final Set<String> commitHashes = gitTrackingAccess.getAllCommitHashes(repositoryID);
 
         resultDeleter.deleteBenchmarkingResults(commitHashes);
         jobScheduler.removeJobGroup(repository.getPullURL());
@@ -172,7 +172,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param repository is the repository being updated.
      * @throws NoSuchElementException if the repository was not found in the database.
      */
-    public void updateRepository(@NotNull GitRepository repository) throws NoSuchElementException {
+    public void updateRepository(@NotNull final GitRepository repository) throws NoSuchElementException {
         Objects.requireNonNull(repository);
 
         gitTrackingAccess.updateRepository(repository);
@@ -183,7 +183,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param repositoryID is the ID of the repository.
      * @throws NoSuchElementException when the repository was not found.
      */
-    public synchronized void pullFromRepository(int repositoryID) throws NoSuchElementException {
+    public synchronized void pullFromRepository(final int repositoryID) throws NoSuchElementException {
         GitRepository gitRepository = gitTrackingAccess.getRepository(repositoryID);
         if (gitRepository == null) {
             throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
@@ -236,7 +236,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param repository is the repository.
      * @param color is the color of the repository.
      */
-    public void updateColorOfRepository(GitRepository repository, String color) {
+    public void updateColorOfRepository(final GitRepository repository, final String color) {
         this.colorPicker.setColorToUnused(repository.getColor());
         this.colorPicker.setColorToUsed(color);
         repository.setColor(color);
@@ -247,7 +247,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param id is the ID of the repository.
      * @return repository.
      */
-    public GitRepository getRepository(int id) {
+    public GitRepository getRepository(final int id) {
         return gitTrackingAccess.getRepository(id);
     }
 
@@ -255,7 +255,7 @@ public class GitTracking implements IRepositoryImporter {
      * @param pullURL the pull URL of the repository.
      * @return all branches of the repository.
      */
-    public Set<String> getBranches(String pullURL) {
+    public Set<String> getBranches(final String pullURL) {
         return gitHandler.getBranchesOfRepository(pullURL);
     }
 
@@ -269,7 +269,7 @@ public class GitTracking implements IRepositoryImporter {
     public void updateObserveFromDateOfRepository(GitRepository gitRepository, LocalDate newObserveFromDate) {
         LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
 
-        Collection<GitCommit> commits = gitTrackingAccess.getAllCommits(gitRepository.getId());
+        final Collection<GitCommit> commits = gitTrackingAccess.getAllCommits(gitRepository.getId());
 
         Set<String> commitsToBenchmark = new HashSet<>();
         Set<String> commitsToRemove = new HashSet<>();

@@ -48,7 +48,7 @@ public class BenchmarkerPoolTest {
 
     @Test
     void registerBenchmarker_noError() {
-        boolean result = benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
+        final boolean result = benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
         assertTrue(result);
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
@@ -57,12 +57,12 @@ public class BenchmarkerPoolTest {
 
     @Test
     void registerBenchmarker_duplicate() {
-        SystemEnvironment environment = new SystemEnvironment();
+        final SystemEnvironment environment = new SystemEnvironment();
         benchmarkerPool.registerBenchmarker(ADDRESS, environment);
 
-        boolean result = benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
+        final boolean result = benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
-        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
 
         assertFalse(result);
 
@@ -99,12 +99,12 @@ public class BenchmarkerPoolTest {
     void unregisterBenchmarker_freeBenchmarker() {
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
-        boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
+        final boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
 
         assertTrue(result);
         assertFalse(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<String> allBenchmarkers = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> allBenchmarkers = benchmarkerPool.getAllBenchmarkerAddresses();
         assertEquals(0, allBenchmarkers.size());
     }
 
@@ -113,18 +113,18 @@ public class BenchmarkerPoolTest {
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
         benchmarkerPool.occupyBenchmarker(ADDRESS);
 
-        boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
+        final boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
 
         assertTrue(result);
         assertFalse(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<String> allBenchmarkers = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> allBenchmarkers = benchmarkerPool.getAllBenchmarkerAddresses();
         assertEquals(0, allBenchmarkers.size());
     }
 
     @Test
     void unregisterBenchmarker_unknown() {
-        boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
+        final boolean result = benchmarkerPool.unregisterBenchmarker(ADDRESS);
 
         assertFalse(result);
     }
@@ -181,7 +181,7 @@ public class BenchmarkerPoolTest {
     void getFreeBechmarker_hasFree() {
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
-        String address = benchmarkerPool.getFreeBenchmarker();
+        final String address = benchmarkerPool.getFreeBenchmarker();
 
         assertEquals(ADDRESS, address);
     }
@@ -195,7 +195,7 @@ public class BenchmarkerPoolTest {
 
         benchmarkerPool.occupyBenchmarker(SECOND_ADDRESS);
 
-        String address = benchmarkerPool.getFreeBenchmarker();
+        final String address = benchmarkerPool.getFreeBenchmarker();
 
         assertEquals(ADDRESS, address);
     }
@@ -238,7 +238,7 @@ public class BenchmarkerPoolTest {
 
         assertFalse(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
         assertEquals(0, addresses.size());
     }
 
@@ -250,7 +250,7 @@ public class BenchmarkerPoolTest {
 
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
         assertEquals(1, addresses.size());
     }
 
@@ -262,7 +262,7 @@ public class BenchmarkerPoolTest {
 
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
         assertEquals(1, addresses.size());
     }
 
@@ -299,7 +299,7 @@ public class BenchmarkerPoolTest {
 
         assertFalse(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
         assertEquals(0, addresses.size());
     }
 
@@ -311,7 +311,7 @@ public class BenchmarkerPoolTest {
 
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
 
-        Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
+        final Collection<String> addresses = benchmarkerPool.getAllBenchmarkerAddresses();
         assertEquals(1, addresses.size());
     }
 
@@ -335,18 +335,18 @@ public class BenchmarkerPoolTest {
 
     @Test
     void getBenchmarkerSystemEnvironment_noError() {
-        SystemEnvironment expectedSystemEnvironment = new SystemEnvironment();
+        final SystemEnvironment expectedSystemEnvironment = new SystemEnvironment();
 
         benchmarkerPool.registerBenchmarker(ADDRESS, expectedSystemEnvironment);
 
-        SystemEnvironment systemEnvironment = benchmarkerPool.getBenchmarkerSystemEnvironment(ADDRESS);
+        final SystemEnvironment systemEnvironment = benchmarkerPool.getBenchmarkerSystemEnvironment(ADDRESS);
 
         assertEquals(expectedSystemEnvironment, systemEnvironment);
     }
 
     @Test
     void getBenchmarkerSystemEnvironment_unknownAddress() {
-        SystemEnvironment systemEnvironment = benchmarkerPool.getBenchmarkerSystemEnvironment(ADDRESS);
+        final SystemEnvironment systemEnvironment = benchmarkerPool.getBenchmarkerSystemEnvironment(ADDRESS);
 
         assertNull(systemEnvironment);
     }

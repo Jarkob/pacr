@@ -75,11 +75,11 @@ public class SimpleCommit implements ICommit {
     }
 
     @Override
-    public void addLabel(String label) {
+    public void addLabel(final String label) {
     }
 
     @Override
-    public void removeLabel(String label) {
+    public void removeLabel(final String label) {
     }
 
     @Override

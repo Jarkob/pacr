@@ -30,23 +30,23 @@ public class CommitHistoryDashboardModule extends DashboardModule {
      *
      * @param trackedRepositories The new tracked repositories.
      */
-    public void setTrackedRepositories(List<String> trackedRepositories) {
+    public void setTrackedRepositories(final List<String> trackedRepositories) {
         this.trackedRepositories = List.copyOf(trackedRepositories);
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (!super.equals(o)) {
             return false;
         }
 
-        CommitHistoryDashboardModule otherModule = (CommitHistoryDashboardModule) o;
+        final CommitHistoryDashboardModule otherModule = (CommitHistoryDashboardModule) o;
 
         if (this.trackedRepositories.size() != otherModule.trackedRepositories.size()) {
             return false;
         }
 
-        for (String repo : this.trackedRepositories) {
+        for (final String repo : this.trackedRepositories) {
             if (!otherModule.trackedRepositories.contains(repo)) {
                 return false;
             }

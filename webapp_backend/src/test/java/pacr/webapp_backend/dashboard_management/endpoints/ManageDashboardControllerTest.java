@@ -38,7 +38,7 @@ public class ManageDashboardControllerTest extends SpringBootTestWithoutShell {
     private DashboardManager dashboardManager;
 
     @Autowired
-    ManageDashboardControllerTest(DashboardManager dashboardManager, DashboardDB dashboardDB) {
+    ManageDashboardControllerTest(final DashboardManager dashboardManager, final DashboardDB dashboardDB) {
         this.dashboardManager = dashboardManager;
         this.dashboardDB = dashboardDB;
     }
@@ -49,7 +49,7 @@ public class ManageDashboardControllerTest extends SpringBootTestWithoutShell {
 
         dashboard = new Dashboard("test");
 
-        Pair<String, String> keys =
+        final Pair<String, String> keys =
                 ((Pair<String, String>) manageDashboardController.addDashboard(dashboard).getBody());
 
         assertNotNull(keys);
@@ -88,7 +88,7 @@ public class ManageDashboardControllerTest extends SpringBootTestWithoutShell {
 
     @Test
     void updateDashboard_NormalDashboard_ShouldUpdateDashboard() {
-        Dashboard retrievedDashboard = ((Dashboard) manageDashboardController.getDashboard(editKey).getBody());
+        final Dashboard retrievedDashboard = ((Dashboard) manageDashboardController.getDashboard(editKey).getBody());
         retrievedDashboard.addModule(new CommitHistoryDashboardModule());
 
         manageDashboardController.updateDashboard(retrievedDashboard);
@@ -101,7 +101,7 @@ public class ManageDashboardControllerTest extends SpringBootTestWithoutShell {
 
     @Test
     void updateDashboard_NoSuchDashboard_ShouldReturnNotFound() {
-        Dashboard dashboardClone = new Dashboard("test");
+        final Dashboard dashboardClone = new Dashboard("test");
 
         dashboardClone.initializeKeys(KEY, KEY);
 
@@ -110,7 +110,7 @@ public class ManageDashboardControllerTest extends SpringBootTestWithoutShell {
 
     @Test
     void updateDashboard_InvalidKey_ShouldReturnUnauthorized() {
-        Dashboard dashboardClone = new Dashboard("test");
+        final Dashboard dashboardClone = new Dashboard("test");
 
         dashboardClone.initializeKeys(viewKey, viewKey);
 

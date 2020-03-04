@@ -13,7 +13,7 @@ import pacr.webapp_backend.event_management.services.IEventAccess;
 public interface EventDB extends PagingAndSortingRepository<Event, Integer>, IEventAccess {
 
     @Override
-    default void saveEvent(Event event) {
+    default void saveEvent(final Event event) {
         this.save(event);
     }
 

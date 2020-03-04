@@ -48,7 +48,7 @@ public class ResultController {
      * @param resultGetter access to results.
      * @param resultManager access to deleting results.
      */
-    public ResultController(IAuthenticator authenticator, ResultGetter resultGetter, ResultManager resultManager) {
+    public ResultController(final IAuthenticator authenticator, final ResultGetter resultGetter, final ResultManager resultManager) {
         this.authenticator = authenticator;
         this.resultGetter = resultGetter;
         this.resultManager = resultManager;
@@ -60,7 +60,7 @@ public class ResultController {
      * @return the benchmarking result.
      */
     @GetMapping("/results/commit/{commitHash}")
-    public OutputBenchmarkingResult getBenchmarkingResultForCommit(@NotNull @PathVariable String commitHash) {
+    public OutputBenchmarkingResult getBenchmarkingResultForCommit(@NotNull @PathVariable final String commitHash) {
         if (!StringUtils.hasText(commitHash)) {
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
@@ -76,8 +76,8 @@ public class ResultController {
      * @return the benchmarking results of one benchmark.
      */
     @GetMapping("/results/benchmark/{benchmarkId}/{repositoryId}")
-    public Map<String, DiagramOutputResult> getResultsForRepositoryAndBenchmark(@PathVariable int benchmarkId,
-                                                                                    @PathVariable int repositoryId) {
+    public Map<String, DiagramOutputResult> getResultsForRepositoryAndBenchmark(@PathVariable final int benchmarkId,
+                                                                                    @PathVariable final int repositoryId) {
         return resultGetter.getBenchmarkResults(repositoryId, benchmarkId);
     }
 
@@ -88,8 +88,8 @@ public class ResultController {
      * @return the page of detailed results.
      */
     @GetMapping("/results/pageable/repository/{repositoryId}")
-    public Page<OutputBenchmarkingResult> getResultsForRepository(@PathVariable int repositoryId,
-                                              @PageableDefault(size = 10, page = 0, sort = {"commitDate"}) Pageable pageable) {
+    public Page<OutputBenchmarkingResult> getResultsForRepository(@PathVariable final int repositoryId,
+                                              @PageableDefault(size = 10, page = 0, sort = {"commitDate"}) final Pageable pageable) {
         return resultGetter.getFullRepositoryResults(repositoryId, pageable);
     }
 
@@ -136,8 +136,8 @@ public class ResultController {
      *         (unauthorized) if the given jwt was invalid.
      */
     @DeleteMapping("/results/commit/{commitHash}")
-    public ResponseEntity<Object> deleteBenchmarkingResult(@NotNull @PathVariable String commitHash,
-                                                           @NotNull @RequestHeader(name = "jwt") String jwt) {
+    public ResponseEntity<Object> deleteBenchmarkingResult(@NotNull @PathVariable final String commitHash,
+                                                           @NotNull @RequestHeader(name = "jwt") final String jwt) {
         if (!StringUtils.hasText(commitHash) || !StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("commit hash or jwt cannot be null, empty or blank");
         }
@@ -159,9 +159,9 @@ public class ResultController {
      * @return the measurements for this property and commit.
      */
     @GetMapping("/results/commit/{commitHash}/{benchmarkId}/{propertyName}")
-    public List<Double> getMeasurementsOfPropertyForCommit(@NotNull @PathVariable String commitHash,
-                                                           @PathVariable int benchmarkId,
-                                                           @NotNull @PathVariable String propertyName) {
+    public List<Double> getMeasurementsOfPropertyForCommit(@NotNull @PathVariable final String commitHash,
+                                                           @PathVariable final int benchmarkId,
+                                                           @NotNull @PathVariable final String propertyName) {
         if (!StringUtils.hasText(commitHash) || !StringUtils.hasText(propertyName)) {
             throw new IllegalArgumentException("input cannot be null, empty or blank");
         }

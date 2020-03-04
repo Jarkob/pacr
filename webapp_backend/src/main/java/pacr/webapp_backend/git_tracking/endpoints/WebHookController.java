@@ -24,7 +24,7 @@ public class WebHookController {
      * Initializes an instance of WebHookController.
      * @param gitTracking is the needed {@link GitTracking}.
      */
-    public WebHookController(GitTracking gitTracking) {
+    public WebHookController(final GitTracking gitTracking) {
         this.gitTracking = gitTracking;
     }
 
@@ -34,10 +34,10 @@ public class WebHookController {
      * @return OK (200) when the repository got pulled. NOT_FOUND (404) when the repository was not found.
      */
     @RequestMapping(value = "/webhooks/{id}")
-    public ResponseEntity<Object> pullFromRepository(@PathVariable("id") int repositoryID) {
+    public ResponseEntity<Object> pullFromRepository(@PathVariable("id") final int repositoryID) {
         try {
             gitTracking.pullFromRepository(repositoryID);
-        } catch (NoSuchElementException e) {
+        } catch (final NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
         return ResponseEntity.ok().build();

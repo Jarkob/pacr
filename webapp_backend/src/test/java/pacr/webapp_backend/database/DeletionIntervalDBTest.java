@@ -16,7 +16,7 @@ public class DeletionIntervalDBTest extends SpringBootTestWithoutShell {
     DeletionIntervalDB delIntervalDB;
 
     @Autowired
-    public DeletionIntervalDBTest(DeletionIntervalDB delIntervalDB) {
+    public DeletionIntervalDBTest(final DeletionIntervalDB delIntervalDB) {
         MockitoAnnotations.initMocks(this);
 
         this.delIntervalDB = delIntervalDB;

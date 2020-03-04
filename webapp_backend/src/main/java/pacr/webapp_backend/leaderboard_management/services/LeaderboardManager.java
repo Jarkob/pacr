@@ -12,7 +12,7 @@ public class LeaderboardManager implements ILeaderboardGetter {
 
 
     @Override
-    public ILeaderboard getLeaderboard(String benchmarkName) {
+    public ILeaderboard getLeaderboard(final String benchmarkName) {
         return null;
     }
 

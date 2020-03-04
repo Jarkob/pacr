@@ -19,23 +19,23 @@ public interface BenchmarkDB extends CrudRepository<Benchmark, Integer>, IBenchm
 
     @Override
     default Collection<Benchmark> getAllBenchmarks() {
-        List<Benchmark> benchmarks = new LinkedList<>();
+        final List<Benchmark> benchmarks = new LinkedList<>();
         this.findAll().forEach(benchmarks::add);
         return benchmarks;
     }
 
     @Override
-    default Benchmark getBenchmark(int id) {
+    default Benchmark getBenchmark(final int id) {
         return this.findById(id).orElse(null);
     }
 
     @Override
-    default void saveBenchmark(Benchmark benchmark) {
+    default void saveBenchmark(final Benchmark benchmark) {
         this.save(benchmark);
     }
 
     @Override
-    default Collection<Benchmark> getBenchmarksOfGroup(@Nullable BenchmarkGroup group) {
+    default Collection<Benchmark> getBenchmarksOfGroup(@Nullable final BenchmarkGroup group) {
         return findBenchmarksByGroup(group);
     }
 

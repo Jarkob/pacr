@@ -26,7 +26,7 @@ public class LoginController {
      * @param passwordChecker checks passwords against the admin password.
      * @param tokenManager generates jwts.
      */
-    LoginController(PasswordChecker passwordChecker, TokenManager tokenManager) {
+    LoginController(final PasswordChecker passwordChecker, final TokenManager tokenManager) {
         this.passwordChecker = passwordChecker;
         this.tokenManager = tokenManager;
     }
@@ -38,7 +38,7 @@ public class LoginController {
      * (unauthorized) with empty body is returned.
      */
     @PostMapping("/login")
-    public ResponseEntity<Token> login(@NotNull @RequestBody Password password) {
+    public ResponseEntity<Token> login(@NotNull @RequestBody final Password password) {
         if (!StringUtils.hasText(password.getPassword())) {
             throw new IllegalArgumentException("password cannot be null, empty or blank");
         }

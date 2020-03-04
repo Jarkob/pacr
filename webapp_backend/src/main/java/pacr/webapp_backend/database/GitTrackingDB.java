@@ -34,12 +34,12 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
      * @param commitDB is the JPA commit access interface.
      * @param repositoryDB is the JPA repository access interface.
      */
-    public GitTrackingDB(@NotNull CommitDB commitDB, @NotNull RepositoryDB repositoryDB) {
+    public GitTrackingDB(@NotNull final CommitDB commitDB, @NotNull final RepositoryDB repositoryDB) {
         super(commitDB, repositoryDB);
     }
 
     @Override
-    public void addCommit(@NotNull GitCommit commit) {
+    public void addCommit(@NotNull final GitCommit commit) {
         Objects.requireNonNull(commit);
 
         if (!commit.repositoryIsInDatabase()) {
@@ -50,14 +50,14 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void addCommits(@NotNull Set<GitCommit> commits) {
+    public void addCommits(@NotNull final Set<GitCommit> commits) {
         Objects.requireNonNull(commits);
 
         commitDB.saveAll(commits);
     }
 
     @Override
-    public void updateCommit(@NotNull GitCommit commit) {
+    public void updateCommit(@NotNull final GitCommit commit) {
         Objects.requireNonNull(commit);
 
         if (!commit.repositoryIsInDatabase()) {
@@ -71,28 +71,28 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void updateCommits(@NotNull Set<GitCommit> commits) {
+    public void updateCommits(@NotNull final Set<GitCommit> commits) {
         Objects.requireNonNull(commits);
 
         commitDB.saveAll(commits);
     }
 
     @Override
-    public Collection<GitCommit> getAllCommits(int repositoryID) {
+    public Collection<GitCommit> getAllCommits(final int repositoryID) {
         return commitDB.findGitCommitsByRepository_Id(repositoryID);
     }
 
     @Override
-    public Page<GitCommit> getAllCommits(int repositoryID, Pageable pageable) {
+    public Page<GitCommit> getAllCommits(final int repositoryID, final Pageable pageable) {
         return commitDB.findAllByRepository_Id(repositoryID, pageable);
     }
 
     @Override
-    public Set<String> getAllCommitHashes(int repositoryID) {
-        Collection<GitCommit> commits = commitDB.findGitCommitsByRepository_Id(repositoryID);
+    public Set<String> getAllCommitHashes(final int repositoryID) {
+        final Collection<GitCommit> commits = commitDB.findGitCommitsByRepository_Id(repositoryID);
 
-        Set<String> commitHashes = new HashSet<>();
-        for (GitCommit commit : commits) {
+        final Set<String> commitHashes = new HashSet<>();
+        for (final GitCommit commit : commits) {
             commitHashes.add(commit.getCommitHash());
         }
 
@@ -112,7 +112,7 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void removeCommits(@NotNull Set<String> commitHashes) {
+    public void removeCommits(@NotNull final Set<String> commitHashes) {
         Objects.requireNonNull(commitHashes);
 
         commitDB.removeGitCommitsByCommitHashIn(commitHashes);
@@ -124,20 +124,20 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public GitRepository getRepository(int repositoryID) {
+    public GitRepository getRepository(final int repositoryID) {
         return repositoryDB.findById(repositoryID).orElse(null);
     }
 
     @Override
-    public int addRepository(@NotNull GitRepository repository) {
+    public int addRepository(@NotNull final GitRepository repository) {
         Objects.requireNonNull(repository);
 
         return repositoryDB.save(repository).getId();
     }
 
     @Override
-    public void removeRepository(int repositoryID) {
-        GitRepository repository = getRepository(repositoryID);
+    public void removeRepository(final int repositoryID) {
+        final GitRepository repository = getRepository(repositoryID);
         if (repository == null) {
             throw new NoSuchElementException("Repository with ID " + repositoryID + " was not found.");
         }
@@ -152,7 +152,7 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void updateRepository(@NotNull GitRepository repository) throws NoSuchElementException {
+    public void updateRepository(@NotNull final GitRepository repository) throws NoSuchElementException {
         Objects.requireNonNull(repository);
 
         if (getRepository(repository.getId()) == null) {
@@ -163,7 +163,7 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public boolean containsCommit(@NotNull String commitHash) {
+    public boolean containsCommit(@NotNull final String commitHash) {
         Objects.requireNonNull(commitHash);
 
         return commitDB.existsById(commitHash);

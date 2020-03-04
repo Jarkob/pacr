@@ -29,9 +29,9 @@ public class PasswordCreatorTest {
      */
     @Test
     void newPassword_shouldBeLongAndSaved() {
-        String password = passwordCreator.newPassword();
+        final String password = passwordCreator.newPassword();
 
-        String hash = hashGenerator.hashPassword(password);
+        final String hash = hashGenerator.hashPassword(password);
         verify(authenticationAccessMock).setAdminPasswordHash(hash);
 
         assertEquals(LENGTH_PASSWORD, password.length());

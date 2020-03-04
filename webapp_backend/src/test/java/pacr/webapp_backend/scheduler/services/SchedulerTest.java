@@ -46,7 +46,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     private Pageable pageable;
 
     @Autowired
-    public SchedulerTest(JobDB jobAccess, JobGroupDB jobGroupAccess) {
+    public SchedulerTest(final JobDB jobAccess, final JobGroupDB jobGroupAccess) {
         this.jobAccess = spy(jobAccess);
         this.jobGroupAccess = spy(jobGroupAccess);
 
@@ -68,8 +68,8 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void Scheduler_loadJobsOnConstruct() {
-        JobGroup group1 = new JobGroup(JOB_GROUP + 1);
-        JobGroup group2 = new JobGroup(JOB_GROUP + 2);
+        final JobGroup group1 = new JobGroup(JOB_GROUP + 1);
+        final JobGroup group2 = new JobGroup(JOB_GROUP + 2);
 
         final int amtJobsGroup1 = 5;
         final String jobsGroup1Suffix = "G1";
@@ -83,7 +83,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         final String prioritizedGroup1Suffix = "GP1";
         saveJobsToDatabase(amtPrioritizedGroup1, prioritizedGroup1Suffix, true, group1);
 
-        Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
+        final Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
         scheduler.loadJobsFromStorage();
 
         assertEquals(amtJobsGroup1 + amtJobsGroup2, scheduler.getJobsQueue(pageable).getContent().size());
@@ -91,7 +91,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         int actualAmtJobsGroup1 = 0;
         int actualAmtJobsGroup2 = 0;
-        for (Job job : scheduler.getJobsQueue(pageable).getContent()) {
+        for (final Job job : scheduler.getJobsQueue(pageable).getContent()) {
             if (job.getJobGroupTitle().equals(group1.getTitle())) {
                 actualAmtJobsGroup1++;
             } else if (job.getJobGroupTitle().equals(group2.getTitle())) {
@@ -102,7 +102,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         }
 
         int actualAmtPrioritizedGroup1 = 0;
-        for (Job job : scheduler.getPrioritizedQueue(pageable).getContent()) {
+        for (final Job job : scheduler.getPrioritizedQueue(pageable).getContent()) {
             if (job.getJobGroupTitle().equals(group1.getTitle())) {
                 actualAmtPrioritizedGroup1++;
             } else {
@@ -117,7 +117,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void addJob_observersNotified() {
-        IObserver observer = mock(IObserver.class);
+        final IObserver observer = mock(IObserver.class);
 
         scheduler.subscribe(observer);
 
@@ -132,8 +132,8 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         checkSchedulerQueue(1, 0);
 
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
-        Job job = jobs.get(0);
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final Job job = jobs.get(0);
 
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
         assertEquals(JOB_ID, job.getJobID());
@@ -176,7 +176,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void addJobs_noError() {
-        Collection<String> jobIds = new ArrayList<>();
+        final Collection<String> jobIds = new ArrayList<>();
 
         final int amtJobs = 5;
         for (int i = 0; i < amtJobs; i++) {
@@ -185,10 +185,10 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         scheduler.addJobs(JOB_GROUP, jobIds);
 
-        Collection<Job> addedJobs = scheduler.getJobsQueue(pageable).getContent();
+        final Collection<Job> addedJobs = scheduler.getJobsQueue(pageable).getContent();
 
         assertEquals(amtJobs, addedJobs.size());
-        for (Job job : addedJobs) {
+        for (final Job job : addedJobs) {
             assertEquals(JOB_GROUP, job.getJobGroupTitle());
         }
 
@@ -237,7 +237,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void addJobs_invalidJobIds() {
-        Collection<String> jobIds = new ArrayList<>();
+        final Collection<String> jobIds = new ArrayList<>();
 
         final int amtJobs = 5;
         for (int i = 0; i < amtJobs; i++) {
@@ -249,10 +249,10 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         scheduler.addJobs(JOB_GROUP, jobIds);
 
-        Collection<Job> addedJobs = scheduler.getJobsQueue(pageable).getContent();
+        final Collection<Job> addedJobs = scheduler.getJobsQueue(pageable).getContent();
 
         assertEquals(amtJobs, addedJobs.size());
-        for (Job job : addedJobs) {
+        for (final Job job : addedJobs) {
             assertEquals(JOB_GROUP, job.getJobGroupTitle());
         }
 
@@ -335,18 +335,18 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         scheduler.removeJobGroup(groupToRemove);
 
-        Collection<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
-        Collection<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
+        final Collection<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final Collection<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
 
         // fillSchedulerWithJobs adds groups with one job associated
         // JOB_GROUP0 has a prioritized job
         assertEquals(amtPrioritized - 1, prioritized.size());
         assertEquals(amtJobs, jobs.size());
 
-        ArgumentCaptor<JobGroup> groupCaptor = ArgumentCaptor.forClass(JobGroup.class);
+        final ArgumentCaptor<JobGroup> groupCaptor = ArgumentCaptor.forClass(JobGroup.class);
         verify(jobGroupAccess).deleteGroup(groupCaptor.capture());
 
-        JobGroup group = groupCaptor.getValue();
+        final JobGroup group = groupCaptor.getValue();
         assertEquals(groupToRemove, group.getTitle());
     }
 
@@ -379,7 +379,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         checkSchedulerQueue(1, 0);
 
-        boolean result = scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
+        final boolean result = scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
 
         checkSchedulerQueue(0, 1);
         assertTrue(result);
@@ -439,7 +439,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     void popJob_noPrioritized_noError() {
         addJob(JOB_GROUP, JOB_ID);
 
-        IJob job = scheduler.popJob();
+        final IJob job = scheduler.popJob();
 
         assertNotNull(job);
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
@@ -453,7 +453,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         addJob(JOB_GROUP, JOB_ID);
         scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
 
-        IJob job = scheduler.popJob();
+        final IJob job = scheduler.popJob();
 
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
         assertEquals(JOB_ID, job.getJobID());
@@ -476,7 +476,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         // + 1 accounts for the special job added
         checkSchedulerQueue(amtJobs, amtPrioritizedJobs + 1);
 
-        IJob job = scheduler.popJob();
+        final IJob job = scheduler.popJob();
 
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
         assertEquals(JOB_ID, job.getJobID());
@@ -494,7 +494,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         final long time = 10;
         scheduler.addToGroupTimeSheet(JOB_GROUP + 1, time);
 
-        IJob job = scheduler.popJob();
+        final IJob job = scheduler.popJob();
 
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
         assertEquals(JOB_ID, job.getJobID());
@@ -524,7 +524,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         checkSchedulerQueue(1, 0);
 
-        IJob job = scheduler.popJob();
+        final IJob job = scheduler.popJob();
 
         checkSchedulerQueue(0, 0);
 
@@ -532,8 +532,8 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         checkSchedulerQueue(1, 0);
 
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
-        Job job1 = jobs.get(0);
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final Job job1 = jobs.get(0);
 
         assertEquals(JOB_GROUP, job1.getJobGroupTitle());
         assertEquals(JOB_ID, job1.getJobID());
@@ -546,7 +546,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         checkSchedulerQueue(0, 1);
 
-        IJob job = scheduler.popJob();
+        final IJob job = scheduler.popJob();
 
         checkSchedulerQueue(0, 0);
 
@@ -554,8 +554,8 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         checkSchedulerQueue(1, 0);
 
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
-        Job job1 = jobs.get(0);
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final Job job1 = jobs.get(0);
 
         assertEquals(JOB_GROUP, job.getJobGroupTitle());
         assertEquals(JOB_ID, job.getJobID());
@@ -584,9 +584,9 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         addJob(JOB_GROUP, JOB_ID);
 
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
 
-        Job job = jobs.get(0);
+        final Job job = jobs.get(0);
         assertEquals(0, job.getGroupTimeSheet());
 
         scheduler.addToGroupTimeSheet(JOB_GROUP + "wrongGroupTitle", TIME);
@@ -595,20 +595,20 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void getJobsQueue_noError() throws InterruptedException {
-        int amtJobs = 3;
-        int amtPrioritizedJobs = 3;
+        final int amtJobs = 3;
+        final int amtPrioritizedJobs = 3;
 
         fillSchedulerWithJobs(amtJobs, amtPrioritizedJobs);
 
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
 
         assertEquals(amtJobs, jobs.size());
 
         for (int i = 0; i < amtJobs; i++) {
             // is set by fillSchedulerWithJobs
-            int jobNumber = amtJobs + amtPrioritizedJobs - i - 1;
+            final int jobNumber = amtJobs + amtPrioritizedJobs - i - 1;
 
-            Job job = jobs.get(i);
+            final Job job = jobs.get(i);
             assertEquals(JOB_GROUP + jobNumber, job.getJobGroupTitle());
             assertEquals(JOB_ID + jobNumber, job.getJobID());
         }
@@ -617,15 +617,15 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     @Test
     void getJobsQueue_differentTimeSheets_noError() throws InterruptedException {
         final int TIME = 100;
-        int amtJobs = 3;
-        int amtPrioritizedJobs = 3;
+        final int amtJobs = 3;
+        final int amtPrioritizedJobs = 3;
 
         fillSchedulerWithJobs(amtJobs, amtPrioritizedJobs);
 
         final int jobWithDifferentTimeSheet = amtJobs + amtPrioritizedJobs - 1;
         scheduler.addToGroupTimeSheet(JOB_GROUP + jobWithDifferentTimeSheet, TIME);
 
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
 
         assertEquals(amtJobs, jobs.size());
 
@@ -633,31 +633,31 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         for (int i = 0; i < amtJobs - 1; i++) {
             // is set by fillSchedulerWithJobs
             // - 2 because the jobWithDifferentTimeSheet should be the last
-            int jobNumber = amtJobs + amtPrioritizedJobs - i - 2;
+            final int jobNumber = amtJobs + amtPrioritizedJobs - i - 2;
 
-            Job job = jobs.get(i);
+            final Job job = jobs.get(i);
             assertEquals(JOB_GROUP + jobNumber, job.getJobGroupTitle());
             assertEquals(JOB_ID + jobNumber, job.getJobID());
         }
 
-        Job job = jobs.get(amtJobs - 1);
+        final Job job = jobs.get(amtJobs - 1);
         assertEquals(JOB_GROUP + jobWithDifferentTimeSheet, job.getJobGroupTitle());
         assertEquals(JOB_ID + jobWithDifferentTimeSheet, job.getJobID());
     }
 
     @Test
     void getPrioritizedQueue_noError() throws InterruptedException {
-        int amtJobs = 3;
-        int amtPrioritizedJobs = 3;
+        final int amtJobs = 3;
+        final int amtPrioritizedJobs = 3;
 
         fillSchedulerWithJobs(amtJobs, amtPrioritizedJobs);
 
-        List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
+        final List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
 
         assertEquals(amtPrioritizedJobs, prioritized.size());
 
         for (int i = 0; i < amtPrioritizedJobs; i++) {
-            Job job = prioritized.get(i);
+            final Job job = prioritized.get(i);
             assertEquals(JOB_GROUP + i, job.getJobGroupTitle());
             assertEquals(JOB_ID + i, job.getJobID());
         }
@@ -666,19 +666,19 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     @Test
     void getPrioritizedQueue_differentTimeSheets_noError() throws InterruptedException {
         final int TIME = 100;
-        int amtJobs = 3;
-        int amtPrioritizedJobs = 3;
+        final int amtJobs = 3;
+        final int amtPrioritizedJobs = 3;
 
         fillSchedulerWithJobs(amtJobs, amtPrioritizedJobs);
 
         scheduler.addToGroupTimeSheet(JOB_GROUP + 0, TIME);
 
-        List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
+        final List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
 
         assertEquals(amtPrioritizedJobs, prioritized.size());
 
         for (int i = 0; i < amtPrioritizedJobs; i++) {
-            Job job = prioritized.get(i);
+            final Job job = prioritized.get(i);
             assertEquals(JOB_GROUP + i, job.getJobGroupTitle());
             assertEquals(JOB_ID + i, job.getJobID());
         }
@@ -686,7 +686,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void subscribe_noError() {
-        IObserver observer = mock(IObserver.class);
+        final IObserver observer = mock(IObserver.class);
 
         scheduler.subscribe(observer);
 
@@ -697,7 +697,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void unsubscribe_noError() {
-        IObserver observer = mock(IObserver.class);
+        final IObserver observer = mock(IObserver.class);
         scheduler.subscribe(observer);
 
         scheduler.unsubscribe(observer);
@@ -709,18 +709,18 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void updateAll_noError() {
-        List<IObserver> observers = new ArrayList<>();
+        final List<IObserver> observers = new ArrayList<>();
 
-        int amtObservers = 10;
+        final int amtObservers = 10;
         for (int i = 0; i < amtObservers; i++) {
-            IObserver observer = mock(IObserver.class);
+            final IObserver observer = mock(IObserver.class);
             observers.add(observer);
             scheduler.subscribe(observer);
         }
 
         scheduler.updateAll();
 
-        for (IObserver observer : observers) {
+        for (final IObserver observer : observers) {
             verify(observer).update();
         }
     }
@@ -741,28 +741,28 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         scheduler.resetJobGroupTimeSheets();
 
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
         assertEquals(1, jobs.size());
-        for (Job job : jobs) {
+        for (final Job job : jobs) {
             assertEquals(0, job.getGroupTimeSheet());
         }
 
-        List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
+        final List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
         assertEquals(1, prioritized.size());
-        for (Job job : prioritized) {
+        for (final Job job : prioritized) {
             assertEquals(0, job.getGroupTimeSheet());
         }
     }
 
-    private void checkSchedulerQueue(int amtJobs, int amtPrioritizedJobs) {
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
-        List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
+    private void checkSchedulerQueue(final int amtJobs, final int amtPrioritizedJobs) {
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final List<Job> prioritized = scheduler.getPrioritizedQueue(pageable).getContent();
 
         assertEquals(amtJobs, jobs.size());
         assertEquals(amtPrioritizedJobs, prioritized.size());
     }
 
-    private void fillSchedulerWithJobs(int amtJobs, int amtPrioritizedJobs) throws InterruptedException {
+    private void fillSchedulerWithJobs(final int amtJobs, final int amtPrioritizedJobs) throws InterruptedException {
         for (int i = 0; i < amtPrioritizedJobs; i++) {
             addJob(JOB_GROUP + i, JOB_ID + i);
             scheduler.givePriorityTo(JOB_GROUP + i, JOB_ID + i);
@@ -776,18 +776,18 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     }
 
     private Job getFirstJobInJobsQueue() {
-        List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
+        final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
 
         assertTrue(jobs.size() > 0);
 
         return jobs.get(0);
     }
 
-    private void saveJobsToDatabase(int amount, String suffix, boolean prioritized, JobGroup group) {
+    private void saveJobsToDatabase(final int amount, final String suffix, final boolean prioritized, final JobGroup group) {
         jobGroupAccess.saveJobGroup(group);
 
         for (int i = 0; i < amount; i++) {
-            Job job = new Job(JOB_ID + suffix + i, group);
+            final Job job = new Job(JOB_ID + suffix + i, group);
             job.setPrioritized(prioritized);
             jobAccess.saveJob(job);
         }

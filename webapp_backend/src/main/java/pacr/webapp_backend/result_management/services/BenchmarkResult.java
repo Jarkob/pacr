@@ -48,7 +48,7 @@ public class BenchmarkResult implements IBenchmark {
      * Creates a BenchmarkResult from a benchmark.
      * @param benchmark the benchmark. Cannot be null.
      */
-    public BenchmarkResult(@NotNull Benchmark benchmark) {
+    public BenchmarkResult(@NotNull final Benchmark benchmark) {
         Objects.requireNonNull(benchmark);
 
         this.propertyResults = new HashSet<>();
@@ -57,9 +57,9 @@ public class BenchmarkResult implements IBenchmark {
 
     @Override
     public Map<String, BenchmarkPropertyResult> getBenchmarkProperties() {
-        Map<String, BenchmarkPropertyResult> properties = new HashMap<>();
+        final Map<String, BenchmarkPropertyResult> properties = new HashMap<>();
 
-        for (BenchmarkPropertyResult propertyResult : propertyResults) {
+        for (final BenchmarkPropertyResult propertyResult : propertyResults) {
             properties.put(propertyResult.getName(), propertyResult);
         }
 
@@ -77,7 +77,7 @@ public class BenchmarkResult implements IBenchmark {
     /**
      * @param propertyResult adds the property results to the properties of this benchmark.
      */
-    public void addPropertyResult(@NotNull BenchmarkPropertyResult propertyResult) {
+    public void addPropertyResult(@NotNull final BenchmarkPropertyResult propertyResult) {
         Objects.requireNonNull(propertyResult);
 
         propertyResults.add(propertyResult);

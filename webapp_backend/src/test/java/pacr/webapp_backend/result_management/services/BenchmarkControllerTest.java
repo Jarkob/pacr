@@ -66,10 +66,10 @@ public class BenchmarkControllerTest {
      */
     @Test
     void getAllBenchmarks_shouldReturnSameAsBenchmarkManager() {
-        List<Benchmark> benchmarks = new LinkedList<>();
+        final List<Benchmark> benchmarks = new LinkedList<>();
         when(benchmarkManagerMock.getAllBenchmarks()).thenReturn(benchmarks);
 
-        Collection<Benchmark> testBenchmarks = benchmarkController.getAllBenchmarks();
+        final Collection<Benchmark> testBenchmarks = benchmarkController.getAllBenchmarks();
 
         assertEquals(benchmarks, testBenchmarks);
     }
@@ -79,8 +79,8 @@ public class BenchmarkControllerTest {
      */
     @Test
     void getAllBenchmarks_apiCall_shouldReturnSameAsBenchmarkManager() throws Exception {
-        List<Benchmark> benchmarks = new LinkedList<>();
-        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        final List<Benchmark> benchmarks = new LinkedList<>();
+        final Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
         benchmarks.add(benchmark);
 
         when(benchmarkManagerMock.getAllBenchmarks()).thenReturn(benchmarks);
@@ -94,10 +94,10 @@ public class BenchmarkControllerTest {
      */
     @Test
     void getAllGroups_shouldReturnSameAsBenchmarkManager() {
-        List<BenchmarkGroup> groups = new LinkedList<>();
+        final List<BenchmarkGroup> groups = new LinkedList<>();
         when(benchmarkManagerMock.getAllGroups()).thenReturn(groups);
 
-        Collection<BenchmarkGroup> testGroups = benchmarkController.getAllGroups();
+        final Collection<BenchmarkGroup> testGroups = benchmarkController.getAllGroups();
 
         assertEquals(groups, testGroups);
     }
@@ -109,7 +109,7 @@ public class BenchmarkControllerTest {
     void updateBenchmark_authenticationSucceeds_shouldCallUpdateBenchmarkInManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
-        ResponseEntity<Object> response = benchmarkController.updateBenchmark(benchmarkInput, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.updateBenchmark(benchmarkInput, TOKEN);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -123,7 +123,7 @@ public class BenchmarkControllerTest {
     void updateBenchmark_authenticationFails_shouldNotUpdateBenchmark() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
-        ResponseEntity<Object> response = benchmarkController.updateBenchmark(benchmarkInput, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.updateBenchmark(benchmarkInput, TOKEN);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -148,9 +148,9 @@ public class BenchmarkControllerTest {
         doThrow(new NoSuchElementException())
                 .when(benchmarkManagerMock).updateBenchmark(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
 
-        BenchmarkInput input = new BenchmarkInput(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
+        final BenchmarkInput input = new BenchmarkInput(BENCHMARK_ID, BENCHMARK_NAME, BENCHMARK_DESC, GROUP_ID);
 
-        ResponseEntity<Object> response = benchmarkController.updateBenchmark(input, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.updateBenchmark(input, TOKEN);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -162,7 +162,7 @@ public class BenchmarkControllerTest {
     void addGroup_authenticationSucceeds_shouldCallAddGroupInManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
-        ResponseEntity<Object> response = benchmarkController.addGroup(GROUP_NAME, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.addGroup(GROUP_NAME, TOKEN);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -176,7 +176,7 @@ public class BenchmarkControllerTest {
     void addGroup_authenticationFails_shouldNotAddGroup() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
-        ResponseEntity<Object> response = benchmarkController.addGroup(GROUP_NAME, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.addGroup(GROUP_NAME, TOKEN);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -195,7 +195,7 @@ public class BenchmarkControllerTest {
     void updateGroup_authenticationSucceeds_shouldCallUpdateGroupInManager() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
-        ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -209,7 +209,7 @@ public class BenchmarkControllerTest {
     void updateGroup_authenticationFails_shouldNotUpdateGroup() {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
-        ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -227,7 +227,7 @@ public class BenchmarkControllerTest {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
         doThrow(new NoSuchElementException()).when(benchmarkManagerMock).updateGroup(GROUP_ID, GROUP_NAME);
 
-        ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.updateGroup(GROUP_ID, GROUP_NAME, TOKEN);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -239,7 +239,7 @@ public class BenchmarkControllerTest {
     void deleteGroup_authenticationSucceeds_shouldCallDeleteGroupInManager() throws IllegalAccessException {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
 
-        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -253,7 +253,7 @@ public class BenchmarkControllerTest {
     void deleteGroup_authenticationFails_shouldNotDeleteGroup() throws IllegalAccessException {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(false);
 
-        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
 
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
         verify(authenticatorMock).authenticate(TOKEN);
@@ -270,7 +270,7 @@ public class BenchmarkControllerTest {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
         doThrow(new NoSuchElementException()).when(benchmarkManagerMock).deleteGroup(GROUP_ID);
 
-        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -280,7 +280,7 @@ public class BenchmarkControllerTest {
         when(authenticatorMock.authenticate(TOKEN)).thenReturn(true);
         doThrow(new IllegalAccessException()).when(benchmarkManagerMock).deleteGroup(GROUP_ID);
 
-        ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
+        final ResponseEntity<Object> response = benchmarkController.deleteGroup(GROUP_ID, TOKEN);
 
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -290,10 +290,10 @@ public class BenchmarkControllerTest {
      */
     @Test
     void getBenchmarksByGroup_shouldCallMethodInManager() {
-        List<Benchmark> benchmarks = new LinkedList<>();
+        final List<Benchmark> benchmarks = new LinkedList<>();
         when(benchmarkManagerMock.getBenchmarksByGroup(GROUP_ID)).thenReturn(benchmarks);
 
-        Collection<Benchmark> testBenchmarks = benchmarkController.getBenchmarksByGroup(GROUP_ID);
+        final Collection<Benchmark> testBenchmarks = benchmarkController.getBenchmarksByGroup(GROUP_ID);
 
         assertEquals(benchmarks, testBenchmarks);
     }

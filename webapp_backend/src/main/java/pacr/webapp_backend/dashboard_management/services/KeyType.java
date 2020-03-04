@@ -18,7 +18,7 @@ public enum KeyType {
     /**
      * A key is invalid, if it is whether a valid view nor edit key.
      */
-    INVALID_KEY;
+    INVALID_KEY
 
 
 }

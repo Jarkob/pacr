@@ -15,12 +15,12 @@ public interface JobGroupDB extends JpaRepository<JobGroup, Integer>, IJobGroupA
     }
 
     @Override
-    default void saveJobGroup(JobGroup jobGroup) {
+    default void saveJobGroup(final JobGroup jobGroup) {
         this.save(jobGroup);
     }
 
     @Override
-    default void deleteGroup(JobGroup jobGroup) {
+    default void deleteGroup(final JobGroup jobGroup) {
         this.delete(jobGroup);
     }
 }

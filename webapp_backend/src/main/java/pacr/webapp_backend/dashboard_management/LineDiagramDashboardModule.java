@@ -37,7 +37,7 @@ public class LineDiagramDashboardModule extends DashboardModule {
      *
      * @param trackedRepositories The new tracked repositories.
      */
-    public void setTrackedRepositories(List<String> trackedRepositories) {
+    public void setTrackedRepositories(final List<String> trackedRepositories) {
         this.trackedRepositories = Set.copyOf(trackedRepositories);
     }
 
@@ -46,25 +46,25 @@ public class LineDiagramDashboardModule extends DashboardModule {
      *
      * @param trackedBenchmarks The new tracked benchmarks.
      */
-    public void setTrackedBenchmarks(List<String> trackedBenchmarks) {
+    public void setTrackedBenchmarks(final List<String> trackedBenchmarks) {
         this.trackedBenchmarks = List.copyOf(trackedBenchmarks);
     }
 
 
     @Override
-    public boolean equals(Object o) {
-        boolean superEquals = super.equals(o);
+    public boolean equals(final Object o) {
+        final boolean superEquals = super.equals(o);
         if (!superEquals) {
             return false;
         }
 
-        LineDiagramDashboardModule otherModule = (LineDiagramDashboardModule) o;
+        final LineDiagramDashboardModule otherModule = (LineDiagramDashboardModule) o;
 
         if (this.trackedRepositories.size() != otherModule.trackedRepositories.size()) {
             return false;
         }
 
-        for (String repo : this.trackedRepositories) {
+        for (final String repo : this.trackedRepositories) {
             if (!otherModule.trackedRepositories.contains(repo)) {
                 return false;
             }
@@ -74,7 +74,7 @@ public class LineDiagramDashboardModule extends DashboardModule {
             return false;
         }
 
-        for (String benchmarkName : this.trackedBenchmarks) {
+        for (final String benchmarkName : this.trackedBenchmarks) {
             if (!otherModule.trackedBenchmarks.contains(benchmarkName)) {
                 return false;
             }

@@ -28,7 +28,7 @@ public class DeletionIntervalControllerTest extends SpringBootTestWithoutShell {
     private DashboardManager dashboardManager;
 
     @Autowired
-    DeletionIntervalControllerTest(DashboardManager dashboardManager, DeletionIntervalDB deletionIntervalDB) {
+    DeletionIntervalControllerTest(final DashboardManager dashboardManager, final DeletionIntervalDB deletionIntervalDB) {
         this.dashboardManager = dashboardManager;
         this.deletionIntervalDB = deletionIntervalDB;
     }

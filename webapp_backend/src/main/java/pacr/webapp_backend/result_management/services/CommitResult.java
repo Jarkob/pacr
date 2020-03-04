@@ -78,8 +78,8 @@ public class CommitResult implements IBenchmarkingResult {
      * @param comparisonCommitHash the hash of the commit this result was compared to. May be null (in this case it is
      *                             implied that no comparison has taken place).
      */
-    public CommitResult(@NotNull IBenchmarkingResult result, int repositoryID, @NotNull LocalDateTime commitDate,
-                        @Nullable String comparisonCommitHash) {
+    public CommitResult(@NotNull final IBenchmarkingResult result, final int repositoryID, @NotNull final LocalDateTime commitDate,
+                        @Nullable final String comparisonCommitHash) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commitDate);
 
@@ -105,9 +105,9 @@ public class CommitResult implements IBenchmarkingResult {
 
     @Override
     public Map<String, BenchmarkResult> getBenchmarks() {
-        Map<String, BenchmarkResult> benchmarks = new HashMap<>();
+        final Map<String, BenchmarkResult> benchmarks = new HashMap<>();
 
-        for (BenchmarkResult benchmarkResult : benchmarkResults) {
+        for (final BenchmarkResult benchmarkResult : benchmarkResults) {
             benchmarks.put(benchmarkResult.getName(), benchmarkResult);
         }
 
@@ -133,7 +133,7 @@ public class CommitResult implements IBenchmarkingResult {
     /**
      * @param benchmarkResult the result for a benchmark is added to the results of this commit result.
      */
-    public void addBenchmarkResult(@NotNull BenchmarkResult benchmarkResult) {
+    public void addBenchmarkResult(@NotNull final BenchmarkResult benchmarkResult) {
         Objects.requireNonNull(benchmarkResult);
 
         benchmarkResults.add(benchmarkResult);
@@ -165,7 +165,7 @@ public class CommitResult implements IBenchmarkingResult {
     /**
      * @param errorMessage the error message if there was an error with this result. May be null if there was no error.
      */
-    public void setErrorMessage(@Nullable String errorMessage) {
+    public void setErrorMessage(@Nullable final String errorMessage) {
         if (errorMessage != null && errorMessage.length() > MAX_STRING_LENGTH) {
             this.errorMessage = errorMessage.substring(0, MAX_STRING_LENGTH);
         } else {

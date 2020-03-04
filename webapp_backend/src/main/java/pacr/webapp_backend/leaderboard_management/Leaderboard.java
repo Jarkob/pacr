@@ -24,12 +24,12 @@ public class Leaderboard extends ILeaderboard {
      * Generates a new leaderboard with a benchmark name.
      * @param benchmarkName the name of the benchmark, this leaderboard belongs to.
      */
-    Leaderboard(String benchmarkName) {
+    Leaderboard(final String benchmarkName) {
         this.benchmarkName = benchmarkName;
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         return true;
     }
 }

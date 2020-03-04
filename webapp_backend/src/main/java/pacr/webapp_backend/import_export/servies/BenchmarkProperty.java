@@ -29,7 +29,7 @@ public class BenchmarkProperty implements IBenchmarkProperty {
      *
      * @param property the IBenchmarkProperty which is used to create the BenchmarkProperty.
      */
-    public BenchmarkProperty(IBenchmarkProperty property) {
+    public BenchmarkProperty(final IBenchmarkProperty property) {
         this.results = new ArrayList<>(property.getResults());
         this.resultInterpretation = property.getResultInterpretation();
         this.unit = property.getUnit();

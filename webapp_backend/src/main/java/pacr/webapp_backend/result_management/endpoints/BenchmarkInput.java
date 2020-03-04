@@ -28,8 +28,8 @@ public class BenchmarkInput {
      * @param description the description.
      * @param groupId the id of the group of the benchmark. -1 indicates this benchmark has no group.
      */
-    public BenchmarkInput(int id, @NotNull String customName, @NotNull String description,
-                          int groupId) {
+    public BenchmarkInput(final int id, @NotNull final String customName, @NotNull final String description,
+                          final int groupId) {
         this.id = id;
         this.customName = customName;
         this.description = description;

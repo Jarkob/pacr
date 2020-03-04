@@ -65,7 +65,7 @@ public class BenchmarkerControllerTest {
 
     @Test
     void registerBenchmarker_noError() {
-        boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
+        final boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
 
         verify(benchmarkerHandler).registerBenchmarker(ADDRESS, systemEnvironment);
         assertTrue(result);
@@ -75,7 +75,7 @@ public class BenchmarkerControllerTest {
     void registerBenchmarker_registrationFailed() {
         when(benchmarkerHandler.registerBenchmarker(any(), any())).thenReturn(false);
 
-        boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
+        final boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
 
         verify(benchmarkerHandler).registerBenchmarker(ADDRESS, systemEnvironment);
         assertFalse(result);
@@ -83,7 +83,7 @@ public class BenchmarkerControllerTest {
 
     @Test
     void registerBenchmarker_nullSystemEnvironment() {
-        boolean result = benchmarkerController.registerBenchmarker(null, principal);
+        final boolean result = benchmarkerController.registerBenchmarker(null, principal);
 
         verify(benchmarkerHandler, never()).registerBenchmarker(any(), any());
         assertFalse(result);
@@ -91,7 +91,7 @@ public class BenchmarkerControllerTest {
 
     @Test
     void registerBenchmarker_nullPrincipal() {
-        boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, null);
+        final boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, null);
 
         verify(benchmarkerHandler, never()).registerBenchmarker(any(), any());
         assertFalse(result);
@@ -101,7 +101,7 @@ public class BenchmarkerControllerTest {
     void registerBenchmarker_nullAddress() {
         when(principal.getName()).thenReturn(null);
 
-        boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
+        final boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
 
         verify(benchmarkerHandler, never()).registerBenchmarker(any(), any());
         assertFalse(result);
@@ -111,7 +111,7 @@ public class BenchmarkerControllerTest {
     void registerBenchmarker_emptyAddress() {
         when(principal.getName()).thenReturn("");
 
-        boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
+        final boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
 
         verify(benchmarkerHandler, never()).registerBenchmarker(any(), any());
         assertFalse(result);
@@ -121,7 +121,7 @@ public class BenchmarkerControllerTest {
     void registerBenchmarker_blankAddress() {
         when(principal.getName()).thenReturn(" ");
 
-        boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
+        final boolean result = benchmarkerController.registerBenchmarker(systemEnvironment, principal);
 
         verify(benchmarkerHandler, never()).registerBenchmarker(any(), any());
         assertFalse(result);
@@ -129,7 +129,7 @@ public class BenchmarkerControllerTest {
 
     @Test
     void unregisterBenchmarker_noError() {
-        boolean result = benchmarkerController.unregisterBenchmarker(principal);
+        final boolean result = benchmarkerController.unregisterBenchmarker(principal);
 
         verify(benchmarkerHandler).unregisterBenchmarker(ADDRESS);
         assertTrue(result);
@@ -139,7 +139,7 @@ public class BenchmarkerControllerTest {
     void unregisterBenchmarker_unregisterFailed() {
         when(benchmarkerHandler.unregisterBenchmarker(any())).thenReturn(false);
 
-        boolean result = benchmarkerController.unregisterBenchmarker(principal);
+        final boolean result = benchmarkerController.unregisterBenchmarker(principal);
 
         verify(benchmarkerHandler).unregisterBenchmarker(ADDRESS);
         assertFalse(result);
@@ -147,7 +147,7 @@ public class BenchmarkerControllerTest {
 
     @Test
     void unregisterBenchmarker_nullPrincipal() {
-        boolean result = benchmarkerController.unregisterBenchmarker(null);
+        final boolean result = benchmarkerController.unregisterBenchmarker(null);
 
         verify(benchmarkerHandler, never()).unregisterBenchmarker(any());
         assertFalse(result);
@@ -157,7 +157,7 @@ public class BenchmarkerControllerTest {
     void unregisterBenchmarker_nullAddress() {
         when(principal.getName()).thenReturn(null);
 
-        boolean result = benchmarkerController.unregisterBenchmarker(principal);
+        final boolean result = benchmarkerController.unregisterBenchmarker(principal);
 
         verify(benchmarkerHandler, never()).unregisterBenchmarker(any());
         assertFalse(result);
@@ -167,7 +167,7 @@ public class BenchmarkerControllerTest {
     void unregisterBenchmarker_emptyAddress() {
         when(principal.getName()).thenReturn("");
 
-        boolean result = benchmarkerController.unregisterBenchmarker(principal);
+        final boolean result = benchmarkerController.unregisterBenchmarker(principal);
 
         verify(benchmarkerHandler, never()).unregisterBenchmarker(any());
         assertFalse(result);
@@ -177,7 +177,7 @@ public class BenchmarkerControllerTest {
     void unregisterBenchmarker_blankAddress() {
         when(principal.getName()).thenReturn(" ");
 
-        boolean result = benchmarkerController.unregisterBenchmarker(principal);
+        final boolean result = benchmarkerController.unregisterBenchmarker(principal);
 
         verify(benchmarkerHandler, never()).unregisterBenchmarker(any());
         assertFalse(result);
@@ -197,15 +197,15 @@ public class BenchmarkerControllerTest {
 
         benchmarkerController.sendSSHKey(sshKey);
 
-        ArgumentCaptor<SSHKeyMessage> captorMessage = ArgumentCaptor.forClass(SSHKeyMessage.class);
-        ArgumentCaptor<String> captorPath = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<SSHKeyMessage> captorMessage = ArgumentCaptor.forClass(SSHKeyMessage.class);
+        final ArgumentCaptor<String> captorPath = ArgumentCaptor.forClass(String.class);
 
         verify(template).convertAndSend(captorPath.capture(), captorMessage.capture());
 
-        String path = captorPath.getValue();
+        final String path = captorPath.getValue();
         assertEquals(expectedPath, path);
 
-        SSHKeyMessage message = captorMessage.getValue();
+        final SSHKeyMessage message = captorMessage.getValue();
         assertNotNull(message);
         assertEquals(message.getSshKey(), sshKey);
     }
@@ -235,12 +235,12 @@ public class BenchmarkerControllerTest {
     void getBenchmarkers_noError() {
         when(benchmarkerHandler.getAllBenchmarkerAddresses()).thenReturn(List.of(ADDRESS));
 
-        Collection<Benchmarker> benchmarkers = benchmarkerController.getBenchmarkers();
+        final Collection<Benchmarker> benchmarkers = benchmarkerController.getBenchmarkers();
 
         assertNotNull(benchmarkers);
         assertEquals(1, benchmarkers.size());
 
-        Benchmarker benchmarker = benchmarkers.stream().findFirst().orElse(null);
+        final Benchmarker benchmarker = benchmarkers.stream().findFirst().orElse(null);
         assertNotNull(benchmarker);
 
         assertEquals(systemEnvironment, benchmarker.getSystemEnvironment());

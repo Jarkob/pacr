@@ -73,9 +73,9 @@ public class GitRepository implements IRepository {
      *                        Is null if all commits are being observed.
      */
     @Deprecated
-    public GitRepository(boolean trackAllBranches,
-                         @NotNull String pullURL, @NotNull String name,
-                         @NotNull String color, LocalDate observeFromDate) {
+    public GitRepository(final boolean trackAllBranches,
+                         @NotNull final String pullURL, @NotNull final String name,
+                         @NotNull final String color, final LocalDate observeFromDate) {
         Objects.requireNonNull(pullURL);
         Objects.requireNonNull(name);
         Objects.requireNonNull(color);
@@ -104,7 +104,7 @@ public class GitRepository implements IRepository {
      * Sets the repository ID.
      * @param id is the repository id.
      */
-    public void setId(int id) {
+    public void setId(final int id) {
         this.id = id;
     }
 
@@ -137,7 +137,7 @@ public class GitRepository implements IRepository {
      * Sets the pull URL for this repository.
      * @param pullURL is the pull URL.
      */
-    public void setPullURL(@NotNull String pullURL) {
+    public void setPullURL(@NotNull final String pullURL) {
         Objects.requireNonNull(pullURL);
 
         this.pullURL = pullURL;
@@ -179,7 +179,7 @@ public class GitRepository implements IRepository {
      * Sets the name of the repository.
      * @param name is the name of the repository.
      */
-    public void setName(@NotNull String name) {
+    public void setName(@NotNull final String name) {
         Objects.requireNonNull(name);
         this.name = name;
     }
@@ -220,7 +220,7 @@ public class GitRepository implements IRepository {
      * Removes a branch from the selected branches.
      * @param branch is the branch being removed.
      */
-    public void removeBranchFromSelection(@NotNull GitBranch branch) {
+    public void removeBranchFromSelection(@NotNull final GitBranch branch) {
         Objects.requireNonNull(trackedBranches);
 
         trackedBranches.remove(branch);
@@ -239,7 +239,7 @@ public class GitRepository implements IRepository {
      * @param branchName is the name of the branch.
      * @return true if the branch is selected, false if not.
      */
-    public boolean isBranchSelected(@NotNull String branchName) {
+    public boolean isBranchSelected(@NotNull final String branchName) {
         Objects.requireNonNull(branchName);
 
         if (trackAllBranches) {
@@ -254,10 +254,10 @@ public class GitRepository implements IRepository {
      * @param branchName is the name of the branch.
      * @return GitBranch.
      */
-    public GitBranch getTrackedBranch(@NotNull String branchName) {
+    public GitBranch getTrackedBranch(@NotNull final String branchName) {
         Objects.requireNonNull(branchName);
 
-        for (GitBranch branch : trackedBranches) {
+        for (final GitBranch branch : trackedBranches) {
             if (branch.getName().equals(branchName)) {
                 return branch;
             }
@@ -273,41 +273,41 @@ public class GitRepository implements IRepository {
     public void createBranchIfNotExists(@NotNull String branchName) {
         Objects.requireNonNull(branchName);
 
-        for (GitBranch branch : trackedBranches) {
+        for (final GitBranch branch : trackedBranches) {
             if (branch.getName().equals(branchName)) {
                 return;
             }
         }
 
-        GitBranch newBranch = new GitBranch(branchName);
+        final GitBranch newBranch = new GitBranch(branchName);
         trackedBranches.add(newBranch);
     }
 
     /**
      * @param trackAllBranches is the options whether all branches are tracked or only master branch.
      */
-    public void setTrackAllBranches(boolean trackAllBranches) {
+    public void setTrackAllBranches(final boolean trackAllBranches) {
         this.trackAllBranches = trackAllBranches;
     }
 
     /**
      * @param hookSet is whether a hook is set for the repository.
      */
-    public void setIsHookSet(boolean hookSet) {
+    public void setIsHookSet(final boolean hookSet) {
         this.isHookSet = hookSet;
     }
 
     /**
      * @param color is the new color of the repository.
      */
-    public void setColor(String color) {
+    public void setColor(final String color) {
         this.color = color;
     }
 
     /**
      * @param observeFromDate is the date from which on the commits are being tracked.
      */
-    public void setObserveFromDate(LocalDate observeFromDate) {
+    public void setObserveFromDate(final LocalDate observeFromDate) {
         this.observeFromDate = observeFromDate;
     }
 

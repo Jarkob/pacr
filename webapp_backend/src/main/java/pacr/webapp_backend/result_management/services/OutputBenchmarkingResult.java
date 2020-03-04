@@ -49,8 +49,8 @@ public class OutputBenchmarkingResult {
      * @param result the result for the commit.
      * @param benchmarks the benchmarks, their properties and their corresponding measurements.
      */
-    OutputBenchmarkingResult(@NotNull ICommit commit, @NotNull CommitResult result,
-                             @NotNull OutputBenchmark[] benchmarks) {
+    OutputBenchmarkingResult(@NotNull final ICommit commit, @NotNull final CommitResult result,
+                             @NotNull final OutputBenchmark[] benchmarks) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
         Objects.requireNonNull(benchmarks);
@@ -90,7 +90,7 @@ public class OutputBenchmarkingResult {
      * and the benchmarksList is empty.
      * @param commit the commit. Cannot be null.
      */
-    OutputBenchmarkingResult(@NotNull ICommit commit) {
+    OutputBenchmarkingResult(@NotNull final ICommit commit) {
         Objects.requireNonNull(commit);
 
         this.globalError = false;

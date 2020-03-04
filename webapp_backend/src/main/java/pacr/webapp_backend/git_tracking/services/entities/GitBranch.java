@@ -34,7 +34,7 @@ public class GitBranch {
      * Creates a new branch.
      * @param name is the name of the branch.
      */
-    public GitBranch(@NotNull String name) {
+    public GitBranch(@NotNull final String name) {
         Objects.requireNonNull(name);
 
         this.name = name;
@@ -61,7 +61,7 @@ public class GitBranch {
      * Sets the head hash of this branch.
      * @param headHash is the hash of the head.
      */
-    public void setHeadHash(String headHash) {
+    public void setHeadHash(final String headHash) {
         this.headHash = headHash;
     }
 

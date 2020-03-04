@@ -26,13 +26,13 @@ public class ColorPicker implements IColorPicker {
      * Creates an instance of ColorPicker.
      * @param colors is the list of available colors.
      */
-    public ColorPicker(@NotNull @Value("#{'${repository.colors}'.split(',')}") List<String> colors) {
+    public ColorPicker(@NotNull @Value("#{'${repository.colors}'.split(',')}") final List<String> colors) {
         Objects.requireNonNull(colors);
 
         this.colors = new HashMap<>();
         this.colorList = new ArrayList<>();
 
-        for (String color : colors) {
+        for (final String color : colors) {
             this.colors.put(color, Boolean.TRUE);
             this.colorList.add(color);
         }
@@ -40,7 +40,7 @@ public class ColorPicker implements IColorPicker {
 
     @Override
     public String getNextColor() {
-        for (String color : colorList) {
+        for (final String color : colorList) {
             if (colors.get(color)) {
                 colors.put(color, Boolean.FALSE);
                 return color;
@@ -51,14 +51,14 @@ public class ColorPicker implements IColorPicker {
     }
 
     @Override
-    public void setColorToUnused(@NotNull String color) {
+    public void setColorToUnused(@NotNull final String color) {
         Objects.requireNonNull(color);
 
         colors.put(color, Boolean.TRUE);
     }
 
     @Override
-    public void setColorToUsed(@NotNull String color) {
+    public void setColorToUsed(@NotNull final String color) {
         Objects.requireNonNull(color);
 
         colors.put(color, Boolean.FALSE);

@@ -20,7 +20,7 @@ public class BenchmarkerJob {
      * @param repository the pull-url of the repository the commit belongs to.
      * @param commitHash the commit hash of the commit which gets benchmarked.
      */
-    public BenchmarkerJob(String address, String repository, String commitHash) {
+    public BenchmarkerJob(final String address, final String repository, final String commitHash) {
         verifyAddress(address);
         verifyRepository(repository);
         verifyCommitHash(commitHash);
@@ -30,19 +30,19 @@ public class BenchmarkerJob {
         this.commitHash = commitHash;
     }
 
-    private void verifyAddress(String address) {
+    private void verifyAddress(final String address) {
         if (address == null || address.isEmpty() || address.isBlank()) {
             throw new IllegalArgumentException("The address is not valid.");
         }
     }
 
-    private void verifyRepository(String repository) {
+    private void verifyRepository(final String repository) {
         if (repository == null || repository.isEmpty() || repository.isBlank()) {
             throw new IllegalArgumentException("The repository pull-url is not valid.");
         }
     }
 
-    private void verifyCommitHash(String commitHash) {
+    private void verifyCommitHash(final String commitHash) {
         if (commitHash == null || commitHash.isEmpty() || commitHash.isBlank()) {
             throw new IllegalArgumentException("The commit hash is not valid.");
         }

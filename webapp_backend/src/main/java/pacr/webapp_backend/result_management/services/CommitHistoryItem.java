@@ -28,7 +28,7 @@ public class CommitHistoryItem {
      * @param result the result. Cannot be null.
      * @param commit the commit. Cannot be null.
      */
-    public CommitHistoryItem(@NotNull CommitResult result, @NotNull ICommit commit) {
+    public CommitHistoryItem(@NotNull final CommitResult result, @NotNull final ICommit commit) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commit);
 

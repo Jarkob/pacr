@@ -18,14 +18,14 @@ public class LineDiagramDashboardModuleTest {
 
     @Test
     void equals_DifferentClass_ShouldReturnFalse() {
-        QueueDashboardModule queueModule = new QueueDashboardModule();
+        final QueueDashboardModule queueModule = new QueueDashboardModule();
 
         assertNotEquals(lineDiagramModule, queueModule);
     }
 
     @Test
     void equals_DifferentAmountOfRepositories_ShouldReturnFalse() {
-        LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
+        final LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
 
         lineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo"));
         otherLineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo", "test_repo_2"));
@@ -35,7 +35,7 @@ public class LineDiagramDashboardModuleTest {
 
     @Test
     void equals_DifferentRepositories_ShouldReturnFalse() {
-        LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
+        final LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
 
         lineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo"));
         otherLineDiagramModule.setTrackedRepositories(Arrays.asList("test_repo_different"));
@@ -45,7 +45,7 @@ public class LineDiagramDashboardModuleTest {
 
     @Test
     void equals_DifferentAmountOfBenchmarks_ShouldReturnFalse() {
-        LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
+        final LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
 
         lineDiagramModule.setTrackedBenchmarks(Arrays.asList("test_benchmark"));
         otherLineDiagramModule.setTrackedBenchmarks(Arrays.asList("test_benchmark", "test_benchmark_2"));
@@ -55,7 +55,7 @@ public class LineDiagramDashboardModuleTest {
 
     @Test
     void equals_DifferentBenchmarks_ShouldReturnFalse() {
-        LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
+        final LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
 
         lineDiagramModule.setTrackedBenchmarks(Arrays.asList("test_benchmark"));
         otherLineDiagramModule.setTrackedBenchmarks(Arrays.asList("test_benchmark_other"));
@@ -68,7 +68,7 @@ public class LineDiagramDashboardModuleTest {
         final String BENCHMARK_NAME = "a benchmark";
         final String REPOSITORY_NAME = "a repository";
 
-        LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
+        final LineDiagramDashboardModule otherLineDiagramModule = new LineDiagramDashboardModule();
 
         lineDiagramModule.setTrackedBenchmarks(Arrays.asList(BENCHMARK_NAME));
         otherLineDiagramModule.setTrackedBenchmarks(Arrays.asList(BENCHMARK_NAME));

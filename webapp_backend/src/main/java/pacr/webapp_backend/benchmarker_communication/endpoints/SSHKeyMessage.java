@@ -17,7 +17,7 @@ public class SSHKeyMessage {
      *
      * @param sshKey the ssh key that is sent.
      */
-    public SSHKeyMessage(String sshKey) {
+    public SSHKeyMessage(final String sshKey) {
         this.sshKey = sshKey;
     }
 }
