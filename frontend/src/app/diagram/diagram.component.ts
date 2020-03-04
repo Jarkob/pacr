@@ -129,79 +129,6 @@ export class DiagramComponent implements OnInit {
       }
     },
     tooltips: {
-      // enabled: false,
-      // custom: tooltipModel => {
-      //   // Tooltip Element
-      //   let tooltipEl = document.getElementById('chartjs-tooltip');
-
-      //   // Create element on first render
-      //   if (!tooltipEl) {
-      //       tooltipEl = document.createElement('div');
-      //       tooltipEl.id = 'chartjs-tooltip';
-      //       tooltipEl.innerHTML = '<table></table>';
-      //       document.body.appendChild(tooltipEl);
-      //   }
-
-      //   // Hide if no tooltip
-      //   if (tooltipModel.opacity === 0) {
-      //       tooltipEl.style.opacity = '0';
-      //       return;
-      //   }
-
-      //   // Set caret Position
-      //   tooltipEl.classList.remove('above', 'below', 'no-transform');
-      //   if (tooltipModel.yAlign) {
-      //       tooltipEl.classList.add(tooltipModel.yAlign);
-      //   } else {
-      //       tooltipEl.classList.add('no-transform');
-      //   }
-
-      //   function getBody(bodyItem) {
-      //       return bodyItem.lines;
-      //   }
-
-      //   // Set Text
-      //   if (tooltipModel.body) {
-      //     console.log('body: ', tooltipModel);
-      //     const titleLines = tooltipModel.title || [];
-      //     const bodyLines = tooltipModel.body.map(getBody);
-
-      //     let innerHtml = '<thead>';
-
-      //     titleLines.forEach(title => {
-      //         innerHtml += '<tr><th>' + title + '</th></tr>';
-      //     });
-      //     innerHtml += '</thead><tbody>';
-
-      //     bodyLines.forEach((body, i) => {
-      //         const colors = tooltipModel.labelColors[i];
-      //         let style = 'background:' + colors.backgroundColor;
-      //         style += '; border-color:' + colors.borderColor;
-      //         style += '; border-width: 2px';
-      //         const span = '<span style="' + style + '"></span>';
-      //         innerHtml += '<tr><td>' + span + body + '</td></tr>';
-      //     });
-      //     innerHtml += '</tbody>';
-
-      //     const tableRoot = tooltipEl.querySelector('table');
-      //     tableRoot.innerHTML = innerHtml;
-      //   }
-
-      //   // `this` will be the overall tooltip
-      //   const position = this.chart.chart.canvas.getBoundingClientRect();
-
-      //   // Display, position, and set styles for font
-      //   tooltipEl.style.opacity = '1';
-      //   tooltipEl.style.position = 'absolute';
-      //   tooltipEl.style.left = position.left + window.pageXOffset + tooltipModel.caretX + 'px';
-      //   tooltipEl.style.top = position.top + window.pageYOffset + tooltipModel.caretY + 'px';
-      //   tooltipEl.style.fontFamily = tooltipModel._bodyFontFamily;
-      //   tooltipEl.style.fontSize = tooltipModel.bodyFontSize + 'px';
-      //   tooltipEl.style.fontStyle = tooltipModel._bodyFontStyle;
-      //   tooltipEl.style.padding = tooltipModel.yPadding + 'px ' + tooltipModel.xPadding + 'px';
-      //   tooltipEl.style.pointerEvents = 'none';
-      // },
-
       callbacks: {
         title: (items: any[], ) => {
           return this.datasets[items[0].datasetIndex].repositoryName + ': '
@@ -224,12 +151,9 @@ export class DiagramComponent implements OnInit {
           let label = '' + Math.round(item.yLabel * 100) / 100;
           label += ' ' + this.selectedBenchmarkProperty.unit;
 
-          label += '\n' + this.datasets[item.datasetIndex].code[item.index].author;
-          label += '\n' + this.datasets[item.datasetIndex].code[item.index].authorDate;
-
           // add labels to diagram entry
           if (this.datasets[item.datasetIndex].code[item.index].labels.length !== 0) {
-            label += '<br>Labels:';
+            label += ' Labels: ';
             let prefix = '';
             for (const el of this.datasets[item.datasetIndex].code[item.index].labels) {
               label += prefix + el;
@@ -237,6 +161,9 @@ export class DiagramComponent implements OnInit {
             }
           }
           return label;
+        },
+        afterLabel: (item, data) => {
+          return this.datasets[item.datasetIndex].code[item.index].authorDate;
         }
       }
     }
@@ -259,7 +186,7 @@ export class DiagramComponent implements OnInit {
   plugins = [ChartAnnotation];
   legendData: any;
 
-  loading = false;
+  loading = true;
 
 
   ngOnInit() {
@@ -408,6 +335,8 @@ export class DiagramComponent implements OnInit {
                 element._model.pointStyle = globalErrorImage;
               } else if (Object.keys(dataset.code[j].result).length === 0) {
                 element._model.pointStyle = noBenchmarks;
+              } else if (!dataset.code[j].result[this.selectedBenchmarkProperty.name]) {
+                // do nothing
               } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
                 element._model.pointStyle = errorImage;
               }
