@@ -10,12 +10,4 @@ import javax.persistence.Entity;
  */
 @Entity
 public class EventDashboardModule extends DashboardModule {
-
-    /**
-     * Public no argument constructor for jpa.
-     */
-    public EventDashboardModule() {
-
-    }
-
 }

@@ -104,10 +104,8 @@ public class GitHandler {
 
         File repositoryWorkingDir = new File(pathToWorkingDir);
 
-        if (!repositoryWorkingDir.exists()) {
-            if (!repositoryWorkingDir.mkdirs()) {
-                throw new IOException("Could not create repository working directory.");
-            }
+        if (!repositoryWorkingDir.exists() && !repositoryWorkingDir.mkdirs()) {
+            throw new IOException("Could not create repository working directory.");
         }
     }
 
@@ -593,6 +591,10 @@ public class GitHandler {
         return branch.getName().substring(lastIndexOfSlash + 1);
     }
 
+    /**
+     * @param pullURL the pull-url of a repository.
+     * @return a set of branches in the given repository.
+     */
     public Set<String> getBranchesOfRepository(final String pullURL) {
         final Collection<Ref> refs;
         final Set<String> branches = new HashSet<>();
@@ -618,6 +620,10 @@ public class GitHandler {
         return branches;
     }
 
+    /**
+     * Starts tracking all branches from the given repository.
+     * @param gitRepository the repository.
+     */
     public void setBranchesToRepo(final GitRepository gitRepository) {
         final Set<String> branchNames = getBranchesOfRepository(gitRepository.getPullURL());
         for (final String branchName : branchNames) {

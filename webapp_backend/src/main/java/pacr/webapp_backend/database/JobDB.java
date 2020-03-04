@@ -13,6 +13,7 @@ import pacr.webapp_backend.scheduler.services.Job;
  */
 public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAccess {
 
+
     @Override
     default void saveJob(final Job job) {
         this.save(job);
@@ -58,13 +59,35 @@ public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAcc
         return findAllByGroup_Title(groupTitle);
     }
 
+    /**
+     * @param groupTitle the title of a group.
+     * @return all jobs from the give group.
+     */
     Collection<Job> findAllByGroup_Title(String groupTitle);
 
+    /**
+     * @param prioritized Whether the returned jobs should be prioritized.
+     * @param pageable The requested page.
+     * @return Returns the requested page of (un-)prioritized jobs in descending order.
+     */
     Page<Job> findAllByPrioritizedOrderByQueuedDesc(boolean prioritized, Pageable pageable);
 
+    /**
+     * @param prioritized Whether the returned jobs should be prioritized.
+     * @param pageable The requested page.
+     * @return Returns the requested page of (un-)prioritized jobs in ascending order.
+     */
     Page<Job> findAllByPrioritizedOrderByQueuedAsc(boolean prioritized, Pageable pageable);
 
+    /**
+     * @param prioritized Whether the returned jobs should be prioritized.
+     * @return Returns all (un-)prioritized jobs in ascending order.
+     */
     List<Job> findAllByPrioritizedOrderByQueuedAsc(boolean prioritized);
 
+    /**
+     * @param prioritized Whether the returned jobs should be prioritized.
+     * @return Returns all (un-)prioritized jobs in ascending order.
+     */
     List<Job> findAllByPrioritizedOrderByQueuedDesc(boolean prioritized);
 }

@@ -43,5 +43,9 @@ public interface BenchmarkGroupDB extends CrudRepository<BenchmarkGroup, Integer
         return findBenchmarkGroupByStandardGroup(true);
     }
 
+    /**
+     * @param standardGroup defines whether to look for standard group or other groups
+     * @return the standard group (if standardGroup is {@code true}) or any other group
+     */
     BenchmarkGroup findBenchmarkGroupByStandardGroup(boolean standardGroup);
 }

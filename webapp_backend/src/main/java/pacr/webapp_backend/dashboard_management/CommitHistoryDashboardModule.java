@@ -19,13 +19,6 @@ public class CommitHistoryDashboardModule extends DashboardModule {
     List<String> trackedRepositories = new ArrayList<>();
 
     /**
-     * Public no argument constructor for jpa.
-     */
-    public CommitHistoryDashboardModule() {
-
-    }
-
-    /**
      * Sets the tracked repositories to the given list of repository names.
      *
      * @param trackedRepositories The new tracked repositories.

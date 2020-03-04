@@ -29,6 +29,8 @@ public class BenchmarkController {
     private IAuthenticator authenticator;
     private BenchmarkManager benchmarkManager;
 
+    private static final String JWT_STRING = "jwt";
+
     /**
      * Creates a new BenchmarkController.
      * @param authenticator the authenticator to authenticate jwts.
@@ -76,7 +78,7 @@ public class BenchmarkController {
      */
     @PutMapping("/benchmark")
     public ResponseEntity<Object> updateBenchmark(@RequestBody final BenchmarkInput benchmark,
-                                                  @NotNull @RequestHeader(name = "jwt") final String jwt) {
+                                                  @NotNull @RequestHeader(name = JWT_STRING) final String jwt) {
         if (!(benchmark.validate() && StringUtils.hasText(jwt))) {
             throw new IllegalArgumentException("jwt or input of benchmark cannot be null, empty or blank");
         }
@@ -103,7 +105,7 @@ public class BenchmarkController {
      */
     @PostMapping("/group")
     public ResponseEntity<Object> addGroup(@NotNull @RequestBody final String name,
-                                           @NotNull @RequestHeader(name = "jwt") final String jwt) {
+                                           @NotNull @RequestHeader(name = JWT_STRING) final String jwt) {
         if (!StringUtils.hasText(name) || !StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("name and jwt cannot be null, empty or blank");
         }
@@ -127,7 +129,7 @@ public class BenchmarkController {
      */
     @PutMapping("/group/{groupId}")
     public ResponseEntity<Object> updateGroup(@PathVariable final int groupId, @NotNull @RequestBody final String name,
-                                              @NotNull @RequestHeader(name = "jwt") final String jwt) {
+                                              @NotNull @RequestHeader(name = JWT_STRING) final String jwt) {
         if (!StringUtils.hasText(name) || !StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("name and jwt cannot be null, empty or blank");
         }
@@ -154,7 +156,7 @@ public class BenchmarkController {
      */
     @DeleteMapping("/group/{groupId}")
     public ResponseEntity<Object> deleteGroup(@PathVariable final int groupId,
-                                              @NotNull @RequestHeader(name = "jwt") final String jwt) {
+                                              @NotNull @RequestHeader(name = JWT_STRING) final String jwt) {
         if (!StringUtils.hasText(jwt)) {
             throw new IllegalArgumentException("jwt cannot be null, empty or blank");
         }

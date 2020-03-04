@@ -22,9 +22,12 @@ public class LeaderboardDashboardModule extends DashboardModule {
      * Public no argument constructor for jpa.
      */
     public LeaderboardDashboardModule() {
-
     }
 
+    /**
+     * Sets the current leaderboard of the dashboard module.
+     * @param leaderboard the leaderboard.
+     */
     public void setLeaderboard(final ILeaderboard leaderboard) {
         this.leaderboard = leaderboard;
     }

@@ -89,7 +89,7 @@ public class ResultController {
      */
     @GetMapping("/results/pageable/repository/{repositoryId}")
     public Page<OutputBenchmarkingResult> getResultsForRepository(@PathVariable final int repositoryId,
-                                              @PageableDefault(size = 10, page = 0, sort = {"commitDate"}) final Pageable pageable) {
+                                              @PageableDefault(size = 10, page = 0, sort = "commitDate") final Pageable pageable) {
         return resultGetter.getFullRepositoryResults(repositoryId, pageable);
     }
 

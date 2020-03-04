@@ -2,6 +2,9 @@ package pacr.webapp_backend.shared;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * Represents a standard subject from the observer pattern.
+ */
 public interface ISubject {
 
     /**

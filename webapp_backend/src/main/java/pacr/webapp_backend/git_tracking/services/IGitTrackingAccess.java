@@ -87,6 +87,11 @@ public interface IGitTrackingAccess {
      */
     Collection<GitCommit> getAllCommits(int repositoryID);
 
+    /**
+     * @param repositoryID the id of a repository.
+     * @param pageable the requested page.
+     * @return the requested page of commits in the specified repository.
+     */
     Page<GitCommit> getAllCommits(int repositoryID, Pageable pageable);
 
     /**

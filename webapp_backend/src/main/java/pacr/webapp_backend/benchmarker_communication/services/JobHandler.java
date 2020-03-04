@@ -28,6 +28,13 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
     // If there is a communication error with a benchmarker the attempts are counted.
     private Map<String, Integer> executionAttempts;
 
+    /**
+     * Initiates a new instance of this class.
+     * @param jobSender the {@link IJobSender} of the instance.
+     * @param benchmarkerPool the {@link BenchmarkerPool} pool, the instance uses.
+     * @param jobProvider the {@link IJobProvider} of the instance.
+     * @param resultSaver the {@link IResultSaver} of this instance.
+     */
     public JobHandler(final IJobSender jobSender, final IBenchmarkerPool benchmarkerPool,
                       final IJobProvider jobProvider, final IResultSaver resultSaver) {
         this.jobSender = jobSender;

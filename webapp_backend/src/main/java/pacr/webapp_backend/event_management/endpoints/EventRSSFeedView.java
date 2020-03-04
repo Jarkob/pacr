@@ -33,6 +33,8 @@ public class EventRSSFeedView extends AbstractRssFeedView {
      * @param eventHandler the eventHandler used to retrieve the displayed events.
      */
     public EventRSSFeedView(@NotNull final EventCategory category, @NotNull final EventHandler eventHandler) {
+        super();
+
         Objects.requireNonNull(category, "The category cannot be null.");
         Objects.requireNonNull(eventHandler, "The eventHandler cannot be null.");
 

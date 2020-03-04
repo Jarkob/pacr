@@ -21,11 +21,23 @@ import java.util.Set;
 @Component
 public interface CommitDB extends PagingAndSortingRepository<GitCommit, String> {
 
+    /**
+     * @param repositoryID the id of a repository.
+     * @return a collection of git commit in the repository.
+     */
     Collection<GitCommit> findGitCommitsByRepository_Id(int repositoryID);
 
+    /**
+     * Removes the commits in the given repository.
+     * @param repositoryID the id of a repository.
+     */
     @Transactional
     void removeGitCommitsByRepository_Id(int repositoryID);
 
+    /**
+     * Removes the commits with the given commit hash.
+     * @param commitHashes the commit hash.
+     */
     @Transactional
     void removeGitCommitsByCommitHashIn(Collection<String> commitHashes);
 
@@ -36,5 +48,10 @@ public interface CommitDB extends PagingAndSortingRepository<GitCommit, String> 
     List<GitCommit> findGitCommitByRepository_IdAndBranchesAndCommitDateBetween(
             int repositoryID, GitBranch branch, LocalDateTime commitDateStart, LocalDateTime commitDateEnd);
 
+    /**
+     * @param repositoryID The id of a repository.
+     * @param pageable The requested page.
+     * @return The requested page of commits in the specified repoistories.
+     */
     Page<GitCommit> findAllByRepository_Id(int repositoryID, Pageable pageable);
 }

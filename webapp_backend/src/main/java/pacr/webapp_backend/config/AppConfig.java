@@ -8,11 +8,18 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
+/**
+ * Implements methods to add cors mapping.
+ */
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
 
     private String allowedOrigins;
 
+    /**
+     * Initializes the app config.
+     * @param allowedOrigins
+     */
     public AppConfig(@NotNull @Value("${allowedOrigins}") final String allowedOrigins) {
         Objects.requireNonNull(allowedOrigins);
 

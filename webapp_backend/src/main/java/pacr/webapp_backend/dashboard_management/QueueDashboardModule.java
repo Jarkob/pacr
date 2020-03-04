@@ -11,11 +11,4 @@ import javax.persistence.Entity;
 @Entity
 public class QueueDashboardModule extends DashboardModule {
 
-    /**
-     * Public no argument constructor for jpa.
-     */
-    public QueueDashboardModule() {
-
-    }
-
 }

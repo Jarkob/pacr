@@ -23,15 +23,6 @@ public class LineDiagramDashboardModule extends DashboardModule {
     @ElementCollection(fetch = FetchType.EAGER)
     List<String> trackedBenchmarks = new ArrayList<>();
 
-
-    /**
-     * Public no argument constructor for jpa.
-     */
-    public LineDiagramDashboardModule() {
-
-    }
-
-
     /**
      * Sets the tracked repositories to the given list of repository names.
      *

@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import org.springframework.http.MediaType;
 
 /**
  * Controller for managing repositories.
@@ -92,9 +92,16 @@ public class RepositoryManagerController {
                 gitRepository.getObserveFromDate(), gitRepository.getCommitLinkPrefix());
     }
 
-    @RequestMapping(value = "/commits/{repositoryID}", method = RequestMethod.GET, produces = APPLICATION_JSON_VALUE)
-    public Page<GitCommit> getAllCommits(@PageableDefault(size = 50, page = 0, sort = {"commitDate"},
-            direction = Sort.Direction.ASC) final Pageable pageable, @PathVariable("repositoryID") final int repositoryID) {
+    /**
+     * @param pageable The requested page
+     * @param repositoryID The id of the specified repository.
+     * @return the requested page of commits in the repository.
+     */
+    @RequestMapping(value = "/commits/{repositoryID}", method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<GitCommit> getAllCommits(@PageableDefault(size = 50, page = 0, sort = "commitDate",
+            direction = Sort.Direction.ASC) final Pageable pageable,
+                                         @PathVariable("repositoryID") final int repositoryID) {
         return gitTracking.getAllCommits(repositoryID, pageable);
     }
 
@@ -211,8 +218,7 @@ public class RepositoryManagerController {
         final LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
         final LocalDate newObserveFromDate = transferRepository.getObserveFromDate();
 
-        if ((oldObserveFromDate == null && newObserveFromDate != null)
-                || (oldObserveFromDate != null && newObserveFromDate == null)
+        if ((oldObserveFromDate != newObserveFromDate)
                 || (oldObserveFromDate != null && !oldObserveFromDate.isEqual(newObserveFromDate))) {
 
             LOGGER.info("Changing observeFromDate from {} to {}.", oldObserveFromDate, newObserveFromDate);
