@@ -130,6 +130,12 @@ export class DiagramComponent implements OnInit {
         this.selectCommit(this.datasets[selected[0]._datasetIndex]
           .code[selected[0]._index].commitHash);
 
+        // if no results available
+        if (!this.datasets[selected[0]._datasetIndex].code[selected[0]._index].result || !this.datasets[selected[0]._datasetIndex]
+          .code[selected[0]._index].result[this.selectedBenchmarkProperty.name]) {
+          return;
+        }
+
         // draw horizontal line
         this.addLine(this.datasets[selected[0]._datasetIndex]
           .code[selected[0]._index].result[this.selectedBenchmarkProperty.name].result);
@@ -145,14 +151,13 @@ export class DiagramComponent implements OnInit {
           // if there is an error, show it
           if (!this.datasets[item.datasetIndex].code[item.index].result) {
             return 'Not yet benchmarked';
-          }
-          if (this.datasets[item.datasetIndex].code[item.index].globalError) {
+          } else if (this.datasets[item.datasetIndex].code[item.index].globalError) {
             return 'Global Error: ' + this.datasets[item.datasetIndex].code[item.index];
-          }
-          if (Object.keys(this.datasets[item.datasetIndex].code[item.index].result).length === 0) {
+          } else if (!this.datasets[item.datasetIndex].code[item.index].result) {
+            return 'No results for this benchmark';
+          } else if (Object.keys(this.datasets[item.datasetIndex].code[item.index].result).length === 0) {
             return 'No benchmarks available';
-          }
-          if (this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage) {
+          } else if (this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage) {
             return 'Error:' + this.datasets[item.datasetIndex].code[item.index].result[this.selectedBenchmarkProperty.name].errorMessage;
           }
           let label = '' + Math.round(item.yLabel * 100) / 100;
@@ -211,6 +216,7 @@ export class DiagramComponent implements OnInit {
       this.repositories = this.inRepositories;
       this.repositoryResults = this.inRepositoryResults;
 
+      this.loadImages();
       this.chart.chart.update();
     }
   }
