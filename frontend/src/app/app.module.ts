@@ -1,3 +1,4 @@
+import { ErrorComponent } from './error/error.component';
 import { DiagramService } from './services/diagram.service';
 import { PropertyBoxplotComponent } from './property-boxplot/property-boxplot.component';
 import { AdminImportExportComponent } from './admin-import-export/admin-import-export.component';
@@ -94,13 +95,15 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     CommitHistoryJobQueueWrapperComponent,
     DetailViewComparisonWrapperComponent,
     AdminImportExportComponent,
-    PropertyBoxplotComponent
+    PropertyBoxplotComponent,
+    ErrorComponent
   ],
   entryComponents: [
     DetailViewMaximizedComponent,
     DiagramMaximizedComponent,
     CommitHistoryMaximizedComponent,
-    CommitComparisonComponent
+    CommitComparisonComponent,
+    ErrorComponent
   ],
   imports: [
     BrowserModule,

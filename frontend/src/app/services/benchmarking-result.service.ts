@@ -29,8 +29,15 @@ export class BenchmarkingResultService {
    * @param repository the id of the repository
    * @param branch the branch
    */
-  public getBenchmarkingResults(benchmark: number, repositoryId: number, branch: string): Observable<any> {
-    return this.http.get<any>(this.globalService.url + '/results/pageable/benchmark/' + benchmark + '/' + repositoryId + '/' + branch);
+  public getBenchmarkingResults(benchmark: number, repositoryId: number, branch: string, page?: number, size?: number): Observable<any> {
+    if (!page) {
+      page = 0;
+    }
+    if (!size) {
+      size = 100;
+    }
+    return this.http.get<any>(this.globalService.url
+      + '/results/pageable/benchmark/' + benchmark + '/' + repositoryId + '/' + branch + '?page=' + page + '&size=' + size);
   }
 
   /**
