@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.git.GitHandler;
+import pacr.webapp_backend.git_tracking.services.git.PullFromRepositoryException;
 import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
 import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IRepositoryImporter;
@@ -186,7 +187,13 @@ public class GitTracking implements IRepositoryImporter {
 
         gitRepository = gitTrackingAccess.getRepository(repositoryID);
 
-        Collection<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
+        Collection<String> untrackedCommitHashes = null;
+        try {
+            untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
+        } catch (PullFromRepositoryException e) {
+            return;
+        }
+
         LOGGER.info("Got {} untracked commits.", untrackedCommitHashes.size());
 
         // automatically adds all new commits to the database

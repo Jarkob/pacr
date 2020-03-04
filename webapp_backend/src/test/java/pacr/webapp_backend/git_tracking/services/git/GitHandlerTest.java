@@ -174,7 +174,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
      * Performs a pull for commits with an uninitialized repository.
      */
     @Test
-    public void pullNewRepository() {
+    public void pullNewRepository() throws PullFromRepositoryException {
 
         Collection<String> untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
 
@@ -213,7 +213,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
      * Performs a pull for commits with a repository that is already initialized.
      */
     @Test
-    public void pullRepositoryWithNewCommits() {
+    public void pullRepositoryWithNewCommits() throws PullFromRepositoryException {
         // repository is already cloned
         unzip(NEW_COMMITS_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
 
@@ -259,7 +259,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
      * Performs a pull for commits with a repository with a force push.
      */
     @Test
-    public void pullRepositoryForcePush() {
+    public void pullRepositoryForcePush() throws PullFromRepositoryException {
 
         // repository is already cloned
         unzip(FORCE_PUSH_REPOSITORY, ABSOLUTE_PATH_TO_REPOS + "/" + gitRepository.getId());
@@ -293,7 +293,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
      * Test for cloning the lean repository.
      */
     @Test @Disabled // disabled because it takes very long
-    public void leanTest() {
+    public void leanTest() throws PullFromRepositoryException {
         gitRepository.setName("LEAN");
         gitRepository.setIsHookSet(true); // PullIntervalScheduler should not interfere
         gitRepository.setPullURL("git@github.com:leanprover/lean.git");

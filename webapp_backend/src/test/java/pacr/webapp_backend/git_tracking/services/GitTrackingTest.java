@@ -9,6 +9,7 @@ import org.mockito.MockitoAnnotations;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.git.GitHandler;
+import pacr.webapp_backend.git_tracking.services.git.PullFromRepositoryException;
 import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
 import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IResultDeleter;
@@ -115,7 +116,7 @@ public class GitTrackingTest {
     }
 
     @Test
-    public void pullFromRepository() {
+    public void pullFromRepository() throws PullFromRepositoryException {
         GitRepository repository = Mockito.mock(GitRepository.class);
         when(repository.getPullURL()).thenReturn("pull url");
         when(gitTrackingAccess.getRepository(anyInt())).thenReturn(repository);
@@ -140,7 +141,7 @@ public class GitTrackingTest {
     }
 
     @Test
-    public void pullFromAllRepositories() {
+    public void pullFromAllRepositories() throws PullFromRepositoryException {
         GitRepository repository1 = mock(GitRepository.class);
         when(repository1.isHookSet()).thenReturn(true);
         when(repository1.getId()).thenReturn(1);

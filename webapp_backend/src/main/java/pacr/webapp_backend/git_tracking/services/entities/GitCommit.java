@@ -225,4 +225,8 @@ public class GitCommit implements ICommit {
         parentHashes.add(commitHash);
     }
 
+    public boolean isOnBranch(String branchName) {
+        return getBranchNames().contains(branchName);
+    }
+
 }
