@@ -13,6 +13,7 @@ import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.IObserver;
+import pacr.webapp_backend.shared.ResultInterpretation;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -35,6 +36,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static pacr.webapp_backend.result_management.services.OutputBuilderTest.PROPERTY_NAME_TWO;
+import static pacr.webapp_backend.result_management.services.SimpleBenchmark.PROPERTY_NAME;
+import static pacr.webapp_backend.result_management.services.SimpleBenchmarkProperty.UNIT;
+import static pacr.webapp_backend.result_management.services.SimpleBenchmarkingResult.BENCHMARK_NAME;
 
 public class ResultGetterTest {
 
@@ -294,6 +299,61 @@ public class ResultGetterTest {
 
         assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
         assertEquals(diagramOutputMock, outputs.get(HASH));
+    }
+
+    @Test
+    void getMeasurementsOfPropertyForCommit_commitResultExists_shouldReturnMeasurements() {
+        when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
+
+        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
+        BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(new SimpleBenchmarkProperty(), property);
+
+        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
+        benchmarkResult.addPropertyResult(propertyResult);
+
+        Set<BenchmarkResult> benchmarkResults = new HashSet<>();
+        benchmarkResults.add(benchmarkResult);
+
+        when(resultMock.getBenchmarkResults()).thenReturn(benchmarkResults);
+
+        List<Double> measurements = resultGetter
+                .getMeasurementsOfPropertyForCommit(HASH, benchmark.getId(), PROPERTY_NAME);
+
+        assertEquals(propertyResult.getResults(), measurements);
+    }
+
+    @Test
+    void getMeasurementsOfPropertyForCommit_inputIsNull_shouldThrowException() {
+        assertThrows(IllegalArgumentException.class, () -> 
+                resultGetter.getMeasurementsOfPropertyForCommit(null, 0, null));
+    }
+
+    @Test
+    void getMeasurementsOfPropertyForCommit_commitResultDoesntExist_shouldThrowException() {
+        when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(null);
+        assertThrows(NoSuchElementException.class,
+                () -> resultGetter.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME));
+    }
+
+    @Test
+    void getMeasurementsOfPropertyForCommit_commitResultExistsButNotProperty_shouldThrowException() {
+        when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
+
+        BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
+        BenchmarkPropertyResult propertyResult = new BenchmarkPropertyResult(new SimpleBenchmarkProperty(), property);
+
+        Benchmark benchmark = new Benchmark(BENCHMARK_NAME);
+        BenchmarkResult benchmarkResult = new BenchmarkResult(benchmark);
+        benchmarkResult.addPropertyResult(propertyResult);
+
+        Set<BenchmarkResult> benchmarkResults = new HashSet<>();
+        benchmarkResults.add(benchmarkResult);
+
+        when(resultMock.getBenchmarkResults()).thenReturn(benchmarkResults);
+
+        assertThrows(NoSuchElementException.class,
+                () -> resultGetter.getMeasurementsOfPropertyForCommit(HASH, benchmark.getId(), PROPERTY_NAME_TWO));
     }
 
     /**
