@@ -35,6 +35,8 @@ export class DiagramComponent implements OnInit {
   ) { }
 
   @Input() inSelectedBenchmark: Benchmark;
+  @Input() inSelectedProperty: BenchmarkProperty;
+  @Input() inSelectedDatasets: Dataset[];
 
   /**
    * data
@@ -191,10 +193,13 @@ export class DiagramComponent implements OnInit {
 
   ngOnInit() {
     this.chart.chart = undefined;
-    this.getRepositories();
-    if (this.inSelectedBenchmark != null) {
+    if (this.inSelectedBenchmark && this.inSelectedProperty) {
       this.selectedBenchmark = this.inSelectedBenchmark;
+      this.selectedBenchmarkProperty = this.inSelectedProperty;
+      this.datasets = this.inSelectedDatasets;
+      this.chart.chart.update();
     }
+    this.getRepositories();
   }
 
   /**
@@ -217,7 +222,11 @@ export class DiagramComponent implements OnInit {
    * maximize the diagram component
    */
   public maximizeDiagram() {
-    this.dialogRef = this.previewDialog.open({ selectedBenchmark: this.selectedBenchmark });
+    this.dialogRef = this.previewDialog.open({
+      selectedBenchmark: this.selectedBenchmark,
+      selectedProperty: this.selectedBenchmarkProperty,
+      selectedDatasets: this.datasets
+    });
   }
 
   /**

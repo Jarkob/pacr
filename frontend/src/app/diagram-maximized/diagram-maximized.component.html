@@ -5,5 +5,9 @@
             <mat-icon>fullscreen_exit</mat-icon>
         </button>
     </mat-card-header>
-    <app-diagram class="maximized" [inSelectedBenchmark]="selectedBenchmark" [maximized]="true"></app-diagram>
+    <app-diagram class="maximized"
+    [inSelectedBenchmark]="selectedBenchmark"
+    [inSelectedProperty]="selectedProperty"
+    [inSelectedDatasets]="selectedDatasets"
+    [maximized]="true"></app-diagram>
 </mat-card>

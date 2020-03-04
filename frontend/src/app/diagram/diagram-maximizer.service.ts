@@ -1,5 +1,7 @@
+import { Dataset } from './../classes/dataset';
+import { BenchmarkProperty } from './../classes/benchmark-property';
 import { Benchmark } from './../classes/benchmark';
-import { SELECTED_BENCHMARK } from './diagram-maximized.tokens';
+import { SELECTED_BENCHMARK, SELECTED_PROPERTY, SELECTED_DATASETS } from './diagram-maximized.tokens';
 import { DiagramMaximizedComponent } from './../diagram-maximized/diagram-maximized.component';
 import { Injectable, Injector, ComponentRef } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
@@ -11,12 +13,16 @@ interface DiagramMaximizedConfig {
   panelClass?: string;
   hasBackdrop?: boolean;
   selectedBenchmark?: Benchmark;
+  selectedProperty?: BenchmarkProperty;
+  selectedDatasets?: Dataset[];
 }
 
 const DEFAULT_CONFIG: DiagramMaximizedConfig = {
   hasBackdrop: true,
   panelClass: 'tm-file-preview-dialog-panel',
-  selectedBenchmark: null
+  selectedBenchmark: null,
+  selectedProperty: null,
+  selectedDatasets: null
 };
 
 @Injectable()
@@ -62,6 +68,8 @@ export class DiagramMaximizerService {
 
     injectionTokens.set(DiagramMaximizedRef, dialogRef);
     injectionTokens.set(SELECTED_BENCHMARK, config.selectedBenchmark);
+    injectionTokens.set(SELECTED_PROPERTY, config.selectedProperty);
+    injectionTokens.set(SELECTED_DATASETS, config.selectedDatasets);
 
     return new PortalInjector(this.injector, injectionTokens);
   }
