@@ -313,6 +313,9 @@ export class DiagramComponent implements OnInit {
     if (this.selectedBenchmark == null) {
       return;
     }
+    this.datasets = this.datasets.splice(0, 1);
+    this.chart.datasets = this.chart.datasets.splice(0, 1);
+    this.selectedBenchmarkProperty = this.selectedBenchmark.properties[0];
 
     this.loading = true;
     const repositoryIds = Array.from(this.repositories.keys());
@@ -337,7 +340,6 @@ export class DiagramComponent implements OnInit {
         // both is important, otherwise event listening for change of legend gets messed up
         this.chart.datasets.concat(lines);
         this.datasets = this.datasets.concat(lines);
-        this.chart.update();
         this.getBenchmarkingResults(repositoryIds.splice(1));
       }
     );
