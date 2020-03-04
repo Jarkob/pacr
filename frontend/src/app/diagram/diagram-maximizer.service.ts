@@ -1,13 +1,21 @@
 import { Dataset } from './../classes/dataset';
 import { BenchmarkProperty } from './../classes/benchmark-property';
 import { Benchmark } from './../classes/benchmark';
-import { SELECTED_BENCHMARK, SELECTED_PROPERTY, SELECTED_DATASETS } from './diagram-maximized.tokens';
+import {
+  SELECTED_BENCHMARK,
+  SELECTED_PROPERTY,
+  SELECTED_DATASETS,
+  REPOSITORIES, GROUPS,
+  BENCHMARKS,
+  RESULTS } from './diagram-maximized.tokens';
 import { DiagramMaximizedComponent } from './../diagram-maximized/diagram-maximized.component';
 import { Injectable, Injector, ComponentRef } from '@angular/core';
 import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 
 import { DiagramMaximizedRef } from './diagram-maximized-ref';
+import { BenchmarkGroup } from '../classes/benchmark-group';
+import { Repository } from '../classes/repository';
 
 interface DiagramMaximizedConfig {
   panelClass?: string;
@@ -15,6 +23,10 @@ interface DiagramMaximizedConfig {
   selectedBenchmark?: Benchmark;
   selectedProperty?: BenchmarkProperty;
   selectedDatasets?: Dataset[];
+  repositories?: Map<number, Repository>;
+  groups?: BenchmarkGroup[];
+  benchmarks?: Map<string, Benchmark[]>;
+  results?: Map<number, Map<string, any>>;
 }
 
 const DEFAULT_CONFIG: DiagramMaximizedConfig = {
@@ -22,7 +34,11 @@ const DEFAULT_CONFIG: DiagramMaximizedConfig = {
   panelClass: 'tm-file-preview-dialog-panel',
   selectedBenchmark: null,
   selectedProperty: null,
-  selectedDatasets: null
+  selectedDatasets: null,
+  repositories: null,
+  groups: null,
+  benchmarks: null,
+  results: null
 };
 
 @Injectable()
@@ -70,6 +86,10 @@ export class DiagramMaximizerService {
     injectionTokens.set(SELECTED_BENCHMARK, config.selectedBenchmark);
     injectionTokens.set(SELECTED_PROPERTY, config.selectedProperty);
     injectionTokens.set(SELECTED_DATASETS, config.selectedDatasets);
+    injectionTokens.set(REPOSITORIES, config.repositories);
+    injectionTokens.set(GROUPS, config.groups);
+    injectionTokens.set(BENCHMARKS, config.benchmarks);
+    injectionTokens.set(RESULTS, config.results);
 
     return new PortalInjector(this.injector, injectionTokens);
   }

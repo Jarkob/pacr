@@ -32,11 +32,16 @@ export class DiagramComponent implements OnInit {
     private repositoryService: RepositoryService,
     private benchmarkService: BenchmarkService,
     private detailViewService: DetailViewService,
-  ) { }
+  ) {
+  }
 
   @Input() inSelectedBenchmark: Benchmark;
   @Input() inSelectedProperty: BenchmarkProperty;
   @Input() inSelectedDatasets: Dataset[];
+  @Input() inRepositories: Map<number, Repository>;
+  @Input() inBenchmarkGroups: BenchmarkGroup[];
+  @Input() inBenchmarks: Map<string, Benchmark[]>;
+  @Input() inRepositoryResults: Map<number, Map<string, any>>;
 
   /**
    * data
@@ -193,13 +198,21 @@ export class DiagramComponent implements OnInit {
 
   ngOnInit() {
     this.chart.chart = undefined;
-    if (this.inSelectedBenchmark && this.inSelectedProperty) {
+    if (!this.maximized) {
+      this.getRepositories();
+    } else {
+      this.loading = false;
       this.selectedBenchmark = this.inSelectedBenchmark;
       this.selectedBenchmarkProperty = this.inSelectedProperty;
       this.datasets = this.inSelectedDatasets;
+
+      this.benchmarks = this.inBenchmarks;
+      this.benchmarkGroups = this.inBenchmarkGroups;
+      this.repositories = this.inRepositories;
+      this.repositoryResults = this.inRepositoryResults;
+
       this.chart.chart.update();
     }
-    this.getRepositories();
   }
 
   /**
@@ -225,7 +238,11 @@ export class DiagramComponent implements OnInit {
     this.dialogRef = this.previewDialog.open({
       selectedBenchmark: this.selectedBenchmark,
       selectedProperty: this.selectedBenchmarkProperty,
-      selectedDatasets: this.datasets
+      selectedDatasets: this.datasets,
+      repositories: this.repositories,
+      groups: this.benchmarkGroups,
+      benchmarks: this.benchmarks,
+      results: this.repositoryResults
     });
   }
 
