@@ -151,7 +151,7 @@ public class EventContainerTest {
     @Test
     void eventContainer_fetchesEvents() {
         // define new category so the method findByCategory(category) is only called once
-        EventCategory category = EventCategory.LEADERBOARD;
+        EventCategory category = EventCategory.UNDEFINED;
 
         List<Event> expectedEvents = new ArrayList<>();
 

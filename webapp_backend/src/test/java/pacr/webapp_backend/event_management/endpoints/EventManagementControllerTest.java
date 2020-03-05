@@ -28,13 +28,7 @@ public class EventManagementControllerTest {
     private List<Event> expectedBenchmarkingEvents;
 
     @Mock
-    private List<Event> expectedLeaderboardEvents;
-
-    @Mock
     private EventHandler eventHandler;
-
-    @Mock
-    private Page<Event> leaderboardPage;
 
     @Mock
     private Page<Event> benchmarkingPage;
@@ -48,10 +42,8 @@ public class EventManagementControllerTest {
 
         eventController = new EventManagementController(eventHandler);
 
-        when(leaderboardPage.getContent()).thenReturn(expectedLeaderboardEvents);
         when(benchmarkingPage.getContent()).thenReturn(expectedBenchmarkingEvents);
 
-        when(eventHandler.getEvents(pageable, EventCategory.LEADERBOARD)).thenReturn(leaderboardPage);
         when(eventHandler.getEvents(pageable, EventCategory.BENCHMARKING)).thenReturn(benchmarkingPage);
     }
 
@@ -63,14 +55,6 @@ public class EventManagementControllerTest {
     }
 
     @Test
-    void getLeaderboardEvents_noError() {
-        Page<Event> page = eventController.getLeaderboardEvents(pageable);
-        List<Event> events = page.getContent();
-
-        assertEquals(expectedLeaderboardEvents, events);
-    }
-
-    @Test
     void benchmarkingRSSFeed_noError() {
         View rssView = eventController.benchmarkingRSSFeed();
 
@@ -78,11 +62,4 @@ public class EventManagementControllerTest {
         assertEquals("application/rss+xml", rssView.getContentType());
     }
 
-    @Test
-    void leaderboardRSSFeed_noError() {
-        View rssView = eventController.leaderboardRSSFeed();
-
-        assertNotNull(rssView);
-        assertEquals("application/rss+xml", rssView.getContentType());
-    }
 }

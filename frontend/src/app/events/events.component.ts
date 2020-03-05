@@ -27,10 +27,6 @@ export class EventsComponent implements OnInit {
   benchmarkingEvents: Event[];
   benchmarkingPageEvent: PageEvent = new PageEvent();
 
-  leaderboardPage: any;
-  leaderboardEvents: Event[];
-  leaderboardPageEvent: PageEvent = new PageEvent();
-
   pageSizeOptions = [5, 10, 15, 20];
 
   eventSubscription: Subscription;
@@ -45,12 +41,10 @@ export class EventsComponent implements OnInit {
 
     // perform initial load
     this.getBenchmarkingEvents(this.benchmarkingPageEvent);
-    this.getLeaderboardEvents(this.leaderboardPageEvent);
 
     this.eventSubscription = interval(this.eventUpdateInterval * 1000).subscribe(
       () => {
         this.getBenchmarkingEvents(this.benchmarkingPageEvent);
-        this.getLeaderboardEvents(this.leaderboardPageEvent);
       }
     );
   }
@@ -70,23 +64,6 @@ export class EventsComponent implements OnInit {
     );
 
     return event;
-  }
-
-  /**
-   * Fetches all available leaderboard events in a page.
-   *
-   * @param pagingEvent pageable event containing paging information.
-   * @returns the pagination event.
-   */
-  public getLeaderboardEvents(pagingEvent: any): any {
-    this.eventService.getLeaderboardEvents(pagingEvent.pageIndex, pagingEvent.pageSize).subscribe(
-      data => {
-        this.leaderboardPage = data;
-        this.leaderboardEvents = data.content;
-      }
-    );
-
-    return pagingEvent;
   }
 
   /**

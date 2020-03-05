@@ -17,13 +17,6 @@ export class EventService {
   ) { }
 
   /**
-   * get the events for leaderboards
-   */
-  public getLeaderboardEvents(page: number, pageSize: number): Observable<any> {
-    return this.http.get<Event[]>(this.globalService.url + '/events/leaderboard?page=' + page + '&size=' + pageSize);
-  }
-
-  /**
    * get the events for benchmarking
    */
   public getBenchmarkingEvents(page: number, pageSize: number): Observable<any> {

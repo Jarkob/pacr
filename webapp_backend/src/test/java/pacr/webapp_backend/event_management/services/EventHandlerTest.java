@@ -79,7 +79,7 @@ public class EventHandlerTest {
     @Test
     void addEvent_multipleCategories() {
         EventCategory category = EventCategory.BENCHMARKING;
-        EventCategory otherCategory = EventCategory.LEADERBOARD;
+        EventCategory otherCategory = EventCategory.UNDEFINED;
 
         EventTemplate otherTemplate = createEventTemplate(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
 
@@ -140,7 +140,7 @@ public class EventHandlerTest {
     @Test
     void getEvents_wrongCategory() {
         EventCategory category = EventCategory.BENCHMARKING;
-        EventCategory otherCategory = EventCategory.LEADERBOARD;
+        EventCategory otherCategory = EventCategory.UNDEFINED;
 
         int amtEvents = 10;
         for (int i = 0; i < amtEvents; i++) {
@@ -158,7 +158,7 @@ public class EventHandlerTest {
     @Test
     void getEvents_multipleCategories() {
         EventCategory category = EventCategory.BENCHMARKING;
-        EventCategory otherCategory = EventCategory.LEADERBOARD;
+        EventCategory otherCategory = EventCategory.UNDEFINED;
 
         List<Event> expectedEvents = new ArrayList<>();
 

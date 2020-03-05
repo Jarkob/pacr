@@ -5,9 +5,9 @@ package pacr.webapp_backend.shared;
  */
 public enum EventCategory {
     /**
-     * Category for all events relating to leaderboards.
+     * Category for all events that don't have a category.
      */
-    LEADERBOARD,
+    UNDEFINED,
 
     /**
      * Category for all benchmarking events.

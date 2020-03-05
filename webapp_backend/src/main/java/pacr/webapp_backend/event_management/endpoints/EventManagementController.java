@@ -25,7 +25,6 @@ public class EventManagementController {
     private EventHandler eventHandler;
 
     private EventRSSFeedView benchmarkingRSSFeed;
-    private EventRSSFeedView leaderboardRSSFeed;
 
     /**
      * Creates a new EventManagementController.
@@ -36,19 +35,7 @@ public class EventManagementController {
         Objects.requireNonNull(eventHandler, "The eventHandler cannot be null.");
 
         this.eventHandler = eventHandler;
-
-        this.leaderboardRSSFeed = new EventRSSFeedView(EventCategory.LEADERBOARD, eventHandler);
         this.benchmarkingRSSFeed = new EventRSSFeedView(EventCategory.BENCHMARKING, eventHandler);
-    }
-
-    /**
-     * @param pageable information about the requested page
-     * @return a list of all leaderboard events.
-     */
-    @RequestMapping("/events/leaderboard")
-    public Page<Event> getLeaderboardEvents(@PageableDefault(size = DEFAULT_PAGE_SIZE) @SortDefault.SortDefaults({
-            @SortDefault(sort = "created", direction = Sort.Direction.DESC)}) Pageable pageable) {
-        return eventHandler.getEvents(pageable, EventCategory.LEADERBOARD);
     }
 
     /**
@@ -67,14 +54,6 @@ public class EventManagementController {
     @RequestMapping("/rss/benchmark")
     public View benchmarkingRSSFeed() {
         return benchmarkingRSSFeed;
-    }
-
-    /**
-     * @return a RSS-Feed view of all benchmarking events.
-     */
-    @RequestMapping("/rss/leaderboard")
-    public View leaderboardRSSFeed() {
-        return leaderboardRSSFeed;
     }
 
 }

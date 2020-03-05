@@ -67,7 +67,7 @@ public class EventDBTest extends SpringBootTestWithoutShell {
     @Test
     void findByCategory_multipleCategories() {
         EventCategory category = EventCategory.BENCHMARKING;
-        EventCategory otherCategory = EventCategory.LEADERBOARD;
+        EventCategory otherCategory = EventCategory.UNDEFINED;
 
         LocalDateTime expectedCreated = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         Event expectedEvent = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
