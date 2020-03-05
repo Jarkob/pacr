@@ -15,7 +15,6 @@ import { ComponentPortal, PortalInjector } from '@angular/cdk/portal';
 
 import { DiagramMaximizedRef } from './diagram-maximized-ref';
 import { BenchmarkGroup } from '../classes/benchmark-group';
-import { Repository } from '../classes/repository';
 
 interface DiagramMaximizedConfig {
   panelClass?: string;

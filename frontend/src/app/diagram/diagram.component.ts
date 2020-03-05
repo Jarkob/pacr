@@ -57,8 +57,6 @@ export class DiagramComponent implements OnInit {
 
   // the lines that show up in the diagram
   lists: any[];
-  // if a list should show up in the diagram
-  checked: boolean[] = [];
 
   @Input() maximized: boolean;
   dialogRef: DiagramMaximizedRef;
@@ -254,13 +252,13 @@ export class DiagramComponent implements OnInit {
 
   /**
    * toggle specific lines in the diagram
-   * @param index the index of the legend item
+   * @param legendItem the legend item
    */
-  public toggleLines(index: number) {
-    // tslint:disable-next-line:prefer-for-of
-    for (let i = 0; i < this.legendData[index].datasetIndices.length; i++) {
-      const datasetIndex = this.legendData[index].datasetIndices[i];
-      this.chart.datasets[datasetIndex].hidden = !this.checked[index];
+  public toggleLines(legendItem: LegendItem) {
+    // legendItem.checked = this.repositories.get(legendItem.repositoryId).checked;
+    // console.log('item: ', legendItem.checked);
+    for (const datasetIndex of legendItem.datasetIndices) {
+      this.chart.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked;
     }
     this.chart.update();
   }
@@ -374,8 +372,8 @@ export class DiagramComponent implements OnInit {
               }
             }
           }
-          this.legendData = chart.generateLegend();
         }
+        this.legendData = chart.generateLegend();
       }
     });
     this.chart.update();
@@ -386,7 +384,6 @@ export class DiagramComponent implements OnInit {
     const lines = [];
     const newestCommit = this.getNewestCommit(this.repositoryResults.get(repositoryId));
     this.lists = [];
-    this.checked = [];
     const empty = [];
     for (const [, commit] of Object.entries(this.repositoryResults.get(repositoryId))) {
       commit.marked = false;
@@ -398,7 +395,6 @@ export class DiagramComponent implements OnInit {
     }
     let index = 0;
     for (const list of this.lists) {
-      this.checked[index] = true;
       const dataset: Dataset = {
         data: [],
         code: [],
@@ -506,6 +502,7 @@ export class DiagramComponent implements OnInit {
     this.repositoryService.getAllRepositories().subscribe(
       data => {
         data.forEach(repo => {
+          repo.checked = true;
           this.repositories.set(repo.id, repo);
         });
         this.getBenchmarkGroups();

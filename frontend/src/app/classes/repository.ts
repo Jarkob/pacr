@@ -12,4 +12,5 @@ export interface Repository {
     observeFromDate: Date;
     commitLinkPrefix: string;
     commits: Commit[];
+    checked: boolean;
 }

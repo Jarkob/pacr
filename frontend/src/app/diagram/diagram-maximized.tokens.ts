@@ -1,5 +1,5 @@
-import { BenchmarkGroup } from './../classes/benchmark-group';
 import { Repository } from './../classes/repository';
+import { BenchmarkGroup } from './../classes/benchmark-group';
 import { BenchmarkProperty } from './../classes/benchmark-property';
 import { Benchmark } from './../classes/benchmark';
 import { InjectionToken } from '@angular/core';
