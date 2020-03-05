@@ -1,8 +1,5 @@
 package pacr.webapp_backend.benchmarker_communication.endpoints;
 
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -12,12 +9,17 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import pacr.webapp_backend.benchmarker_communication.services.BenchmarkerJob;
 import pacr.webapp_backend.benchmarker_communication.services.IBenchmarkerConfigurationSender;
 import pacr.webapp_backend.benchmarker_communication.services.IBenchmarkerHandler;
 import pacr.webapp_backend.benchmarker_communication.services.IJobRegistry;
 import pacr.webapp_backend.benchmarker_communication.services.SystemEnvironment;
 import pacr.webapp_backend.shared.IJob;
+
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Handles the registration and configuration of PACR-Benchmarkers.
@@ -96,10 +98,10 @@ public class BenchmarkerController
      * @return a list of the system environments of all registered benchmarkers.
      */
     @RequestMapping("/benchmarkers")
-    public Collection<Benchmarker> getBenchmarkers() {
+    public List<Benchmarker> getBenchmarkers() {
         Collection<String> allBenchmarkerAddresses = benchmarkerHandler.getAllBenchmarkerAddresses();
 
-        Collection<Benchmarker> allBenchmarkers = new ArrayList<>();
+        List<Benchmarker> allBenchmarkers = new ArrayList<>();
 
         for (String address : allBenchmarkerAddresses) {
             SystemEnvironment systemEnvironment = benchmarkerHandler.getBenchmarkerSystemEnvironment(address);
@@ -107,6 +109,8 @@ public class BenchmarkerController
 
             allBenchmarkers.add(new Benchmarker(address, systemEnvironment, currentJob));
         }
+
+        Collections.sort(allBenchmarkers);
 
         return allBenchmarkers;
     }
