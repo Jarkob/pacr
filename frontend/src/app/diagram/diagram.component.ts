@@ -15,6 +15,7 @@ import * as Chart from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { BenchmarkGroup } from '../classes/benchmark-group';
 import { LegendItem } from '../classes/legend-item';
+import * as moment from 'moment';
 
 /**
  * displays benchmarking results in a line diagram
@@ -54,6 +55,9 @@ export class DiagramComponent implements OnInit {
 
   selectedBenchmark: Benchmark;
   selectedBenchmarkProperty: BenchmarkProperty;
+
+  until = moment().unix();
+  from = moment().subtract(1, 'month').unix();
 
   // the lines that show up in the diagram
   lists: any[];
@@ -290,7 +294,8 @@ export class DiagramComponent implements OnInit {
       this.loadProperty();
       return;
     }
-    this.benchmarkingResultService.getBenchmarkingResults(this.selectedBenchmark.id, repositoryIds[0], 'master').subscribe(
+    this.benchmarkingResultService.getBenchmarkingResults(
+      this.selectedBenchmark.id, repositoryIds[0], 'master', this.from, this.until).subscribe(
       data => {
         this.repositoryResults.set(repositoryIds[0], data);
         const lines = this.calculateLines(repositoryIds[0]);

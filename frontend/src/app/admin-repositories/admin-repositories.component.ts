@@ -211,7 +211,8 @@ export class AdminRepositoriesComponent implements OnInit {
         color: addRepositoryFormValue.color,
         observeFromDate: addRepositoryFormValue.observeAll ? null : this.adjustDateForTimezone(addRepositoryFormValue.observeFromDate),
         commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
-        commits: []
+        commits: [],
+        checked: true
       }).subscribe(
         data => {
           this.openSnackBar(this.strings.addSuccess);
@@ -241,7 +242,8 @@ export class AdminRepositoriesComponent implements OnInit {
         color: editRepositoryFormValue.color,
         observeFromDate: editRepositoryFormValue.observeAll ? null : this.adjustDateForTimezone(editRepositoryFormValue.observeFromDate),
         commitLinkPrefix: this.selectedRepository.commitLinkPrefix,
-        commits: []
+        commits: [],
+        checked: true
       }).subscribe(
         data => {
           this.openSnackBar(this.strings.editSuccess);
