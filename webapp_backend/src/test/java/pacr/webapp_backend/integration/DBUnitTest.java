@@ -1,4 +1,4 @@
-package pacr.webapp_backend.result_management.services;
+package pacr.webapp_backend.integration;
 
 import java.util.Collection;
 
@@ -12,6 +12,8 @@ import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
+import pacr.webapp_backend.result_management.services.BenchmarkGroup;
+import pacr.webapp_backend.result_management.services.BenchmarkManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
