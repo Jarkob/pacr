@@ -23,6 +23,41 @@
                     </mat-option>
                 </mat-select>
             </mat-form-field>
+
+            <div [formGroup]="groupFrom">
+                <mat-form-field>
+                  <input matInput formControlName="dateFormCtrl" [matDatepicker]="pickerFrom"  
+                    placeholder="From" readonly (dateChange)="changeFrom($event)" [max]="currentDate">
+                  <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerFrom></mat-datepicker>
+                </mat-form-field>
+            </div>
+
+            <div [formGroup]="groupUntil">
+                <mat-form-field>
+                  <input matInput formControlName="dateFormCtrl" [matDatepicker]="pickerUntil"  
+                    placeholder="Until" readonly (dateChange)="changeUntil($event)" [max]="currentDate">
+                  <mat-datepicker-toggle matSuffix [for]="pickerUntil"></mat-datepicker-toggle>
+                  <mat-datepicker #pickerUntil></mat-datepicker>
+                </mat-form-field>
+            </div>
+
+            <!-- <mat-form-field>
+                <mat-label>From</mat-label>
+                <input matInput [matDatepicker]="pickerFrom">
+                <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+                <mat-datepicker #pickerFrom></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field>
+                <mat-label>To</mat-label>
+                <input matInput [matDatepicker]="pickerTo">
+                <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+                <mat-datepicker #pickerTo></mat-datepicker>
+            </mat-form-field> -->
+              
+              
+
             <ul class="list" *ngIf="this.legendData">
                 <li *ngFor="let legendItem of this.legendData">
                     <mat-checkbox [(ngModel)]="this.repositories.get(legendItem.repositoryId).checked" (change)="toggleLines(legendItem)">{{ legendItem.repositoryName }}/{{ legendItem.branch }}</mat-checkbox>

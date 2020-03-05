@@ -1,3 +1,4 @@
+import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { DetailViewService } from './../services/detail-view.service';
 import { BenchmarkProperty } from './../classes/benchmark-property';
 import { Dataset } from './../classes/dataset';
@@ -16,6 +17,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { BenchmarkGroup } from '../classes/benchmark-group';
 import { LegendItem } from '../classes/legend-item';
 import * as moment from 'moment';
+import { MatDatepickerInputEvent, MatDatepickerInput } from '@angular/material';
 
 /**
  * displays benchmarking results in a line diagram
@@ -33,6 +35,7 @@ export class DiagramComponent implements OnInit {
     private repositoryService: RepositoryService,
     private benchmarkService: BenchmarkService,
     private detailViewService: DetailViewService,
+    private formBuilder: FormBuilder
   ) {
   }
 
@@ -56,8 +59,13 @@ export class DiagramComponent implements OnInit {
   selectedBenchmark: Benchmark;
   selectedBenchmarkProperty: BenchmarkProperty;
 
+  currentDate = new Date();
+
   until = moment().unix();
   from = moment().subtract(1, 'month').unix();
+
+  groupFrom: FormGroup;
+  groupUntil: FormGroup;
 
   // the lines that show up in the diagram
   lists: any[];
@@ -204,6 +212,12 @@ export class DiagramComponent implements OnInit {
 
 
   ngOnInit() {
+    this.groupUntil = this.formBuilder.group({
+      dateFormCtrl: new FormControl(new Date(this.until * 1000))
+    });
+    this.groupFrom = this.formBuilder.group({
+      dateFormCtrl: new FormControl(new Date(this.from * 1000))
+    });
     this.chart.chart = undefined;
     if (!this.maximized) {
       this.getRepositories();
@@ -254,13 +268,21 @@ export class DiagramComponent implements OnInit {
     });
   }
 
+  public changeFrom(event: MatDatepickerInputEvent<Date>) {
+    this.from = moment(event.value).unix();
+    this.getBenchmarkingResults(Array.from(this.repositories.keys()), this.datasets.length);
+  }
+
+  public changeUntil(event: MatDatepickerInputEvent<Date>) {
+    this.until = moment(event.value).unix();
+    this.getBenchmarkingResults(Array.from(this.repositories.keys()), this.datasets.length);
+  }
+
   /**
    * toggle specific lines in the diagram
    * @param legendItem the legend item
    */
   public toggleLines(legendItem: LegendItem) {
-    // legendItem.checked = this.repositories.get(legendItem.repositoryId).checked;
-    // console.log('item: ', legendItem.checked);
     for (const datasetIndex of legendItem.datasetIndices) {
       this.chart.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked;
     }
@@ -280,15 +302,17 @@ export class DiagramComponent implements OnInit {
 
     this.loading = true;
     const repositoryIds = Array.from(this.repositories.keys());
-    this.getBenchmarkingResults(repositoryIds);
+    this.getBenchmarkingResults(repositoryIds, 1);
 
     this.deleteLine();
   }
 
-  private getBenchmarkingResults(repositoryIds: number[]) {
+  private getBenchmarkingResults(repositoryIds: number[], prevLength: number) {
     if (repositoryIds.length === 0) {
       // remove null object
-      this.datasets = this.datasets.splice(1);
+      // this.datasets = this.datasets.splice(1);
+      // remove previous
+      this.datasets = this.datasets.splice(prevLength);
       this.resetZoom();
       this.chart.update();
       this.loadProperty();
@@ -302,7 +326,7 @@ export class DiagramComponent implements OnInit {
         // both is important, otherwise event listening for change of legend gets messed up
         this.chart.datasets.concat(lines);
         this.datasets = this.datasets.concat(lines);
-        this.getBenchmarkingResults(repositoryIds.splice(1));
+        this.getBenchmarkingResults(repositoryIds.splice(1), prevLength);
       }
     );
   }
