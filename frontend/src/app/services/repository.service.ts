@@ -77,7 +77,6 @@ export class RepositoryService {
    * @param repository the repository
    */
   public updateRepository(repository: Repository): Observable<Repository> {
-    console.log(repository);
     return this.http.post<Repository>(this.globalService.url + '/update-repository', repository, httpOptions);
   }
 }

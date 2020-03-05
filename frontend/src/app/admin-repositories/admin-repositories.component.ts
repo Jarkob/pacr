@@ -7,6 +7,7 @@ import { StringService } from './../services/strings.service';
 import { RepositoryService } from './../services/repository.service';
 import { Repository } from '../classes/repository';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { isDate } from 'util';
 
 export const MY_FORMATS = {
   parse: {
@@ -199,10 +200,6 @@ export class AdminRepositoriesComponent implements OnInit {
    */
   public addRepository = (addRepositoryFormValue) => {
     if (this.addRepositoryForm.valid) {
-      // fixes date conversion error when sending it to the backend
-      const observeDate = addRepositoryFormValue.observeFromDate;
-      observeDate.setMinutes(observeDate.getMinutes() - observeDate.getTimezoneOffset());
-
       this.repositoryService.addRepository({
         id: addRepositoryFormValue.id,
         trackAllBranches: addRepositoryFormValue.trackMode,
@@ -212,7 +209,7 @@ export class AdminRepositoriesComponent implements OnInit {
         hookSet: addRepositoryFormValue.webHook,
         webHookURL: '',
         color: addRepositoryFormValue.color,
-        observeFromDate: addRepositoryFormValue.observeAll ? null : observeDate,
+        observeFromDate: addRepositoryFormValue.observeAll ? null : this.adjustDateForTimezone(addRepositoryFormValue.observeFromDate),
         commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
         commits: []
       }).subscribe(
@@ -242,7 +239,7 @@ export class AdminRepositoriesComponent implements OnInit {
         hookSet: editRepositoryFormValue.webHook,
         webHookURL: this.selectedRepository.webHookURL,
         color: editRepositoryFormValue.color,
-        observeFromDate: editRepositoryFormValue.observeAll ? null : editRepositoryFormValue.observeFromDate,
+        observeFromDate: editRepositoryFormValue.observeAll ? null : this.adjustDateForTimezone(editRepositoryFormValue.observeFromDate),
         commitLinkPrefix: this.selectedRepository.commitLinkPrefix,
         commits: []
       }).subscribe(
@@ -361,5 +358,24 @@ export class AdminRepositoriesComponent implements OnInit {
     this.snackBar.open(message, this.strings.snackBarAction, {
       duration: snackBarDuration,
     });
+  }
+
+  /**
+   * Adds the timezone offset to the date so the date doesn't change when it is
+   * serialized to json.
+   * @param date a object which can be a Moment or Date.
+   */
+  private adjustDateForTimezone(toAdjust: any): Date {
+    let date: Date;
+    
+    if (!isDate(toAdjust)) {
+      date = toAdjust._d;
+    } else {
+      date = toAdjust;
+    }
+
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
+
+    return date;
   }
 }
