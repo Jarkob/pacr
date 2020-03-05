@@ -135,7 +135,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         Objects.requireNonNull(commitDateEnd);
 
         List<? extends ICommit> branchCommitsInTimeFrame =
-                commitAccess.getCommitsFromBranchTimeFrame(repositoryId, branch, commitDateStart, commitDateStart);
+                commitAccess.getCommitsFromBranchTimeFrame(repositoryId, branch, commitDateStart, commitDateEnd);
 
         return commitsToDiagramResults(branchCommitsInTimeFrame, benchmarkId);
     }
