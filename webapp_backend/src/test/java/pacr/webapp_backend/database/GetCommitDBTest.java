@@ -1,5 +1,7 @@
 package pacr.webapp_backend.database;
 
+import org.apache.tomcat.jni.Local;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -58,11 +60,18 @@ public class GetCommitDBTest extends GitTrackingDBTest {
                 getCommitDB.getCommitsFromRepository(repository.getId()).size());
     }
 
-    /**
-     * Tests whether getCommitsFromBranch only gets the first 200 newest if a pageable request is send.
-     */
     @Test
-    public void getCommitsFromBranch_pageable_shouldOnlyReturnOnePage() {
+    void getCommitsFromBranch_pageableAndUnknownBranch_shouldReturnNull() {
+        gitTrackingDB.addRepository(repository);
+        List<? extends ICommit> commits = getCommitDB.getCommitsFromBranchTimeFrame(repository.getId(), UNKNOWN_BRANCH,
+                LocalDateTime.now(),
+                LocalDateTime.now().plusSeconds(1));
+
+        assertNull(commits);
+    }
+
+    @Test
+    void getCommitsFromBranchTimeFrame_shouldOnlyReturnCommitsInTime() {
         Set<String> branches = new HashSet<>();
         branches.add(BRANCH_NAME);
         repository.setSelectedBranches(branches);
@@ -71,50 +80,39 @@ public class GetCommitDBTest extends GitTrackingDBTest {
 
         gitTrackingDB.addRepository(repository);
 
+        GitCommit newCommitOne = new GitCommit(HASH_TWO, MSG,
+                LocalDateTime.of(2020, 3, 1, 0, 0),
+                LocalDateTime.now(), repository);
+        newCommitOne.addBranch(branch);
+
+        GitCommit newCommitTwo = new GitCommit(HASH_TWO + 1, MSG,
+                LocalDateTime.of(2020, 2, 1, 0, 0),
+                LocalDateTime.now(), repository);
+        newCommitTwo.addBranch(branch);
+
+        LocalDateTime startTime = LocalDateTime.now();
+
+        HashSet<GitCommit> commits = new HashSet<>();
+
         for (int i = 0; i < PAGE_SIZE + 1; ++i) {
-            GitCommit newCommit = new GitCommit(HASH_TWO + i, MSG, LocalDateTime.now().plusSeconds(i),
+            GitCommit newCommit = new GitCommit(HASH_TWO + i, MSG, startTime.plusSeconds(i),
                     LocalDateTime.now(), repository);
             newCommit.addBranch(branch);
 
-            gitTrackingDB.addCommits(new HashSet<>(Arrays.asList(newCommit)));
+            commits.add(newCommit);
         }
 
-        List<? extends ICommit> commits = getCommitDB
-                .getCommitsFromBranch(repository.getId(), branch.getName(), 0, PAGE_SIZE)
-                .getContent();
+        gitTrackingDB.addCommits(commits);
 
-        List<? extends ICommit> firstCommit = getCommitDB
-                .getCommitsFromBranch(repository.getId(), branch.getName(), 1, PAGE_SIZE)
-                .getContent();
+        List<? extends ICommit> commitsOutput = getCommitDB
+                .getCommitsFromBranchTimeFrame(repository.getId(), branch.getName(),
+                        startTime.plusSeconds(PAGE_SIZE / 4),
+                        startTime.plusSeconds(PAGE_SIZE / 2));
 
-        assertEquals(PAGE_SIZE, commits.size());
-        assertEquals(1, firstCommit.size());
-
-        boolean firstPageContainsFirstCommit = false;
-
-        LocalDateTime previousTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).plusSeconds(PAGE_SIZE + 1);
-
-        for (ICommit commit : commits) {
-            if (commit.getCommitHash().equals(HASH_TWO + 0)) {
-                firstPageContainsFirstCommit = true;
-            }
+        for (ICommit commit : commitsOutput) {
             LocalDateTime currentTime = commit.getCommitDate();
-            assertTrue(currentTime.isBefore(previousTime) || currentTime.equals(previousTime),
-                    "commit " + commit.getCommitHash() + ": " + currentTime.toString() + " is not before "
-                            + previousTime.toString());
-            previousTime = currentTime;
+            assertTrue(currentTime.isAfter(startTime.plusSeconds(PAGE_SIZE / 4))
+                    && currentTime.isBefore(startTime.plusSeconds(PAGE_SIZE / 2)));
         }
-
-        assertFalse(firstPageContainsFirstCommit);
-        assertEquals(HASH_TWO + 0, firstCommit.get(0).getCommitHash());
-    }
-
-    @Test
-    void getCommitsFromBranch_pageableAndUnknownBranch_shouldReturnNull() {
-        gitTrackingDB.addRepository(repository);
-        Page<? extends ICommit> commits = getCommitDB.getCommitsFromBranch(repository.getId(), UNKNOWN_BRANCH, 0,
-                PAGE_SIZE);
-
-        assertNull(commits);
     }
 }

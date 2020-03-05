@@ -14,6 +14,10 @@ import org.springframework.http.ResponseEntity;
 import pacr.webapp_backend.result_management.endpoints.ResultController;
 import pacr.webapp_backend.shared.IAuthenticator;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -111,16 +115,18 @@ public class ResultControllerTest {
      */
     @Test
     void getResultPageForBranchAndBenchmark_shouldCallResultGetter() {
-        Pageable pageRequestInput = PageRequest.of(PAGE_NUM, PAGE_SIZE);
+        LocalDateTime startTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime endTime = LocalDateTime.now().plusSeconds(1).truncatedTo(ChronoUnit.SECONDS);
+        ZoneOffset currentOffset = ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
 
         HashMap<String, DiagramOutputResult> getterOutput = new HashMap<>();
-        when(resultGetterMock.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE))
+        when(resultGetterMock.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, startTime, endTime))
                 .thenReturn(getterOutput);
 
         Map<String, DiagramOutputResult> testOutput = resultController.getResultPageForBranchAndBenchmark(BENCHMARK_ID,
-                REPO_ID, BRANCH_NAME, pageRequestInput);
+                REPO_ID, BRANCH_NAME, startTime.toEpochSecond(currentOffset), endTime.toEpochSecond(currentOffset));
 
-        verify(resultGetterMock).getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE);
+        verify(resultGetterMock).getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, startTime, endTime);
         assertEquals(getterOutput, testOutput);
     }
 

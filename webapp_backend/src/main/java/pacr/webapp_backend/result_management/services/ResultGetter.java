@@ -1,5 +1,6 @@
 package pacr.webapp_backend.result_management.services;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -120,20 +121,23 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param benchmarkId the id of the benchmark.
      * @param repositoryId the id of the repository.
      * @param branch the name of the branch. Cannot be null.
-     * @param page the number of the requested page.
-     * @param size the size of the page.
+     * @param commitDateStart the start date of the requested commits. Cannot be null.
+     * @param commitDateEnd the end date of the requested commits. Cannot be null.
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted).
      */
     public HashMap<String, DiagramOutputResult> getBenchmarkResultsSubset(int benchmarkId, int repositoryId,
-                                                                    @NotNull String branch, int page, int size) {
+                                                                          @NotNull String branch,
+                                                                          @NotNull LocalDateTime commitDateStart,
+                                                                          @NotNull LocalDateTime commitDateEnd) {
         Objects.requireNonNull(branch);
+        Objects.requireNonNull(commitDateStart);
+        Objects.requireNonNull(commitDateEnd);
 
-        Page<? extends ICommit> commitsFromBranchPage =
-                commitAccess.getCommitsFromBranch(repositoryId, branch, page, size);
-        List<? extends ICommit> commitsFromBranch = commitsFromBranchPage.getContent();
+        List<? extends ICommit> branchCommitsInTimeFrame =
+                commitAccess.getCommitsFromBranchTimeFrame(repositoryId, branch, commitDateStart, commitDateStart);
 
-        return commitsToDiagramResults(commitsFromBranch, benchmarkId);
+        return commitsToDiagramResults(branchCommitsInTimeFrame, benchmarkId);
     }
 
     /**

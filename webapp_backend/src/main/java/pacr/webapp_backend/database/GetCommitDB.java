@@ -13,6 +13,7 @@ import pacr.webapp_backend.result_management.services.IGetCommitAccess;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,17 +41,18 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
     }
 
     @Override
-    public Page<? extends ICommit> getCommitsFromBranch(int repositoryId, String branchName, int page, int size) {
+    public List<? extends ICommit> getCommitsFromBranchTimeFrame(int repositoryId, String branchName, LocalDateTime commitDateStart, LocalDateTime commitDateEnd) {
         Objects.requireNonNull(branchName);
+        Objects.requireNonNull(commitDateStart);
+        Objects.requireNonNull(commitDateEnd);
 
         GitBranch branch = getGitBranch(repositoryId, branchName);
         if (branch == null) {
             return null;
         }
 
-        Pageable sortedByCommitDate = PageRequest.of(page, size, Sort.by("commitDate").descending());
-
-        return commitDB.findGitCommitsByRepository_IdAndBranches(repositoryId, branch, sortedByCommitDate);
+        return commitDB.findGitCommitByRepository_IdAndBranchesAndCommitDateBetween(
+                repositoryId, branch, commitDateStart, commitDateEnd);
     }
 
     @Override

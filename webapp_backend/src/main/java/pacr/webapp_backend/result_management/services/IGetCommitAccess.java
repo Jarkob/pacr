@@ -4,7 +4,9 @@ import org.springframework.data.domain.Page;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Retrieves ICommits from the database. Cannot alter the database.
@@ -19,15 +21,17 @@ public interface IGetCommitAccess {
     Collection<? extends ICommit> getCommitsFromRepository(int id);
 
     /**
-     * Gets a subset of the saved commits from a branch of a repository. Returns {@code null} if no such repository or branch
-     * exists.
+     * Gets a subset of the saved commits from a branch of a repository. Returns {@code null} if no such repository or
+     * branch exists.
      * @param repositoryId the repository id.
      * @param branchName the branch name. Cannot be {@code null}.
-     * @param page the requested page number.
-     * @param size the size of the page.
-     * @return a page with the requested commits.
+     * @param commitDateStart the start date of the requested commits. Cannot be {@code null}.
+     * @param commitDateEnd the end date of the requested commits. Cannot be {@code null}.
+     * @return a list with the requested commits.
      */
-    Page<? extends ICommit> getCommitsFromBranch(int repositoryId, @NotNull String branchName, int page, int size);
+    List<? extends ICommit> getCommitsFromBranchTimeFrame(int repositoryId, @NotNull String branchName,
+                                                          @NotNull LocalDateTime commitDateStart,
+                                                          @NotNull LocalDateTime commitDateEnd);
 
     /**
      * Gets the saved commit of the hash. Returns null if no such commit is saved.

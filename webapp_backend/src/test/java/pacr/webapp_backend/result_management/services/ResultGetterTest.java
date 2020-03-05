@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -270,21 +271,16 @@ public class ResultGetterTest {
      */
     @Test
     void getBenchmarkResultsSubset_shouldBuildOutputObjects() {
-        Collection<GitCommit> commits = new LinkedList<>();
+        List<GitCommit> commits = new LinkedList<>();
         commits.add(commitMock);
 
-        Page<? extends ICommit> page = Mockito.mock(Page.class);
-        when(page.getContent()).thenAnswer(new Answer() {
+        LocalDateTime startTime = LocalDateTime.now();
+        LocalDateTime endTime = LocalDateTime.now().plusSeconds(1);
+
+        when(commitAccessMock.getCommitsFromBranchTimeFrame(anyInt(), anyString(), any(), any())).thenAnswer(new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) {
                 return commits;
-            }
-        });
-
-        when(commitAccessMock.getCommitsFromBranch(REPO_ID, BRANCH_NAME, PAGE_NUM, PAGE_SIZE)).thenAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocationOnMock) {
-                return page;
             }
         });
 
@@ -298,7 +294,7 @@ public class ResultGetterTest {
         when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock, BENCHMARK_ID)).thenReturn(diagramOutputMock);
 
         HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID,
-                BRANCH_NAME, PAGE_NUM, PAGE_SIZE);
+                BRANCH_NAME, startTime, endTime);
 
         assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());
         assertEquals(diagramOutputMock, outputs.get(HASH));

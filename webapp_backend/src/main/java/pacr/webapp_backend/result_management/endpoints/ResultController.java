@@ -19,6 +19,11 @@ import pacr.webapp_backend.result_management.services.ResultManager;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -89,23 +94,27 @@ public class ResultController {
     }
 
     /**
-     * Gets a page with a specified amount of benchmarking results of a branch (sorted descending by commit date),
-     * but only for the specified benchmark.
+     * Gets the benchmarking results of a branch in a defined time frame (by commit date), but only for the specified
+     * benchmark.
      * @param benchmarkId the id of the benchmark.
      * @param repositoryId the id of the repository.
      * @param branch the name of the branch. Cannot be {@code null}.
-     * @param pageable the requested page. Default page is 0 and default size is 200.
+     * @param startTimeStamp the start time of the results, as the number of seconds since 1970/01/01.
+     * @param endTimeStamp the end time of the results, as the number of seconds since 1970/01/01.
      * @return the benchmarking results of one benchmark.
      */
-    @GetMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{branch}")
+    @GetMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{branch}/{startTimeStamp}/{endTimeStamp}")
     public Map<String, DiagramOutputResult> getResultPageForBranchAndBenchmark(@PathVariable int benchmarkId,
                                                    @PathVariable int repositoryId,
                                                    @NotNull @PathVariable String branch,
-                                                   @PageableDefault(size = DIAGRAM_PAGE_SIZE, page = 0) Pageable pageable) {
+                                                   @PathVariable long startTimeStamp, @PathVariable long endTimeStamp) {
         Objects.requireNonNull(branch);
 
-        return resultGetter.getBenchmarkResultsSubset(benchmarkId, repositoryId, branch,
-                pageable.getPageNumber(), pageable.getPageSize());
+        ZoneOffset currentOffset = ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
+        LocalDateTime start = LocalDateTime.ofEpochSecond(startTimeStamp, 0, currentOffset);
+        LocalDateTime end = LocalDateTime.ofEpochSecond(endTimeStamp, 0, currentOffset);
+
+        return resultGetter.getBenchmarkResultsSubset(benchmarkId, repositoryId, branch, start, end);
     }
 
     /**
