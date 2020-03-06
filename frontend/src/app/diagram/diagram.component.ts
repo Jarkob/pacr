@@ -17,7 +17,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { BenchmarkGroup } from '../classes/benchmark-group';
 import { LegendItem } from '../classes/legend-item';
 import * as moment from 'moment';
-import { MatDatepickerInputEvent, MatDatepickerInput } from '@angular/material';
+import { MatDatepickerInputEvent } from '@angular/material';
 
 /**
  * displays benchmarking results in a line diagram
@@ -73,10 +73,17 @@ export class DiagramComponent implements OnInit {
   @Input() maximized: boolean;
   dialogRef: DiagramMaximizedRef;
 
+  // images
+  errorImage = new Image(20, 20);
+  globalErrorImage = new Image(20, 20);
+  notYetImage = new Image(20, 20);
+  noBenchmarks = new Image(20, 20);
+
   /**
    * diagram configuration
    */
-  @ViewChild(BaseChartDirective, { static: true }) chart: BaseChartDirective;
+  @ViewChild('mycanvas', {static: true}) chart: BaseChartDirective;
+
   options = {
     maintainAspectRatio: false,
     lineTension: 0,
@@ -126,7 +133,7 @@ export class DiagramComponent implements OnInit {
             console.log(ticks[ticks.length - 1]);
           }
         }
-      },
+      }
     },
     legend: {
       display: false
@@ -190,6 +197,32 @@ export class DiagramComponent implements OnInit {
       }
     }
   };
+  plugins = [
+    ChartAnnotation,
+    {
+      afterUpdate: (chart) => {
+        // tslint:disable-next-line:prefer-for-of
+        for (let i = 0; i < chart.config.data.datasets.length; i++) {
+          const dataset: any = chart.config.data.datasets[i];
+          // key of dataset._meta has a random name
+          for (let j = 0; j < dataset._meta[Object.keys(dataset._meta)[0]].data.length; j++) {
+            const element = dataset._meta[Object.keys(dataset._meta)[0]].data[j];
+            if (!dataset.code[j].result) {
+              element._model.pointStyle = this.notYetImage;
+            } else if (dataset.code[j].globalError) {
+              element._model.pointStyle = this.globalErrorImage;
+            } else if (Object.keys(dataset.code[j].result).length === 0) {
+              element._model.pointStyle = this.noBenchmarks;
+            } else if (!dataset.code[j].result[this.selectedBenchmarkProperty.name]) {
+              // do nothing
+            } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
+              element._model.pointStyle = this.errorImage;
+            }
+          }
+        }
+      }
+    }
+  ];
   labels = [];
   type = 'line';
   legend = true;
@@ -205,20 +238,23 @@ export class DiagramComponent implements OnInit {
     borderColor: '',
     pointBackgroundColor: ''
   }];
-  plugins = [ChartAnnotation];
   legendData: any;
 
   loading = true;
 
 
   ngOnInit() {
+    this.errorImage.src = 'assets/clear.svg';
+    this.globalErrorImage.src = 'assets/block.svg';
+    this.notYetImage.src = 'assets/run.svg';
+    this.noBenchmarks.src = 'assets/disabled.svg';
     this.groupUntil = this.formBuilder.group({
       dateFormCtrl: new FormControl(new Date(this.until * 1000))
     });
     this.groupFrom = this.formBuilder.group({
       dateFormCtrl: new FormControl(new Date(this.from * 1000))
     });
-    this.chart.chart = undefined;
+    // this.chart.chart = undefined;
     if (!this.maximized) {
       this.getRepositories();
     } else {
@@ -232,7 +268,7 @@ export class DiagramComponent implements OnInit {
       this.repositories = this.inRepositories;
       this.repositoryResults = this.inRepositoryResults;
 
-      this.loadImages();
+      // this.loadImages(); should happen afterupdate
       this.chart.chart.update();
     }
   }
@@ -270,12 +306,12 @@ export class DiagramComponent implements OnInit {
 
   public changeFrom(event: MatDatepickerInputEvent<Date>) {
     this.from = moment(event.value).unix();
-    this.getBenchmarkingResults(Array.from(this.repositories.keys()), this.datasets.length);
+    this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, this.datasets.length);
   }
 
   public changeUntil(event: MatDatepickerInputEvent<Date>) {
     this.until = moment(event.value).unix();
-    this.getBenchmarkingResults(Array.from(this.repositories.keys()), this.datasets.length);
+    this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, this.datasets.length);
   }
 
   /**
@@ -302,13 +338,13 @@ export class DiagramComponent implements OnInit {
 
     this.loading = true;
     const repositoryIds = Array.from(this.repositories.keys());
-    this.getBenchmarkingResults(repositoryIds, 1);
+    this.getBenchmarkingResults(repositoryIds, 0,  1);
 
     this.deleteLine();
   }
 
-  private getBenchmarkingResults(repositoryIds: number[], prevLength: number) {
-    if (repositoryIds.length === 0) {
+  private getBenchmarkingResults(repositoryIds: number[], index: number, prevLength: number) {
+    if (repositoryIds.length === index) {
       // remove null object
       // this.datasets = this.datasets.splice(1);
       // remove previous
@@ -319,14 +355,14 @@ export class DiagramComponent implements OnInit {
       return;
     }
     this.benchmarkingResultService.getBenchmarkingResults(
-      this.selectedBenchmark.id, repositoryIds[0], 'master', this.from, this.until).subscribe(
+      this.selectedBenchmark.id, repositoryIds[index], 'master', this.from, this.until).subscribe(
       data => {
-        this.repositoryResults.set(repositoryIds[0], data);
-        const lines = this.calculateLines(repositoryIds[0]);
+        this.repositoryResults.set(repositoryIds[index], data);
+        const lines = this.calculateLines(repositoryIds[index]);
         // both is important, otherwise event listening for change of legend gets messed up
-        this.chart.datasets.concat(lines);
+        this.chart.datasets = this.chart.datasets.concat(lines);
         this.datasets = this.datasets.concat(lines);
-        this.getBenchmarkingResults(repositoryIds.splice(1), prevLength);
+        this.getBenchmarkingResults(repositoryIds, index + 1, prevLength);
       }
     );
   }
@@ -366,46 +402,7 @@ export class DiagramComponent implements OnInit {
         }
       }
     }
-    this.loadImages();
-  }
-
-  private loadImages() {
-    const errorImage = new Image(20, 20);
-    const globalErrorImage = new Image(20, 20);
-    const notYetImage = new Image(20, 20);
-    const noBenchmarks = new Image(20, 20);
-    errorImage.src = 'assets/clear.svg';
-    globalErrorImage.src = 'assets/block.svg';
-    notYetImage.src = 'assets/run.svg';
-    noBenchmarks.src = 'assets/disabled.svg';
-    Chart.pluginService.register({
-      afterUpdate: (chart) => {
-        // this method is called globally so make sure it only updates for this chart
-        if (this.chart.chart === chart) {
-          // tslint:disable-next-line:prefer-for-of
-          for (let i = 0; i < chart.config.data.datasets.length; i++) {
-            const dataset: any = chart.config.data.datasets[i];
-            // key of dataset._meta has a random name
-            for (let j = 0; j < dataset._meta[Object.keys(dataset._meta)[0]].data.length; j++) {
-              const element = dataset._meta[Object.keys(dataset._meta)[0]].data[j];
-              if (!dataset.code[j].result) {
-                element._model.pointStyle = notYetImage;
-              } else if (dataset.code[j].globalError) {
-                element._model.pointStyle = globalErrorImage;
-              } else if (Object.keys(dataset.code[j].result).length === 0) {
-                element._model.pointStyle = noBenchmarks;
-              } else if (!dataset.code[j].result[this.selectedBenchmarkProperty.name]) {
-                // do nothing
-              } else if (dataset.code[j].result[this.selectedBenchmarkProperty.name].errorMessage) {
-                element._model.pointStyle = errorImage;
-              }
-            }
-          }
-        }
-        this.legendData = chart.generateLegend();
-      }
-    });
-    this.chart.update();
+    this.legendData = this.chart.chart.generateLegend();
     this.loading = false;
   }
 

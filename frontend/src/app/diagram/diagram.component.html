@@ -42,30 +42,15 @@
                 </mat-form-field>
             </div>
 
-            <!-- <mat-form-field>
-                <mat-label>From</mat-label>
-                <input matInput [matDatepicker]="pickerFrom">
-                <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
-                <mat-datepicker #pickerFrom></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field>
-                <mat-label>To</mat-label>
-                <input matInput [matDatepicker]="pickerTo">
-                <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
-                <mat-datepicker #pickerTo></mat-datepicker>
-            </mat-form-field> -->
-              
-              
-
             <ul class="list" *ngIf="this.legendData">
                 <li *ngFor="let legendItem of this.legendData">
-                    <mat-checkbox [(ngModel)]="this.repositories.get(legendItem.repositoryId).checked" (change)="toggleLines(legendItem)">{{ legendItem.repositoryName }}/{{ legendItem.branch }}</mat-checkbox>
+                    <mat-checkbox *ngIf="this.repositories.get(legendItem.repositoryId)" [(ngModel)]="this.repositories.get(legendItem.repositoryId).checked" (change)="toggleLines(legendItem)">{{ legendItem.repositoryName }}/{{ legendItem.branch }}</mat-checkbox>
                 </li>
             </ul>
 
         </div>
         <canvas fxFlex="85%" baseChart
+            #mycanvas="base-chart"
             [datasets]="datasets"
             [labels]="labels"
             [options]="options"
