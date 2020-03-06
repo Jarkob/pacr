@@ -100,6 +100,11 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
+    public Set<GitCommit> getCommits(@NotNull Set<String> commitHashes) {
+        return commitDB.findGitCommitsByCommitHashIn(commitHashes);
+    }
+
+    @Override
     public GitCommit getCommit(@NotNull String commitHash) {
         Objects.requireNonNull(commitHash);
 

@@ -97,6 +97,13 @@ public interface IGitTrackingAccess {
     Set<String> getAllCommitHashes(int repositoryID);
 
     /**
+     * Returns all commits with the specified commit hashes.
+     * @param commitHashes are the commit hashes.
+     * @return all commits with the commit hashes.
+     */
+    Set<GitCommit> getCommits(@NotNull Set<String> commitHashes);
+
+    /**
      * Returns a commit.
      * @param commitHash is the commit hash of the commit.
      * @return the commit with this commit hash or null if not found.

@@ -1,6 +1,5 @@
 package pacr.webapp_backend.git_tracking.services.git;
 
-import org.bouncycastle.asn1.cms.OtherRecipientInfo;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
@@ -32,15 +31,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.Instant;
-import java.util.Date;
 import java.util.Objects;
-import java.util.Collection;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -170,7 +170,6 @@ public class GitHandler {
     private Set<String> collectCommitsToBenchmark(Ref branch, Git git, GitRepository gitRepository)
             throws ForcePushException {
         Set<String> commitsFromBranch = checkBranch(branch, git, gitRepository);
-
         updateBranchHead(branch, gitRepository);
 
         return commitsFromBranch;
@@ -205,10 +204,6 @@ public class GitHandler {
     }
 
     private void handleForcePush(Git git, GitRepository gitRepository, Ref branch) {
-        GitBranch gitBranch = gitRepository.getTrackedBranch(getNameOfRef(branch));
-
-        gitBranch.setHeadHash(null);
-
         Set<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
 
         resultDeleter.deleteBenchmarkingResults(toDelete);
@@ -452,22 +447,48 @@ public class GitHandler {
      */
     private List<RevCommit> getNewCommits(Iterable<RevCommit> commitsIterable, GitBranch branch)
             throws ForcePushException {
-        List<RevCommit> commits = new ArrayList<>();
+        List<RevCommit> commits;
 
-        Set<GitCommit> commitsToUpdate = new HashSet<>();
+        Set<String> hashesToUpdate = new HashSet<>();
+
+        if (branch.getHeadHash() == null) { // branch not initialized
+            commits = getNewCommitsForUnbornBranch(commitsIterable, branch, hashesToUpdate);
+        } else {
+            commits = getNewCommitsForExistingBranch(commitsIterable, branch, hashesToUpdate);
+        }
+
+        updateCommits(hashesToUpdate, branch);
+
+        return commits;
+    }
+
+    private void updateCommits(Set<String> hashesToUpdate, GitBranch branch) {
+        Set<GitCommit> commitsToUpdate = gitTrackingAccess.getCommits(hashesToUpdate);
+
+        for (GitCommit commit : commitsToUpdate) {
+            commit.addBranch(branch);
+        }
+
+        gitTrackingAccess.updateCommits(commitsToUpdate);
+    }
+
+    private List<RevCommit> getNewCommitsForExistingBranch(Iterable<RevCommit> commitsIterable, GitBranch branch,
+                                                           Set<String> hashesToUpdate) throws ForcePushException {
+        List<RevCommit> commits = new ArrayList<>();
+        String headHash = branch.getHeadHash();
 
         for (RevCommit commit : commitsIterable) {
 
             if (gitTrackingAccess.containsCommit(commit.getName())) {
 
-                String headHash = branch.getHeadHash();
                 GitCommit alreadyContained = gitTrackingAccess.getCommit(commit.getName());
 
-                if (headHash == null || !alreadyContained.getBranchNames().contains(branch.getName())) {
+                if (!alreadyContained.isOnBranch(branch.getName())) {
                     alreadyContained.addBranch(branch);
-                    commitsToUpdate.add(alreadyContained);
+                    hashesToUpdate.add(commit.getName());
                 } else if (!headHash.equals(commit.getName())) { // check for force push
-                    LOGGER.info("Force push detected at {}. Deleting unused commits.", commit.getName());
+                    branch.setHeadHash(commit.getName());
+                    LOGGER.info("Force push detected at {}.", commit.getName());
                     throw new ForcePushException();
                 } else { // all new commits from branch found
                     LOGGER.info("DB contains {}: breaking", commit.getName());
@@ -478,7 +499,28 @@ public class GitHandler {
             }
         }
 
-        gitTrackingAccess.updateCommits(commitsToUpdate);
+        return commits;
+    }
+
+    private List<RevCommit> getNewCommitsForUnbornBranch(Iterable<RevCommit> commitIterable, GitBranch branch,
+                                                         Set<String> hashesToUpdate) {
+        List<RevCommit> commits = new ArrayList<>();
+
+        Iterator<RevCommit> iterator = commitIterable.iterator();
+
+        while (iterator.hasNext()) {
+            RevCommit commit = iterator.next();
+            if (!gitTrackingAccess.containsCommit(commit.getName())) {
+                commits.add(commit);
+            } else {
+                hashesToUpdate.add(commit.getName());
+                break;
+            }
+        }
+
+        while (iterator.hasNext()) {
+            hashesToUpdate.add(iterator.next().getName());
+        }
 
         return commits;
     }

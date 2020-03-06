@@ -11,6 +11,7 @@ import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * This an implementation of the ICommitAccess Interface.
@@ -27,6 +28,8 @@ public interface CommitDB extends PagingAndSortingRepository<GitCommit, String> 
 
     @Transactional
     void removeGitCommitsByCommitHashIn(Collection<String> commitHashes);
+
+    Set<GitCommit> findGitCommitsByCommitHashIn(Set<String> commitHash);
 
     Collection<GitCommit> findGitCommitsByRepository_IdAndBranches(int repositoryID, GitBranch branch);
 
