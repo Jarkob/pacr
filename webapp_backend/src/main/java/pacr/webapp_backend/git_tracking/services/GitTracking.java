@@ -104,7 +104,6 @@ public class GitTracking implements IRepositoryImporter {
         Objects.requireNonNull(name);
 
         GitRepository repository = new GitRepository();
-        repository.setTrackAllBranches(false);
         repository.setPullURL(repositoryURL);
         repository.setName(name);
         repository.setObserveFromDate(observeFromDate);
@@ -193,7 +192,7 @@ public class GitTracking implements IRepositoryImporter {
 
         gitRepository = gitTrackingAccess.getRepository(repositoryID);
 
-        Collection<String> untrackedCommitHashes = null;
+        Collection<String> untrackedCommitHashes;
         try {
             untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
         } catch (PullFromRepositoryException e) {
@@ -235,8 +234,6 @@ public class GitTracking implements IRepositoryImporter {
         this.colorPicker.setColorToUnused(repository.getColor());
         this.colorPicker.setColorToUsed(color);
         repository.setColor(color);
-
-        gitTrackingAccess.updateRepository(repository);
     }
 
     /**
