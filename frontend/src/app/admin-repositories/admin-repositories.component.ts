@@ -121,7 +121,7 @@ export class AdminRepositoriesComponent implements OnInit {
     // setup update timer for seconds until next pull
     setInterval(() => {
       this.updateNextPullTime();
-    }, 1000);
+    }, 500);
 
     this.initAddFormControls();
     this.initEditFormControls();

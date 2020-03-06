@@ -2,14 +2,14 @@
     <mat-tab label="{{ strings?.tabRepositoryOverview }}">
         <div fxFlex fxFlexAlign="row" fxLayoutAlign=" center" class="pull-interval">
             <mat-form-field fxFlex="15">
-                <input matInput [(ngModel)]="this.pullInterval" type="number" placeholder="Pullinterval">
+                <input matInput [(ngModel)]="this.pullInterval" type="number" placeholder="{{ strings?.pullIntervalPlaceholder }}">
             </mat-form-field>
             <div fxFlex="10">
                 <button mat-raised-button (click)="savePullInterval()" color="accent">Save</button>
             </div>
             <div fxFlex></div>
             <p class="mat-h3" *ngIf="!nextExecutionTime.pulling && millisecondsUntilNextPull > 0">
-                {{ strings?.nextPullTimeStart }} {{ millisecondsUntilNextPull | date:'mm:ss' }} {{ strings?.nextPullTimeEnd }}
+                {{ strings?.nextPullTimeStart }} {{ millisecondsUntilNextPull | date:'mm:ss' }}
             </p>
             <p class="mat-h3" *ngIf="nextExecutionTime.pulling || millisecondsUntilNextPull === 0">
                 {{ strings?.currentlyPulling }}

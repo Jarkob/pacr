@@ -20,8 +20,8 @@
 
     "tabAddTitle": "Add a new Repository:",
 
+    "pullIntervalPlaceholder": "Pull-Interval (s)",
     "nextPullTimeStart": "Pulling from all repositories in",
-    "nextPullTimeEnd": "minutes.",
     "currentlyPulling": "Currently pulling from all repositories.",
 
     "tabEditTitle": "Editing:",
