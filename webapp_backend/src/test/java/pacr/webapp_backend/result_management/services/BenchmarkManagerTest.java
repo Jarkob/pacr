@@ -3,6 +3,8 @@ package pacr.webapp_backend.result_management.services;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.BenchmarkDB;
@@ -15,6 +17,12 @@ import java.util.NoSuchElementException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.atMostOnce;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     private BenchmarkDB benchmarkDB;
@@ -174,17 +182,29 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     }
 
     @Test
-    void updateBenchmark_noBenchmarkWithGivenIdSaved_shouldThrowException() {
-        assertThrows(NoSuchElementException.class, () -> benchmarkManager.updateBenchmark(benchmark.getId(),
-                benchmark.getCustomName(), benchmark.getDescription(), group.getId()));
+    void updateBenchmark_noBenchmarkWithGivenIdSaved_shouldNotUpdate() {
+        IBenchmarkAccess benchmarkAccessSpy = Mockito.mock(IBenchmarkAccess.class);
+        when(benchmarkAccessSpy.getBenchmark(benchmark.getId())).thenReturn(null);
+
+        BenchmarkManager managerWithSpy = new BenchmarkManager(benchmarkAccessSpy, groupDB);
+
+        managerWithSpy.updateBenchmark(benchmark.getId(), benchmark.getCustomName(), benchmark.getDescription(),
+                group.getId());
+
+        verify(benchmarkAccessSpy, never()).saveBenchmark(any());
     }
 
     @Test
-    void updateBenchmark_noGroupWithGivenIdSaved_shouldThrowException() {
+    void updateBenchmark_noGroupWithGivenIdSaved_shouldNotUpdateBenchmark() {
         benchmarkDB.saveBenchmark(benchmark);
 
-        assertThrows(NoSuchElementException.class, () -> benchmarkManager.updateBenchmark(benchmark.getId(),
-                benchmark.getCustomName(), benchmark.getDescription(), group.getId() + 1));
+        benchmarkManager.updateBenchmark(benchmark.getId(), BENCHMARK_NAME_TWO, benchmark.getDescription(),
+                group.getId() + 1);
+
+        Benchmark newBenchmark = benchmarkDB.getBenchmark(benchmark.getId());
+
+        assertEquals(group.getId(), newBenchmark.getGroup().getId());
+        assertEquals(BENCHMARK_NAME, newBenchmark.getCustomName());
     }
 
     @Test
@@ -228,9 +248,15 @@ public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
     }
 
     @Test
-    void updateGroup_noGroupWithGivenIdSaved_shouldThrowException() {
-        assertThrows(NoSuchElementException.class,
-                () -> benchmarkManager.updateGroup(group.getId() + 1, GROUP_NAME));
+    void updateGroup_noGroupWithGivenIdSaved_shouldNotUpdate() {
+        IBenchmarkGroupAccess groupAccessSpy = Mockito.mock(IBenchmarkGroupAccess.class);
+        BenchmarkManager managerWithSpy = new BenchmarkManager(benchmarkDB, groupAccessSpy);
+
+        when(groupAccessSpy.getBenchmarkGroup(group.getId())).thenReturn(null);
+
+        managerWithSpy.updateGroup(group.getId(), GROUP_NAME_TWO);
+
+        verify(groupAccessSpy, atMostOnce()).saveBenchmarkGroup(any());
     }
 
     /**

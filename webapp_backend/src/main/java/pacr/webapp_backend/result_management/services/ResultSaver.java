@@ -1,5 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IBenchmark;
@@ -19,6 +21,8 @@ import java.util.Objects;
  */
 @Component
 abstract class ResultSaver {
+
+    private static final Logger LOGGER = LogManager.getLogger(ResultSaver.class);
 
     private static final String NO_RESULT_ERROR = "PACR received no benchmarking result for this commit";
     private static final String NO_PROPERTY_RESULT_ERROR = "PACR received no measurements for this property";
@@ -105,11 +109,16 @@ abstract class ResultSaver {
         if (resultToSave.hasNoBenchmarkResults() && !resultToSave.hasGlobalError()) {
             resultToSave.setError(true);
             resultToSave.setErrorMessage(NO_RESULT_ERROR);
+
+            LOGGER.info("result {} has no measurements - setting error message accordingly",
+                    resultToSave.getCommitHash());
         }
 
         synchronized (CommitResult.class) {
             resultAccess.saveResult(resultToSave);
         }
+
+        LOGGER.info("saved result for commit {}", resultToSave.getCommitHash());
 
         updateOtherComponents(resultToSave, commit, comparisonCommitHash);
     }
@@ -170,6 +179,7 @@ abstract class ResultSaver {
                 // update the saved property only if this new property does not have an error
                 // otherwise the fields such as ResultInterpretation might not be set correctly
                 if (!inputPropertyResult.isError()) {
+                    LOGGER.info("updating saved property \"{}\" with latest metadata", propertyName);
                     savedProperty.copyMetadataFrom(inputPropertyResult);
                 }
                 

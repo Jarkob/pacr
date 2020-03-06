@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -12,6 +15,9 @@ import org.springframework.util.StringUtils;
  */
 @Component
 public class BenchmarkManager {
+
+    private static final Logger LOGGER = LogManager.getLogger(BenchmarkManager.class);
+
     /**
      * The BenchmarkGroup object that represents no group.
      */
@@ -31,6 +37,8 @@ public class BenchmarkManager {
 
         standardGroup = groupAccess.getStandardGroup();
         if (standardGroup == null) {
+            LOGGER.info("creating and saving new standard group");
+
             standardGroup = new BenchmarkGroup(BenchmarkGroup.STANDARD_GROUP_NAME);
             standardGroup.setToStandardGroup();
             groupAccess.saveBenchmarkGroup(standardGroup);
@@ -86,7 +94,6 @@ public class BenchmarkManager {
         synchronized (Benchmark.class) {
             this.benchmarkAccess.saveBenchmark(benchmark);
 
-            // TODO figure out if the bug that caused this workaround can be fixed. Because I have given up for now.
             // saveBenchmark creates a merge between the java object and the database representation. The problem is:
             // persist is not called directly on the children, but rather copies of them. so the id is never set in the
             // original java object. This is a workaround to fix this by setting the ids manually after the fact.
@@ -100,6 +107,8 @@ public class BenchmarkManager {
                 }
             }
         }
+
+        LOGGER.info("created or updated benchmark {}", benchmark.getOriginalName());
     }
 
     /**
@@ -120,12 +129,14 @@ public class BenchmarkManager {
         synchronized (Benchmark.class) {
             Benchmark benchmark = benchmarkAccess.getBenchmark(benchmarkID);
             if (benchmark == null) {
-                throw new NoSuchElementException("no benchmark with id " + benchmarkID);
+                LOGGER.error("no benchmark with id {} - unable to update", benchmarkID);
+                return;
             }
 
             BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(groupID);
             if (group == null) {
-                throw new NoSuchElementException("no group with id " + groupID);
+                LOGGER.error("no benchmark group with id {} - unable to update benchmark {}", groupID, benchmarkID);
+                return;
             }
 
             benchmark.setGroup(group);
@@ -134,6 +145,8 @@ public class BenchmarkManager {
 
             this.benchmarkAccess.saveBenchmark(benchmark);
         }
+
+        LOGGER.info("updated benchmark with id {}", benchmarkID);
     }
 
     /**
@@ -151,6 +164,8 @@ public class BenchmarkManager {
         synchronized (Benchmark.class) {
             this.groupAccess.saveBenchmarkGroup(group);
         }
+
+        LOGGER.info("created benchmark group {} with id {}", name, group.getId());
     }
 
     /**
@@ -168,13 +183,16 @@ public class BenchmarkManager {
             BenchmarkGroup group = this.groupAccess.getBenchmarkGroup(id);
 
             if (group == null) {
-                throw new NoSuchElementException("no group with id " + id);
+                LOGGER.error("no benchmark group with id {} - unable to update", id);
+                return;
             }
 
             group.setName(name);
 
             this.groupAccess.saveBenchmarkGroup(group);
         }
+
+        LOGGER.info("updated benchmark group with id {}", id);
     }
 
     /**
@@ -199,10 +217,15 @@ public class BenchmarkManager {
                 if (group.equals(benchmark.getGroup())) {
                     benchmark.setGroup(standardGroup);
                     this.benchmarkAccess.saveBenchmark(benchmark);
+
+                    LOGGER.info("group of benchmark {} set to standard (previous group {} is getting deleted)",
+                            benchmark.getId(), id);
                 }
             }
 
             this.groupAccess.deleteGroup(group);
         }
+
+        LOGGER.info("deleted group {}", id);
     }
 }

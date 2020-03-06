@@ -94,8 +94,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         for (CommitResult result : results) {
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commit, result);
-            outputBenchmarkingResults.add(outputResult);
+            if (commit != null) {
+                OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commit, result);
+                outputBenchmarkingResults.add(outputResult);
+            }
         }
 
         return new PageImpl<>(outputBenchmarkingResults, pageable, results.getTotalElements());
@@ -265,8 +267,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         for (CommitResult result : results) {
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
-            history.add(historyItem);
+            if (commit != null) {
+                CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
+                history.add(historyItem);
+            }
         }
 
         return history;

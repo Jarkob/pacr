@@ -1,5 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.EventCategory;
@@ -16,6 +18,8 @@ import java.util.Objects;
  */
 @Component
 public class ResultBenchmarkSaver extends ResultSaver {
+
+    private static final Logger LOGGER = LogManager.getLogger(ResultBenchmarkSaver.class);
 
     private ResultGetter subjectForObservers;
     private IEventHandler eventHandler;
@@ -69,10 +73,13 @@ public class ResultBenchmarkSaver extends ResultSaver {
                 commit.getRepositoryName(), result.getGlobalError(), averageImprovementPercentage,
                 comparisonCommitHash);
 
+        LOGGER.info("creating event for new result for commit {}", commit.getCommitHash());
+
         eventHandler.addEvent(benchmarkingEvent);
 
         // only update observers if the commit is on the master branch
         if (commit.isOnMaster()) {
+            LOGGER.info("updating observers for new result for commit {}", commit.getCommitHash());
             subjectForObservers.updateAll();
         }
     }

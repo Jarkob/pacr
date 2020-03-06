@@ -126,14 +126,16 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     }
 
     @Test
-    void importBenchmarkingResults_noCommitSaved_shouldThrowException() {
+    void importBenchmarkingResults_noCommitSaved_shouldNotSaveResult() {
         SimpleBenchmarkingResult resultToImport = new SimpleBenchmarkingResult();
         resultToImport.setCommitHash(HASH_TWO);
 
         Collection<IBenchmarkingResult> resultsToImport = new LinkedList<>();
         resultsToImport.add(resultToImport);
 
-        assertThrows(IllegalArgumentException.class, () -> resultManager.importBenchmarkingResults(resultsToImport));
+        resultManager.importBenchmarkingResults(resultsToImport);
+
+        assertNull(resultDB.getResultFromCommit(HASH_TWO));
     }
 
     /**
@@ -174,11 +176,13 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     }
 
     @Test
-    void saveBenchmarkingResults_noCommitSavedForResult_shouldThrowException() {
+    void saveBenchmarkingResults_noCommitSavedForResult_shouldNotSaveResult() {
         SimpleBenchmarkingResult resultToSave = new SimpleBenchmarkingResult();
         resultToSave.setCommitHash(HASH_TWO);
 
-        assertThrows(IllegalArgumentException.class, () -> resultManager.saveBenchmarkingResults(resultToSave));
+        resultManager.saveBenchmarkingResults(resultToSave);
+
+        assertNull(resultDB.getResultFromCommit(HASH_TWO));
     }
 
     /**

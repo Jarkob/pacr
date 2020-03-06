@@ -1,5 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
@@ -21,6 +23,8 @@ import java.util.LinkedList;
  */
 @Component
 public class ResultManager implements IResultDeleter, IResultImporter, IResultSaver {
+
+    private static final Logger LOGGER = LogManager.getLogger(ResultManager.class);
 
     private IResultAccess resultAccess;
     private IGetCommitAccess commitAccess;
@@ -49,6 +53,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         synchronized (CommitResult.class) {
             resultAccess.deleteResults(commitHashes);
         }
+
+        LOGGER.info("deleted {} results", commitHashes.size());
     }
 
     @Override
@@ -61,17 +67,21 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
 
             if (commit == null) {
-                throw new IllegalArgumentException("could not find commit with hash " + result.getCommitHash());
+                LOGGER.error("could not find commit with hash {} - its result will not be saved",
+                        result.getCommitHash());
+                continue;
             }
 
             resultsWithCommits.put(result, commit);
         }
 
-        for (IBenchmarkingResult result : results) {
+        for (IBenchmarkingResult result : resultsWithCommits.keySet()) {
             ICommit commit = resultsWithCommits.get(result);
             resultImportSaver.saveResult(result, commit, getComparisonCommitHash(commit));
             updateComparisonsForChildren(result.getCommitHash());
         }
+
+        LOGGER.info("saved results");
     }
 
     @Override
@@ -81,7 +91,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         ICommit commit = commitAccess.getCommit(benchmarkingResult.getCommitHash());
 
         if (commit == null) {
-            throw new IllegalArgumentException("could not find commit with hash " + benchmarkingResult.getCommitHash());
+            LOGGER.error("could not find commit with hash {}", benchmarkingResult.getCommitHash());
+            return;
         }
 
         resultBenchmarkSaver.saveResult(benchmarkingResult, commit, getComparisonCommitHash(commit));
@@ -150,6 +161,9 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
                 synchronized (CommitResult.class) {
                     resultAccess.saveResult(resultToUpdate);
                 }
+
+                LOGGER.info("updated result for commit {} with new comparision data",
+                        resultToUpdate.getCommitHash());
             }
         }
     }
