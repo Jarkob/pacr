@@ -26,7 +26,7 @@ public class PullIntervalSchedulerTest {
     @Spy
     private ScheduledTaskRegistrar registrar;
     @Mock
-    private PullIntervalSchedulingTrigger trigger;
+    private IPullIntervalAccess pullIntervalAccess;
     @Mock
     private TaskScheduler poolScheduler;
 
@@ -34,7 +34,7 @@ public class PullIntervalSchedulerTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
-        scheduler = new PullIntervalScheduler(gitTracking, poolScheduler, trigger);
+        scheduler = new PullIntervalScheduler(gitTracking, poolScheduler, pullIntervalAccess, 30);
     }
 
     /**
@@ -45,10 +45,6 @@ public class PullIntervalSchedulerTest {
         scheduler.configureTasks(registrar);
         verify(registrar).setScheduler(poolScheduler);
 
-        List<TriggerTask> triggerTaskList = registrar.getTriggerTaskList();
-        assertEquals(1, triggerTaskList.size());
-        TriggerTask task = triggerTaskList.get(0);
-
-        assertEquals(trigger, task.getTrigger());
+        verify(poolScheduler).scheduleWithFixedDelay(any(), any(), anyLong());
     }
 }
