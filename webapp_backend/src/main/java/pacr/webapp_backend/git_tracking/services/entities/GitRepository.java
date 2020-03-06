@@ -89,7 +89,7 @@ public class GitRepository implements IRepository {
         this.isHookSet = false;
         this.color = color;
         this.observeFromDate = observeFromDate;
-        setCommitLinkPrefix(pullURL);
+        setCommitLinkPrefix();
     }
 
     /**
@@ -140,28 +140,21 @@ public class GitRepository implements IRepository {
     public void setPullURL(@NotNull String pullURL) {
         Objects.requireNonNull(pullURL);
 
-        setCommitLinkPrefix(pullURL);
-
         this.pullURL = pullURL;
+
+        setCommitLinkPrefix();
     }
 
-    private void setCommitLinkPrefix(String pullURL) {
-        List<String> gitPrefixes = Arrays.asList("git@github.com", "git@gitlab.com", "git@git.scc.kit.edu");
-
-        for (String prefix : gitPrefixes) {
-            if (pullURL.startsWith(prefix)) {
-                this.commitLinkPrefix = getCommitURLPrefix(pullURL, prefix);
-            }
-        }
-    }
-
-    private String getCommitURLPrefix(String pullURL, String gitPrefix) {
+    private void setCommitLinkPrefix() {
         int startIndex = pullURL.indexOf(':') + 1; // ':' is the separator for host and repository path
         int endIndex = pullURL.indexOf(".git");
-        String gitHttpsPrefix = "https://" + gitPrefix.substring(4) + "/";
-        String repositoryInfix = pullURL.substring(startIndex, endIndex);
-        String commitSuffix = "/commit/";
-        return gitHttpsPrefix + repositoryInfix + commitSuffix;
+        if (startIndex >= 1 && startIndex < endIndex && pullURL.length() > endIndex) {
+            String gitHttpsPrefix = "https://" + pullURL.substring(4, startIndex - 1) + "/";
+            String repositoryInfix = pullURL.substring(startIndex, endIndex);
+            String commitSuffix = "/commit/";
+
+            this.commitLinkPrefix = gitHttpsPrefix + repositoryInfix + commitSuffix;
+        }
     }
 
     /**
@@ -273,6 +266,10 @@ public class GitRepository implements IRepository {
     throw new NoSuchElementException("Branch " + branchName + " does not exist.");
     }
 
+    /**
+     * Creates a branch if it doesn't exist yet.
+     * @param branchName is the branch name.
+     */
     public void createBranchIfNotExists(@NotNull String branchName) {
         Objects.requireNonNull(branchName);
 
@@ -314,10 +311,16 @@ public class GitRepository implements IRepository {
         this.observeFromDate = observeFromDate;
     }
 
+    /**
+     * @return returns the selected branches.
+     */
     public Set<String> getSelectedBranches() {
         return selectedBranches;
     }
 
+    /**
+     * @param selectedBranches are the new selected branches.
+     */
     public void setSelectedBranches(Set<String> selectedBranches) {
         this.selectedBranches = selectedBranches;
 

@@ -72,9 +72,7 @@ public class GetCommitDBTest extends GitTrackingDBTest {
 
     @Test
     void getCommitsFromBranchTimeFrame_shouldOnlyReturnCommitsInTime() {
-        Set<String> branches = new HashSet<>();
-        branches.add(BRANCH_NAME);
-        repository.setSelectedBranches(branches);
+        repository.createBranchIfNotExists(BRANCH_NAME);
 
         GitBranch branch = repository.getTrackedBranch(BRANCH_NAME);
 
