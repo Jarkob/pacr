@@ -1,7 +1,7 @@
 package pacr.webapp_backend.git_tracking.endpoints;
 
 import java.time.LocalDate;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Transfer object for encoding repositories in JSON.
@@ -14,7 +14,7 @@ public class TransferRepository {
 
     private int id;
     private boolean trackAllBranches;
-    private Set<String> trackedBranches;
+    private List<String> trackedBranches;
     private String pullURL;
     private String name;
     private boolean isHookSet;
@@ -35,7 +35,7 @@ public class TransferRepository {
      * @param observeFromDate is the date from which on the repository is observed.
      * @param commitLinkPrefix is the commit link prefix.
      */
-    public TransferRepository(int id, boolean trackAllBranches, Set<String> trackedBranches, String pullURL,
+    public TransferRepository(int id, boolean trackAllBranches, List<String> trackedBranches, String pullURL,
                               String name, boolean isHookSet, String color, LocalDate observeFromDate,
                               String commitLinkPrefix) {
         this.id = id;
@@ -67,14 +67,14 @@ public class TransferRepository {
     /**
      * @return all tracked branches.
      */
-    public Set<String> getTrackedBranches() {
+    public List<String> getTrackedBranches() {
         return trackedBranches;
     }
 
     /**
      * @param branchNames are all tracked branches.
      */
-    public void setTrackedBranches(Set<String> branchNames) {
+    public void setTrackedBranches(List<String> branchNames) {
         this.trackedBranches = branchNames;
     }
 

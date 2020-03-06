@@ -24,12 +24,13 @@ import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.NoSuchElementException;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Set;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -68,7 +69,7 @@ public class RepositoryManagerController {
     public List<TransferRepository> getAllRepositories() {
         List<GitRepository> repositories = gitTracking.getAllRepositories();
 
-        List<TransferRepository> transferRepositories = new LinkedList<>();
+        List<TransferRepository> transferRepositories = new ArrayList<>();
         for (GitRepository repository : repositories) {
             transferRepositories.add(createTransferRepository(repository));
         }
@@ -81,8 +82,12 @@ public class RepositoryManagerController {
         Set<String> branchNames = invertSet(gitRepository.getSelectedBranches(),
                 gitTracking.getBranches(gitRepository.getPullURL()), gitRepository.isTrackAllBranches());
 
+        // sort branch order
+        List<String> trackedBranches = new ArrayList<>(branchNames);
+        sortIgnoreCase(trackedBranches);
+
         return new TransferRepository(gitRepository.getId(),
-                gitRepository.isTrackAllBranches(), branchNames, gitRepository.getPullURL(),
+                gitRepository.isTrackAllBranches(), trackedBranches, gitRepository.getPullURL(),
                 gitRepository.getName(), gitRepository.isHookSet(), gitRepository.getColor(),
                 gitRepository.getObserveFromDate(), gitRepository.getCommitLinkPrefix());
     }
@@ -142,7 +147,8 @@ public class RepositoryManagerController {
                 transferRepository.getPullURL());
 
         // convert tracked branches to selected branches
-        Set<String> selectedBranches = invertSet(transferRepository.getTrackedBranches(),
+        Set<String> trackedBranches = new HashSet<>(transferRepository.getTrackedBranches());
+        Set<String> selectedBranches = invertSet(trackedBranches,
                 gitTracking.getBranches(transferRepository.getPullURL()), transferRepository.isTrackAllBranches());
 
         return gitTracking.addRepository(transferRepository.getPullURL(), transferRepository.getObserveFromDate(),
@@ -214,7 +220,8 @@ public class RepositoryManagerController {
         }
 
         // convert tracked branches to selected branches
-        Set<String> selectedBranches = invertSet(transferRepository.getTrackedBranches(),
+        Set<String> trackedBranches = new HashSet<>(transferRepository.getTrackedBranches());
+        Set<String> selectedBranches = invertSet(trackedBranches,
                 gitTracking.getBranches(transferRepository.getPullURL()), transferRepository.isTrackAllBranches());
 
         gitRepository.setSelectedBranches(selectedBranches);
@@ -233,10 +240,17 @@ public class RepositoryManagerController {
      * @return all branches of the repository.
      */
     @PostMapping(value = "/branches")
-    public Set<String> getBranchesFromRepository(@RequestBody String pullURL) {
+    public List<String> getBranchesFromRepository(@RequestBody String pullURL) {
         LOGGER.info("Getting branches from repository with pull url {}.", pullURL);
 
-        return gitTracking.getBranches(pullURL);
+        List<String> branches = new ArrayList<>(gitTracking.getBranches(pullURL));
+        sortIgnoreCase(branches);
+
+        return branches;
+    }
+
+    private void sortIgnoreCase(List<String> list) {
+        list.sort(Comparator.comparing(String::toLowerCase));
     }
 
 }

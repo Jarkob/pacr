@@ -23,10 +23,9 @@ import pacr.webapp_backend.scheduler.endpoints.SchedulerController;
 import pacr.webapp_backend.scheduler.services.Job;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -61,7 +60,8 @@ public class GitTrackingScheduler extends SpringBootTestWithoutShell {
         Password pw = new Password(password);
         ResponseEntity<Token> token = loginController.login(pw);
 
-        Set<String> trackedBranches = new HashSet<>(Arrays.asList(MASTER_BRANCH));
+        List<String> trackedBranches = Arrays.asList(MASTER_BRANCH);
+        Collections.sort(trackedBranches);
         TransferRepository repo = new TransferRepository(0, true, trackedBranches,
                 PULL_URL, REPO_NAME, false,
                 COLOR, NEW_YEAR_2020, COMMIT_PREFIX);
