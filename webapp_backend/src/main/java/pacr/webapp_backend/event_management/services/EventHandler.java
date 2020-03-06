@@ -37,26 +37,23 @@ public class EventHandler implements IEventHandler {
         this.eventContainers = new HashMap<>();
     }
 
-    @PostConstruct
-    private void initialize() {
-        for (EventCategory category : EventCategory.values()) {
-            eventContainers.put(category, new EventContainer(category, eventAccess));
-        }
-    }
-
     @Override
     public void addEvent(@NotNull EventTemplate eventTemplate) {
         Objects.requireNonNull(eventTemplate, "The eventTemplate cannot be null.");
 
         EventCategory category = eventTemplate.getCategory();
 
+        initializeEventContainer(category);
+
+        EventContainer eventContainer = eventContainers.get(category);
+        eventContainer.addEvent(eventTemplate.getTitle(), eventTemplate.getDescription());
+    }
+
+    private void initializeEventContainer(EventCategory category) {
         if (!eventContainers.containsKey(category)) {
             EventContainer eventContainer = new EventContainer(category, eventAccess);
             eventContainers.put(category, eventContainer);
         }
-
-        EventContainer eventContainer = eventContainers.get(category);
-        eventContainer.addEvent(eventTemplate.getTitle(), eventTemplate.getDescription());
     }
 
     /**

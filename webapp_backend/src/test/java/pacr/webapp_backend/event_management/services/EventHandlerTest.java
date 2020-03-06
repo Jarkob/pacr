@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.EventTemplate;
 
@@ -28,6 +30,12 @@ public class EventHandlerTest {
     private EventHandler eventHandler;
 
     private EventTemplate eventTemplate;
+
+    @Mock
+    private Pageable pageable;
+
+    @Mock
+    private Page<Event> expectedPage;
 
     @Mock
     private IEventAccess eventAccess;
@@ -187,6 +195,28 @@ public class EventHandlerTest {
         List<Event> events = eventHandler.getEvents(category);
         assertEquals(amtEvents, events.size());
         assertEquals(expectedEvents, events);
+    }
+
+    @Test
+    void getEvents_pageable_unknownCategory() {
+        Page<Event> page = eventHandler.getEvents(pageable, category);
+
+        assertNotNull(page);
+        assertEquals(0, page.getTotalElements());
+        assertEquals(1, page.getTotalPages());
+        assertNotNull(page.getContent());
+        assertEquals(0, page.getContent().size());
+    }
+
+    @Test
+    void getEvents_pageable_noError() {
+        eventHandler.addEvent(eventTemplate);
+
+        when(eventAccess.findByCategory(pageable, category)).thenReturn(expectedPage);
+
+        Page<Event> page = eventHandler.getEvents(pageable, category);
+
+        assertEquals(expectedPage, page);
     }
 
     private EventTemplate createEventTemplate(EventCategory category, String title, String description) {

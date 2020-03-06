@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.shared.EventCategory;
 
@@ -32,6 +31,12 @@ public class EventContainerTest {
 
     @Mock
     private IEventAccess eventAccess;
+
+    @Mock
+    private Pageable pageable;
+
+    @Mock
+    private Page<Event> expectedPage;
 
     private EventCategory category;
 
@@ -149,7 +154,7 @@ public class EventContainerTest {
     }
 
     @Test
-    void eventContainer_fetchesEvents() {
+    void getEvents_fetchesEvents() {
         // define new category so the method findByCategory(category) is only called once
         EventCategory category = EventCategory.UNDEFINED;
 
@@ -169,6 +174,28 @@ public class EventContainerTest {
         List<Event> events = eventContainer.getEvents();
 
         assertEquals(expectedEvents, events);
+    }
+
+    @Test
+    void getEvents_pageable() {
+        when(eventAccess.findByCategory(pageable, category)).thenReturn(expectedPage);
+
+        Page<Event> page = eventContainer.getEvents(pageable);
+
+        assertEquals(expectedPage, page);
+    }
+
+    @Test
+    void getEvents_pageable_dbReturnsNull() {
+        when(eventAccess.findByCategory(pageable, category)).thenReturn(null);
+
+        Page<Event> page = eventContainer.getEvents(pageable);
+
+        assertNotNull(page);
+        assertEquals(0, page.getTotalElements());
+        assertEquals(1, page.getTotalPages());
+        assertNotNull(page.getContent());
+        assertEquals(0, page.getContent().size());
     }
 
     private void assertEvent(Event event, LocalDateTime expectedCreated) {

@@ -1,9 +1,11 @@
 package pacr.webapp_backend.event_management.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
@@ -56,7 +58,13 @@ public class EventContainer {
      * @return a sorted list of all events in this event manager.
      */
     Page<Event> getEvents(Pageable pageable) {
-        return eventAccess.findByCategory(pageable, category);
+        Page<Event> page = eventAccess.findByCategory(pageable, category);
+
+        if (page == null) {
+            page = new PageImpl<>(new ArrayList<>(), pageable, 0);
+        }
+
+        return page;
     }
 
     List<Event> getEvents() {
