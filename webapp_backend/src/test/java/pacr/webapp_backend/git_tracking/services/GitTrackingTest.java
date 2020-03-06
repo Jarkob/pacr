@@ -46,7 +46,7 @@ public class GitTrackingTest {
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         gitTracking = new GitTracking(gitTrackingAccess, gitHandler, resultDeleter,
-                jobScheduler, colorPicker, commitBenchmarkedChecker);
+                jobScheduler, colorPicker, commitBenchmarkedChecker, "#pacr-ignore");
     }
 
     @Test

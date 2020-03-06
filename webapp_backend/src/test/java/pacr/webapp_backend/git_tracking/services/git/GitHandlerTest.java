@@ -140,7 +140,8 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         // create GitHandler
         try {
             gitHandler = new GitHandler(
-                    PATH_TO_REPOS, transportConfigCallback, gitTrackingAccess, cleanUpCommits, resultDeleter);
+                    PATH_TO_REPOS, transportConfigCallback, gitTrackingAccess, cleanUpCommits, resultDeleter,
+                    "#pacr-ignore", "#pacr-label");
         } catch (IOException e) {
             e.printStackTrace();
             fail();

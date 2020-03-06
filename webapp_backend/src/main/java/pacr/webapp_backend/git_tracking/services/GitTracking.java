@@ -1,5 +1,6 @@
 package pacr.webapp_backend.git_tracking.services;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,7 @@ public class GitTracking implements IRepositoryImporter {
     private IColorPicker colorPicker;
     private GitHandler gitHandler;
     private ICommitBenchmarkedChecker commitBenchmarkedChecker;
+    private String ignoreTag;
 
     /**
      * Initiates an instance of GitTracking.
@@ -51,16 +53,19 @@ public class GitTracking implements IRepositoryImporter {
      * @param jobScheduler is the interface that adds job to the benchmarking queue.
      * @param colorPicker is the algorithm that assigns new colors to repositories.
      * @param commitBenchmarkedChecker checks whether a commit is already benchmarked or not.
+     * @param ignoreTag is the pacr ignore tag.
      */
     public GitTracking(@NotNull IGitTrackingAccess gitTrackingAccess, @NotNull GitHandler gitHandler,
                        @NotNull IResultDeleter resultDeleter, @NotNull IJobScheduler jobScheduler,
-                       @NotNull IColorPicker colorPicker, @NotNull ICommitBenchmarkedChecker commitBenchmarkedChecker) {
+                       @NotNull IColorPicker colorPicker, @NotNull ICommitBenchmarkedChecker commitBenchmarkedChecker,
+                       @NotNull @Value("${ignoreTag}") String ignoreTag) {
         Objects.requireNonNull(gitTrackingAccess);
         Objects.requireNonNull(gitHandler);
         Objects.requireNonNull(resultDeleter);
         Objects.requireNonNull(jobScheduler);
         Objects.requireNonNull(colorPicker);
         Objects.requireNonNull(commitBenchmarkedChecker);
+        Objects.requireNonNull(ignoreTag);
 
         this.gitTrackingAccess = gitTrackingAccess;
         this.gitHandler = gitHandler;
@@ -68,6 +73,7 @@ public class GitTracking implements IRepositoryImporter {
         this.jobScheduler = jobScheduler;
         this.colorPicker = colorPicker;
         this.commitBenchmarkedChecker = commitBenchmarkedChecker;
+        this.ignoreTag = ignoreTag;
     }
 
     /**
@@ -265,6 +271,10 @@ public class GitTracking implements IRepositoryImporter {
         Set<String> commitsToRemove = new HashSet<>();
 
         for (GitCommit commit : commits) {
+            if (commit.getCommitMessage().contains(ignoreTag)) {
+                continue;
+            }
+
             if (newObserveFromDate.isBefore(commit.getCommitDate().toLocalDate())) {
                 // add job if commit is not already benchmarked
                 if (!commitBenchmarkedChecker.isCommitBenchmarked(commit.getCommitHash())) {

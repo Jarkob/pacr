@@ -54,11 +54,11 @@ public class GitHandler {
 
     private static final Logger LOGGER = LogManager.getLogger(GitHandler.class);
 
-    private static final String LABEL_TAG_REGEX = ".*#pacr-label\\((.*)\\).*";
     private static final int FIRST_CATCH_GROUP = 1;
-    private static final Pattern pattern = Pattern.compile(LABEL_TAG_REGEX);
+    private Pattern pattern;
 
     private String pathToWorkingDir;
+    private String ignoreTag;
 
     private IGitTrackingAccess gitTrackingAccess;
     private TransportConfigCallback transportConfigCallback;
@@ -73,24 +73,34 @@ public class GitHandler {
      * @param cleanUpCommits is the strategy that is used to select the commits not being needed anymore
      *                       after a force push.
      * @param resultDeleter is the component used to delete benchmarking results.
+     * @param ignoreTag is the ignore tag.
+     * @param labelTag is the label tag.
      * @throws IOException when the working directory cannot be created.
      */
     public GitHandler(@NotNull @Value("${gitRepositoriesPath}") String pathToRepositories,
                       @NotNull TransportConfigCallback transportConfigCallback,
                       @NotNull IGitTrackingAccess gitTrackingAccess,
                       @NotNull ICleanUpCommits cleanUpCommits,
-                      @NotNull IResultDeleter resultDeleter) throws IOException {
+                      @NotNull IResultDeleter resultDeleter,
+                      @NotNull @Value("${ignoreTag}") String ignoreTag,
+                      @NotNull @Value("${labelTag}") String labelTag) throws IOException {
         Objects.requireNonNull(pathToRepositories);
         Objects.requireNonNull(transportConfigCallback);
         Objects.requireNonNull(gitTrackingAccess);
         Objects.requireNonNull(cleanUpCommits);
         Objects.requireNonNull(resultDeleter);
+        Objects.requireNonNull(ignoreTag);
+        Objects.requireNonNull(labelTag);
 
         this.transportConfigCallback = transportConfigCallback;
         this.pathToWorkingDir = System.getProperty("user.dir") + pathToRepositories;
         this.gitTrackingAccess = gitTrackingAccess;
         this.cleanUpCommits = cleanUpCommits;
         this.resultDeleter = resultDeleter;
+        this.ignoreTag = ignoreTag;
+
+        String labelTagRegex = ".*" + labelTag + "\\((.*)\\).*";
+        this.pattern = Pattern.compile(labelTagRegex);
 
         File repositoryWorkingDir = new File(pathToWorkingDir);
 
@@ -355,7 +365,7 @@ public class GitHandler {
         for (GitCommit commit : commitsFromBranch) {
             // only add commits that are after observeFromDate
             if (observeFromDate == null || observeFromDate.isBefore(commit.getCommitDate().toLocalDate())) {
-                if (!commit.getCommitMessage().contains("#pacr-ignore")) {
+                if (!commit.getCommitMessage().contains(ignoreTag)) {
                     newCommits.add(commit.getCommitHash());
                 }
             }
