@@ -55,7 +55,7 @@ public final class StatisticalCalculator {
      * @return the mean.
      */
     static double getMean(@NotNull List<Double> values) {
-        if (values == null || values.size() == 0) {
+        if (values == null || values.isEmpty()) {
             return ERROR_CODE;
         }
         double total = 0;
@@ -72,7 +72,7 @@ public final class StatisticalCalculator {
      * @return the standard deviation.
      */
     static double getStandardDeviation(@NotNull List<Double> values) {
-        if (values == null || values.size() == 0) {
+        if (values == null || values.isEmpty()) {
             return ERROR_CODE;
         }
         double mean = getMean(values);
@@ -93,7 +93,10 @@ public final class StatisticalCalculator {
         Objects.requireNonNull(result);
 
         if (comparisonResult != null && !result.isError() && !comparisonResult.isError()) {
-            result.setRatio(result.getMedian() / comparisonResult.getMedian());
+            if (comparisonResult.getMedian() != 0) {
+                // if the comparison result is 0, the default ratio of the result is not changed
+                result.setRatio(result.getMedian() / comparisonResult.getMedian());
+            }
             result.setCompared(true);
 
             if (significantChange(result, comparisonResult)) {
