@@ -1,6 +1,7 @@
 package pacr.webapp_backend.event_management.services;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import pacr.webapp_backend.shared.EventCategory;
 

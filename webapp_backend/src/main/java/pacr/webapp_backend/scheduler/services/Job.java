@@ -8,10 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+
+import lombok.*;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IJob;
 
@@ -22,18 +20,23 @@ import pacr.webapp_backend.shared.IJob;
 @Entity
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 public class Job implements IJob {
 
     @Id
     @GeneratedValue
     @Getter(AccessLevel.NONE)
+    @EqualsAndHashCode.Exclude
     private int id;
 
     @Setter
     @Getter(AccessLevel.NONE)
+    @EqualsAndHashCode.Exclude
     private boolean prioritized;
 
     private String jobID;
+
+    @EqualsAndHashCode.Exclude
     private LocalDateTime queued;
 
     @ManyToOne(fetch = FetchType.EAGER)
@@ -66,25 +69,6 @@ public class Job implements IJob {
     @Override
     public String getJobGroupTitle() {
         return group.getTitle();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        Job job = (Job) o;
-        return Objects.equals(jobID, job.jobID) && Objects.equals(group, job.group);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(jobID, group.getTitle());
     }
 
 }

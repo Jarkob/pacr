@@ -1,6 +1,7 @@
 package pacr.webapp_backend.event_management.services;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -65,7 +66,7 @@ public class Event implements Comparable<Event> {
         this.category = category;
         this.title = title;
         this.description = description;
-        this.created = LocalDateTime.now();
+        this.created = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Override

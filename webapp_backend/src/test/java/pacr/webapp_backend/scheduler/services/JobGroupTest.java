@@ -3,11 +3,7 @@ package pacr.webapp_backend.scheduler.services;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class JobGroupTest {
 
@@ -26,22 +22,17 @@ public class JobGroupTest {
         boolean result = otherGroup.equals(jobGroup);
         assertTrue(result);
 
-        result = jobGroup.equals(jobGroup);
-        assertTrue(result);
+        assertEquals(jobGroup, jobGroup);
     }
 
     @Test
     void equals_areNotEqual() {
         JobGroup otherGroup = new JobGroup(GROUP_TITLE + 1);
 
-        boolean result = otherGroup.equals(jobGroup);
-        assertFalse(result);
-
-        result = jobGroup.equals(null);
-        assertFalse(result);
-
-        result = jobGroup.equals(new Object());
-        assertFalse(result);
+        assertNotEquals(jobGroup, otherGroup);
+        assertNotEquals(jobGroup, null);
+        assertNotEquals(null, jobGroup);
+        assertNotEquals(jobGroup, new Object());
     }
 
     @Test

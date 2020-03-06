@@ -127,7 +127,7 @@ public class EventContainerTest {
         for (int i = 0; i < amtEvents; i++) {
             eventContainer.addEvent(EVENT_TITLE + i, EVENT_DESCRIPTION + i);
             expectedEvents.add(new Event(category, EVENT_TITLE + i, EVENT_DESCRIPTION + i));
-            Thread.sleep(200);
+            Thread.sleep(1000);
         }
 
         when(eventAccess.findByCategoryOrderByCreatedDesc(category)).thenReturn(expectedEvents);
