@@ -83,7 +83,7 @@ public class GitTracking implements IRepositoryImporter {
      */
     @PostConstruct
     private void initializeColorPicker() {
-        List<GitRepository> repositories = gitTrackingAccess.getAllRepositories();
+        final List<GitRepository> repositories = gitTrackingAccess.getAllRepositories();
 
         for (final GitRepository repository : repositories) {
             colorPicker.setColorToUsed(repository.getColor());

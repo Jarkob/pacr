@@ -1,5 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +15,7 @@ import java.util.List;
  * @author Benedikt Hahn
  */
 @Entity
+@NoArgsConstructor
 public class CommitHistoryDashboardModule extends DashboardModule {
 
     @ElementCollection(fetch = FetchType.EAGER)

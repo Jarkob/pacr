@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.util.Objects;
 
 /**
  * Represents a group of benchmarks.
@@ -29,13 +28,15 @@ public class BenchmarkGroup {
      */
     public static final String STANDARD_GROUP_NAME = "Other";
 
+    private static final int MAX_GROUP_AMOUNT = 500;
+
     @Id
     @GeneratedValue
     private int id;
 
     private boolean standardGroup;
 
-    @Column(length = 500)
+    @Column(length = MAX_GROUP_AMOUNT)
     private String name;
 
     /**
@@ -61,7 +62,7 @@ public class BenchmarkGroup {
      * the same.
      * @param name the new name.
      */
-    public void setName(String name) {
+    public void setName(final String name) {
         if (StringUtils.hasText(name)) {
             this.name = name;
         }

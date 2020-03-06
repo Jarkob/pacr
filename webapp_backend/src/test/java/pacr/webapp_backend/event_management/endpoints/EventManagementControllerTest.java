@@ -52,7 +52,7 @@ public class EventManagementControllerTest {
 
     @Test
     void benchmarkingRSSFeed_noError() {
-        final View rssView = eventController.benchmarkingRSSFeed();
+        final View rssView = eventController.getBenchmarkingRSSFeed();
 
         assertNotNull(rssView);
         assertEquals("application/rss+xml", rssView.getContentType());

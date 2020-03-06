@@ -35,9 +35,9 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
     private static final Logger LOGGER = LogManager.getLogger(ResultGetter.class);
 
-    private IGetCommitAccess commitAccess;
-    private IResultAccess resultAccess;
-    private OutputBuilder outputBuilder;
+    private final IGetCommitAccess commitAccess;
+    private final IResultAccess resultAccess;
+    private final OutputBuilder outputBuilder;
 
     private final Set<IObserver> observers;
 
@@ -92,10 +92,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         final List<OutputBenchmarkingResult> outputBenchmarkingResults = new LinkedList<>();
 
-        for (CommitResult result : results) {
-            ICommit commit = commitAccess.getCommit(result.getCommitHash());
+        for (final CommitResult result : results) {
+            final ICommit commit = commitAccess.getCommit(result.getCommitHash());
             if (commit != null) {
-                OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commit, result);
+                final OutputBenchmarkingResult outputResult = outputBuilder.buildDetailOutput(commit, result);
                 outputBenchmarkingResults.add(outputResult);
             }
         }
@@ -125,7 +125,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted).
      */
-    public HashMap<String, DiagramOutputResult> getBenchmarkResultsSubset(int benchmarkId, int repositoryId,
+    public Map<String, DiagramOutputResult> getBenchmarkResultsSubset(int benchmarkId, int repositoryId,
                                                                           @NotNull String branch,
                                                                           @NotNull LocalDateTime commitDateStart,
                                                                           @NotNull LocalDateTime commitDateEnd) {
@@ -148,16 +148,16 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @param pageable the requested page.
      * @return the results.
      */
-    public Page<CommitHistoryItem> getNewestResults(Pageable pageable) {
-        Page<CommitResult> resultsPage = resultAccess.getNewestResults(pageable);
+    public Page<CommitHistoryItem> getNewestResults(final Pageable pageable) {
+        final Page<CommitResult> resultsPage = resultAccess.getNewestResults(pageable);
 
-        List<CommitHistoryItem> historyItems = resultsToHistoryItems(resultsPage.getContent());
+        final List<CommitHistoryItem> historyItems = resultsToHistoryItems(resultsPage.getContent());
 
         return new PageImpl<>(historyItems, pageable, resultsPage.getTotalElements());
     }
 
-    private List<CommitHistoryItem> resultsToHistoryItems(List<CommitResult> results) {
-        List<CommitHistoryItem> history = new LinkedList<>();
+    private List<CommitHistoryItem> resultsToHistoryItems(final List<CommitResult> results) {
+        final List<CommitHistoryItem> history = new LinkedList<>();
 
         for (CommitResult result : results) {
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
@@ -259,7 +259,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         for (final ICommit commit : commits) {
             final CommitResult resultForCommit = results.get(commit.getCommitHash());
 
-            DiagramOutputResult outputResult = null;
+            final DiagramOutputResult outputResult;
 
             if (resultForCommit != null) {
                 outputResult = outputBuilder.buildDiagramOutput(commit, resultForCommit, benchmarkId);

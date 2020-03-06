@@ -20,6 +20,8 @@ import javax.validation.constraints.NotNull;
  */
 @RestController
 public class SchedulerController {
+    private static final int PRIOTIZED_PAGE_SIZE = 15;
+    private static final int JOB_PAGE_SIZE = 5;
 
     private final Scheduler scheduler;
     private final IAuthenticator authenticator;
@@ -44,7 +46,7 @@ public class SchedulerController {
      * @return a list of all jobs and prioritized jobs currently in the scheduler.
      */
     @RequestMapping("/queue/prioritized")
-    public Page<Job> getPrioritizedQueue(@PageableDefault(size = 15) final Pageable pageable) {
+    public Page<Job> getPrioritizedQueue(@PageableDefault(size = PRIOTIZED_PAGE_SIZE) final Pageable pageable) {
         return scheduler.getPrioritizedQueue(pageable);
     }
 
@@ -55,7 +57,7 @@ public class SchedulerController {
      * @return a list of all jobs and prioritized jobs currently in the scheduler.
      */
     @RequestMapping("/queue/jobs")
-    public Page<Job> getJobsQueue(@PageableDefault(size = 5) final Pageable pageable) {
+    public Page<Job> getJobsQueue(@PageableDefault(size = JOB_PAGE_SIZE) final Pageable pageable) {
         return scheduler.getJobsQueue(pageable);
     }
 

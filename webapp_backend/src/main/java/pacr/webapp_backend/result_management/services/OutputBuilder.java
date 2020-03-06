@@ -50,6 +50,7 @@ public class OutputBuilder {
      * they refer to the same commit hash).
      * @param commit the commit. Cannot be null.
      * @param result the result. Cannot be null.
+     * @param benchmarkId the id of the benchmark.
      * @return a {@link DiagramOutputResult} copied from the commit and result.
      */
     DiagramOutputResult buildDiagramOutput(@NotNull final ICommit commit, @NotNull final CommitResult result, final int benchmarkId) {

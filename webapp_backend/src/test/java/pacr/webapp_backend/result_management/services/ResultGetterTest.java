@@ -293,7 +293,7 @@ public class ResultGetterTest {
         when(resultMock.getCommitHash()).thenReturn(HASH);
         when(outputBuilderMock.buildDiagramOutput(commitMock, resultMock, BENCHMARK_ID)).thenReturn(diagramOutputMock);
 
-        HashMap<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID,
+        Map<String, DiagramOutputResult> outputs = resultGetter.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID,
                 BRANCH_NAME, startTime, endTime);
 
         assertEquals(EXPECTED_SINGLE_RESULT, outputs.size());

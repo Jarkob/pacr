@@ -18,6 +18,8 @@ import java.util.ArrayList;
 @Component
 public class ColorPicker implements IColorPicker {
 
+    private static final int MAX_COLOR_VALUE = 0xffffff;
+
     // value true for unused, value false for used
     private final Map<String, Boolean> colors;
     private final List<String> colorList;
@@ -47,7 +49,7 @@ public class ColorPicker implements IColorPicker {
             }
         }
         // if all colors are used, generate new random color
-        return "#" + (int) (Math.random() * 0xFFFFFF);
+        return "#" + (int) (Math.random() * MAX_COLOR_VALUE);
     }
 
     @Override

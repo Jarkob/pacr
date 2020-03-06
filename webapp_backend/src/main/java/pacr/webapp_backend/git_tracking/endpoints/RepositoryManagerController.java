@@ -43,6 +43,8 @@ import org.springframework.http.MediaType;
 @RestController
 public class RepositoryManagerController {
 
+    private static final int DEFAULT_PAGE_SIZE = 50;
+
     private static final Logger LOGGER = LogManager.getLogger(RepositoryManagerController.class);
 
     private final GitTracking gitTracking;
@@ -65,9 +67,9 @@ public class RepositoryManagerController {
      * @return all repositories in JSON.
      */
     @RequestMapping(value = "/repositories", method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransferRepository> getAllRepositories() {
-        List<GitRepository> repositories = gitTracking.getAllRepositories();
+        final List<GitRepository> repositories = gitTracking.getAllRepositories();
 
         List<TransferRepository> transferRepositories = new ArrayList<>();
         for (GitRepository repository : repositories) {
@@ -99,7 +101,7 @@ public class RepositoryManagerController {
      */
     @RequestMapping(value = "/commits/{repositoryID}", method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public Page<GitCommit> getAllCommits(@PageableDefault(size = 50, page = 0, sort = "commitDate",
+    public Page<GitCommit> getAllCommits(@PageableDefault(size = DEFAULT_PAGE_SIZE, page = 0, sort = "commitDate",
             direction = Sort.Direction.ASC) final Pageable pageable,
                                          @PathVariable("repositoryID") final int repositoryID) {
         return gitTracking.getAllCommits(repositoryID, pageable);
@@ -160,7 +162,7 @@ public class RepositoryManagerController {
 
         return gitTracking.addRepository(transferRepository.getPullURL(), transferRepository.getObserveFromDate(),
                 transferRepository.getName(), selectedBranches,
-                transferRepository.isTrackAllBranches(), transferRepository.isHookSet());
+                transferRepository.isTrackAllBranches(), transferRepository.getIsHookSet());
     }
 
     /**
@@ -234,7 +236,7 @@ public class RepositoryManagerController {
         gitRepository.setTrackAllBranches(transferRepository.isTrackAllBranches());
         gitRepository.setPullURL(transferRepository.getPullURL());
         gitRepository.setName(transferRepository.getName());
-        gitRepository.setIsHookSet(transferRepository.isHookSet());
+        gitRepository.setIsHookSet(transferRepository.getIsHookSet());
         gitRepository.setObserveFromDate(transferRepository.getObserveFromDate());
 
         gitTracking.updateRepository(gitRepository);

@@ -24,6 +24,7 @@ public class ShellConfigurator {
     /**
      * Toggles whether logs are displayed on the console. Regardless of this setting, they are always saved to a log
      * file.
+     * @return a message describing, whether the output is on or off after execution.
      */
     @ShellMethod("toggles whether logs are displayed on the console.")
     public String toggleLogOutput() {

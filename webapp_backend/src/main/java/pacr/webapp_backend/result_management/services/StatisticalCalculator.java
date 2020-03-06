@@ -54,7 +54,7 @@ public final class StatisticalCalculator {
      * @param values the values.
      * @return the mean.
      */
-    static double getMean(@NotNull List<Double> values) {
+    static double getMean(@NotNull final List<Double> values) {
         if (values == null || values.isEmpty()) {
             return ERROR_CODE;
         }
@@ -71,7 +71,7 @@ public final class StatisticalCalculator {
      * @param values the values.
      * @return the standard deviation.
      */
-    static double getStandardDeviation(@NotNull List<Double> values) {
+    static double getStandardDeviation(@NotNull final List<Double> values) {
         if (values == null || values.isEmpty()) {
             return ERROR_CODE;
         }
@@ -108,6 +108,9 @@ public final class StatisticalCalculator {
     /**
      * A result is considered significant if the median strays at least SIGNIFICANCE_FACTOR standard deviations from the
      * previous result.
+     * @param result The first result.
+     * @param comparison The result to compare the first one to.
+     * @result Whether the change in result was found to be significant.
      */
     private static boolean significantChange(final BenchmarkPropertyResult result, final BenchmarkPropertyResult comparison) {
         double standardDeviation = result.getStandardDeviation();

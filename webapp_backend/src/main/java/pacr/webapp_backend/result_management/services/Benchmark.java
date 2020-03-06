@@ -78,7 +78,7 @@ public class Benchmark {
      * same.
      * @param customName the new custom name.
      */
-    public void setCustomName(String customName) {
+    public void setCustomName(final String customName) {
         if (StringUtils.hasText(customName)) {
             this.customName = customName;
         }

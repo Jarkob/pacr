@@ -1,10 +1,6 @@
 package pacr.webapp_backend.database;
 
 import org.jetbrains.annotations.Nullable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
@@ -15,6 +11,7 @@ import pacr.webapp_backend.shared.ICommit;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -39,7 +36,7 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
     }
 
     @Override
-    public List<? extends ICommit> getCommitsFromBranchTimeFrame(int repositoryId, String branchName, LocalDateTime commitDateStart, LocalDateTime commitDateEnd) {
+    public List<GitCommit> getCommitsFromBranchTimeFrame(int repositoryId, String branchName, LocalDateTime commitDateStart, LocalDateTime commitDateEnd) {
         Objects.requireNonNull(branchName);
         Objects.requireNonNull(commitDateStart);
         Objects.requireNonNull(commitDateEnd);

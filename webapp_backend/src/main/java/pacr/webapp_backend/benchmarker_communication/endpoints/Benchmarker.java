@@ -28,7 +28,7 @@ public class Benchmarker implements Comparable<Benchmarker> {
      * @return the result of the comparison of the addresses.
      */
     @Override
-    public int compareTo(@NotNull Benchmarker o) {
+    public int compareTo(@NotNull final Benchmarker o) {
         if (StringUtils.hasText(address)) {
             return address.compareTo(o.address);
         }

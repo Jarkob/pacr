@@ -25,7 +25,7 @@ public class EventManagementController {
 
     private final EventHandler eventHandler;
 
-    private EventRSSFeedView benchmarkingRSSFeed;
+    final EventRSSFeedView benchmarkingRSSFeed;
 
     /**
      * Creates a new EventManagementController.
@@ -53,8 +53,8 @@ public class EventManagementController {
      * @return a RSS-Feed view of all benchmarking events.
      */
     @RequestMapping("/rss/benchmark")
-    public View benchmarkingRSSFeed() {
+    public View getBenchmarkingRSSFeed() {
         return benchmarkingRSSFeed;
     }
-
 }
+

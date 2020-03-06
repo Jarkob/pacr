@@ -36,6 +36,7 @@ public class BenchmarkManager {
         this.groupAccess = groupAccess;
 
         standardGroup = groupAccess.getStandardGroup();
+
         if (standardGroup == null) {
             LOGGER.info("creating and saving new standard group");
 

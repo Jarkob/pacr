@@ -19,10 +19,12 @@ import java.util.Objects;
 @Component
 public class ResultBenchmarkSaver extends ResultSaver {
 
+    private static final double ONE_IN_PERCENT = 100d;
+
     private static final Logger LOGGER = LogManager.getLogger(ResultBenchmarkSaver.class);
 
-    private ResultGetter subjectForObservers;
-    private IEventHandler eventHandler;
+    private final ResultGetter subjectForObservers;
+    private final IEventHandler eventHandler;
 
     /**
      * Creates a ResultBenchmarkSaver with access to results and a benchmark manager.
@@ -58,7 +60,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
         for (final BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
             for (final BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                 if (propertyResult.isCompared()) {
-                    totalImprovementPercentage += (propertyResult.getRatio() - 1d) * 100d;
+                    totalImprovementPercentage += (propertyResult.getRatio() - 1d) * ONE_IN_PERCENT;
                     ++numberOfComparisons;
                 }
             }

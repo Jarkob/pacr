@@ -5,9 +5,7 @@ import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.validation.constraints.NotNull;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -116,7 +114,7 @@ public class OutputBenchmarkingResult {
         this.benchmarksList = new OutputBenchmark[0];
     }
 
-    private boolean belongToSameCommit(ICommit commit, CommitResult result) {
+    private boolean belongToSameCommit(final ICommit commit, final CommitResult result) {
         if (commit != null && result != null) {
             return commit.getCommitHash().equals(result.getCommitHash());
         }

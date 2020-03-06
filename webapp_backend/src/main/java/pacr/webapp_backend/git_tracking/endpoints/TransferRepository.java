@@ -109,7 +109,7 @@ public class TransferRepository {
     /**
      * @return whether a hook is set or not for this repository.
      */
-    public boolean isHookSet() {
+    public boolean getIsHookSet() {
         return isHookSet;
     }
 

@@ -29,7 +29,8 @@ public class JobResult implements IBenchmarkingResult {
 
     @Override
     public int getRepositoryID() {
-        return -1; // the repository id is unknown at this point.
+        // the repository id is unknown at this point.
+        return -1;
     }
 
     @Override

@@ -26,10 +26,10 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
 
     private static final Logger LOGGER = LogManager.getLogger(ResultManager.class);
 
-    private IResultAccess resultAccess;
-    private IGetCommitAccess commitAccess;
-    private ResultImportSaver resultImportSaver;
-    private ResultBenchmarkSaver resultBenchmarkSaver;
+    private final IResultAccess resultAccess;
+    private final IGetCommitAccess commitAccess;
+    private final ResultImportSaver resultImportSaver;
+    private final ResultBenchmarkSaver resultBenchmarkSaver;
 
     /**
      * Creates a new ResultManager. Dependencies are injected.
@@ -75,8 +75,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             resultsWithCommits.put(result, commit);
         }
 
-        for (IBenchmarkingResult result : resultsWithCommits.keySet()) {
-            ICommit commit = resultsWithCommits.get(result);
+        for (final IBenchmarkingResult result : resultsWithCommits.keySet()) {
+            final ICommit commit = resultsWithCommits.get(result);
             resultImportSaver.saveResult(result, commit, getComparisonCommitHash(commit));
             updateComparisonsForChildren(result.getCommitHash());
         }

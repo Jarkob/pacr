@@ -24,7 +24,7 @@ public class HashGenerator {
      * @return the hash of the password.
      */
     String hashPassword(final String password) {
-        MessageDigest messageDigest = null;
+        final MessageDigest messageDigest;
 
         try {
             messageDigest = MessageDigest.getInstance(ALGORITHM);

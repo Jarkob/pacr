@@ -1,5 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,6 +17,7 @@ import java.util.Set;
  * @author Benedikt Hahn
  */
 @Entity
+@NoArgsConstructor
 public class LineDiagramDashboardModule extends DashboardModule {
 
     @ElementCollection(fetch = FetchType.EAGER)

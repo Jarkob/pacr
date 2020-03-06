@@ -61,10 +61,10 @@ public class BenchmarkProperty {
     }
 
     /**
-     * Copies the result interpretation and unit of the given property to this property
+     * Copies the result interpretation and unit of the given property to this property.
      * @param inputProperty the property to copy from.
      */
-    void copyMetadataFrom(IBenchmarkProperty inputProperty) {
+    void copyMetadataFrom(final IBenchmarkProperty inputProperty) {
         this.interpretation = inputProperty.getResultInterpretation();
         this.unit = inputProperty.getUnit();
     }

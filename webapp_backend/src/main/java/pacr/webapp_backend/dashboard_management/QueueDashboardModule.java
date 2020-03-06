@@ -1,5 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 
 /**
@@ -9,6 +11,7 @@ import javax.persistence.Entity;
  * @author Benedikt Hahn
  */
 @Entity
+@NoArgsConstructor
 public class QueueDashboardModule extends DashboardModule {
 
 }

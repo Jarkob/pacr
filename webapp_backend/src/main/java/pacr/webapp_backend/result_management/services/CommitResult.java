@@ -150,8 +150,8 @@ public class CommitResult implements IBenchmarkingResult {
      * significant). Sets this results significance accordingly.
      */
     void updateSignificance() {
-        for (BenchmarkResult benchmarkResult : benchmarkResults) {
-            for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+        for (final BenchmarkResult benchmarkResult : benchmarkResults) {
+            for (final BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                 if (propertyResult.isSignificant()) {
                     significant = true;
                     return;

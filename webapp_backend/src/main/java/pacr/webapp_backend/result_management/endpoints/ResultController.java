@@ -37,6 +37,7 @@ public class ResultController {
 
     private static final int DIAGRAM_PAGE_SIZE = 200;
     private static final int HISTORY_PAGE_SIZE = 50;
+    private static final int BENCHMARKING_RESULT_PAGE_SIZE = 10;
 
     private final IAuthenticator authenticator;
     private final ResultGetter resultGetter;
@@ -89,7 +90,8 @@ public class ResultController {
      */
     @GetMapping("/results/pageable/repository/{repositoryId}")
     public Page<OutputBenchmarkingResult> getResultsForRepository(@PathVariable final int repositoryId,
-                                              @PageableDefault(size = 10, page = 0, sort = "commitDate") final Pageable pageable) {
+                                              @PageableDefault(size = BENCHMARKING_RESULT_PAGE_SIZE,
+                                                      page = 0, sort = "commitDate") final Pageable pageable) {
         return resultGetter.getFullRepositoryResults(repositoryId, pageable);
     }
 
@@ -124,7 +126,7 @@ public class ResultController {
      */
     @GetMapping("/history")
     public Page<CommitHistoryItem> getNewBenchmarkingResults(
-            @PageableDefault(size = HISTORY_PAGE_SIZE, page = 0) Pageable pageable) {
+            @PageableDefault(size = HISTORY_PAGE_SIZE, page = 0) final Pageable pageable) {
         return resultGetter.getNewestResults(pageable);
     }
 

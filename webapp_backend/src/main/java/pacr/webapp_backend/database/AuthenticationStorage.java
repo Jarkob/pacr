@@ -72,10 +72,8 @@ public class AuthenticationStorage implements IAuthenticationAccess {
     @Override
     public void setAdminPasswordHash(@NotNull final String passwordHash) {
         Objects.requireNonNull(passwordHash);
-        try {
-            final FileWriter writer = new FileWriter(adminPasswordHashFile, false);
+        try (final FileWriter writer = new FileWriter(adminPasswordHashFile, false)) {
             writer.write(passwordHash);
-            writer.close();
         } catch (final IOException e) {
             throw new IllegalStateException(WRITE_ERROR + adminPasswordHashFile.getPath());
         }
@@ -84,10 +82,8 @@ public class AuthenticationStorage implements IAuthenticationAccess {
     @Override
     public void setSecret(@NotNull final byte[] secret) {
         Objects.requireNonNull(secret);
-        try {
-            final OutputStream os = new FileOutputStream(secretFile);
+        try (final OutputStream os = new FileOutputStream(secretFile)) {
             os.write(secret);
-            os.close();
         } catch (final FileNotFoundException e) {
             throw new IllegalStateException("could not find file " + secretFile.getPath());
         } catch (final IOException e) {

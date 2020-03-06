@@ -1,6 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
 
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.CascadeType;
@@ -30,22 +31,16 @@ import java.util.Objects;
  */
 @Entity(name = "Dashboard")
 @Table(name = "dashboard")
+@NoArgsConstructor
 public class Dashboard {
+
+    static final int SIZE = 15;
 
     @Id
     @GeneratedValue
     private int id;
 
-    static final int SIZE = 15;
-
     private LocalDate lastAccess = LocalDate.now();
-
-    /**
-     * Default constructor used by jpa.
-     */
-    public Dashboard() {
-
-    }
 
     private String editKey;
     private String viewKey;

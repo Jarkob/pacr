@@ -31,11 +31,6 @@ import java.util.Set;
 public class GitCommit implements ICommit {
 
     private static final int MAX_STRING_LENGTH = 2000;
-    /**
-     * Creates an empty commit. Necessary to be an Entity.
-     */
-    public GitCommit() {
-    }
 
     @Id
     private String commitHash;
@@ -57,6 +52,12 @@ public class GitCommit implements ICommit {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<GitBranch> branches;
+
+    /**
+     * Creates an empty commit. Necessary to be an Entity.
+     */
+    public GitCommit() {
+    }
 
     /**
      * Creates a commit.

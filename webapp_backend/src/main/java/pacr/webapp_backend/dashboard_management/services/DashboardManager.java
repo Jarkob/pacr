@@ -25,13 +25,15 @@ import java.util.UUID;
  */
 @Controller
 public class DashboardManager {
+
+    DatabaseTalker databaseTalker;
+
     private static final Logger LOGGER = LogManager.getLogger(DashboardManager.class);
 
     private static final String CRON_DAILY = "0 0 0 * * *";
 
-    private ILeaderboardGetter leaderboardGetter;
+    private final ILeaderboardGetter leaderboardGetter;
 
-    DatabaseTalker databaseTalker;
 
     /**
      * Creates a new dashboard manager.

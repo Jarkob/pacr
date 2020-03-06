@@ -32,6 +32,11 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private static final int DEFAULT_RATIO = 1;
     private static final int MAX_STRING_LENGTH = 2000;
 
+    private static final double LOWER_QUARTILE = 0.25;
+    private static final double MEDIAN = 0.5;
+    private static final double UPPER_QUARTILE = 0.75;
+
+
     @Id
     @GeneratedValue
     private int id;
@@ -94,9 +99,9 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         }
         this.measurements = new LinkedList<>(measurement.getResults());
         this.mean = StatisticalCalculator.getMean(this.measurements);
-        this.lowerQuartile = StatisticalCalculator.getQuantile(0.25, this.measurements);
-        this.median = StatisticalCalculator.getQuantile(0.5, this.measurements);
-        this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
+        this.lowerQuartile = StatisticalCalculator.getQuantile(LOWER_QUARTILE, this.measurements);
+        this.median = StatisticalCalculator.getQuantile(MEDIAN, this.measurements);
+        this.upperQuartile = StatisticalCalculator.getQuantile(UPPER_QUARTILE, this.measurements);
         this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
 
         this.ratio = DEFAULT_RATIO;
@@ -120,9 +125,9 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         this.errorMessage = errorMessage;
         this.measurements = measurements;
         this.mean = StatisticalCalculator.getMean(this.measurements);
-        this.lowerQuartile = StatisticalCalculator.getQuantile(0.25, this.measurements);
-        this.median = StatisticalCalculator.getQuantile(0.5, this.measurements);
-        this.upperQuartile = StatisticalCalculator.getQuantile(0.75, this.measurements);
+        this.lowerQuartile = StatisticalCalculator.getQuantile(LOWER_QUARTILE, this.measurements);
+        this.median = StatisticalCalculator.getQuantile(MEDIAN, this.measurements);
+        this.upperQuartile = StatisticalCalculator.getQuantile(UPPER_QUARTILE, this.measurements);
         this.standardDeviation = StatisticalCalculator.getStandardDeviation(this.measurements);
 
         this.ratio = DEFAULT_RATIO;

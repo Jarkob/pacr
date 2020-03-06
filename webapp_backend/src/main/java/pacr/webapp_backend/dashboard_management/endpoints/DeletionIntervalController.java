@@ -20,10 +20,11 @@ import java.util.Objects;
 @RestController
 public class DeletionIntervalController {
 
+    private static final String INVALID_TOKEN_MESSAGE = "The given http token is not valid.";
+
+
     private final DashboardManager dashboardManager;
     private final IAuthenticator authenticator;
-
-    private static final String INVALID_TOKEN_MESSAGE = "The given http token is not valid.";
 
 
     /**

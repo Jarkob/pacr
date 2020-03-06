@@ -24,13 +24,13 @@ import java.util.Objects;
 @Component
 public class SSHKeyProvider {
 
+    private static final String USER_DIR = "user.dir";
+
     private static final Logger LOGGER = LogManager.getLogger(SSHKeyProvider.class);
 
     private final IBenchmarkerConfigurator configurator;
     private final File privateKeyFile;
     private final File publicKeyFile;
-
-    private static final String USER_DIR = "user.dir";
 
     /**
      * Initializes a SSHKeyProvider.
@@ -90,6 +90,8 @@ public class SSHKeyProvider {
             sb.append(line).append('\n');
             line = br.readLine();
         }
+
+        br.close();
 
         return sb.toString();
     }

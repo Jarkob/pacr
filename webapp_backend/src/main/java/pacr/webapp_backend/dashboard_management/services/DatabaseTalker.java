@@ -15,11 +15,11 @@ import java.util.Objects;
 @Service
 public class DatabaseTalker {
 
-    private IDashboardAccess dashboardAccess;
+    static final long DEFAULT_DELETION_INTERVAL = 10L;
 
     IDeletionIntervalAccess deletionIntervalAccess;
 
-    static final long DEFAULT_DELETION_INTERVAL = 10L;
+    private final IDashboardAccess dashboardAccess;
 
     /**
      * Creates a new database talker.

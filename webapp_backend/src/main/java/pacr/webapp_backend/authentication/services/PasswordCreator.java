@@ -1,6 +1,5 @@
 package pacr.webapp_backend.authentication.services;
 
-import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;

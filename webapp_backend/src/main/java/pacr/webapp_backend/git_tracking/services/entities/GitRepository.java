@@ -263,7 +263,7 @@ public class GitRepository implements IRepository {
             if (branch.getName().equals(branchName)) {
                 return branch;
             }
-        }
+    }
 
     throw new NoSuchElementException("Branch " + branchName + " does not exist.");
     }

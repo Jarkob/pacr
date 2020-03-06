@@ -26,15 +26,6 @@ public class SSHTransportConfigCallback implements TransportConfigCallback {
 
     private final String pathToPrivateKey;
 
-    /**
-     * Creates an instance of SShTransportConfigCallback.
-     * @param pathToPrivateKey is the path (relative from user.dir) to the SSH private key.
-     */
-    public SSHTransportConfigCallback(@NotNull @Value("${privateKeyPath}") final String pathToPrivateKey) {
-        Objects.requireNonNull(pathToPrivateKey);
-
-        this.pathToPrivateKey = System.getProperty("user.dir") + pathToPrivateKey;
-    }
 
     private final SshSessionFactory sshSessionFactory = new JschConfigSessionFactory() {
         @Override
@@ -52,6 +43,16 @@ public class SSHTransportConfigCallback implements TransportConfigCallback {
         }
     };
 
+
+    /**
+     * Creates an instance of SShTransportConfigCallback.
+     * @param pathToPrivateKey is the path (relative from user.dir) to the SSH private key.
+     */
+    public SSHTransportConfigCallback(@NotNull @Value("${privateKeyPath}") final String pathToPrivateKey) {
+        Objects.requireNonNull(pathToPrivateKey);
+
+        this.pathToPrivateKey = System.getProperty("user.dir") + pathToPrivateKey;
+    }
 
     @Override
     public void configure(final Transport transport) {

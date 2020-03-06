@@ -80,7 +80,8 @@ public class TokenManager implements IAuthenticator {
             return false;
         }
 
-        Claims claims;
+        final Claims claims;
+
         try {
             // This line will throw an exception if it is not a signed JWS (as expected)
             claims = Jwts.parser()

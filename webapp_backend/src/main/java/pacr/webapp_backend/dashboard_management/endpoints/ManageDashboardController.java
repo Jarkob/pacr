@@ -22,7 +22,7 @@ import java.util.Objects;
 @RestController
 public class ManageDashboardController {
 
-    private DashboardManager dashboardManager;
+    private final DashboardManager dashboardManager;
 
 
     /**
@@ -93,7 +93,7 @@ public class ManageDashboardController {
         } catch (final NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-            return ResponseEntity.ok().build();
+        return ResponseEntity.ok().build();
     }
 
     /**

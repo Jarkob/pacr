@@ -27,9 +27,10 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @EqualsAndHashCode
 public class Event implements Comparable<Event> {
+    private static final int MAX_EVENT_AMOUNT = 1000;
 
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter(AccessLevel.NONE)
     @EqualsAndHashCode.Exclude
     private int id;
@@ -38,10 +39,10 @@ public class Event implements Comparable<Event> {
     @Getter(AccessLevel.NONE)
     private EventCategory category;
 
-    @Column(length = 1000)
+    @Column(length = MAX_EVENT_AMOUNT)
     private String title;
 
-    @Column(length = 1000)
+    @Column(length = MAX_EVENT_AMOUNT)
     private String description;
 
     private LocalDateTime created;

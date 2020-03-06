@@ -43,7 +43,7 @@ public class BenchmarkInput {
     /**
      * @return {@code true} if the attributes of this benchmark are valid, otherwise {@code false}.
      */
-    public boolean validate() {
+    public final boolean validate() {
         return StringUtils.hasText(customName) && description != null;
     }
 }
