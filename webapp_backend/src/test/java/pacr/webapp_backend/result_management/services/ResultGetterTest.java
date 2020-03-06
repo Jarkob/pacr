@@ -330,14 +330,13 @@ public class ResultGetterTest {
     }
 
     @Test
-    void getMeasurementsOfPropertyForCommit_commitResultDoesntExist_shouldThrowException() {
+    void getMeasurementsOfPropertyForCommit_commitResultDoesntExist_shouldReturnEmptyList() {
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(null);
-        assertThrows(NoSuchElementException.class,
-                () -> resultGetter.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME));
+        assertTrue(resultGetter.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME).isEmpty());
     }
 
     @Test
-    void getMeasurementsOfPropertyForCommit_commitResultExistsButNotProperty_shouldThrowException() {
+    void getMeasurementsOfPropertyForCommit_commitResultExistsButNotProperty_shouldReturnEmptyList() {
         when(resultAccessMock.getResultFromCommit(HASH)).thenReturn(resultMock);
 
         BenchmarkProperty property = new BenchmarkProperty(PROPERTY_NAME, UNIT, ResultInterpretation.LESS_IS_BETTER);
@@ -352,8 +351,7 @@ public class ResultGetterTest {
 
         when(resultMock.getBenchmarkResults()).thenReturn(benchmarkResults);
 
-        assertThrows(NoSuchElementException.class,
-                () -> resultGetter.getMeasurementsOfPropertyForCommit(HASH, benchmark.getId(), PROPERTY_NAME_TWO));
+        assertTrue(resultGetter.getMeasurementsOfPropertyForCommit(HASH, benchmark.getId(), PROPERTY_NAME_TWO).isEmpty());
     }
 
     /**
