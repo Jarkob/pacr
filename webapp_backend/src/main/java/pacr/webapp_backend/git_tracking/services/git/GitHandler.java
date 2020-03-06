@@ -355,7 +355,9 @@ public class GitHandler {
         for (GitCommit commit : commitsFromBranch) {
             // only add commits that are after observeFromDate
             if (observeFromDate == null || observeFromDate.isBefore(commit.getCommitDate().toLocalDate())) {
-                newCommits.add(commit.getCommitHash());
+                if (!commit.getCommitMessage().contains("#pacr-ignore")) {
+                    newCommits.add(commit.getCommitHash());
+                }
             }
         }
 
@@ -416,11 +418,6 @@ public class GitHandler {
         List<GitCommit> commitsToAdd = new ArrayList<>();
 
         for (RevCommit revCommit : commits) {
-            if (revCommit.getFullMessage().contains("#pacr-ignore")) {
-                //todo vllt doch erstellen aber nicht zu queue hinzfuegen
-                continue;
-            }
-
             GitCommit commit = createCommit(gitRepository, revCommit);
 
             Matcher m = pattern.matcher(revCommit.getFullMessage());
