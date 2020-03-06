@@ -10,11 +10,15 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
 import javax.validation.constraints.NotNull;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import pacr.webapp_backend.git_tracking.services.git.GitHandler;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
@@ -28,6 +32,8 @@ import pacr.webapp_backend.shared.IResultExporter;
  */
 @Component
 public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, IResultExporter {
+
+    private static final Logger LOGGER = LogManager.getLogger(ResultGetter.class);
 
     private IGetCommitAccess commitAccess;
     private IResultAccess resultAccess;
@@ -155,7 +161,8 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         CommitResult result = resultAccess.getResultFromCommit(commitHash);
         if (result == null) {
-            throw new NoSuchElementException("no result found for this commit");
+            LOGGER.error("no result found for commit {}", commitHash);
+            return new LinkedList<>();
         }
 
         for (BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
@@ -171,7 +178,8 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         }
 
-        throw new NoSuchElementException("property not found for this result");
+        LOGGER.error("property {} found for commit {}", propertyName, commitHash);
+        return new LinkedList<>();
     }
 
     @Override
