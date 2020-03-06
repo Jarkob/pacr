@@ -27,7 +27,6 @@ public class DBUnitTest extends SpringBootTestWithoutShell {
 
     @Test
     @DatabaseSetup(value = "/group-four-data.xml")
-    @DatabaseTearDown
     public void getAllGroups_fourSaved_shouldReturnFour() {
         Collection<BenchmarkGroup> groups = benchmarkManager.getAllGroups();
         assertEquals(4, groups.size());
@@ -35,7 +34,6 @@ public class DBUnitTest extends SpringBootTestWithoutShell {
 
     @Test
     @DatabaseSetup(value = "/group-three-data.xml")
-    @DatabaseTearDown
     public void getAllGroups_threeSaved_shouldReturnThree() {
         Collection<BenchmarkGroup> groups = benchmarkManager.getAllGroups();
         assertEquals(3, groups.size());

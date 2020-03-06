@@ -21,7 +21,7 @@ import java.util.Set;
  * Represents a benchmark that measures certain properties.
  * This entity is saved in the database.
  */
-@Entity(name = "Benchmark")
+@Entity
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class Benchmark {

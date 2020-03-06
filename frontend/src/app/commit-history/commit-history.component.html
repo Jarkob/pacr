@@ -2,7 +2,7 @@
     <mat-paginator [length]="this.commitsPage?.totalElements"
         [pageSize]="this.commitsPage?.size"
         [pageSizeOptions]="this.pageSizeOptions"
-        (page)="this.benchmarkingPageEvent = this.getCommitHistory($event)">                    
+        (page)="this.commitsPageEvent = this.getCommitHistory($event)">                    
     </mat-paginator>
 
     <mat-accordion id="history" class="headers-align">

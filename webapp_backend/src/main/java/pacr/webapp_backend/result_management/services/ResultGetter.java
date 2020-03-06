@@ -276,17 +276,4 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         return resultsMap;
     }
 
-    private List<CommitHistoryItem> resultsToHistoryItems(List<CommitResult> results) {
-        List<CommitHistoryItem> history = new LinkedList<>();
-
-        for (CommitResult result : results) {
-            ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            if (commit != null) {
-                CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
-                history.add(historyItem);
-            }
-        }
-
-        return history;
-    }
 }
