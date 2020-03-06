@@ -35,7 +35,7 @@ public interface RepositoryDB extends CrudRepository<GitRepository, Integer>, IE
                 }
 
                 @Override
-                public Set<String> getTrackedBranches() {
+                public Set<String> getTrackedBranchNames() {
                     Set<String> trackedBranches = new HashSet<>();
 
                     for (GitBranch branch : repository.getTrackedBranches()) {

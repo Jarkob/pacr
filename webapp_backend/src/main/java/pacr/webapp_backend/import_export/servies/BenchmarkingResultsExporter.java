@@ -58,7 +58,7 @@ public class BenchmarkingResultsExporter {
 
             if (repository != null) {
                 OutputBenchmarkingResult outputResult = new OutputBenchmarkingResult(exportedResults.get(repositoryID),
-                        repository.getPullURL(), repository.getName(), repository.getTrackedBranches());
+                        repository.getPullURL(), repository.getName(), repository.getTrackedBranchNames());
 
                 outputResults.add(outputResult);
             }

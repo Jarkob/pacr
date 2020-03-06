@@ -22,6 +22,6 @@ public interface IRepository {
     /**
      * @return all tracked branches
      */
-    Set<String> getTrackedBranches();
+    Set<String> getTrackedBranchNames();
 
 }

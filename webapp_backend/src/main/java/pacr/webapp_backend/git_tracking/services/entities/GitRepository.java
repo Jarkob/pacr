@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
+import pacr.webapp_backend.shared.IRepository;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -30,9 +32,7 @@ import java.util.NoSuchElementException;
  * @author Pavel Zwerschke
  */
 @Entity
-public class GitRepository {
-
-    private static final String MASTER = "master";
+public class GitRepository implements IRepository {
 
     @Id
     // When a repository id is set, it is not 0 anymore, it is an integer greater than 0.
@@ -170,6 +170,16 @@ public class GitRepository {
      */
     public String getPullURL() {
         return pullURL;
+    }
+
+    @Override
+    public Set<String> getTrackedBranchNames() {
+        Set<String> branchNames = new HashSet<>();
+        for (GitBranch branch : trackedBranches) {
+            branchNames.add(branch.getName());
+        }
+
+        return branchNames;
     }
 
     /**
