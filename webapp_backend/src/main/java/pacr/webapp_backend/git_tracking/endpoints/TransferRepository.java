@@ -21,7 +21,7 @@ public class TransferRepository {
     private String color;
     private LocalDate observeFromDate;
     private String commitLinkPrefix;
-    private String webHookURL;
+    private final String webHookURL;
 
     /**
      * Creates a new instance of TransferRepository.

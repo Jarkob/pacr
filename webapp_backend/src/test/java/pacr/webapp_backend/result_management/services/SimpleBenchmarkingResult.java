@@ -17,8 +17,8 @@ public class SimpleBenchmarkingResult implements IBenchmarkingResult {
     public static final String NO_GLOBAL_ERROR = null;
 
     private String commitHash;
-    private ISystemEnvironment systemEnvironment;
-    private Map<String, SimpleBenchmark> benchmarks;
+    private final ISystemEnvironment systemEnvironment;
+    private final Map<String, SimpleBenchmark> benchmarks;
     private String globalError;
 
     /**

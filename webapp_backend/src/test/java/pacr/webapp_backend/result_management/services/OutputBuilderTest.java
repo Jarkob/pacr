@@ -40,7 +40,7 @@ public class OutputBuilderTest {
     public static final String PROPERTY_NAME_TWO = "pro2";
     public static final String ERROR = "there was an error";
 
-    private OutputBuilder outputBuilder;
+    private final OutputBuilder outputBuilder;
 
     private CommitResult resultOne;
     private ICommit commitOne;

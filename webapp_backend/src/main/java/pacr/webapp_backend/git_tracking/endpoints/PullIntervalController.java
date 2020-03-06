@@ -18,7 +18,7 @@ import pacr.webapp_backend.git_tracking.services.IPullIntervalAccess;
 public class PullIntervalController {
     private static final Logger LOGGER = LoggerFactory.getLogger(PullIntervalController.class);
 
-    private IPullIntervalAccess pullIntervalAccess;
+    private final IPullIntervalAccess pullIntervalAccess;
 
     /**
      * Creates a new instance of PullIntervalController.

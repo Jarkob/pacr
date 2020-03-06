@@ -17,7 +17,7 @@ public class BenchmarkGroupDBTest extends SpringBootTestWithoutShell {
     private static final String GROUP_NAME_TWO = "group2";
     private static final int EXPECTED_NUM_OF_GROUPS = 2;
 
-    private BenchmarkGroupDB groupDB;
+    private final BenchmarkGroupDB groupDB;
 
     @Autowired
     public BenchmarkGroupDBTest(final BenchmarkGroupDB groupDB, final BenchmarkDB benchmarkDB) {

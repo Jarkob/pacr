@@ -11,8 +11,8 @@ import java.util.Objects;
 @Getter
 public class ResultWithError {
 
-    private Double result;
-    private String errorMessage;
+    private final Double result;
+    private final String errorMessage;
 
     /**
      * Creates a ResultWithError. The result is only copied from the property result if there is no error.

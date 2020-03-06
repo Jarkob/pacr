@@ -6,6 +6,7 @@ import pacr.webapp_backend.shared.ICommit;
 import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -15,13 +16,13 @@ import java.util.Objects;
 @Getter
 public class DiagramOutputResult {
 
-    private String commitHash;
-    private String commitDate;
-    private String authorDate;
-    private HashMap<String, ResultWithError> result;
-    private Collection<String> parents;
-    private Collection<String> labels;
-    private String globalError;
+    private final String commitHash;
+    private final String commitDate;
+    private final String authorDate;
+    private final Map<String, ResultWithError> result;
+    private final Collection<String> parents;
+    private final Collection<String> labels;
+    private final String globalError;
 
     /**
      * Creates a DiagramOutputResult from a specific benchmark of a commit result and its commit. The result and commit

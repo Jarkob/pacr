@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DatabaseTalkerTest extends SpringBootTestWithoutShell {
 
-    private DatabaseTalker databaseTalker;
+    private final DatabaseTalker databaseTalker;
 
     private Dashboard dashboard;
 

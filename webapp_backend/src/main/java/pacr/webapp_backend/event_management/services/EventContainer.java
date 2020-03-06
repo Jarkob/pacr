@@ -16,9 +16,9 @@ import javax.validation.constraints.NotNull;
  */
 public class EventContainer {
 
-    private IEventAccess eventAccess;
+    private final IEventAccess eventAccess;
 
-    private EventCategory category;
+    private final EventCategory category;
 
     /**
      * Creates a new event manager that handles events for the given category.

@@ -14,11 +14,11 @@ import java.util.Objects;
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
 
-    private String allowedOrigins;
+    private final String allowedOrigins;
 
     /**
      * Initializes the app config.
-     * @param allowedOrigins
+     * @param allowedOrigins the allowed origins.
      */
     public AppConfig(@NotNull @Value("${allowedOrigins}") final String allowedOrigins) {
         Objects.requireNonNull(allowedOrigins);

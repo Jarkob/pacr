@@ -45,8 +45,8 @@ public class RepositoryManagerController {
 
     private static final Logger LOGGER = LogManager.getLogger(RepositoryManagerController.class);
 
-    private GitTracking gitTracking;
-    private IAuthenticator authenticator;
+    private final GitTracking gitTracking;
+    private final IAuthenticator authenticator;
 
     /**
      * Creates an instance of RepositoryManagerController.
@@ -65,7 +65,7 @@ public class RepositoryManagerController {
      * @return all repositories in JSON.
      */
     @RequestMapping(value = "/repositories", method = RequestMethod.GET,
-    produces = APPLICATION_JSON_VALUE)
+    produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TransferRepository> getAllRepositories() {
         List<GitRepository> repositories = gitTracking.getAllRepositories();
 
@@ -218,8 +218,8 @@ public class RepositoryManagerController {
         final LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
         final LocalDate newObserveFromDate = transferRepository.getObserveFromDate();
 
-        if ((oldObserveFromDate != newObserveFromDate)
-                || (oldObserveFromDate != null && !oldObserveFromDate.isEqual(newObserveFromDate))) {
+        if (oldObserveFromDate != newObserveFromDate
+                || oldObserveFromDate != null && !oldObserveFromDate.isEqual(newObserveFromDate)) {
 
             LOGGER.info("Changing observeFromDate from {} to {}.", oldObserveFromDate, newObserveFromDate);
             gitTracking.updateObserveFromDateOfRepository(gitRepository, newObserveFromDate);

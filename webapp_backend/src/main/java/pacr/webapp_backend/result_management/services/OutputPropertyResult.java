@@ -13,20 +13,20 @@ import java.util.Objects;
  */
 @Getter
 public class OutputPropertyResult {
-    private String name;
-    private String unit;
-    private ResultInterpretation interpretation;
+    private final String name;
+    private final String unit;
+    private final ResultInterpretation interpretation;
 
-    private double mean;
-    private double lowerQuartile;
-    private double median;
-    private double upperQuartile;
-    private double standardDeviation;
-    private boolean hadLocalError;
-    private String errorMessage;
+    private final double mean;
+    private final double lowerQuartile;
+    private final double median;
+    private final double upperQuartile;
+    private final double standardDeviation;
+    private final boolean hadLocalError;
+    private final String errorMessage;
 
-    private double ratioToPreviousCommit;
-    private boolean compared;
+    private final double ratioToPreviousCommit;
+    private final boolean compared;
 
     /**
      * Creates a OutputPropertyResult from a BenchmarkPropertyResult. Copies all statistical data and the associated

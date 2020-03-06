@@ -38,9 +38,9 @@ public class ResultController {
     private static final int DIAGRAM_PAGE_SIZE = 200;
     private static final int HISTORY_PAGE_SIZE = 50;
 
-    private IAuthenticator authenticator;
-    private ResultGetter resultGetter;
-    private ResultManager resultManager;
+    private final IAuthenticator authenticator;
+    private final ResultGetter resultGetter;
+    private final ResultManager resultManager;
 
     /**
      * Creates a new ResultController.

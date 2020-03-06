@@ -25,7 +25,7 @@ public class DeletionIntervalControllerTest extends SpringBootTestWithoutShell {
     @Mock
     private IAuthenticator authenticator;
 
-    private DashboardManager dashboardManager;
+    private final DashboardManager dashboardManager;
 
     @Autowired
     DeletionIntervalControllerTest(final DashboardManager dashboardManager, final DeletionIntervalDB deletionIntervalDB) {

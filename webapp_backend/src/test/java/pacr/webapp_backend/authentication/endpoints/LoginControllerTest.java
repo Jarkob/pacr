@@ -24,11 +24,11 @@ public class LoginControllerTest {
     private static final Password PASSWORD_OBJ = new Password(PASSWORD);
 
     @Mock
-    private PasswordChecker passwordCheckerMock;
+    private final PasswordChecker passwordCheckerMock;
     @Mock
-    private TokenManager tokenManagerMock;
+    private final TokenManager tokenManagerMock;
 
-    private LoginController loginController;
+    private final LoginController loginController;
     
     public LoginControllerTest() {
         this.passwordCheckerMock = Mockito.mock(PasswordChecker.class);

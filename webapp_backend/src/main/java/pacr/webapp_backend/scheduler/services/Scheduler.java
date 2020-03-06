@@ -35,14 +35,14 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     private static final String CRON_DAILY = "0 0 0 * * *";
 
-    private DynamicPriorityQueue<JobGroup> groupQueue;
+    private final DynamicPriorityQueue<JobGroup> groupQueue;
 
-    private Map<String, JobGroup> groups;
+    private final Map<String, JobGroup> groups;
 
-    private Collection<IObserver> observers;
+    private final Collection<IObserver> observers;
 
-    private IJobAccess jobAccess;
-    private IJobGroupAccess jobGroupAccess;
+    private final IJobAccess jobAccess;
+    private final IJobGroupAccess jobGroupAccess;
 
     /**
      * Creates a new scheduler and sets the used scheduling policy.

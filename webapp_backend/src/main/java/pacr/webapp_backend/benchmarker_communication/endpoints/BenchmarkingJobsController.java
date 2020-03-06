@@ -24,7 +24,7 @@ public class BenchmarkingJobsController implements IJobSender, ApplicationListen
 
     private JobHandler jobHandler;
 
-    private SimpMessagingTemplate template;
+    private final SimpMessagingTemplate template;
 
     /**
      * Creates a new BenchmarkingJobsController.

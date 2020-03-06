@@ -18,10 +18,10 @@ import java.util.Set;
 public class LineDiagramDashboardModule extends DashboardModule {
 
     @ElementCollection(fetch = FetchType.EAGER)
-    Set<String> trackedRepositories = new HashSet<>();
+    private Set<String> trackedRepositories = new HashSet<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    List<String> trackedBenchmarks = new ArrayList<>();
+    private List<String> trackedBenchmarks = new ArrayList<>();
 
     /**
      * Sets the tracked repositories to the given list of repository names.

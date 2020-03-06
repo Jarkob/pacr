@@ -15,8 +15,8 @@ import pacr.webapp_backend.shared.IResultImporter;
 @Component
 public class BenchmarkingResultsImporter {
 
-    private IResultImporter resultImporter;
-    private IRepositoryImporter repositoryImporter;
+    private final IResultImporter resultImporter;
+    private final IRepositoryImporter repositoryImporter;
 
     /**
      * Creates a new BenchmarkingResultsImporter.

@@ -15,7 +15,7 @@ public class DeletionIntervalDB implements IDeletionIntervalAccess {
 
     static final String DELETION_INTERVAL_IDENTIFIER = "deletion-interval";
 
-    private ConfigRepo configRepo;
+    private final ConfigRepo configRepo;
 
     /**
      * Creates an instance of DeletionIntervalDB.

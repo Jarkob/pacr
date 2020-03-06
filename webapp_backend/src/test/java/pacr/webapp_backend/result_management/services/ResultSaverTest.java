@@ -39,9 +39,9 @@ public class ResultSaverTest extends SpringBootTestWithoutShell {
     private static final int EXPECTED_NUM_OF_RESULTS = 1;
     private static final int EXPECTED_SINGLE_BENCHMARK = 1;
 
-    private ResultImportSaver resultSaver;
-    private ResultDB resultDB;
-    private BenchmarkDB benchmarkDB;
+    private final ResultImportSaver resultSaver;
+    private final ResultDB resultDB;
+    private final BenchmarkDB benchmarkDB;
 
     @Autowired
     public ResultSaverTest(final ResultImportSaver resultSaver, final ResultDB resultDB, final BenchmarkDB benchmarkDB) {

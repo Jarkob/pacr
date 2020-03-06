@@ -60,10 +60,10 @@ public class GitHandler {
     private String pathToWorkingDir;
     private String ignoreTag;
 
-    private IGitTrackingAccess gitTrackingAccess;
-    private TransportConfigCallback transportConfigCallback;
-    private ICleanUpCommits cleanUpCommits;
-    private IResultDeleter resultDeleter;
+    private final IGitTrackingAccess gitTrackingAccess;
+    private final TransportConfigCallback transportConfigCallback;
+    private final ICleanUpCommits cleanUpCommits;
+    private final IResultDeleter resultDeleter;
 
     /**
      * Creates an instance of GitHandler.

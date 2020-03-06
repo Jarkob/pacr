@@ -36,7 +36,7 @@ public class GetCommitDBTest extends GitTrackingDBTest {
     private static final int UNKNOWN_REPO = 124981;
     private static final String UNKNOWN_BRANCH = "124981";
 
-    private GetCommitDB getCommitDB;
+    private final GetCommitDB getCommitDB;
 
     @Autowired
     public GetCommitDBTest(final GitTrackingDB gitTrackingDB, final GetCommitDB getCommitDB) {

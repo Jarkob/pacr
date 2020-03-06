@@ -26,9 +26,11 @@ public class SSHKeyProvider {
 
     private static final Logger LOGGER = LogManager.getLogger(SSHKeyProvider.class);
 
-    private IBenchmarkerConfigurator configurator;
-    private File privateKeyFile;
-    private File publicKeyFile;
+    private final IBenchmarkerConfigurator configurator;
+    private final File privateKeyFile;
+    private final File publicKeyFile;
+
+    private static final String USER_DIR = "user.dir";
 
     /**
      * Initializes a SSHKeyProvider.
@@ -47,8 +49,8 @@ public class SSHKeyProvider {
         Objects.requireNonNull(configurator);
 
         this.configurator = configurator;
-        this.privateKeyFile = new File(System.getProperty("user.dir") + privateKeyPath);
-        this.publicKeyFile = new File(System.getProperty("user.dir") + publicKeyPath);
+        this.privateKeyFile = new File(System.getProperty(USER_DIR) + privateKeyPath);
+        this.publicKeyFile = new File(System.getProperty(USER_DIR) + publicKeyPath);
 
         if (!privateKeyFile.exists()) {
             throw new FileNotFoundException("SSH Private Key not found.");

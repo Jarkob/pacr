@@ -29,8 +29,8 @@ public class AuthenticationStorage implements IAuthenticationAccess {
     private static final String READ_ERROR = "could not read from file ";
     private static final String WRITE_ERROR = "could not write to file ";
 
-    private File adminPasswordHashFile;
-    private File secretFile;
+    private final File adminPasswordHashFile;
+    private final File secretFile;
 
     /**
      * Creates a new AuthenticationStorage. Creates empty file if necessary.

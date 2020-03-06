@@ -31,7 +31,6 @@ public class JobGroup {
 
     /**
      * Creates an empty JobGroup.
-     *
      * Needed for JPA.
      */
     public JobGroup() {

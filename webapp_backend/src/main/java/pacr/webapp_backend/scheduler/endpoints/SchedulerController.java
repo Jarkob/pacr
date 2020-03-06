@@ -21,8 +21,8 @@ import javax.validation.constraints.NotNull;
 @RestController
 public class SchedulerController {
 
-    private Scheduler scheduler;
-    private IAuthenticator authenticator;
+    private final Scheduler scheduler;
+    private final IAuthenticator authenticator;
 
     /**
      * Creates a new SchedulerController

@@ -12,7 +12,7 @@ import pacr.webapp_backend.git_tracking.services.IPullIntervalAccess;
 public class PullIntervalDB implements IPullIntervalAccess {
     private static final String PULL_INTERVAL_IDENTIFIER = "pull-interval";
 
-    private ConfigRepo configRepo;
+    private final ConfigRepo configRepo;
 
     /**
      * Creates an instance of PullIntervalDB.

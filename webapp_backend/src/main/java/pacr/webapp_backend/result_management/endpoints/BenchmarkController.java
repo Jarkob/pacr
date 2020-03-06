@@ -26,8 +26,8 @@ import java.util.NoSuchElementException;
 @RestController
 public class BenchmarkController {
 
-    private IAuthenticator authenticator;
-    private BenchmarkManager benchmarkManager;
+    private final IAuthenticator authenticator;
+    private final BenchmarkManager benchmarkManager;
 
     private static final String JWT_STRING = "jwt";
 

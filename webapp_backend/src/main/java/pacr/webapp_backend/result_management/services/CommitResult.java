@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
-import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;

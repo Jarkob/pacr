@@ -1,5 +1,6 @@
 package pacr.webapp_backend.dashboard_management;
 
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Entity;
@@ -16,18 +17,12 @@ import javax.persistence.Id;
  */
 @Entity
 @Configurable
+@NoArgsConstructor
 public abstract class DashboardModule {
 
     @Id
     @GeneratedValue
     private int id;
-
-    /**
-     * Public constructor needed for jpa.
-     */
-    public DashboardModule() {
-
-    }
 
     @Override
     public boolean equals(final Object o) {

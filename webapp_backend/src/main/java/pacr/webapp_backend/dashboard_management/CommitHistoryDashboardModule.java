@@ -16,7 +16,7 @@ import java.util.List;
 public class CommitHistoryDashboardModule extends DashboardModule {
 
     @ElementCollection(fetch = FetchType.EAGER)
-    List<String> trackedRepositories = new ArrayList<>();
+    private List<String> trackedRepositories = new ArrayList<>();
 
     /**
      * Sets the tracked repositories to the given list of repository names.

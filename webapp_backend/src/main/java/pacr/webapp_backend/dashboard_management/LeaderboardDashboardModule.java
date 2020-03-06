@@ -1,6 +1,7 @@
 package pacr.webapp_backend.dashboard_management;
 
 
+import lombok.NoArgsConstructor;
 import pacr.webapp_backend.shared.ILeaderboard;
 
 import javax.persistence.Entity;
@@ -13,16 +14,11 @@ import javax.persistence.OneToOne;
  * @author Benedikt Hahn
  */
 @Entity
+@NoArgsConstructor
 public class LeaderboardDashboardModule extends DashboardModule {
 
     @OneToOne
     private ILeaderboard leaderboard;
-
-    /**
-     * Public no argument constructor for jpa.
-     */
-    public LeaderboardDashboardModule() {
-    }
 
     /**
      * Sets the current leaderboard of the dashboard module.

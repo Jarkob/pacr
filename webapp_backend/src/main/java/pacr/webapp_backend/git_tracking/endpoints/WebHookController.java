@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 @RestController
 public class WebHookController {
 
-    private GitTracking gitTracking;
+    private final GitTracking gitTracking;
 
     /**
      * Initializes an instance of WebHookController.

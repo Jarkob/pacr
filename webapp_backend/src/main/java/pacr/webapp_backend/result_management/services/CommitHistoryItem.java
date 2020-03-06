@@ -11,17 +11,17 @@ import java.util.Objects;
  */
 @Getter
 public class CommitHistoryItem {
-    private String commitHash;
-    private String commitMessage;
-    private String commitDate;
-    private String authorDate;
-    private String entryDate;
+    private final String commitHash;
+    private final String commitMessage;
+    private final String commitDate;
+    private final String authorDate;
+    private final String entryDate;
 
-    private boolean compared;
-    private boolean significant;
+    private final boolean compared;
+    private final boolean significant;
 
-    private boolean globalError;
-    private String globalErrorMessage;
+    private final boolean globalError;
+    private final String globalErrorMessage;
 
     /**
      * Creates a new history item from a result and its commit.

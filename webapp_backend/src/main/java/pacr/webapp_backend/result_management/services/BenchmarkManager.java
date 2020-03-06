@@ -23,8 +23,8 @@ public class BenchmarkManager {
      */
     private static BenchmarkGroup standardGroup;
 
-    private IBenchmarkAccess benchmarkAccess;
-    private IBenchmarkGroupAccess groupAccess;
+    private final IBenchmarkAccess benchmarkAccess;
+    private final IBenchmarkGroupAccess groupAccess;
 
     /**
      * Creates a new BenchmarkManager through constructor injection.

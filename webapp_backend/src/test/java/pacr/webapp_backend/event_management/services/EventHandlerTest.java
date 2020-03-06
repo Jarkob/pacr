@@ -86,13 +86,8 @@ public class EventHandlerTest {
 
     @Test
     void addEvent_multipleCategories() {
-<<<<<<< refs/remotes/origin/master
-        EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.UNDEFINED;
-=======
         final EventCategory category = EventCategory.BENCHMARKING;
-        final EventCategory otherCategory = EventCategory.LEADERBOARD;
->>>>>>> Made efficiency-related improvements
 
         final EventTemplate otherTemplate = createEventTemplate(otherCategory, EVENT_TITLE, EVENT_DESCRIPTION);
 
@@ -152,13 +147,8 @@ public class EventHandlerTest {
 
     @Test
     void getEvents_wrongCategory() {
-<<<<<<< refs/remotes/origin/master
-        EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.UNDEFINED;
-=======
         final EventCategory category = EventCategory.BENCHMARKING;
-        final EventCategory otherCategory = EventCategory.LEADERBOARD;
->>>>>>> Made efficiency-related improvements
 
         final int amtEvents = 10;
         for (int i = 0; i < amtEvents; i++) {
@@ -175,13 +165,8 @@ public class EventHandlerTest {
 
     @Test
     void getEvents_multipleCategories() {
-<<<<<<< refs/remotes/origin/master
-        EventCategory category = EventCategory.BENCHMARKING;
         EventCategory otherCategory = EventCategory.UNDEFINED;
-=======
         final EventCategory category = EventCategory.BENCHMARKING;
-        final EventCategory otherCategory = EventCategory.LEADERBOARD;
->>>>>>> Made efficiency-related improvements
 
         final List<Event> expectedEvents = new ArrayList<>();
 

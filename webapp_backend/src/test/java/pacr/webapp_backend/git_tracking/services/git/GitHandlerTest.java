@@ -79,7 +79,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
 
     private GitHandler gitHandler;
     private GitRepository gitRepository;
-    private IGitTrackingAccess gitTrackingAccess;
+    private final IGitTrackingAccess gitTrackingAccess;
     @Mock
     private ICleanUpCommits cleanUpCommits;
     @Mock

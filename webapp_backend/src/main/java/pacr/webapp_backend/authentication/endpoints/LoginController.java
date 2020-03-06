@@ -18,8 +18,8 @@ import pacr.webapp_backend.authentication.services.TokenManager;
 @RestController
 public class LoginController {
 
-    private PasswordChecker passwordChecker;
-    private TokenManager tokenManager;
+    private final PasswordChecker passwordChecker;
+    private final TokenManager tokenManager;
 
     /**
      * Creates a new LoginController.
@@ -35,7 +35,7 @@ public class LoginController {
      * Checks whether the given password is valid and returns a non-expiring JWT.
      * @param password the password.
      * @return HTTP code 200 (ok) with the token as body if the password was correct. Otherwise HTTP code 401
-     * (unauthorized) with empty body is returned.
+     *      (unauthorized) with empty body is returned.
      */
     @PostMapping("/login")
     public ResponseEntity<Token> login(@NotNull @RequestBody final Password password) {

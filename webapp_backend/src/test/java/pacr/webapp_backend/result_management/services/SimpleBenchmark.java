@@ -13,7 +13,7 @@ public class SimpleBenchmark implements IBenchmark {
 
     public static final String PROPERTY_NAME = "property";
 
-    private Map<String, IBenchmarkProperty> benchmarkProperties;
+    private final Map<String, IBenchmarkProperty> benchmarkProperties;
 
     /**
      * Creates SimpleBenchmark with properties.

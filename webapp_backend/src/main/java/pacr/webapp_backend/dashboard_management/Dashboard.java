@@ -22,7 +22,7 @@ import java.util.Objects;
  * and are displayed to the user in the frontend.
  * Those instances furthermore have a title and contain edit and view keys,
  * with which they can be retrieved and edited from the frontend.
- * <p>
+ *
  * Public methods of this class can be used to remove and add modules,
  * as well as edit keys.
  *
@@ -57,7 +57,7 @@ public class Dashboard {
 
     //List because arrays cannot be stored by JPA
     @Size(min = 0, max = SIZE)
-    private List<DashboardModule> modules = new ArrayList<>(SIZE);
+    private final List<DashboardModule> modules = new ArrayList<>(SIZE);
 
 
     /**

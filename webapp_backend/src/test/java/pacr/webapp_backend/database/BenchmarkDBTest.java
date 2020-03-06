@@ -25,8 +25,8 @@ public class BenchmarkDBTest extends SpringBootTestWithoutShell {
     private static final int EXPECTED_NUM_OF_PROPERTIES = 1;
     private static final int EXPECTED_NUM_OF_BENCHMARKS_OF_GROUP = 1;
 
-    private BenchmarkDB benchmarkDB;
-    private BenchmarkGroupDB groupDB;
+    private final BenchmarkDB benchmarkDB;
+    private final BenchmarkGroupDB groupDB;
 
     @Autowired
     public BenchmarkDBTest(final BenchmarkDB benchmarkDB, final BenchmarkGroupDB groupDB) {

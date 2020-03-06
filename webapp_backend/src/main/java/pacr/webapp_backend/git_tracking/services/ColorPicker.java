@@ -19,8 +19,8 @@ import java.util.ArrayList;
 public class ColorPicker implements IColorPicker {
 
     // value true for unused, value false for used
-    private Map<String, Boolean> colors;
-    private List<String> colorList;
+    private final Map<String, Boolean> colors;
+    private final List<String> colorList;
 
     /**
      * Creates an instance of ColorPicker.

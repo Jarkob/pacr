@@ -23,7 +23,7 @@ public class EventManagementController {
 
     private static final int DEFAULT_PAGE_SIZE = 50;
 
-    private EventHandler eventHandler;
+    private final EventHandler eventHandler;
 
     private EventRSSFeedView benchmarkingRSSFeed;
 

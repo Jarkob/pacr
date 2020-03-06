@@ -27,11 +27,11 @@ import pacr.webapp_backend.shared.IJob;
 public class BenchmarkerController
         implements IBenchmarkerConfigurationSender, ApplicationListener<SessionDisconnectEvent> {
 
-    private IBenchmarkerHandler benchmarkerHandler;
+    private final IBenchmarkerHandler benchmarkerHandler;
 
-    private IJobRegistry jobRegistry;
+    private final IJobRegistry jobRegistry;
 
-    private SimpMessagingTemplate template;
+    private final SimpMessagingTemplate template;
 
     /**
      * Creates a new BenchmarkerController.
@@ -100,7 +100,7 @@ public class BenchmarkerController
     public Collection<Benchmarker> getBenchmarkers() {
         final Collection<String> allBenchmarkerAddresses = benchmarkerHandler.getAllBenchmarkerAddresses();
 
-        final Collection<Benchmarker> allBenchmarkers = new ArrayList<>();
+        final ArrayList<Benchmarker> allBenchmarkers = new ArrayList<>();
 
         for (final String address : allBenchmarkerAddresses) {
             final SystemEnvironment systemEnvironment = benchmarkerHandler.getBenchmarkerSystemEnvironment(address);

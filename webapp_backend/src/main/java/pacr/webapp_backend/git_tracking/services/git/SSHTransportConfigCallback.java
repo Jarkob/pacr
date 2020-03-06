@@ -24,7 +24,7 @@ import java.util.Objects;
 @Component
 public class SSHTransportConfigCallback implements TransportConfigCallback {
 
-    private String pathToPrivateKey;
+    private final String pathToPrivateKey;
 
     /**
      * Creates an instance of SShTransportConfigCallback.

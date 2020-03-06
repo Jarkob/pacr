@@ -22,8 +22,8 @@ import javax.validation.constraints.NotNull;
 @Component
 public class EventHandler implements IEventHandler {
 
-    private IEventAccess eventAccess;
-    private Map<EventCategory, EventContainer> eventContainers;
+    private final IEventAccess eventAccess;
+    private final Map<EventCategory, EventContainer> eventContainers;
 
     /**
      * Creates a new EventHandler.

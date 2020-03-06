@@ -1,5 +1,6 @@
 package pacr.webapp_backend.git_tracking.services.git;
 
+import lombok.NoArgsConstructor;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -29,15 +30,10 @@ import java.util.List;
  * @author Pavel Zwerschke
  */
 @Component
+@NoArgsConstructor
 public class CleanUpCommits implements ICleanUpCommits {
 
     private static final Logger LOGGER = LogManager.getLogger(CleanUpCommits.class);
-
-    /**
-     * Creates an instance of CleanUpCommits.
-     */
-    public CleanUpCommits() {
-    }
 
     @Override
     public Set<String> cleanUp(@NotNull final Git git, @NotNull final GitRepository gitRepository,

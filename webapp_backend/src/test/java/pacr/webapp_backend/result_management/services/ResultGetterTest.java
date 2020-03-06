@@ -58,21 +58,21 @@ public class ResultGetterTest {
     public static final int PAGE_SIZE = 200;
 
     @Mock
-    private IGetCommitAccess commitAccessMock;
+    private final IGetCommitAccess commitAccessMock;
     @Mock
-    private IResultAccess resultAccessMock;
+    private final IResultAccess resultAccessMock;
     @Mock
-    private GitCommit commitMock;
+    private final GitCommit commitMock;
     @Mock
-    private CommitResult resultMock;
+    private final CommitResult resultMock;
     @Mock
-    private OutputBuilder outputBuilderMock;
+    private final OutputBuilder outputBuilderMock;
     @Mock
-    private OutputBenchmarkingResult outputResultMock;
+    private final OutputBenchmarkingResult outputResultMock;
     @Mock
-    private DiagramOutputResult diagramOutputMock;
+    private final DiagramOutputResult diagramOutputMock;
 
-    private ResultGetter resultGetter;
+    private final ResultGetter resultGetter;
 
     public ResultGetterTest() {
         commitAccessMock = Mockito.mock(IGetCommitAccess.class);

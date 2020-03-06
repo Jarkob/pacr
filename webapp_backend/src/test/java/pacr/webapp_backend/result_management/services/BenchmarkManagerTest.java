@@ -25,8 +25,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class BenchmarkManagerTest extends SpringBootTestWithoutShell {
-    private BenchmarkDB benchmarkDB;
-    private BenchmarkGroupDB groupDB;
+    private final BenchmarkDB benchmarkDB;
+    private final BenchmarkGroupDB groupDB;
     private BenchmarkManager benchmarkManager;
 
     private static final String BENCHMARK_NAME = "benchmark";

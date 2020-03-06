@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
 @Component
 public class PasswordChecker {
 
-    private IAuthenticationAccess authenticationAccess;
-    private HashGenerator hashGenerator;
+    private final IAuthenticationAccess authenticationAccess;
+    private final HashGenerator hashGenerator;
 
     /**
      * Creates a PasswordChecker.

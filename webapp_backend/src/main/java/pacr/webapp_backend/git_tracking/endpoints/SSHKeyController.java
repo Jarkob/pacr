@@ -19,7 +19,7 @@ import pacr.webapp_backend.git_tracking.services.SSHKeyProvider;
 @RestController
 public class SSHKeyController {
 
-    private SSHKeyProvider provider;
+    private final SSHKeyProvider provider;
 
     /**
      * Creates an instance of SSHKeyController.

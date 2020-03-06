@@ -22,7 +22,7 @@ import java.util.Objects;
 @RestController
 public class ManageDashboardController {
 
-    DashboardManager dashboardManager;
+    private DashboardManager dashboardManager;
 
 
     /**
@@ -42,7 +42,7 @@ public class ManageDashboardController {
      *
      * @param key The key, of the dashboard.
      * @return A {@link ResponseEntity} containing the requested dashboard, if the key is valid;
-     * otherwise an exception response.
+     *      otherwise an exception response.
      */
     @GetMapping("dashboard/{key}")
     public ResponseEntity<Object> getDashboard(@PathVariable @NotNull final String key) {
@@ -82,14 +82,14 @@ public class ManageDashboardController {
      *
      * @param dashboard the new dashboard.
      * @return HTTP code 200 (ok) if the dashboard was updated. HTTP code 404 (not found) if no dashboard with the given
-     * keys could be found. HTTP code 401 (unauthorized) if the dashboard does not contain a valid edit key.
+     *      keys could be found. HTTP code 401 (unauthorized) if the dashboard does not contain a valid edit key.
      */
     @PutMapping("dashboard/update")
     public ResponseEntity<Object> updateDashboard(@RequestBody @NotNull final Dashboard dashboard) {
         try {
             dashboardManager.updateDashboard(dashboard);
         } catch (final IllegalAccessException e) {
-            return ResponseEntity.status((HttpStatus.UNAUTHORIZED)).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         } catch (final NoSuchElementException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
@@ -101,7 +101,7 @@ public class ManageDashboardController {
      *
      * @param editKey the edit key of the dashboard to delete.
      * @return HTTP code 200 (ok) if the dashboard was deleted. HTTP code 404 (not found) if no dashboard with the given
-     * key could be found. HTTP code 401 (unauthorized) if the key is not an edit key.
+     *      key could be found. HTTP code 401 (unauthorized) if the key is not an edit key.
      */
     @DeleteMapping("dashboard/delete/{editKey}")
     public ResponseEntity<Object> deleteDashboard(@PathVariable @NotNull final String editKey) {

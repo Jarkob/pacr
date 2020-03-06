@@ -41,16 +41,16 @@ public class ResultBenchmarkSaverTest extends SpringBootTestWithoutShell {
     private static final String EXPECTED_EVENT_DESCRIPTION =
             "On average, the result is 50% better than the previous one ('1325').";
 
-    private ResultManager resultManager;
-    private GitTrackingDB gitTrackingAccess;
-    private EventHandler eventHandler;
-    private EventDB eventDB;
-    private ResultDB resultDB;
-    private CommitDB commitDB;
-    private RepositoryDB repositoryDB;
-    private BenchmarkGroupDB benchmarkGroupDB;
-    private BenchmarkDB benchmarkDB;
-    private ResultGetter resultGetter;
+    private final ResultManager resultManager;
+    private final GitTrackingDB gitTrackingAccess;
+    private final EventHandler eventHandler;
+    private final EventDB eventDB;
+    private final ResultDB resultDB;
+    private final CommitDB commitDB;
+    private final RepositoryDB repositoryDB;
+    private final BenchmarkGroupDB benchmarkGroupDB;
+    private final BenchmarkDB benchmarkDB;
+    private final ResultGetter resultGetter;
     private BenchmarkManager benchmarkManager;
 
     @Autowired

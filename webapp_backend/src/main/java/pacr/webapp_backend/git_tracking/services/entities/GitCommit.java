@@ -1,7 +1,5 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
-import org.apache.logging.log4j.spi.LoggerRegistry;
-import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.persistence.Entity;

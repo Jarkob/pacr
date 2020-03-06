@@ -35,8 +35,8 @@ import static org.mockito.Mockito.when;
 public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     private final String ADDRESS = "benchmarkerAddress";
-    private String JOB_GROUP = "jobGroup";
-    private String JOB_ID = "jobID";
+    private final String JOB_GROUP = "jobGroup";
+    private final String JOB_ID = "jobID";
 
     private JobHandler jobHandler;
 
@@ -54,9 +54,9 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     private Scheduler jobProvider;
 
-    private JobDB jobAccess;
+    private final JobDB jobAccess;
 
-    private JobGroupDB jobGroupAccess;
+    private final JobGroupDB jobGroupAccess;
 
     @Autowired
     public JobHandlerTest(final JobDB jobAccess, final JobGroupDB jobGroupAccess) {
@@ -368,8 +368,8 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     private static class BenchmarkerJobMatcher implements ArgumentMatcher<BenchmarkerJob> {
 
-        private IJob job;
-        private String address;
+        private final IJob job;
+        private final String address;
 
         public BenchmarkerJobMatcher(final IJob job, final String address) {
             this.job = job;

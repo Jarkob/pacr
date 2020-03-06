@@ -39,7 +39,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     private IResultAccess resultAccess;
     private OutputBuilder outputBuilder;
 
-    private Set<IObserver> observers;
+    private final Set<IObserver> observers;
 
     /**
      * Creates a new ResultGetter. Dependencies are injected.
@@ -110,7 +110,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted)
      */
-    public HashMap<String, DiagramOutputResult> getBenchmarkResults(final int repositoryId, final int benchmarkId) {
+    public Map<String, DiagramOutputResult> getBenchmarkResults(final int repositoryId, final int benchmarkId) {
         final Collection<? extends ICommit> commitsFromRepository = commitAccess.getCommitsFromRepository(repositoryId);
         return commitsToDiagramResults(commitsFromRepository, benchmarkId);
     }
@@ -223,7 +223,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
             throw new IllegalArgumentException("commit hash cannot be null, empty or blank");
         }
 
-        return (resultAccess.getResultFromCommit(commitHash) != null);
+        return resultAccess.getResultFromCommit(commitHash) != null;
     }
 
     @Override
@@ -245,7 +245,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         }
     }
 
-    private HashMap<String, DiagramOutputResult> commitsToDiagramResults(final Collection<? extends ICommit> commits,
+    private Map<String, DiagramOutputResult> commitsToDiagramResults(final Collection<? extends ICommit> commits,
                                                                          final int benchmarkId) {
         final Collection<String> hashes = new LinkedList<>();
         for (final ICommit commit : commits) {

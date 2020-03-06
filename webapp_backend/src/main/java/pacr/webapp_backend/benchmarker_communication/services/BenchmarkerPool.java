@@ -23,12 +23,12 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
 
     private static final Logger LOGGER = LogManager.getLogger(BenchmarkerPool.class);
 
-    private Map<String, SystemEnvironment> allBenchmarkers;
+    private final Map<String, SystemEnvironment> allBenchmarkers;
 
-    private Set<String> occupiedBenchmarkers;
-    private Queue<String> freeBenchmarkers;
+    private final Set<String> occupiedBenchmarkers;
+    private final Queue<String> freeBenchmarkers;
 
-    private Collection<INewRegistrationListener> newRegistrationListeners;
+    private final Collection<INewRegistrationListener> newRegistrationListeners;
 
     /**
      * Creates a new BenchmarkerPool.

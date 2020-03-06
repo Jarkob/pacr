@@ -21,9 +21,9 @@ public class EventDBTest extends SpringBootTestWithoutShell {
     private static final String EVENT_TITLE = "eventTitle";
     private static final String EVENT_DESCRIPTION = "eventDescription";
 
-    private EventCategory category;
+    private final EventCategory category;
 
-    private EventDB eventDB;
+    private final EventDB eventDB;
 
     Pageable pageable;
 

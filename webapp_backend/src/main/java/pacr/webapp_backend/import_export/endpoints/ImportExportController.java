@@ -22,10 +22,10 @@ import javax.validation.constraints.NotNull;
 @RestController
 public class ImportExportController {
 
-    private IAuthenticator authenticator;
+    private final IAuthenticator authenticator;
 
-    private BenchmarkingResultsImporter resultsImporter;
-    private BenchmarkingResultsExporter resultsExporter;
+    private final BenchmarkingResultsImporter resultsImporter;
+    private final BenchmarkingResultsExporter resultsExporter;
 
     /**
      * Creates a new ImportExportController.

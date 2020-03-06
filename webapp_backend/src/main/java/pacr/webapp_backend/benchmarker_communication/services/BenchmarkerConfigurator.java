@@ -9,7 +9,7 @@ import pacr.webapp_backend.shared.IBenchmarkerConfigurator;
 @Component
 public class BenchmarkerConfigurator implements IBenchmarkerConfigurator {
 
-    private IBenchmarkerConfigurationSender configurationSender;
+    private final IBenchmarkerConfigurationSender configurationSender;
 
     /**
      * Creates a new BenchmarkerConfigurator with a ConfigurationSender.

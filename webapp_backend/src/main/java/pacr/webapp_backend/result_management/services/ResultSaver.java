@@ -27,8 +27,8 @@ abstract class ResultSaver {
     private static final String NO_RESULT_ERROR = "PACR received no benchmarking result for this commit";
     private static final String NO_PROPERTY_RESULT_ERROR = "PACR received no measurements for this property";
 
-    protected IResultAccess resultAccess;
-    private BenchmarkManager benchmarkManager;
+    private IResultAccess resultAccess;
+    private final BenchmarkManager benchmarkManager;
 
     /**
      * Creates a new ResultSaver with access to results and a benchmark manager.

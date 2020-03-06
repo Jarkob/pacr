@@ -74,6 +74,12 @@ public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAcc
 
     /**
      * @param prioritized Whether the returned jobs should be prioritized.
+     * @return Returns all (un-)prioritized jobs in ascending order.
+     */
+    List<Job> findAllByPrioritizedOrderByQueuedDesc(boolean prioritized);
+
+    /**
+     * @param prioritized Whether the returned jobs should be prioritized.
      * @param pageable The requested page.
      * @return Returns the requested page of (un-)prioritized jobs in ascending order.
      */
@@ -84,10 +90,4 @@ public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAcc
      * @return Returns all (un-)prioritized jobs in ascending order.
      */
     List<Job> findAllByPrioritizedOrderByQueuedAsc(boolean prioritized);
-
-    /**
-     * @param prioritized Whether the returned jobs should be prioritized.
-     * @return Returns all (un-)prioritized jobs in ascending order.
-     */
-    List<Job> findAllByPrioritizedOrderByQueuedDesc(boolean prioritized);
 }

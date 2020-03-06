@@ -14,13 +14,13 @@ public class OutputBenchmark {
 
     private static final transient int NO_GROUP_ID = -1;
 
-    private int id;
-    private String originalName;
-    private String customName;
-    private String description;
-    private int groupId;
+    private final int id;
+    private final String originalName;
+    private final String customName;
+    private final String description;
+    private final int groupId;
 
-    private OutputPropertyResult[] results;
+    private final OutputPropertyResult[] results;
 
     /**
      * Creates a new OutputBenchmark with properties (including results) and metadata of the benchmark.

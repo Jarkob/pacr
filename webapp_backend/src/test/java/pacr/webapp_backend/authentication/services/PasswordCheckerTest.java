@@ -16,11 +16,11 @@ public class PasswordCheckerTest {
     private static final String EMPTY = "";
 
     @Mock
-    private IAuthenticationAccess authenticationAccessMock;
+    private final IAuthenticationAccess authenticationAccessMock;
 
-    private HashGenerator hashGenerator;
+    private final HashGenerator hashGenerator;
 
-    private PasswordChecker passwordChecker;
+    private final PasswordChecker passwordChecker;
 
     public PasswordCheckerTest() {
         this.authenticationAccessMock = Mockito.mock(IAuthenticationAccess.class);

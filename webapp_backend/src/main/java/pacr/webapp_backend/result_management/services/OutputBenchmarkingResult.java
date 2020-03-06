@@ -17,29 +17,29 @@ import java.util.Objects;
 @Getter
 public class OutputBenchmarkingResult {
 
-    private boolean globalError;
-    private String errorMessage;
+    private final boolean globalError;
+    private final String errorMessage;
 
-    private String commitHash;
-    private String commitMessage;
-    private String commitURL;
+    private final String commitHash;
+    private final String commitMessage;
+    private final String commitURL;
     private String comparisonCommitHash;
 
     /**
      * The dates are saved as strings in order to be readable in the json that is sent to the front end.
      */
-    private String commitEntryDate;
-    private String commitCommitDate;
-    private String commitAuthorDate;
+    private final String commitEntryDate;
+    private final String commitCommitDate;
+    private final String commitAuthorDate;
 
-    private int commitRepositoryId;
-    private String commitRepositoryName;
-    private Collection<String> commitBranchNames;
-    private Collection<String> commitParentHashes;
-    private Collection<String> commitLabels;
+    private final int commitRepositoryId;
+    private final String commitRepositoryName;
+    private final Collection<String> commitBranchNames;
+    private final Collection<String> commitParentHashes;
+    private final Collection<String> commitLabels;
 
     private ISystemEnvironment systemEnvironment;
-    private OutputBenchmark[] benchmarksList;
+    private final OutputBenchmark[] benchmarksList;
 
     /**
      * Creates an OutputBenchmarkingResult for a commit. Copies system environment and error information from the
@@ -50,7 +50,7 @@ public class OutputBenchmarkingResult {
      * @param benchmarks the benchmarks, their properties and their corresponding measurements.
      */
     OutputBenchmarkingResult(@NotNull final ICommit commit, @NotNull final CommitResult result,
-                             @NotNull final OutputBenchmark[] benchmarks) {
+                             @NotNull final OutputBenchmark... benchmarks) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
         Objects.requireNonNull(benchmarks);

@@ -30,7 +30,7 @@ public class TokenManager implements IAuthenticator {
     private static final String AUDIENCE_ADMIN = "admin";
     private static final int SECRET_LENGTH = 128;
 
-    private IAuthenticationAccess authenticationAccess;
+    private final IAuthenticationAccess authenticationAccess;
 
     /**
      * Creates a new TokenManager.

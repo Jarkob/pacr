@@ -43,7 +43,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     private JobDB jobAccess;
     private JobGroupDB jobGroupAccess;
 
-    private Pageable pageable;
+    private final Pageable pageable;
 
     @Autowired
     public SchedulerTest(final JobDB jobAccess, final JobGroupDB jobGroupAccess) {

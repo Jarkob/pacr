@@ -50,10 +50,10 @@ public class ResultDBTest extends SpringBootTestWithoutShell {
     private static final int EXPECTED_NUM_OF_RESULTS_ONE_NOT_SAVED = 1;
     private static final int PAGE_SIZE = 10;
 
-    private ResultDB resultDB;
-    private BenchmarkDB benchmarkDB;
-    private Benchmark benchmark;
-    private Benchmark benchmarkTwo;
+    private final ResultDB resultDB;
+    private final BenchmarkDB benchmarkDB;
+    private final Benchmark benchmark;
+    private final Benchmark benchmarkTwo;
 
     @Autowired
     public ResultDBTest(final ResultDB resultDB, final BenchmarkDB benchmarkDB) {

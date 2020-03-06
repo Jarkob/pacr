@@ -27,8 +27,8 @@ public class TokenManagerTest {
     private static final String AUDIENCE = "admin";
     private static final String FALSE_TOKEN = "false";
 
-    private TokenManager tokenManager;
-    private IAuthenticationAccess authenticationAccessMock;
+    private final TokenManager tokenManager;
+    private final IAuthenticationAccess authenticationAccessMock;
 
     public TokenManagerTest() {
         this.authenticationAccessMock = Mockito.mock(IAuthenticationAccess.class);

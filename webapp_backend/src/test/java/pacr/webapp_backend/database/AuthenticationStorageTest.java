@@ -24,8 +24,8 @@ public class AuthenticationStorageTest {
 
     private AuthenticationStorage authenticationStorage;
 
-    private File adminPasswordHashFile;
-    private File secretFile;
+    private final File adminPasswordHashFile;
+    private final File secretFile;
 
     public AuthenticationStorageTest() {
         try {

@@ -26,13 +26,13 @@ public class NewResultEvent extends EventTemplate {
     private static final String LANGUAGE_EN = "en";
     private static final String REGION_US = "US";
 
-    private String commitHash;
-    private String repositoryName;
-    private String globalError;
-    private int averageImprovementPercentage;
-    private String comparisonCommitHash;
+    private final String commitHash;
+    private final String repositoryName;
+    private final String globalError;
+    private final int averageImprovementPercentage;
+    private final String comparisonCommitHash;
 
-    private ResourceBundle resources;
+    private final ResourceBundle resources;
 
     /**
      * Creates a NewResultEvent for a new benchmarking result.

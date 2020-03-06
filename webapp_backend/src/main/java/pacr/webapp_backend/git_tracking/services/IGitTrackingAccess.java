@@ -57,6 +57,8 @@ public interface IGitTrackingAccess {
      * Stores a commit. The repository to which the commit
      * belongs to must already be stored already in the database.
      * @param commit is the commit being stored.
+     *
+     * @deprecated Using addCommits is now encouraged.
      */
     @Deprecated
     void addCommit(@NotNull GitCommit commit);
@@ -125,7 +127,7 @@ public interface IGitTrackingAccess {
      * Checks if a commit is in the database or not.
      * @param commitHash is the commit hash.
      * @return true if the commit is already in the database,
-     * false if not.
+     *      false if not.
      */
     boolean containsCommit(@NotNull String commitHash);
 }

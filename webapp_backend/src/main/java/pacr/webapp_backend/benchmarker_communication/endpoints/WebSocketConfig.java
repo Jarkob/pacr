@@ -19,7 +19,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
      * Setup the message broker to be memory based.
      * /topic is used for a broadcast to all registered clients
      * /queue is used to send messages to a specific client
-     *
      * Websocket requests must start with /app.
      *
      * @param config the message broker configuration.

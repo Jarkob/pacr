@@ -42,7 +42,7 @@ public class GitRepository implements IRepository {
     private boolean trackAllBranches;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Set<GitBranch> trackedBranches;
+    private final Set<GitBranch> trackedBranches;
 
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> selectedBranches;
@@ -71,6 +71,8 @@ public class GitRepository implements IRepository {
      * @param color is the color in which the repository is displayed
      * @param observeFromDate is the date from which on the repository is being observed.
      *                        Is null if all commits are being observed.
+     *
+     * @deprecated since it doesn't get used anymore.
      */
     @Deprecated
     public GitRepository(final boolean trackAllBranches,

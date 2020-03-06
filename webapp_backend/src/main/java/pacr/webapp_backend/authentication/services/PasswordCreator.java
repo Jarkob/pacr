@@ -19,8 +19,8 @@ public class PasswordCreator {
     private static final int MIN_NUM_OF_CHARS = 2;
     private static final int PASSWORD_LENGTH = 16;
 
-    private IAuthenticationAccess authenticationAccess;
-    private HashGenerator hashGenerator;
+    private final IAuthenticationAccess authenticationAccess;
+    private final HashGenerator hashGenerator;
 
     /**
      * Creates a new PasswordCreator.

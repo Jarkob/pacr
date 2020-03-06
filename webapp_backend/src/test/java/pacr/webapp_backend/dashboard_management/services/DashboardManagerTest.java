@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DashboardManagerTest extends SpringBootTestWithoutShell {
 
-    private DashboardManager dashboardManager;
+    private final DashboardManager dashboardManager;
 
     private Dashboard dashboard;
 

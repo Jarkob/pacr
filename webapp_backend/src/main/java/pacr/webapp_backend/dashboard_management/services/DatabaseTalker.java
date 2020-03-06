@@ -15,7 +15,7 @@ import java.util.Objects;
 @Service
 public class DatabaseTalker {
 
-    IDashboardAccess dashboardAccess;
+    private IDashboardAccess dashboardAccess;
 
     IDeletionIntervalAccess deletionIntervalAccess;
 
@@ -42,7 +42,7 @@ public class DatabaseTalker {
      *
      * @param key The string which should be checked.
      * @return -1, if the key does not belong to any dashboard, 0, if the key is a view key
-     * and 1 if the key is an edit key.
+     *      and 1 if the key is an edit key.
      */
     private KeyType checkKeyType(final String key) {
 

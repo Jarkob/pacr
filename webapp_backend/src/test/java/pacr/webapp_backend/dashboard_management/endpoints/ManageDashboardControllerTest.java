@@ -35,7 +35,7 @@ public class ManageDashboardControllerTest extends SpringBootTestWithoutShell {
 
     private static final String KEY = "key";
 
-    private DashboardManager dashboardManager;
+    private final DashboardManager dashboardManager;
 
     @Autowired
     ManageDashboardControllerTest(final DashboardManager dashboardManager, final DashboardDB dashboardDB) {

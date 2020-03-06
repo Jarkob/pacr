@@ -18,6 +18,6 @@ import javax.persistence.Id;
 public abstract class ILeaderboard {
 
     @Id
-    String benchmarkName;
+    private String benchmarkName;
 
 }

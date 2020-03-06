@@ -23,8 +23,8 @@ import javax.validation.constraints.NotNull;
  */
 public class EventRSSFeedView extends AbstractRssFeedView {
 
-    private EventCategory category;
-    private EventHandler eventHandler;
+    private final EventCategory category;
+    private final EventHandler eventHandler;
 
     /**
      * Creates a new EventRSSFeedView.

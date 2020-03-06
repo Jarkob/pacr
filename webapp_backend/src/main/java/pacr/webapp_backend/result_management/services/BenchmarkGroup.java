@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management.services;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import java.util.Objects;
 @Table(name = "benchmark_group")
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class BenchmarkGroup {
 
     /**
@@ -35,12 +37,6 @@ public class BenchmarkGroup {
 
     @Column(length = 500)
     private String name;
-
-    /**
-     * Creates empty group. Needed for jpa.
-     */
-    public BenchmarkGroup() {
-    }
 
     /**
      * Creates a new BenchmarkGroup with a name.

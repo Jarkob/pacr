@@ -29,7 +29,7 @@ public class DashboardManager {
 
     private static final String CRON_DAILY = "0 0 0 * * *";
 
-    ILeaderboardGetter leaderboardGetter;
+    private ILeaderboardGetter leaderboardGetter;
 
     DatabaseTalker databaseTalker;
 
@@ -61,7 +61,7 @@ public class DashboardManager {
     /**
      * @param dashboard The dashboard to be added to the database.
      * @return The keys of this dashboard in a pair. The first item is the view key,
-     * the second the edit key.
+     *      the second the edit key.
      */
     public Pair<String, String> addDashboard(@NotNull final Dashboard dashboard) {
         Objects.requireNonNull(dashboard, "The dashboard must not be null.");
@@ -146,8 +146,8 @@ public class DashboardManager {
                 try {
                     deleteDashboard(dashboard.getEditKey());
                 } catch (final NoSuchElementException | IllegalAccessException e) {
-                    LOGGER.warn("The dashboard " + dashboard.getTitle() + "could not be delete, even though it is"
-                            + "older than the current deletion interval.");
+                    LOGGER.warn("The dashboard {} could not be delete, even though it is"
+                            + "older than the current deletion interval.", dashboard.getTitle());
                 }
             }
         }

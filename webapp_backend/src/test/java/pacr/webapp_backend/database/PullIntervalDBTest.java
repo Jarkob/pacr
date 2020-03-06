@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class PullIntervalDBTest extends SpringBootTestWithoutShell {
 
-    private PullIntervalDB pullIntervalDB;
+    private final PullIntervalDB pullIntervalDB;
 
     @Autowired
     public PullIntervalDBTest(final PullIntervalDB pullIntervalDB) {

@@ -17,8 +17,8 @@ import pacr.webapp_backend.shared.IResultExporter;
 @Component
 public class BenchmarkingResultsExporter {
 
-    private IExportRepositoryAccess repositoryAccess;
-    private IResultExporter resultExporter;
+    private final IExportRepositoryAccess repositoryAccess;
+    private final IResultExporter resultExporter;
 
     /**
      * Creates a new BenchmarkingResultsExporter.

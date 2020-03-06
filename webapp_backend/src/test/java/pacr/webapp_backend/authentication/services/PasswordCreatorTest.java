@@ -12,11 +12,11 @@ public class PasswordCreatorTest {
     private static final int LENGTH_PASSWORD = 16;
 
     @Mock
-    private IAuthenticationAccess authenticationAccessMock;
+    private final IAuthenticationAccess authenticationAccessMock;
 
-    private HashGenerator hashGenerator;
+    private final HashGenerator hashGenerator;
 
-    private PasswordCreator passwordCreator;
+    private final PasswordCreator passwordCreator;
 
     public PasswordCreatorTest() {
         authenticationAccessMock = Mockito.mock(IAuthenticationAccess.class);

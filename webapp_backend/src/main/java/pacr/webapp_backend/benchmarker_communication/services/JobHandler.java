@@ -18,15 +18,15 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
 
     private static final Logger LOGGER = LogManager.getLogger(JobHandler.class);
 
-    private IJobSender jobSender;
-    private IBenchmarkerPool benchmarkerPool;
-    private IJobProvider jobProvider;
-    private IResultSaver resultSaver;
+    private final IJobSender jobSender;
+    private final IBenchmarkerPool benchmarkerPool;
+    private final IJobProvider jobProvider;
+    private final IResultSaver resultSaver;
 
-    private Map<String, IJob> currentJobs;
+    private final Map<String, IJob> currentJobs;
 
     // If there is a communication error with a benchmarker the attempts are counted.
-    private Map<String, Integer> executionAttempts;
+    private final Map<String, Integer> executionAttempts;
 
     /**
      * Initiates a new instance of this class.

@@ -14,7 +14,7 @@ public interface IBenchmarkerPool {
 
     /**
      * @return the address of a free Benchmarker in the pool. If there is no free Benchmarker
-     * null is returned.
+     *      null is returned.
      */
     String getFreeBenchmarker();
 

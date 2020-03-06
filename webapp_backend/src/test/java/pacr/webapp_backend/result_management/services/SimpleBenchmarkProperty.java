@@ -20,7 +20,7 @@ public class SimpleBenchmarkProperty implements IBenchmarkProperty {
     private Collection<Double> results;
     @Setter
     private ResultInterpretation resultInterpretation;
-    private String unit;
+    private final String unit;
     private String error;
 
     /**

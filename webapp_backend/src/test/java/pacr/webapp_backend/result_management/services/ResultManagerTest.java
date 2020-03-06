@@ -35,12 +35,12 @@ public class ResultManagerTest extends SpringBootTestWithoutShell {
     private static final String REPO_NAME = "repo";
     private static final int EXPECTED_TWO_RESULTS = 2;
 
-    private ResultManager resultManager;
-    private ResultDB resultDB;
-    private IGitTrackingAccess gitTrackingAccess;
-    private RepositoryDB repositoryDB;
-    private BenchmarkDB benchmarkDB;
-    private BenchmarkGroupDB groupDB;
+    private final ResultManager resultManager;
+    private final ResultDB resultDB;
+    private final IGitTrackingAccess gitTrackingAccess;
+    private final RepositoryDB repositoryDB;
+    private final BenchmarkDB benchmarkDB;
+    private final BenchmarkGroupDB groupDB;
     private BenchmarkManager benchmarkManager;
 
     private GitRepository repository;

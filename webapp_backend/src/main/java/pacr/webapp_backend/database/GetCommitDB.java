@@ -15,8 +15,6 @@ import pacr.webapp_backend.shared.ICommit;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
 /**
