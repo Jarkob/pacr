@@ -180,7 +180,7 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         }
 
-        LOGGER.error("property {} found for commit {}", propertyName, commitHash);
+        LOGGER.error("property \"{}\" not found for commit {}", propertyName, commitHash);
         return new LinkedList<>();
     }
 
