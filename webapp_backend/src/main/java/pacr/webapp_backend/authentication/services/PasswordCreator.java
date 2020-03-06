@@ -16,9 +16,6 @@ import java.util.List;
 @ShellComponent
 public class PasswordCreator {
 
-    private static final char[] SPECIAL_CHARS = {'!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', '-', '.', '/',
-            ':', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'};
-    private static final String CHAR_ERROR = "CHAR ERROR";
     private static final int MIN_NUM_OF_CHARS = 2;
     private static final int PASSWORD_LENGTH = 16;
 
@@ -54,18 +51,7 @@ public class PasswordCreator {
         List<CharacterRule> rules = Arrays.asList(
                 new CharacterRule(EnglishCharacterData.UpperCase, MIN_NUM_OF_CHARS),
                 new CharacterRule(EnglishCharacterData.LowerCase, MIN_NUM_OF_CHARS),
-                new CharacterRule(EnglishCharacterData.Digit, MIN_NUM_OF_CHARS),
-                new CharacterRule(new CharacterData() {
-                    @Override
-                    public String getErrorCode() {
-                        return CHAR_ERROR;
-                    }
-
-                    @Override
-                    public String getCharacters() {
-                        return new String(SPECIAL_CHARS);
-                    }
-                }, MIN_NUM_OF_CHARS)
+                new CharacterRule(EnglishCharacterData.Digit, MIN_NUM_OF_CHARS)
         );
 
         PasswordGenerator generator = new PasswordGenerator();
