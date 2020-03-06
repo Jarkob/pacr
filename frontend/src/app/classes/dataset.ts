@@ -9,4 +9,5 @@ export interface Dataset {
     branch: string;
     borderColor: string;
     pointBackgroundColor: string;
+    hidden: boolean;
 }

@@ -1,6 +1,5 @@
 import { ErrorComponent } from './error/error.component';
 import { DiagramService } from './services/diagram.service';
-import { PropertyBoxplotComponent } from './property-boxplot/property-boxplot.component';
 import { AdminImportExportComponent } from './admin-import-export/admin-import-export.component';
 import { DetailViewComparisonWrapperComponent } from './detail-view-comparison-wrapper/detail-view-comparison-wrapper.component';
 import { TimeAgoPipe } from 'time-ago-pipe';
@@ -95,7 +94,6 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     CommitHistoryJobQueueWrapperComponent,
     DetailViewComparisonWrapperComponent,
     AdminImportExportComponent,
-    PropertyBoxplotComponent,
     ErrorComponent
   ],
   entryComponents: [

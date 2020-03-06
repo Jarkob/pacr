@@ -21,6 +21,8 @@ import { MatDatepickerInputEvent } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { ShortenStringPipe } from '../pipes/shorten-string-pipe';
 
+let tmp: any = null;
+
 /**
  * displays benchmarking results in a line diagram
  */
@@ -231,7 +233,8 @@ export class DiagramComponent implements OnInit {
     repositoryId: 0,
     repositoryName: '',
     borderColor: '',
-    pointBackgroundColor: ''
+    pointBackgroundColor: '',
+    hidden: true
   }];
   legendData: any;
 
@@ -316,6 +319,7 @@ export class DiagramComponent implements OnInit {
   public toggleLines(legendItem: LegendItem) {
     for (const datasetIndex of legendItem.datasetIndices) {
       this.chart.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked;
+      this.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked;
     }
     this.chart.update();
   }
@@ -397,6 +401,8 @@ export class DiagramComponent implements OnInit {
         }
       }
     }
+    // ugly hack, otherwise can't access datasets from inside legend handler
+    tmp = this.datasets;
     this.legendData = this.chart.chart.generateLegend();
     this.loading = false;
   }
@@ -427,6 +433,7 @@ export class DiagramComponent implements OnInit {
         branch: 'master',
         borderColor: this.repositories.get(repositoryId).color,
         pointBackgroundColor: this.repositories.get(repositoryId).color,
+        hidden: false
       };
       for (const commit of list) {
         dataset.data.push({
@@ -502,7 +509,7 @@ export class DiagramComponent implements OnInit {
   private legendCallback(currentChart: any): any {
     const map: Map<string, LegendItem> = new Map<string, LegendItem>();
     let index = 0;
-    for (const dataset of currentChart.data.datasets) {
+    for (const dataset of tmp) {
       const key = dataset.repositoryId + '/' + dataset.branch;
       if (map.has(key)) {
         map.get(key).datasetIndices.push(index);
