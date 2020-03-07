@@ -1,3 +1,5 @@
+import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorComponent } from './../error/error.component';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { DetailViewService } from './../services/detail-view.service';
 import { BenchmarkProperty } from './../classes/benchmark-property';
@@ -17,7 +19,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { BenchmarkGroup } from '../classes/benchmark-group';
 import { LegendItem } from '../classes/legend-item';
 import * as moment from 'moment';
-import { MatDatepickerInputEvent } from '@angular/material';
+import { MatDatepickerInputEvent, MatDialog } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { ShortenStringPipe } from '../pipes/shorten-string-pipe';
 
@@ -40,6 +42,7 @@ export class DiagramComponent implements OnInit {
     private benchmarkService: BenchmarkService,
     private detailViewService: DetailViewService,
     private formBuilder: FormBuilder,
+    private dialog: MatDialog
     private datePipe: DatePipe,
     private shortenString: ShortenStringPipe
   ) {
@@ -304,11 +307,13 @@ export class DiagramComponent implements OnInit {
 
   public changeFrom(event: MatDatepickerInputEvent<Date>) {
     this.from = moment(event.value).unix();
+    this.loading = true;
     this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, this.datasets.length);
   }
 
   public changeUntil(event: MatDatepickerInputEvent<Date>) {
     this.until = moment(event.value).unix();
+    this.loading = true;
     this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, this.datasets.length);
   }
 
@@ -418,7 +423,14 @@ export class DiagramComponent implements OnInit {
     if (newestCommit) {
       this.dfs(repositoryId, this.repositoryResults.get(repositoryId)[newestCommit], empty);
     } else {
-      console.error('No newest commit found');
+      this.dialog.open(ErrorComponent, {
+        data: new HttpErrorResponse({
+          error: null,
+          headers: null,
+          status: null,
+          statusText: ('No commits found for repository ' + this.repositories.get(repositoryId).name)
+        })
+      });
     }
     let index = 0;
     for (const list of this.lists) {
