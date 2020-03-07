@@ -90,7 +90,7 @@ public class BenchmarkerPoolTest {
 
     @Test
     void registerBenchmarker_nullSystemEnvironment() {
-        assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(NullPointerException.class, () -> {
             benchmarkerPool.registerBenchmarker(ADDRESS, null);
         });
     }

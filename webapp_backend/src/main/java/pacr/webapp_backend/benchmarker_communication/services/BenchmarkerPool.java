@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -18,6 +21,7 @@ import org.springframework.util.StringUtils;
 @Component
 public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
 
+    private static final Logger LOGGER = LogManager.getLogger(BenchmarkerPool.class);
 
     private Map<String, SystemEnvironment> allBenchmarkers;
 
@@ -41,9 +45,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     public boolean registerBenchmarker(String address, SystemEnvironment sysEnvironment) {
         verifyAddress(address);
 
-        if (sysEnvironment == null) {
-            throw new IllegalArgumentException("The system environment cannot be null.");
-        }
+        Objects.requireNonNull(sysEnvironment, "The system environment cannot be null.");
 
         if (containsBenchmarker(address)) {
             return false;
@@ -51,6 +53,8 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
 
         freeBenchmarkers.add(address);
         allBenchmarkers.put(address, sysEnvironment);
+
+        LOGGER.info("Registered the benchmarker with address '{}' to the system.", address);
 
         notifyRegistrationListeners();
 
@@ -72,6 +76,8 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
         } else {
             occupiedBenchmarkers.remove(address);
         }
+
+        LOGGER.info("Unregistered the benchmarker with address '{}' from the system.", address);
 
         return true;
     }
@@ -148,7 +154,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     private void verifyAddress(String address) {
-        if (address == null || address.isEmpty() || address.isBlank()) {
+        if (!StringUtils.hasText(address)) {
             throw new IllegalArgumentException("The address is not valid.");
         }
     }

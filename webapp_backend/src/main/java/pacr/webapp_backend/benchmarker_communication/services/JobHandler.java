@@ -60,7 +60,8 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
             if (result != null) {
                 resultSaver.saveBenchmarkingResults(result);
 
-                LOGGER.info("Received job results for {} | {}.", job.getJobGroupTitle(), job.getJobID());
+                LOGGER.info("Received job results for '{}' | '{}' from benchmarker '{}'.",
+                        job.getJobGroupTitle(), job.getJobID(), address);
 
                 // start a new job for this benchmarker if one is available
                 executeJob();
@@ -95,7 +96,7 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
             BenchmarkerJob benchmarkerJob = new BenchmarkerJob(address, job.getJobGroupTitle(), job.getJobID());
 
             if (jobSender.sendJob(benchmarkerJob)) {
-                LOGGER.info("Sent job to {}.", address);
+                LOGGER.info("Sent job to benchmarker {}.", address);
                 benchmarkerPool.occupyBenchmarker(address);
                 currentJobs.put(address, job);
 
