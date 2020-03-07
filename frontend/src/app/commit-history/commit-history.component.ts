@@ -77,7 +77,7 @@ export class CommitHistoryComponent implements OnInit {
       this.lastVisit = new Date(lastVisit);
     }
 
-    this.cookieService.set(cookieKey, new Date().toDateString());
+    this.cookieService.set(cookieKey, new Date().toISOString());
   }
 
   public isNewCommit(commit: CommitHistoryItem): boolean {
