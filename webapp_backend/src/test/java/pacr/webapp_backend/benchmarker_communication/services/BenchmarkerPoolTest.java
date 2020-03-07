@@ -6,11 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.verify;
 
 public class BenchmarkerPoolTest {
 
@@ -30,11 +27,27 @@ public class BenchmarkerPoolTest {
     }
 
     @Test
+    void addListener_noError() {
+        assertDoesNotThrow(() -> {
+            benchmarkerPool.addListener(jobHandler);
+        });
+
+        assertDoesNotThrow(() -> {
+            benchmarkerPool.addListener(null);
+        });
+
+        benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
+
+        verify(jobHandler).newRegistration();
+    }
+
+    @Test
     void registerBenchmarker_noError() {
         boolean result = benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
 
         assertTrue(result);
         assertTrue(benchmarkerPool.hasFreeBenchmarkers());
+        verify(jobHandler).newRegistration();
     }
 
     @Test

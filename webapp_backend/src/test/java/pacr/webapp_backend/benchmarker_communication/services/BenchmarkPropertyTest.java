@@ -6,8 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BenchmarkPropertyTest {
 
@@ -63,5 +62,20 @@ public class BenchmarkPropertyTest {
         benchmarkProperty.setError(null);
         error = benchmarkProperty.getError();
         assertNull(error);
+    }
+
+    @Test
+    void isError_noError() {
+        benchmarkProperty.setError("error");
+        assertTrue(benchmarkProperty.isError());
+
+        benchmarkProperty.setError("");
+        assertFalse(benchmarkProperty.isError());
+
+        benchmarkProperty.setError(" ");
+        assertFalse(benchmarkProperty.isError());
+
+        benchmarkProperty.setError(null);
+        assertFalse(benchmarkProperty.isError());
     }
 }

@@ -1,12 +1,18 @@
 package pacr.webapp_backend.scheduler.services;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.util.reflection.FieldSetter;
+import pacr.webapp_backend.shared.IJob;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 public class JobTest {
 
@@ -22,6 +28,19 @@ public class JobTest {
         jobGroup = new JobGroup(GROUP_TITLE);
 
         job = new Job(JOB_ID, jobGroup);
+    }
+
+    private void setupJob(Job job, String jobId, JobGroup group) {
+        setField(job, "jobID", jobId);
+        setField(job, "group", group);
+    }
+
+    private void setField(Object object, String fieldName, Object value) {
+        try {
+            FieldSetter.setField(object, object.getClass().getDeclaredField(fieldName), value);
+        } catch (NoSuchFieldException e) {
+            fail();
+        }
     }
 
     @Test
@@ -55,21 +74,10 @@ public class JobTest {
     }
 
     @Test
-    void equals_noError() {
-        JobGroup jobGroup2 = new JobGroup(GROUP_TITLE);
-        Job job2 = new Job(JOB_ID, jobGroup2);
-        assertEquals(job, job2);
-
-        assertNotEquals(job, new Object());
-        assertNotEquals(job, null);
-        assertEquals(job, job);
-    }
-
-    @Test
-    void hashCode_noError() {
-        JobGroup jobGroup2 = new JobGroup(GROUP_TITLE);
-        Job job2 = new Job(JOB_ID, jobGroup2);
-        assertEquals(job.hashCode(), job2.hashCode());
+    void equals_and_hashCode_noError() {
+        EqualsVerifier.forClass(Job.class)
+                .withOnlyTheseFields("jobID", "group")
+                .verify();
     }
 
     @Test

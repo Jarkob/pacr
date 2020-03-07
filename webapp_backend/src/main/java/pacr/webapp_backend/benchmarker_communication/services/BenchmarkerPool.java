@@ -136,7 +136,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
 
     @Override
     public void addListener(INewRegistrationListener registrationListener) {
-        if (registrationListener != null) {
+        if (registrationListener != null && !newRegistrationListeners.contains(registrationListener)) {
             newRegistrationListeners.add(registrationListener);
         }
     }

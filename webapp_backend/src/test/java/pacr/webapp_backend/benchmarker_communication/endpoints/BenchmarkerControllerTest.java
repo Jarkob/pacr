@@ -19,10 +19,7 @@ import pacr.webapp_backend.benchmarker_communication.services.IJobRegistry;
 import pacr.webapp_backend.benchmarker_communication.services.SystemEnvironment;
 import pacr.webapp_backend.shared.IJob;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -186,6 +183,13 @@ public class BenchmarkerControllerTest {
 
         verify(benchmarkerHandler, never()).unregisterBenchmarker(any());
         assertFalse(result);
+    }
+
+    @Test
+    void SSHKeyMessage_noArgs() {
+        assertDoesNotThrow(() -> {
+            SSHKeyMessage sshKeyMessage = new SSHKeyMessage();
+        });
     }
 
     @Test

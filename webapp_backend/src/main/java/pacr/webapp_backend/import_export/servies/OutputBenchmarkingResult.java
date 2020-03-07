@@ -38,6 +38,7 @@ public class OutputBenchmarkingResult {
                                         String repositoryPullUrl, String repositoryName, Set<String> trackedBranches) {
 
         Objects.requireNonNull(benchmarkingResults, "The benchmarkingResults cannot be null.");
+        Objects.requireNonNull(trackedBranches, "The trackedBranches cannot be null.");
 
         if (!StringUtils.hasText(repositoryPullUrl)) {
             throw new IllegalArgumentException("The repositoryPullUrl cannot be null.");

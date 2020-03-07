@@ -71,8 +71,6 @@ public class Event implements Comparable<Event> {
 
     @Override
     public int compareTo(Event event) {
-        assert (created != null);
-
         return created.compareTo(event.created);
     }
 

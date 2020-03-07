@@ -1,5 +1,6 @@
 package pacr.webapp_backend.scheduler.services;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,29 +17,23 @@ public class JobGroupTest {
     }
 
     @Test
-    void equals_areEqual() {
-        JobGroup otherGroup = new JobGroup(GROUP_TITLE);
-
-        boolean result = otherGroup.equals(jobGroup);
-        assertTrue(result);
-
-        assertEquals(jobGroup, jobGroup);
-    }
-
-    @Test
-    void equals_areNotEqual() {
-        JobGroup otherGroup = new JobGroup(GROUP_TITLE + 1);
-
-        assertNotEquals(jobGroup, otherGroup);
-        assertNotEquals(jobGroup, null);
-        assertNotEquals(null, jobGroup);
-        assertNotEquals(jobGroup, new Object());
+    void equals_and_hashCode_noError() {
+        EqualsVerifier.forClass(JobGroup.class)
+                .withOnlyTheseFields("title")
+                .verify();
     }
 
     @Test
     void JobGroup_noError() {
         assertDoesNotThrow(() -> {
             JobGroup jobGroup = new JobGroup(GROUP_TITLE);
+        });
+    }
+
+    @Test
+    void JobGroup_noArgs() {
+        assertDoesNotThrow(() -> {
+            JobGroup jobGroup = new JobGroup();
         });
     }
 

@@ -21,9 +21,6 @@ public class JobMessage {
      * @param commitHash the commit hash.
      */
     JobMessage(String repository, String commitHash) {
-        assert (repository != null && !repository.isBlank() && !repository.isEmpty());
-        assert (commitHash != null && !commitHash.isBlank() && !commitHash.isEmpty());
-
         this.repository = repository;
         this.commitHash = commitHash;
     }

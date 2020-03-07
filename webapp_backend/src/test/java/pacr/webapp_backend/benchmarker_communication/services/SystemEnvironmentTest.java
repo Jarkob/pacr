@@ -22,6 +22,6 @@ public class SystemEnvironmentTest {
         assertNull(systemEnvironment.getOs());
         assertNull(systemEnvironment.getProcessor());
         assertEquals(0, systemEnvironment.getCores());
-        assertEquals(0, systemEnvironment.getRamMemory());
+        assertEquals(0, systemEnvironment.getRam());
     }
 }

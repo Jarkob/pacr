@@ -110,8 +110,6 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
     }
 
     private boolean canExecute(String address) {
-        assert (address != null && !address.isEmpty() && !address.isBlank());
-
         final int maxAttempts = 100;
 
         if (!executionAttempts.containsKey(address)) {
@@ -122,8 +120,6 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
     }
 
     private void addAttempt(String address) {
-        assert (address != null && !address.isEmpty() && !address.isBlank());
-
         if (!executionAttempts.containsKey(address)) {
             resetAttempts(address);
         }
@@ -133,8 +129,6 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
     }
 
     private void resetAttempts(String address) {
-        assert (address != null && !address.isEmpty() && !address.isBlank());
-
         executionAttempts.put(address, 0);
     }
 

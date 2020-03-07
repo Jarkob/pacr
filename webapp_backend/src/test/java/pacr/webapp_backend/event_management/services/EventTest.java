@@ -1,8 +1,10 @@
 package pacr.webapp_backend.event_management.services;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import pacr.webapp_backend.scheduler.services.Job;
 import pacr.webapp_backend.shared.EventCategory;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,21 +66,9 @@ public class EventTest {
 
     @Test
     void equals_noError() {
-        Event compareEvent1 = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
-        Event compareEvent2 = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
-
-        assertEquals(compareEvent1, compareEvent2);
-    }
-
-    @Test
-    void hashCode_noError() {
-        Event compareEvent1 = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
-        Event compareEvent2 = new Event(category, EVENT_TITLE, EVENT_DESCRIPTION);
-
-        long hashCode1 = compareEvent1.hashCode();
-        long hashCode2 = compareEvent2.hashCode();
-
-        assertEquals(hashCode1, hashCode2);
+        EqualsVerifier.forClass(Event.class)
+                .withOnlyTheseFields("category", "title", "description", "created")
+                .verify();
     }
 
     @Test

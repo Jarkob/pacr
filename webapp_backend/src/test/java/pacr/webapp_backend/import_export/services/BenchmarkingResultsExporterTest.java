@@ -8,11 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import pacr.webapp_backend.import_export.servies.Benchmark;
-import pacr.webapp_backend.import_export.servies.BenchmarkProperty;
-import pacr.webapp_backend.import_export.servies.BenchmarkingResultsExporter;
-import pacr.webapp_backend.import_export.servies.IExportRepositoryAccess;
-import pacr.webapp_backend.import_export.servies.OutputBenchmarkingResult;
+import pacr.webapp_backend.import_export.servies.*;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
@@ -20,8 +16,7 @@ import pacr.webapp_backend.shared.IRepository;
 import pacr.webapp_backend.shared.IResultExporter;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +24,7 @@ public class BenchmarkingResultsExporterTest {
 
     private static final int REPO_1_ID = 1;
     private static final int REPO_2_ID = 2;
+    private static final int REPO_3_ID = 3;
     private static final String GLOBAL_ERROR = "globalError";
     private static final String COMMIT_HASH = "commitHash";
     private static final String REPO_1_NAME = "repo1Name";
@@ -62,6 +58,7 @@ public class BenchmarkingResultsExporterTest {
 
     private final int amtBenchmarkingResultsRepo1 = 5;
     private final int amtBenchmarkingResultsRepo2 = 6;
+    private final int amtBenchmarkingResultsRepo3 = 2;
 
     @BeforeEach
     void setUp() {
@@ -75,6 +72,7 @@ public class BenchmarkingResultsExporterTest {
 
         when(repositoryAccess.findGitRepositoryById(REPO_1_ID)).thenReturn(repository1);
         when(repositoryAccess.findGitRepositoryById(REPO_2_ID)).thenReturn(repository2);
+        when(repositoryAccess.findGitRepositoryById(REPO_3_ID)).thenReturn(null);
 
         this.properties = new HashMap();
         final int amtProperties = 5;
@@ -96,32 +94,37 @@ public class BenchmarkingResultsExporterTest {
         }
 
         this.benchmarkingResults = new ArrayList();
-
-        for (int i = 0; i < amtBenchmarkingResultsRepo1; i++) {
-            IBenchmarkingResult benchmarkingResult = mock(IBenchmarkingResult.class);
-            when(benchmarkingResult.getSystemEnvironment()).thenReturn(systemEnvironment);
-            when(benchmarkingResult.getRepositoryID()).thenReturn(REPO_1_ID);
-            when(benchmarkingResult.getGlobalError()).thenReturn(GLOBAL_ERROR + i);
-            when(benchmarkingResult.getCommitHash()).thenReturn(COMMIT_HASH + i);
-            when(benchmarkingResult.getBenchmarks()).thenReturn(benchmarks);
-
-            this.benchmarkingResults.add(benchmarkingResult);
-        }
-
-        for (int i = 0; i < amtBenchmarkingResultsRepo2; i++) {
-            IBenchmarkingResult benchmarkingResult = mock(IBenchmarkingResult.class);
-            when(benchmarkingResult.getSystemEnvironment()).thenReturn(systemEnvironment);
-            when(benchmarkingResult.getRepositoryID()).thenReturn(REPO_2_ID);
-            when(benchmarkingResult.getGlobalError()).thenReturn(GLOBAL_ERROR + i);
-            when(benchmarkingResult.getCommitHash()).thenReturn(COMMIT_HASH + i);
-            when(benchmarkingResult.getBenchmarks()).thenReturn(benchmarks);
-
-            this.benchmarkingResults.add(benchmarkingResult);
-        }
+        this.benchmarkingResults.addAll(createBenchmarkingResults(amtBenchmarkingResultsRepo1, REPO_1_ID));
+        this.benchmarkingResults.addAll(createBenchmarkingResults(amtBenchmarkingResultsRepo2, REPO_2_ID));
+        this.benchmarkingResults.addAll(createBenchmarkingResults(amtBenchmarkingResultsRepo3, REPO_3_ID));
 
         when(resultExporter.exportAllBenchmarkingResults()).thenReturn(benchmarkingResults);
 
         this.benchmarkingResultsExporter = new BenchmarkingResultsExporter(resultExporter, repositoryAccess);
+    }
+
+    private Collection<IBenchmarkingResult> createBenchmarkingResults(int amount, int repoID) {
+        Collection<IBenchmarkingResult> results = new ArrayList<>();
+
+        for (int i = 0; i < amount; i++) {
+            IBenchmarkingResult benchmarkingResult = mock(IBenchmarkingResult.class);
+            when(benchmarkingResult.getSystemEnvironment()).thenReturn(systemEnvironment);
+            when(benchmarkingResult.getRepositoryID()).thenReturn(repoID);
+            when(benchmarkingResult.getGlobalError()).thenReturn(GLOBAL_ERROR + i);
+            when(benchmarkingResult.getCommitHash()).thenReturn(COMMIT_HASH + i);
+            when(benchmarkingResult.getBenchmarks()).thenReturn(benchmarks);
+
+            results.add(benchmarkingResult);
+        }
+
+        return results;
+    }
+
+    @Test
+    void Benchmark_noArgs() {
+        assertDoesNotThrow(() -> {
+            Benchmark benchmark = new Benchmark();
+        });
     }
 
     @Test
@@ -139,6 +142,8 @@ public class BenchmarkingResultsExporterTest {
                 resultRepo1 = result;
             } else if (result.getRepositoryName().equals(REPO_2_NAME)) {
                 resultRepo2 = result;
+            } else {
+                fail("Unknown Repository was exported.");
             }
         }
 
