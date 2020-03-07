@@ -2,16 +2,20 @@ package pacr.webapp_backend.scheduler.services;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.util.StringUtils;
+import pacr.webapp_backend.shared.IJob;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
-
-import lombok.*;
-import org.springframework.util.StringUtils;
-import pacr.webapp_backend.shared.IJob;
 
 /**
  * A job that is identified by an id and belongs to a job group.

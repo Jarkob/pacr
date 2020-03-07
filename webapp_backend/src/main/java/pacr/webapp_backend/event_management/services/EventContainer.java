@@ -3,12 +3,13 @@ package pacr.webapp_backend.event_management.services;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.EventCategory;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Holds a list of events belonging to the same category and saves them through the eventAccess.

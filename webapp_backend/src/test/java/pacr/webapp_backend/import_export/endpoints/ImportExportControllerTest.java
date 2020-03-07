@@ -1,6 +1,5 @@
 package pacr.webapp_backend.import_export.endpoints;
 
-import io.jsonwebtoken.impl.JwtMap;
 import java.util.Collection;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

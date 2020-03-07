@@ -2,7 +2,6 @@ package pacr.webapp_backend.import_export.endpoints;
 
 import java.util.Collection;
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +13,8 @@ import pacr.webapp_backend.import_export.servies.BenchmarkingResultsExporter;
 import pacr.webapp_backend.import_export.servies.BenchmarkingResultsImporter;
 import pacr.webapp_backend.import_export.servies.OutputBenchmarkingResult;
 import pacr.webapp_backend.shared.IAuthenticator;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Handles import and export requests for benchmarking results.

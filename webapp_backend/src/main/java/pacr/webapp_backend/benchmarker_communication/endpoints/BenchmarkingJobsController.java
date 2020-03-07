@@ -2,7 +2,6 @@ package pacr.webapp_backend.benchmarker_communication.endpoints;
 
 import java.security.Principal;
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,6 +13,8 @@ import pacr.webapp_backend.benchmarker_communication.services.BenchmarkerJob;
 import pacr.webapp_backend.benchmarker_communication.services.IJobSender;
 import pacr.webapp_backend.benchmarker_communication.services.JobHandler;
 import pacr.webapp_backend.benchmarker_communication.services.JobResult;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Sends out jobs to PACR-Benchmarkers and receives their results.

@@ -1,5 +1,10 @@
 package pacr.webapp_backend.benchmarker_communication.endpoints;
 
+import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -14,12 +19,6 @@ import pacr.webapp_backend.benchmarker_communication.services.IBenchmarkerHandle
 import pacr.webapp_backend.benchmarker_communication.services.IJobRegistry;
 import pacr.webapp_backend.benchmarker_communication.services.SystemEnvironment;
 import pacr.webapp_backend.shared.IJob;
-
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Handles the registration and configuration of PACR-Benchmarkers.

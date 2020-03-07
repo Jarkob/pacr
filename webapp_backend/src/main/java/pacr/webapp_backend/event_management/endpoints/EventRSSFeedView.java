@@ -9,13 +9,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotNull;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.event_management.services.EventHandler;
 import pacr.webapp_backend.shared.EventCategory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
 
 /**
  * RSS Feed View for one event category.

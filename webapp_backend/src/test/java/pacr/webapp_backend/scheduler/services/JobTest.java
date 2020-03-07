@@ -1,18 +1,16 @@
 package pacr.webapp_backend.scheduler.services;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import nl.jqno.equalsverifier.EqualsVerifier;
-import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.internal.util.reflection.FieldSetter;
-import pacr.webapp_backend.shared.IJob;
 
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class JobTest {
 

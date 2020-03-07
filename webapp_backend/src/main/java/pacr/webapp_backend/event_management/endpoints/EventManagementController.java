@@ -1,7 +1,6 @@
 package pacr.webapp_backend.event_management.endpoints;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -13,6 +12,8 @@ import org.springframework.web.servlet.View;
 import pacr.webapp_backend.event_management.services.Event;
 import pacr.webapp_backend.event_management.services.EventHandler;
 import pacr.webapp_backend.shared.EventCategory;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Provides a REST interface to access leaderboard and benchmarking events as lists or RSS-Feeds.

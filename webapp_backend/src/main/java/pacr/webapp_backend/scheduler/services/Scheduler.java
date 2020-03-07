@@ -6,8 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -20,6 +18,9 @@ import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IJobProvider;
 import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IObserver;
+
+import javax.annotation.PostConstruct;
+import javax.validation.constraints.NotNull;
 
 /**
  * Holds a list of jobs and sorts them according to a scheduling policy.

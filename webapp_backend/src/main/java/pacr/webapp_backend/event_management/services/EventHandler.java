@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import javax.annotation.PostConstruct;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +12,8 @@ import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.EventCategory;
 import pacr.webapp_backend.shared.EventTemplate;
 import pacr.webapp_backend.shared.IEventHandler;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * Handles events belonging to multiple categories.

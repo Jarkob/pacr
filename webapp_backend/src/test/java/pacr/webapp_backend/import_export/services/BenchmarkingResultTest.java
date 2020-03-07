@@ -1,5 +1,6 @@
 package pacr.webapp_backend.import_export.services;
 
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -7,8 +8,6 @@ import org.mockito.MockitoAnnotations;
 import pacr.webapp_backend.import_export.servies.BenchmarkingResult;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ISystemEnvironment;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

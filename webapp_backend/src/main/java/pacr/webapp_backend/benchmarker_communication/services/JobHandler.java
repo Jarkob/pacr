@@ -2,7 +2,6 @@ package pacr.webapp_backend.benchmarker_communication.services;
 
 import java.util.HashMap;
 import java.util.Map;
-import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -11,6 +10,8 @@ import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IJobProvider;
 import pacr.webapp_backend.shared.IObserver;
 import pacr.webapp_backend.shared.IResultSaver;
+
+import javax.annotation.PostConstruct;
 
 @Component
 public class JobHandler implements INewRegistrationListener, IObserver, IJobRegistry {

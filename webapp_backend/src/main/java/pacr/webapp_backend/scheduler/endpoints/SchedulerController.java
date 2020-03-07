@@ -1,7 +1,6 @@
 package pacr.webapp_backend.scheduler.endpoints;
 
 import java.util.Objects;
-import javax.validation.constraints.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -13,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.scheduler.services.Job;
 import pacr.webapp_backend.scheduler.services.Scheduler;
 import pacr.webapp_backend.shared.IAuthenticator;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * RestController for the Scheduler Component.

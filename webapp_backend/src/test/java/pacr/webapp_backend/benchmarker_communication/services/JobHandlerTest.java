@@ -1,6 +1,5 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
-import org.hibernate.PersistentObjectException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
