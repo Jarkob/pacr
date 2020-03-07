@@ -8,10 +8,10 @@
                 <button mat-raised-button (click)="savePullInterval()" color="accent">Save</button>
             </div>
             <div fxFlex></div>
-            <p class="mat-h3" *ngIf="!nextExecutionTime.pulling && millisecondsUntilNextPull > 0">
+            <p class="mat-h3" *ngIf="nextExecutionTime && (!nextExecutionTime.pulling && millisecondsUntilNextPull > 0)">
                 {{ strings?.nextPullTimeStart }} {{ millisecondsUntilNextPull | date:'mm:ss' }}
             </p>
-            <p class="mat-h3" *ngIf="nextExecutionTime.pulling || millisecondsUntilNextPull === 0">
+            <p class="mat-h3" *ngIf="nextExecutionTime && (nextExecutionTime.pulling || millisecondsUntilNextPull === 0)">
                 {{ strings?.currentlyPulling }}
             </p> 
         </div>

@@ -35,7 +35,7 @@ export class CommitHistoryComponent implements OnInit {
 
   strings: any;
 
-  commitHistoryInterval = 20; // in seconds
+  commitHistoryInterval = 5; // in seconds
   commitHistorySubscription: Subscription;
 
   lastVisit: Date = null;
@@ -55,6 +55,8 @@ export class CommitHistoryComponent implements OnInit {
       }
     );
 
+    this.commitsPageEvent.pageIndex = 0;
+
     this.updateLastVisit();
 
     this.getCommitHistory(this.commitsPageEvent);
@@ -65,8 +67,6 @@ export class CommitHistoryComponent implements OnInit {
         }
       }
     );
-
-    console.log(this.lastVisit);
   }
 
   private updateLastVisit() {
@@ -84,8 +84,8 @@ export class CommitHistoryComponent implements OnInit {
     if (!this.lastVisit || !commit) {
       return true;
     }
-
-    return this.lastVisit < commit.entryDate;
+    
+    return this.lastVisit < new Date(commit.entryDate);
   }
 
   /**
