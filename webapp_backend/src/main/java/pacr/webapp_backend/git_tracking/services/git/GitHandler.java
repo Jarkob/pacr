@@ -151,8 +151,11 @@ public class GitHandler {
 
         Set<Ref> branchesWithForcePush = new HashSet<>();
 
+        Set<String> activeBranches = getBranchesOfRepository(gitRepository.getPullURL());
+
         for (Ref branch : branches) {
-            if (gitRepository.isBranchSelected(getNameOfRef(branch))) {
+            String name = getNameOfRef(branch);
+            if (activeBranches.contains(name) && gitRepository.isBranchSelected(name)) {
                 try {
                     commitsToBenchmark.addAll(collectCommitsToBenchmark(branch, git, gitRepository));
                 } catch (ForcePushException e) {
@@ -251,12 +254,13 @@ public class GitHandler {
     private void deleteBranches(final Git git, final GitRepository gitRepository) {
         // garbage collection for trackedBranches
         Map<String, Boolean> branchNotDeleted = new HashMap<>();
+        Set<String> branchesOfRepository = getBranchesOfRepository(gitRepository.getPullURL());
 
         for (final GitBranch branch : gitRepository.getTrackedBranches()) {
             branchNotDeleted.put(branch.getName(), Boolean.FALSE);
         }
 
-        for (final String branchName : getBranchNames(git)) {
+        for (String branchName : branchesOfRepository) {
             if (branchNotDeleted.containsKey(branchName)) {
                 branchNotDeleted.put(branchName, Boolean.TRUE);
             }
@@ -278,7 +282,7 @@ public class GitHandler {
             branchNotDeleted.put(branch, Boolean.FALSE);
         }
 
-        for (final String branchName : getBranchNames(git)) {
+        for (String branchName : branchesOfRepository) {
             if (branchNotDeleted.containsKey(branchName)) {
                 branchNotDeleted.put(branchName, Boolean.TRUE);
             }
@@ -333,18 +337,6 @@ public class GitHandler {
             LOGGER.error(e);
         }
         return branches;
-    }
-
-    private List<String> getBranchNames(final Git git) {
-        final List<Ref> branches = getBranches(git);
-
-        final List<String> branchNames = new ArrayList<>();
-
-        for (final Ref branch : branches) {
-            branchNames.add(getNameOfRef(branch));
-        }
-
-        return branchNames;
     }
 
     private Set<String> checkBranch(Ref branch, Git git, GitRepository gitRepository) throws ForcePushException {
