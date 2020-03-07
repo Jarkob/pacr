@@ -158,6 +158,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
                     }
                 }
 
+                resultToUpdate.updateSignificance();
+
                 synchronized (CommitResult.class) {
                     resultAccess.saveResult(resultToUpdate);
                 }
