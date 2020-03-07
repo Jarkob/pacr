@@ -255,7 +255,6 @@ export class DiagramComponent implements OnInit {
     this.groupFrom = this.formBuilder.group({
       dateFormCtrl: new FormControl(new Date(this.from * 1000))
     });
-    // this.chart.chart = undefined;
     if (!this.maximized) {
       this.getRepositories();
     } else {
@@ -269,7 +268,6 @@ export class DiagramComponent implements OnInit {
       this.repositories = this.inRepositories;
       this.repositoryResults = this.inRepositoryResults;
 
-      // this.loadImages(); should happen afterupdate
       this.chart.chart.update();
     }
   }
@@ -349,8 +347,6 @@ export class DiagramComponent implements OnInit {
 
   private getBenchmarkingResults(repositoryIds: number[], index: number, prevLength: number) {
     if (repositoryIds.length === index) {
-      // remove null object
-      // this.datasets = this.datasets.splice(1);
       // remove previous
       this.datasets = this.datasets.splice(prevLength);
       this.resetZoom();
@@ -445,7 +441,7 @@ export class DiagramComponent implements OnInit {
         branch: 'master',
         borderColor: this.repositories.get(repositoryId).color,
         pointBackgroundColor: this.repositories.get(repositoryId).color,
-        hidden: false
+        hidden: !this.repositories.get(repositoryId).checked
       };
       for (const commit of list) {
         dataset.data.push({
