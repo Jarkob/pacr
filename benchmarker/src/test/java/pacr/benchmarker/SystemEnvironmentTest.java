@@ -18,7 +18,7 @@ public class SystemEnvironmentTest {
         assertNotNull(environment.getKernel());
         assertNotNull(environment.getProcessor());
         assertNotEquals(0, environment.getCores());
-        assertNotEquals(0, environment.getRamMemory());
+        assertNotEquals(0, environment.getRam());
     }
 
 }

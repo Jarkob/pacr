@@ -7,9 +7,6 @@ import oshi.hardware.HardwareAbstractionLayer;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * Represents the system environment of the benchmarker.
@@ -38,7 +35,7 @@ public class SystemEnvironment {
     private String kernel;
     private String processor;
     private int cores;
-    private long ramMemory;
+    private long ram;
 
     private SystemEnvironment() {
     }
@@ -56,7 +53,7 @@ public class SystemEnvironment {
             LOGGER.error("Could not set computer name.");
         }
 
-        ramMemory = Math.round(hardwareAbstractionLayer.getMemory().getTotal() / Math.pow(2, 30)); // in GiB
+        ram = Math.round(hardwareAbstractionLayer.getMemory().getTotal() / Math.pow(2, 30)); // in GiB
         processor = hardwareAbstractionLayer.getProcessor().getProcessorIdentifier().getName();
         cores = hardwareAbstractionLayer.getProcessor().getLogicalProcessorCount();
         os = systemInfo.getOperatingSystem().getFamily();
@@ -87,8 +84,8 @@ public class SystemEnvironment {
     /**
      * @return the amount of RAM in GiB.
      */
-    public long getRamMemory() {
-        return ramMemory;
+    public long getRam() {
+        return ram;
     }
 
     /**

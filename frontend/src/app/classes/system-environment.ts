@@ -5,5 +5,5 @@ export interface SystemEnvironment {
     processor: string;
     kernel: string;
     cores: number;
-    ramMemory: number;
+    ram: number;
 }

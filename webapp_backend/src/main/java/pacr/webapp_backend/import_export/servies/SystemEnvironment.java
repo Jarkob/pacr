@@ -18,7 +18,7 @@ public class SystemEnvironment implements ISystemEnvironment {
     private int cores;
 
     // in Gigabytes
-    private long ramMemory;
+    private long ram;
 
     /**
      * Creates a SystemEnvironment from an ISystemEnvironment interface.
@@ -31,7 +31,7 @@ public class SystemEnvironment implements ISystemEnvironment {
         this.os = environment.getOs();
         this.kernel = environment.getKernel();
         this.processor = environment.getProcessor();
-        this.ramMemory = environment.getRamMemory();
+        this.ram = environment.getRam();
     }
 
 }

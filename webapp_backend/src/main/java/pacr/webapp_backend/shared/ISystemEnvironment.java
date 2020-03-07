@@ -33,6 +33,6 @@ public interface ISystemEnvironment {
     /**
      * @return the amount of RAM available in Gigabytes. Returns 0 if there was a detection error.
      */
-    long getRamMemory();
+    long getRam();
 
 }

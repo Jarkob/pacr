@@ -44,7 +44,7 @@ public class SystemEnvironment implements ISystemEnvironment {
         this.processor = sysEnv.getProcessor();
         this.kernel = sysEnv.getKernel();
         this.cores = sysEnv.getCores();
-        this.memory = sysEnv.getRamMemory();
+        this.memory = sysEnv.getRam();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SystemEnvironment implements ISystemEnvironment {
     }
 
     @Override
-    public long getRamMemory() {
+    public long getRam() {
         return this.memory;
     }
 }
