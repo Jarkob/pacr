@@ -1,6 +1,8 @@
 package pacr.webapp_backend.shared;
 
 import java.util.Collection;
+import java.util.Set;
+
 import javax.validation.constraints.NotNull;
 
 /**
@@ -22,5 +24,13 @@ public interface IJobScheduler {
      * @param groupTitle the title of the group.
      */
     void removeJobGroup(@NotNull String groupTitle);
+
+    /**
+     * Removes the given set of jobs ids belonging to the group.
+     *
+     * @param groupTitle the title of the group.
+     * @param jobIDs a set of jobIDs.
+     */
+    void removeJobs(@NotNull String groupTitle, @NotNull Set<String> jobIDs);
 
 }

@@ -3,9 +3,12 @@ package pacr.webapp_backend.scheduler.services;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
@@ -157,18 +160,25 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         }
         Objects.requireNonNull(jobIDs, "The jobIds cannot be null.");
 
-        Collection<Job> jobsToAdd = new ArrayList<>();
+        Set<String> currentJobs = jobAccess.findAllJobs(groupTitle).stream()
+                                                                    .map(Job::getJobID)
+                                                                    .collect(Collectors.toSet());
+
+        Set<Job> jobsToAdd = new HashSet<>();
         JobGroup group = addGroup(groupTitle);
 
         for (String jobID : jobIDs) {
-            if (StringUtils.hasText(jobID)) {
+            if (StringUtils.hasText(jobID) && !currentJobs.contains(jobID)) {
                 jobsToAdd.add(new Job(jobID, group));
             }
         }
 
         jobAccess.saveJobs(jobsToAdd);
 
-        LOGGER.info("Added {} jobs to the queue.", jobsToAdd.size());
+        int amtDuplicates = jobIDs.size() - jobsToAdd.size();
+        LOGGER.info("Added {} {} to the queue. Skipping {} {}.",
+                jobsToAdd.size(), jobsToAdd.size() == 1 ? "job" : "jobs",
+                amtDuplicates, amtDuplicates == 1 ? "duplicate" : "duplicates");
 
         updateAll();
     }
@@ -188,6 +198,19 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         }
     }
 
+    @Override
+    public void removeJobs(@NotNull String groupTitle, @NotNull Set<String> jobIDs) {
+        if (!StringUtils.hasText(groupTitle)) {
+            throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
+        }
+        if (containsGroup(groupTitle)) {
+            Collection<Job> toRemove = new ArrayList<>(jobAccess.findAllJobs(groupTitle));
+            toRemove.removeIf(job -> !jobIDs.contains(job.getJobID()));
+
+            jobAccess.deleteJobs(toRemove);
+        }
+    }
+
     /**
      * Moves a job to the manually prioritized jobs queue.
      * @param groupTitle the title of the job.
@@ -204,23 +227,37 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         }
 
         if (containsGroup(groupTitle)) {
-            for (Job job : jobAccess.findJobs()) {
-                if (job.getJobGroupTitle().equals(groupTitle) && job.getJobID().equals(jobID)) {
-                    Job prioritizedJob = new Job(jobID, groups.get(job.getJobGroupTitle()));
-                    prioritizedJob.setPrioritized(true);
+            Job toPrioritize = findJobToPrioritize(groupTitle, jobID);
 
-                    jobAccess.saveJob(prioritizedJob);
-                    jobAccess.deleteJob(job);
-
-                    LOGGER.info("'{}' | '{}' was prioritized.",
-                            prioritizedJob.getJobGroupTitle(), prioritizedJob.getJobID());
-
-                    return true;
-                }
+            if (toPrioritize == null) {
+                return false;
             }
+
+            JobGroup group = groups.get(toPrioritize.getJobGroupTitle());
+
+            Job prioritizedJob = new Job(jobID, group);
+            prioritizedJob.setPrioritized(true);
+
+            jobAccess.deleteJob(toPrioritize);
+            jobAccess.saveJob(prioritizedJob);
+
+            LOGGER.info("'{}' | '{}' was prioritized.",
+                    prioritizedJob.getJobGroupTitle(), prioritizedJob.getJobID());
+
+            return true;
         }
 
         return false;
+    }
+
+    private Job findJobToPrioritize(String groupTitle, String jobID) {
+        for (Job job : jobAccess.findJobs()) {
+            if (job.getJobGroupTitle().equals(groupTitle) && job.getJobID().equals(jobID)) {
+                return job;
+            }
+        }
+
+        return null;
     }
 
     /**

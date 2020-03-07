@@ -1,5 +1,26 @@
 package pacr.webapp_backend.git_tracking.services.git;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ListBranchCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
@@ -8,41 +29,20 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
-import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.PersonIdent;
+import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.git_tracking.services.entities.GitBranch;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
-import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
 import pacr.webapp_backend.shared.IResultDeleter;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.Instant;
-import java.util.Objects;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Is responsible for handling JGit. Pulls from repositories, clones repositories.
@@ -363,8 +363,10 @@ public class GitHandler {
 
         LocalDate observeFromDate = gitRepository.getObserveFromDate();
         for (GitCommit commit : commitsFromBranch) {
+            LocalDate commitDate = commit.getCommitDate().toLocalDate();
+
             // only add commits that are after observeFromDate
-            if (observeFromDate == null || observeFromDate.isBefore(commit.getCommitDate().toLocalDate())) {
+            if (observeFromDate == null || isTracked(commitDate, observeFromDate)) {
                 if (!commit.getCommitMessage().contains(ignoreTag)) {
                     newCommits.add(commit.getCommitHash());
                 }
@@ -372,6 +374,10 @@ public class GitHandler {
         }
 
         return newCommits;
+    }
+
+    private boolean isTracked(LocalDate commitDate, LocalDate observeFromDate) {
+        return observeFromDate.isBefore(commitDate) || observeFromDate.isEqual(commitDate);
     }
 
     private void setBranchHead(Ref branch, GitBranch gitBranch) {

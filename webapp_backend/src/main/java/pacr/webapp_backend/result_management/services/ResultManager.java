@@ -1,5 +1,12 @@
 package pacr.webapp_backend.result_management.services;
 
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -10,13 +17,6 @@ import pacr.webapp_backend.shared.IResultImporter;
 import pacr.webapp_backend.shared.IResultSaver;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Collection;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.LinkedList;
 
 /**
  * Manages benchmarking results in the system. Can save or import new results and delete old ones.
@@ -54,7 +54,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             resultAccess.deleteResults(commitHashes);
         }
 
-        LOGGER.info("deleted {} results", commitHashes.size());
+        LOGGER.info("Deleted {} results", commitHashes.size());
     }
 
     @Override

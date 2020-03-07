@@ -1,5 +1,14 @@
 package pacr.webapp_backend.git_tracking.services;
 
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.Set;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,16 +24,6 @@ import pacr.webapp_backend.shared.IResultDeleter;
 
 import javax.annotation.PostConstruct;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.NoSuchElementException;
-import java.util.Collection;
-
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 /**
  * Represents the Git Tracking component of the system.
@@ -268,40 +267,50 @@ public class GitTracking implements IRepositoryImporter {
      * @param newObserveFromDate is the new observeFromDate.
      */
     public void updateObserveFromDateOfRepository(GitRepository gitRepository, LocalDate newObserveFromDate) {
+        LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
 
         Collection<GitCommit> commits = gitTrackingAccess.getAllCommits(gitRepository.getId());
 
         Set<String> commitsToBenchmark = new HashSet<>();
         Set<String> commitsToRemove = new HashSet<>();
+        Set<String> jobsToRemove = new HashSet<>();
 
         for (GitCommit commit : commits) {
             if (commit.getCommitMessage().contains(ignoreTag)) {
                 continue;
             }
 
-            if (newObserveFromDate.isBefore(commit.getCommitDate().toLocalDate())) {
-                // add job if commit is not already benchmarked
-                if (!commitBenchmarkedChecker.isCommitBenchmarked(commit.getCommitHash())) {
-                    commitsToBenchmark.add(commit.getCommitHash());
+            String commitHash = commit.getCommitHash();
+            LocalDate commitDate = commit.getCommitDate().toLocalDate();
+
+            if (isTracked(commitDate, newObserveFromDate)) {
+                if (!commitBenchmarkedChecker.isCommitBenchmarked(commitHash)) {
+                    commitsToBenchmark.add(commitHash);
                 }
             } else {
-                // remove commit if it is already benchmarked
-                if (commitBenchmarkedChecker.isCommitBenchmarked(commit.getCommitHash())) {
-                    commitsToRemove.add(commit.getCommitHash());
+                if (commitBenchmarkedChecker.isCommitBenchmarked(commitHash)) {
+                    commitsToRemove.add(commitHash);
+                } else if (isTracked(commitDate, oldObserveFromDate)) {
+                    jobsToRemove.add(commitHash);
                 }
             }
         }
 
-
         LOGGER.info("Adding {} new jobs.", commitsToBenchmark.size());
         jobScheduler.addJobs(gitRepository.getPullURL(), commitsToBenchmark);
+
+        LOGGER.info("Removing {} jobs that are out of scope.", jobsToRemove.size());
+        jobScheduler.removeJobs(gitRepository.getPullURL(), jobsToRemove);
 
         LOGGER.info("Removing {} benchmarks that are out of scope.", commitsToRemove.size());
         resultDeleter.deleteBenchmarkingResults(commitsToRemove);
 
         gitRepository.setObserveFromDate(newObserveFromDate);
         gitTrackingAccess.updateRepository(gitRepository);
+    }
 
+    private boolean isTracked(LocalDate commitDate, LocalDate observeFromDate) {
+        return observeFromDate.isBefore(commitDate) || observeFromDate.isEqual(commitDate);
     }
 
     /**
