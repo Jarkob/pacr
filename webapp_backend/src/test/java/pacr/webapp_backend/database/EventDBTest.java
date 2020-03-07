@@ -8,7 +8,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.event_management.services.Event;
@@ -42,7 +41,7 @@ public class EventDBTest extends SpringBootTestWithoutShell {
     void setUp() {
         this.eventDB.deleteAll();
 
-        this.pageable = PageRequest.of(0, 99);
+        this.pageable = Pageable.unpaged();
     }
 
     @Test

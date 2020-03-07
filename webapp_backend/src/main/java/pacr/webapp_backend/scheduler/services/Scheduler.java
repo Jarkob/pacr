@@ -203,6 +203,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         if (!StringUtils.hasText(groupTitle)) {
             throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
         }
+        Objects.requireNonNull(jobIDs, "The jobIDs cannot be null.");
+
         if (containsGroup(groupTitle)) {
             Collection<Job> toRemove = new ArrayList<>(jobAccess.findAllJobs(groupTitle));
             toRemove.removeIf(job -> !jobIDs.contains(job.getJobID()));

@@ -1,5 +1,9 @@
 package pacr.webapp_backend.database;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
@@ -12,6 +16,9 @@ import javax.persistence.Id;
  * @author Pavel Zwerschke
  */
 @Entity
+@Setter
+@Getter
+@NoArgsConstructor
 public class ConfigItem {
 
     @Id
@@ -19,52 +26,5 @@ public class ConfigItem {
 
     private String configValue;
 
-    /**
-     * Creates an instance of ConfigItem
-     */
-    public ConfigItem() {
-    }
-
-    /**
-     * Creates an instance of ConfigItem.
-     * @param configKey is the configuration key.
-     * @param configValue is the configuration value.
-     */
-    public ConfigItem(String configKey, String configValue) {
-        this.configKey = configKey;
-        this.configValue = configValue;
-    }
-
-    /**
-     * Returns the configuration key.
-     * @return configKey.
-     */
-    public String getConfigKey() {
-        return configKey;
-    }
-
-    /**
-     * Sets the configuration key.
-     * @param configKey is the configuration key.
-     */
-    public void setConfigKey(String configKey) {
-        this.configKey = configKey;
-    }
-
-    /**
-     * Returns the configuration value.
-     * @return configuration value.
-     */
-    public String getConfigValue() {
-        return configValue;
-    }
-
-    /**
-     * Sets the configuration value.
-     * @param configValue is the configuration value.
-     */
-    public void setConfigValue(String configValue) {
-        this.configValue = configValue;
-    }
 }
 

@@ -2,7 +2,9 @@ package pacr.webapp_backend.scheduler.services;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.JobDB;
@@ -34,12 +35,10 @@ import static org.mockito.Mockito.verify;
 
 public class SchedulerTest extends SpringBootTestWithoutShell {
 
-    private static final int MAX_PAGE_SIZE = 999;
+    private static final String JOB_GROUP = "jobGroup";
+    private static final String JOB_ID = "jobID";
 
     private Scheduler scheduler;
-
-    final String JOB_GROUP = "jobGroup";
-    final String JOB_ID = "jobID";
 
     private JobDB jobAccess;
     private JobGroupDB jobGroupAccess;
@@ -51,8 +50,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         this.jobAccess = spy(jobAccess);
         this.jobGroupAccess = spy(jobGroupAccess);
 
-        // make pageSize large enough for all queries.
-        this.pageable = PageRequest.of(0, MAX_PAGE_SIZE);
+        this.pageable = Pageable.unpaged();
     }
 
     @BeforeEach
@@ -198,6 +196,29 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     }
 
     @Test
+    void addJobs_duplicates() {
+        Collection<String> jobIds = new ArrayList<>();
+
+        final int amtJobs = 5;
+        for (int i = 0; i < amtJobs; i++) {
+            jobIds.add(JOB_ID + i);
+            jobIds.add(JOB_ID + i);
+        }
+
+        scheduler.addJobs(JOB_GROUP, jobIds);
+
+        // add the same jobs a second time
+        scheduler.addJobs(JOB_GROUP, jobIds);
+
+        Collection<Job> addedJobs = scheduler.getJobsQueue(pageable).getContent();
+
+        assertEquals(amtJobs, addedJobs.size());
+        for (Job job : addedJobs) {
+            assertEquals(JOB_GROUP, job.getJobGroupTitle());
+        }
+    }
+
+    @Test
     void addJobs_invalidGroupTitle() {
         assertThrows(IllegalArgumentException.class, () -> {
             scheduler.addJobs(null, new ArrayList<>());
@@ -237,6 +258,69 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         assertThrows(NullPointerException.class, () -> {
             scheduler.addJobs(JOB_GROUP, null);
+        });
+    }
+
+    @Test
+    void removeJobs_noError() {
+        final String TO_REMOVE1 = "toRemove1";
+        final String TO_REMOVE2 = "toRemove2";
+        final Set<String> jobsToRemove = Set.of(TO_REMOVE1, TO_REMOVE2);
+
+        Collection<String> jobIds = new ArrayList<>(jobsToRemove);
+
+        final int amtJobs = 5;
+        for (int i = 0; i < amtJobs; i++) {
+            jobIds.add(JOB_ID + i);
+            jobIds.add(JOB_ID + i);
+        }
+        scheduler.addJobs(JOB_GROUP, jobIds);
+
+        scheduler.removeJobs(JOB_GROUP, jobsToRemove);
+
+        Page<Job> jobs = scheduler.getJobsQueue(Pageable.unpaged());
+        assertNotNull(jobs);
+        assertNotNull(jobs.getContent());
+
+        Collection<Job> jobsList = jobs.getContent();
+        for (Job job : jobsList) {
+            assertFalse(jobsToRemove.contains(job.getJobID()));
+            assertTrue(jobIds.contains(job.getJobID()));
+        }
+    }
+
+    @Test
+    void removeJobs_invalidGroup() {
+        Set<String> jobIDs = new HashSet<>();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.removeJobs("", jobIDs);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.removeJobs(" ", jobIDs);
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            scheduler.removeJobs(null, jobIDs);
+        });
+    }
+
+    @Test
+    void removeJobs_unknownGroup() {
+        Set<String> jobIDs = new HashSet<>();
+
+        assertDoesNotThrow(() -> {
+            scheduler.removeJobs(JOB_GROUP, jobIDs);
+        });
+
+        verify(jobAccess, never()).deleteJobs(any());
+    }
+
+    @Test
+    void removeJobs_invalidJobIDs() {
+        assertThrows(NullPointerException.class, () -> {
+            scheduler.removeJobs(JOB_GROUP, null);
         });
     }
 
@@ -451,8 +535,8 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
         Job job1 = jobs.get(0);
 
-        assertEquals(JOB_GROUP, job.getJobGroupTitle());
-        assertEquals(JOB_ID, job.getJobID());
+        assertEquals(JOB_GROUP, job1.getJobGroupTitle());
+        assertEquals(JOB_ID, job1.getJobID());
     }
 
     @Test
