@@ -9,13 +9,6 @@ import javax.validation.constraints.NotNull;
 public interface IJobScheduler {
 
     /**
-     * Adds a new job to the job list with a reference to the given group.
-     * @param groupTitle the job group of the job.
-     * @param jobID the id of the job.
-     */
-    void addJob(@NotNull String groupTitle, @NotNull String jobID);
-
-    /**
      * Adds all given jobIDs as new jobs. The new jobs are associated with the given group.
      *
      * @param groupTitle the title of the group.

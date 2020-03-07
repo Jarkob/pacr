@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
@@ -17,6 +18,7 @@ import pacr.webapp_backend.database.JobGroupDB;
 import pacr.webapp_backend.shared.IJob;
 import pacr.webapp_backend.shared.IObserver;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -121,14 +123,14 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         scheduler.subscribe(observer);
 
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         verify(observer).update();
     }
 
     @Test
     void addJob_noError() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         checkSchedulerQueue(1, 0);
 
@@ -142,31 +144,36 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     @Test
     void addJob_invalidGroupTitle() {
         assertThrows(IllegalArgumentException.class, () -> {
-           scheduler.addJob(null, JOB_ID);
+            addJob(null, JOB_ID);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            scheduler.addJob("", JOB_ID);
+            addJob("", JOB_ID);
         });
 
         assertThrows(IllegalArgumentException.class, () -> {
-            scheduler.addJob(" ", JOB_ID);
+            addJob(" ", JOB_ID);
         });
     }
 
     @Test
     void addJob_invalidJobId() {
-        assertThrows(IllegalArgumentException.class, () -> {
-            scheduler.addJob(JOB_GROUP,null);
+        assertThrows(NullPointerException.class, () -> {
+            addJob(JOB_GROUP,null);
         });
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            scheduler.addJob(JOB_GROUP,"");
+        assertDoesNotThrow(() -> {
+            addJob(JOB_GROUP,"");
         });
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            scheduler.addJob(JOB_GROUP, " ");
+        assertDoesNotThrow(() -> {
+            addJob(JOB_GROUP, " ");
         });
+
+        Page<Job> jobs = scheduler.getJobsQueue(Pageable.unpaged());
+        assertNotNull(jobs);
+        assertNotNull(jobs.getContent());
+        assertEquals(0, jobs.getTotalElements());
     }
 
     @Test
@@ -284,7 +291,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void givePriorityTo_noError() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         checkSchedulerQueue(1, 0);
 
@@ -296,7 +303,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void givePriorityTo_jobNotFound() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         checkSchedulerQueue(1, 0);
 
@@ -346,7 +353,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void popJob_noPrioritized_noError() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         IJob job = scheduler.popJob();
 
@@ -359,7 +366,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void popJob_withPrioritized_noError() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
 
         IJob job = scheduler.popJob();
@@ -377,7 +384,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         // add a special job to the prioritized queue
         // this job should be the first to get popped
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
 
         fillSchedulerWithJobs(amtJobs, amtPrioritizedJobs);
@@ -395,9 +402,9 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void popJob_changedPriority() throws InterruptedException {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         Thread.sleep(1000);
-        scheduler.addJob(JOB_GROUP + 1, JOB_ID + 1);
+        addJob(JOB_GROUP + 1, JOB_ID + 1);
 
         // jobs belonging to JOB_GROUP1 should be scheduled last.
         final long time = 10;
@@ -411,7 +418,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void popJob_multipleCalls() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         IJob job = scheduler.popJob();
 
@@ -429,7 +436,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void returnJob_noError() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         checkSchedulerQueue(1, 0);
 
@@ -450,7 +457,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     @Test
     void returnJob_beforePrioritized_noError() {
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         scheduler.givePriorityTo(JOB_GROUP, JOB_ID);
 
         checkSchedulerQueue(0, 1);
@@ -474,7 +481,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     void updateTimeSheet_noError() {
         final long TIME = 13;
 
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         Job job = getFirstJobInJobsQueue();
 
@@ -491,7 +498,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
     void updateTimeSheet_unknownGroup() {
         final long TIME = 13;
 
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
 
@@ -639,8 +646,8 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         final String secondGroupTitle = JOB_GROUP + 1;
         final String secondJobID = JOB_ID + 1;
 
-        scheduler.addJob(JOB_GROUP, JOB_ID);
-        scheduler.addJob(secondGroupTitle, secondJobID);
+        addJob(JOB_GROUP, JOB_ID);
+        addJob(secondGroupTitle, secondJobID);
 
         scheduler.givePriorityTo(secondGroupTitle, secondJobID);
 
@@ -673,13 +680,13 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
     private void fillSchedulerWithJobs(int amtJobs, int amtPrioritizedJobs) throws InterruptedException {
         for (int i = 0; i < amtPrioritizedJobs; i++) {
-            scheduler.addJob(JOB_GROUP + i, JOB_ID + i);
+            addJob(JOB_GROUP + i, JOB_ID + i);
             scheduler.givePriorityTo(JOB_GROUP + i, JOB_ID + i);
             Thread.sleep(1000);
         }
 
         for (int i = amtPrioritizedJobs; i < amtJobs + amtPrioritizedJobs; i++) {
-            scheduler.addJob(JOB_GROUP + i, JOB_ID + i);
+            addJob(JOB_GROUP + i, JOB_ID + i);
             Thread.sleep(1000);
         }
     }
@@ -700,6 +707,10 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
             job.setPrioritized(prioritized);
             jobAccess.saveJob(job);
         }
+    }
+
+    private void addJob(String groupTitle, String jobID) {
+        scheduler.addJobs(groupTitle, List.of(jobID));
     }
 
 }

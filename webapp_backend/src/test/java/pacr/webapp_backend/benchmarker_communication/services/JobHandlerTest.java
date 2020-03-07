@@ -1,5 +1,6 @@
 package pacr.webapp_backend.benchmarker_communication.services;
 
+import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -108,7 +109,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void executeJob_noError() {
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
         when(benchmarkerPool.getFreeBenchmarker()).thenReturn(ADDRESS);
         when(jobSender.sendJob(any(BenchmarkerJob.class))).thenReturn(true);
@@ -121,7 +122,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void executeJob_sendFailed() {
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
         when(benchmarkerPool.getFreeBenchmarker()).thenReturn(ADDRESS);
         when(jobSender.sendJob(any(BenchmarkerJob.class))).thenReturn(false);
@@ -141,7 +142,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void executeJob_noFreeBenchmarker() {
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(false);
 
         jobHandler.executeJob();
@@ -171,7 +172,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void executeJob_sendingDifficulties_resolved() {
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
@@ -198,7 +199,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
     @Test
     void executeJob_sendingDifficulties_notResolved() {
         Scheduler scheduler = new Scheduler(jobAccess, jobGroupAccess);
-        scheduler.addJob(JOB_GROUP, JOB_ID);
+        scheduler.addJobs(JOB_GROUP, List.of(JOB_ID));
 
         BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
@@ -218,7 +219,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
     void executeJob_sendingDifficulties_multipleBenchmarkers() {
         final String ADDRESS_2 = ADDRESS + "Second";
 
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         BenchmarkerPool benchmarkerPool = new BenchmarkerPool();
         benchmarkerPool.registerBenchmarker(ADDRESS, new SystemEnvironment());
@@ -242,7 +243,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
     void receiveBenchmarkingResults_noError() {
         JobResult result = new JobResult();
 
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
         when(benchmarkerPool.getFreeBenchmarker()).thenReturn(ADDRESS);
         when(jobSender.sendJob(any(BenchmarkerJob.class))).thenReturn(true);
@@ -264,7 +265,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void receiveBenchmarkingResults_noResult() {
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
         when(benchmarkerPool.getFreeBenchmarker()).thenReturn(ADDRESS);
         when(jobSender.sendJob(any(BenchmarkerJob.class))).thenReturn(true);
@@ -285,7 +286,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void connectionLostFor_noError() {
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
 
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
         when(benchmarkerPool.getFreeBenchmarker()).thenReturn(ADDRESS);
@@ -327,7 +328,7 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
 
     @Test
     void getCurrentBenchmarkerJob_noError() {
-        jobProvider.addJob(JOB_GROUP, JOB_ID);
+        addJob(JOB_GROUP, JOB_ID);
         when(benchmarkerPool.hasFreeBenchmarkers()).thenReturn(true);
         when(benchmarkerPool.getFreeBenchmarker()).thenReturn(ADDRESS);
         when(jobSender.sendJob(any(BenchmarkerJob.class))).thenReturn(true);
@@ -359,6 +360,10 @@ public class JobHandlerTest extends SpringBootTestWithoutShell {
         assertThrows(IllegalArgumentException.class, () -> {
             jobHandler.getCurrentBenchmarkerJob(null);
         });
+    }
+
+    private void addJob(String groupTitle, String jobID) {
+        jobProvider.addJobs(groupTitle, List.of(jobID));
     }
 
     private static class BenchmarkerJobMatcher implements ArgumentMatcher<BenchmarkerJob> {

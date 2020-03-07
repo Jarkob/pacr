@@ -128,6 +128,18 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         addJob(job.getJobGroupTitle(), job.getJobID());
     }
 
+    /**
+     * Adds a new job to the job list with a reference to the given group.
+     *
+     * @param groupTitle the job group of the job.
+     * @param jobID      the id of the job.
+     */
+    private void addJob(@NotNull String groupTitle, @NotNull String jobID) {
+        Collection<String> jobIDs = List.of(jobID);
+
+        addJobs(groupTitle, jobIDs);
+    }
+
     @Override
     public void addToGroupTimeSheet(@NotNull String groupTitle, long time) {
         if (containsGroup(groupTitle)) {
@@ -136,24 +148,6 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             group.addToTimeSheet(time);
             jobGroupAccess.saveJobGroup(group);
         }
-    }
-
-    @Override
-    public void addJob(@NotNull String groupTitle, @NotNull String jobID) {
-        if (!StringUtils.hasText(groupTitle)) {
-            throw new IllegalArgumentException("The groupTitle cannot be null.");
-        }
-
-        if (!StringUtils.hasText(jobID)) {
-            throw new IllegalArgumentException("The jobID cannot be null.");
-        }
-
-        JobGroup group = addGroup(groupTitle);
-        Job job = new Job(jobID, group);
-
-        jobAccess.saveJob(job);
-
-        updateAll();
     }
 
     @Override
@@ -209,21 +203,20 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             throw new IllegalArgumentException("The jobID cannot be null.");
         }
 
-        if (!containsGroup(groupTitle)) {
-            return false;
-        }
+        if (containsGroup(groupTitle)) {
+            for (Job job : jobAccess.findJobs()) {
+                if (job.getJobGroupTitle().equals(groupTitle) && job.getJobID().equals(jobID)) {
+                    Job prioritizedJob = new Job(jobID, groups.get(job.getJobGroupTitle()));
+                    prioritizedJob.setPrioritized(true);
 
-        for (Job job : jobAccess.findJobs()) {
-            if (job.getJobGroupTitle().equals(groupTitle) && job.getJobID().equals(jobID)) {
-                Job prioritizedJob = new Job(jobID, groups.get(job.getJobGroupTitle()));
-                prioritizedJob.setPrioritized(true);
+                    jobAccess.saveJob(prioritizedJob);
+                    jobAccess.deleteJob(job);
 
-                jobAccess.saveJob(prioritizedJob);
-                jobAccess.deleteJob(job);
+                    LOGGER.info("'{}' | '{}' was prioritized.",
+                            prioritizedJob.getJobGroupTitle(), prioritizedJob.getJobID());
 
-                LOGGER.info(prioritizedJob.getJobGroupTitle() + " | " + prioritizedJob.getJobID() + " was prioritized.");
-
-                return true;
+                    return true;
+                }
             }
         }
 
