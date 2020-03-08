@@ -9,6 +9,7 @@ import { RepositoryService } from './../services/repository.service';
 import { Repository } from '../classes/repository';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { isDate } from 'util';
+import { isMoment } from 'moment';
 
 export const MY_FORMATS = {
   parse: {
@@ -402,7 +403,13 @@ export class AdminRepositoriesComponent implements OnInit {
     let date: Date;
     
     if (!isDate(toAdjust)) {
-      date = toAdjust._d;
+      const tmp = toAdjust;
+
+      if (isMoment(tmp)) {
+        date = toAdjust._d;
+      } else {
+        date = new Date(toAdjust);
+      }      
     } else {
       date = toAdjust;
     }

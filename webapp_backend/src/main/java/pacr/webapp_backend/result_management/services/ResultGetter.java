@@ -136,6 +136,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
         List<? extends ICommit> branchCommitsInTimeFrame =
                 commitAccess.getCommitsFromBranchTimeFrame(repositoryId, branch, commitDateStart, commitDateEnd);
 
+        if (branchCommitsInTimeFrame == null) {
+            return new HashMap<>();
+        }
+
         return commitsToDiagramResults(branchCommitsInTimeFrame, benchmarkId);
     }
 
