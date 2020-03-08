@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.jni.Proc;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.io.File;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 
@@ -87,11 +85,12 @@ public class JobDispatcher {
 
         BenchmarkingResult result;
         try {
-            result = g.fromJson(gsonFormat, BenchmarkingResult.class);
+            BenchmarkingResultAdapter adapterResult = g.fromJson(gsonFormat, BenchmarkingResultAdapter.class);
+            result = new BenchmarkingResult(adapterResult);
         } catch (JsonSyntaxException e) {
             LOGGER.error("JSON syntax exception for this output: '{}'.", output);
             result = new BenchmarkingResult();
-            result.setError(e.getMessage());
+            result.setGlobalError(e.getMessage());
         }
 
         return result;
@@ -113,7 +112,7 @@ public class JobDispatcher {
 
     private BenchmarkingResult createBenchmarkingResult(String globalError) {
         BenchmarkingResult result = new BenchmarkingResult();
-        result.setError(globalError);
+        result.setGlobalError(globalError);
         return result;
     }
 

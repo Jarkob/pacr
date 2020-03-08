@@ -53,7 +53,7 @@ public class JobExecutor {
         BenchmarkingResult benchmarkingResult;
         if (path == null) { // cloning didn't work
             benchmarkingResult = new BenchmarkingResult();
-            benchmarkingResult.setError("Could not set up repository for benchmarking.");
+            benchmarkingResult.setGlobalError("Could not set up repository for benchmarking.");
         } else {
             path = relativePathToWorkingDir + path;
 

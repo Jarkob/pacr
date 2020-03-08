@@ -48,7 +48,7 @@ public class JobDispatcherTest {
     public void testRunner() {
         BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
 
-        assertEquals("", result.getError());
+        assertEquals("", result.getGlobalError());
         assertEquals(2, result.getBenchmarks().size());
         assertTrue(result.getBenchmarks().containsKey("TheBenchmark"));
         assertTrue(result.getBenchmarks().containsKey("TheOtherBenchmark"));
@@ -78,7 +78,7 @@ public class JobDispatcherTest {
 
         BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
 
-        assertEquals("this is big error oh no", result.getError());
+        assertEquals("this is big error oh no", result.getGlobalError());
 
         assertEquals(0, result.getBenchmarks().size());
     }

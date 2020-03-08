@@ -9,11 +9,16 @@ import java.util.Map;
 public class BenchmarkingResult {
 
     private Map<String, Benchmark> benchmarks;
-    private String error;
+    private String globalError;
 
     public BenchmarkingResult() {
         this.benchmarks = new HashMap<>();
-        this.error = "";
+        this.globalError = "";
+    }
+
+    public BenchmarkingResult(BenchmarkingResultAdapter adapter) {
+        this.benchmarks = adapter.getBenchmarks();
+        this.globalError = adapter.getError();
     }
 
     /**
@@ -26,11 +31,11 @@ public class BenchmarkingResult {
     /**
      * @return the global error message.
      */
-    public String getError() {
-        return error;
+    public String getGlobalError() {
+        return globalError;
     }
 
-    public void setError(String error) {
-        this.error = error;
+    public void setGlobalError(String globalError) {
+        this.globalError = globalError;
     }
 }
