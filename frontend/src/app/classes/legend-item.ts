@@ -3,4 +3,5 @@ export interface LegendItem {
     repositoryName: string;
     branch: string;
     datasetIndices: number[];
+    color: string;
 }

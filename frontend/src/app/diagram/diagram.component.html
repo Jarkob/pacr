@@ -41,13 +41,13 @@
                   <mat-datepicker #pickerUntil></mat-datepicker>
                 </mat-form-field>
             </div>
-
-            <ul class="list" *ngIf="this.legendData">
-                <li *ngFor="let legendItem of this.legendData">
-                    <mat-checkbox *ngIf="this.repositories.get(legendItem.repositoryId)" [(ngModel)]="this.repositories.get(legendItem.repositoryId).checked" (change)="toggleLines(legendItem)">{{ legendItem.repositoryName }}/{{ legendItem.branch }}</mat-checkbox>
-                </li>
-            </ul>
-
+            <mat-chip-list *ngIf="this.legendData">
+                <mat-chip [ngStyle]="{'background-color': legendItem.color}" *ngFor="let legendItem of this.legendData" matTooltip="{{legendItem.repositoryName}}/{{legendItem.branch}}">
+                    <mat-checkbox [(ngModel)]="this.repositories.get(legendItem.repositoryId).checked" (change)="toggleLines(legendItem)">
+                        {{ legendItem.repositoryName }}/{{ legendItem.branch }}
+                    </mat-checkbox>
+                </mat-chip>
+            </mat-chip-list>
         </div>
         <canvas fxFlex="85%" baseChart
             #mycanvas="base-chart"

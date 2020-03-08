@@ -23,6 +23,7 @@ import { MatDatepickerInputEvent, MatDialog } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { ShortenStringPipe } from '../pipes/shorten-string-pipe';
 
+
 let tmp: any = null;
 
 /**
@@ -354,6 +355,7 @@ export class DiagramComponent implements OnInit {
       this.loadProperty();
       return;
     }
+    // TODO add branches somewhere here
     this.benchmarkingResultService.getBenchmarkingResults(
       this.selectedBenchmark.id, repositoryIds[index], 'master', this.from, this.until).subscribe(
       data => {
@@ -526,7 +528,8 @@ export class DiagramComponent implements OnInit {
           repositoryId: dataset.repositoryId,
           repositoryName: dataset.repositoryName,
           branch: dataset.branch,
-          datasetIndices: [index] // FIXME: highly likely to cause issues
+          datasetIndices: [index], // FIXME: highly likely to cause issues
+          color: dataset.borderColor
         });
       }
       index++;
