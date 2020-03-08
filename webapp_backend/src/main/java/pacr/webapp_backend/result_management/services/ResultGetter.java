@@ -19,7 +19,6 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import pacr.webapp_backend.git_tracking.services.git.GitHandler;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
 import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
@@ -158,8 +157,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
 
         for (CommitResult result : results) {
             ICommit commit = commitAccess.getCommit(result.getCommitHash());
-            CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
-            history.add(historyItem);
+            if (commit != null) {
+                CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
+                history.add(historyItem);
+            }
         }
 
         return history;

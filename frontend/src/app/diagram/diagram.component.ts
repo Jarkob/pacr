@@ -169,7 +169,7 @@ export class DiagramComponent implements OnInit {
           if (!this.datasets[item.datasetIndex].code[item.index].result) {
             return 'Not yet benchmarked';
           } else if (this.datasets[item.datasetIndex].code[item.index].globalError) {
-            return 'Global Error: ' + this.datasets[item.datasetIndex].code[item.index];
+            return 'Global Error: ' + this.datasets[item.datasetIndex].code[item.index].globalError;
           } else if (!this.datasets[item.datasetIndex].code[item.index].result) {
             return 'No results for this benchmark';
           } else if (Object.keys(this.datasets[item.datasetIndex].code[item.index].result).length === 0) {
