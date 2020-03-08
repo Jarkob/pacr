@@ -144,15 +144,19 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         for (CommitResult resultToUpdate : resultsToUpdate) {
             if (!resultToUpdate.isCompared()) {
                 resultToUpdate.setCompared(true);
+                Map<String, BenchmarkResult> comparisonBenchmarkResults = comparisonResult.getBenchmarks();
 
                 for (BenchmarkResult benchmarkResult : resultToUpdate.getBenchmarkResults()) {
-                    BenchmarkResult comparisonBenchmarkResult = comparisonResult.getBenchmarks()
+                    BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResults
                             .get(benchmarkResult.getName());
 
                     if (comparisonBenchmarkResult != null) {
+                        Map<String, BenchmarkPropertyResult> comparisonPropertyResults = comparisonBenchmarkResult
+                                .getBenchmarkProperties();
+
                         for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
-                            BenchmarkPropertyResult comparisonPropertyResult = comparisonBenchmarkResult
-                                    .getBenchmarkProperties().get(propertyResult.getName());
+                            BenchmarkPropertyResult comparisonPropertyResult = comparisonPropertyResults
+                                    .get(propertyResult.getName());
                             StatisticalCalculator.compare(propertyResult, comparisonPropertyResult);
                         }
                     }
