@@ -54,6 +54,6 @@ TODO
 ### Frontend
 
 1. Follow steps 1-6 from setup frontend
-2. Run `ng build --prod --aot`
-3. Deploy contents of `frontend/dist` to desired location on webserver
-4. Configure webserver to redirect missing pages to `ìndex.html`
+2. Run `ng build --prod --aot` in frontend directory
+3. Deploy contents of `frontend/dist` to desired location on webserver (for example copy files to /www directory of apache)
+4. Configure webserver to redirect missing pages to `index.html`
