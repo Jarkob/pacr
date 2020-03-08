@@ -99,10 +99,14 @@ public class JobDispatcher {
     private String readInputBuffer(Process process) {
         // get stdin
         StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            BufferedReader error = new BufferedReader(new InputStreamReader(process.getErrorStream()));
             String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append(System.getProperty("line.separator"));
+            while ((line = br.readLine()) != null || error.readLine() != null) {
+                if (line != null) {
+                    sb.append(line).append(System.getProperty("line.separator"));
+                }
             }
         } catch (IOException e) {
             LOGGER.error("Could not read output of runner script.");
