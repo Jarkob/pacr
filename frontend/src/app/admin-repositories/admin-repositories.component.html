@@ -43,13 +43,13 @@
                     </p>
                     <p matLine class="mat-h4">
                         {{ strings?.trackMode }} 
-                        <span class="valueText" matTooltip="{{ repository?.trackAllBranches ? strings?.blacklistDescription : strings?.whitelistDescription }}">
+                        <span class="valueText">
                             {{ repository?.trackAllBranches ? strings?.blacklist : strings?.whitelist }}
                         </span>
                     </p>
                     <p matLine class="mat-h4">
                         {{ strings?.branches }}
-                        <span class="valueText">
+                        <span class="valueText" matTooltip="{{ repository?.trackedBranches.length > 0 ? repository?.trackedBranches.join(strings?.listSeparator) : strings?.none}} ">
                             {{ repository?.trackedBranches.length > 0 ? repository?.trackedBranches.join(strings?.listSeparator) : strings?.none }}
                         </span>
                     </p>    
@@ -104,8 +104,8 @@
             <div fxLayout="column">
                 <mat-label class="inlineLabel">{{ strings?.repositoryTrackMode }}</mat-label>
                 <mat-radio-group formControlName="trackMode">                                                                   
-                    <mat-radio-button [value]="false" matTooltip="{{ strings?.whitelistDescription }}">{{ strings?.whitelist }}</mat-radio-button>
-                    <mat-radio-button [value]="true" matTooltip="{{ strings?.blacklistDescription }}">{{ strings?.blacklist }}</mat-radio-button>
+                    <mat-radio-button [value]="false">{{ strings?.whitelist }}</mat-radio-button>
+                    <mat-radio-button [value]="true">{{ strings?.blacklist }}</mat-radio-button>
                 </mat-radio-group>
             </div>                                
 
