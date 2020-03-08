@@ -18,6 +18,8 @@ import { BenchmarkGroup } from '../classes/benchmark-group';
 import { LegendItem } from '../classes/legend-item';
 import * as moment from 'moment';
 import { MatDatepickerInputEvent } from '@angular/material';
+import { DatePipe } from '@angular/common';
+import { ShortenStringPipe } from '../pipes/shorten-string-pipe';
 
 /**
  * displays benchmarking results in a line diagram
@@ -35,7 +37,9 @@ export class DiagramComponent implements OnInit {
     private repositoryService: RepositoryService,
     private benchmarkService: BenchmarkService,
     private detailViewService: DetailViewService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private datePipe: DatePipe,
+    private shortenString: ShortenStringPipe
   ) {
   }
 
@@ -117,21 +121,11 @@ export class DiagramComponent implements OnInit {
       zoom: {
         pan: {
           enabled: true,
-          mode: 'xy',
-          onPanComplete: ({ chart }) => {
-            const ticks = chart.scales['x-axis-0']._ticks;
-            console.log(ticks[0]);
-            console.log(ticks[ticks.length - 1]);
-          }
+          mode: 'xy'
         },
         zoom: {
           enabled: true,
-          mode: 'xy',
-          onZoomComplete: ({ chart }) => {
-            const ticks = chart.scales['x-axis-0']._ticks;
-            console.log(ticks[0]);
-            console.log(ticks[ticks.length - 1]);
-          }
+          mode: 'xy'
         }
       }
     },
@@ -161,8 +155,9 @@ export class DiagramComponent implements OnInit {
     tooltips: {
       callbacks: {
         title: (items: any[], ) => {
-          return this.datasets[items[0].datasetIndex].repositoryName + ': '
-          + this.datasets[items[0].datasetIndex].code[items[0].index].commitHash.substring(0, 8);
+          const commitHash = this.shortenString.transform(this.datasets[items[0].datasetIndex].code[items[0].index].commitHash, 7);
+          
+          return this.datasets[items[0].datasetIndex].repositoryName + ': ' + commitHash;
         },
         label: (item, data) => {
           // if there is an error, show it
@@ -192,7 +187,7 @@ export class DiagramComponent implements OnInit {
           return label;
         },
         afterLabel: (item, data) => {
-          return this.datasets[item.datasetIndex].code[item.index].authorDate;
+          return 'authored: ' + this.datePipe.transform(this.datasets[item.datasetIndex].code[item.index].authorDate, 'dd.MM.yyyy');
         }
       }
     }

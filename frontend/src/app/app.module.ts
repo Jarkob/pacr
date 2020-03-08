@@ -127,6 +127,7 @@ import { DragDropModule} from '@angular/cdk/drag-drop';
     BenchmarkService,
     EventService,
     DatePipe,
+    ShortenStringPipe,
     ImportExportService,
     RepositoryService,
     SchedulerService,
