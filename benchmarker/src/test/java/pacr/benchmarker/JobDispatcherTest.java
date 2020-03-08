@@ -25,6 +25,7 @@ public class JobDispatcherTest {
     private JobDispatcher jobDispatcher;
     private static String runnerScript = "test";
     private static String genericError = "generic-error";
+    private static String globalError = "global-error";
     private static String runnerScriptExtension;
 
     @BeforeAll
@@ -47,7 +48,7 @@ public class JobDispatcherTest {
     public void testRunner() {
         BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
 
-        assertEquals("", result.getGlobalError());
+        assertEquals("", result.getError());
         assertEquals(2, result.getBenchmarks().size());
         assertTrue(result.getBenchmarks().containsKey("TheBenchmark"));
         assertTrue(result.getBenchmarks().containsKey("TheOtherBenchmark"));
@@ -67,6 +68,19 @@ public class JobDispatcherTest {
 
         assertEquals(ResultInterpretation.NEUTRAL, property.getResultInterpretation());
         assertEquals("", property.getUnit());
+    }
+
+    @Test
+    public void globalError() {
+        String script = globalError + runnerScriptExtension;
+
+        jobDispatcher = new JobDispatcher(script, RUNNER_DIR);
+
+        BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
+
+        assertEquals("this is big error oh no", result.getError());
+
+        assertEquals(0, result.getBenchmarks().size());
     }
 
     @Test

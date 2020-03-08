@@ -91,7 +91,7 @@ public class JobDispatcher {
         } catch (JsonSyntaxException e) {
             LOGGER.error("JSON syntax exception for this output: '{}'.", output);
             result = new BenchmarkingResult();
-            result.setGlobalError(e.getMessage());
+            result.setError(e.getMessage());
         }
 
         return result;
@@ -113,7 +113,7 @@ public class JobDispatcher {
 
     private BenchmarkingResult createBenchmarkingResult(String globalError) {
         BenchmarkingResult result = new BenchmarkingResult();
-        result.setGlobalError(globalError);
+        result.setError(globalError);
         return result;
     }
 

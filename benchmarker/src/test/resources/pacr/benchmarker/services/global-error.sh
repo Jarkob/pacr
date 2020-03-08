@@ -1,0 +1,1 @@
+cat global-error.txt
