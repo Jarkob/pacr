@@ -9,6 +9,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.result_management.services.CommitHistoryItem;
@@ -35,7 +36,6 @@ import java.util.Objects;
 @RestController
 public class ResultController {
 
-    private static final int DIAGRAM_PAGE_SIZE = 200;
     private static final int HISTORY_PAGE_SIZE = 50;
     private static final int BENCHMARKING_RESULT_PAGE_SIZE = 10;
 
@@ -105,18 +105,19 @@ public class ResultController {
      * @param endTimeStamp the end time of the results, as the number of seconds since 1970/01/01.
      * @return the benchmarking results of one benchmark.
      */
-    @GetMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{branch}/{startTimeStamp}/{endTimeStamp}")
+    @GetMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{startTimeStamp}/{endTimeStamp}")
     public Map<String, DiagramOutputResult> getResultPageForBranchAndBenchmark(@PathVariable int benchmarkId,
                                                    @PathVariable int repositoryId,
-                                                   @NotNull @PathVariable String branch,
+                                                   @NotNull @RequestBody BranchInput branch,
                                                    @PathVariable long startTimeStamp, @PathVariable long endTimeStamp) {
         Objects.requireNonNull(branch);
+        Objects.requireNonNull(branch.getName());
 
         ZoneOffset currentOffset = ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
         LocalDateTime start = LocalDateTime.ofEpochSecond(startTimeStamp, 0, currentOffset);
         LocalDateTime end = LocalDateTime.ofEpochSecond(endTimeStamp, 0, currentOffset);
 
-        return resultGetter.getBenchmarkResultsSubset(benchmarkId, repositoryId, branch, start, end);
+        return resultGetter.getBenchmarkResultsSubset(benchmarkId, repositoryId, branch.getName(), start, end);
     }
 
     /**
@@ -157,17 +158,19 @@ public class ResultController {
      * Gets all measurements that were made for a benchmark property for a commit.
      * @param commitHash the hash of the commit. Cannot be null, empty or blank.
      * @param benchmarkId the id of the benchmark of the property.
-     * @param propertyName the name of the property. Cannot be null, empty or blank.
+     * @param property the name of the property. Cannot be null, empty or blank.
      * @return the measurements for this property and commit.
      */
-    @GetMapping("/results/commit/{commitHash}/{benchmarkId}/{propertyName}")
+    @GetMapping("/results/commit/{commitHash}/{benchmarkId}")
     public List<Double> getMeasurementsOfPropertyForCommit(@NotNull @PathVariable final String commitHash,
                                                            @PathVariable final int benchmarkId,
-                                                           @NotNull @PathVariable final String propertyName) {
-        if (!StringUtils.hasText(commitHash) || !StringUtils.hasText(propertyName)) {
+                                                           @NotNull @RequestBody final PropertyInput property) {
+        Objects.requireNonNull(property);
+
+        if (!StringUtils.hasText(commitHash) || !StringUtils.hasText(property.getName())) {
             throw new IllegalArgumentException("input cannot be null, empty or blank");
         }
 
-        return resultGetter.getMeasurementsOfPropertyForCommit(commitHash, benchmarkId, propertyName);
+        return resultGetter.getMeasurementsOfPropertyForCommit(commitHash, benchmarkId, property.getName());
     }
 }

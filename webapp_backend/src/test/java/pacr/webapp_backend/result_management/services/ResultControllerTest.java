@@ -11,6 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import pacr.webapp_backend.result_management.endpoints.BranchInput;
+import pacr.webapp_backend.result_management.endpoints.PropertyInput;
 import pacr.webapp_backend.result_management.endpoints.ResultController;
 import pacr.webapp_backend.shared.IAuthenticator;
 
@@ -123,8 +125,10 @@ public class ResultControllerTest {
         when(resultGetterMock.getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, startTime, endTime))
                 .thenReturn(getterOutput);
 
+        BranchInput branchInput = new BranchInput(BRANCH_NAME);
+
         Map<String, DiagramOutputResult> testOutput = resultController.getResultPageForBranchAndBenchmark(BENCHMARK_ID,
-                REPO_ID, BRANCH_NAME, startTime.toEpochSecond(currentOffset), endTime.toEpochSecond(currentOffset));
+                REPO_ID, branchInput, startTime.toEpochSecond(currentOffset), endTime.toEpochSecond(currentOffset));
 
         verify(resultGetterMock).getBenchmarkResultsSubset(BENCHMARK_ID, REPO_ID, BRANCH_NAME, startTime, endTime);
         assertEquals(getterOutput, testOutput);
@@ -177,14 +181,16 @@ public class ResultControllerTest {
         when(resultGetterMock.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME))
                 .thenReturn(Arrays.asList(0d));
 
-        resultController.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME);
+        PropertyInput propertyInput = new PropertyInput(PROPERTY_NAME);
+
+        resultController.getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, propertyInput);
 
         verify(resultGetterMock).getMeasurementsOfPropertyForCommit(HASH, BENCHMARK_ID, PROPERTY_NAME);
     }
 
     @Test
     void getMeasurementsOfPropertyForCommit_inputIsNull_shouldThrowException() {
-        assertThrows(IllegalArgumentException.class, () -> resultController
+        assertThrows(NullPointerException.class, () -> resultController
                 .getMeasurementsOfPropertyForCommit(null, 0, null));
     }
 }
