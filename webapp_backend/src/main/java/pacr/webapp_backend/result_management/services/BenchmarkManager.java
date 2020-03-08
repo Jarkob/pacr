@@ -1,6 +1,9 @@
 package pacr.webapp_backend.result_management.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
@@ -9,12 +12,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import pacr.webapp_backend.shared.IBenchmarkGetter;
 
 /**
  * Manages benchmark meta data and saves new benchmarks.
  */
 @Component
-public class BenchmarkManager {
+public class BenchmarkManager implements IBenchmarkGetter {
 
     private static final Logger LOGGER = LogManager.getLogger(BenchmarkManager.class);
 
@@ -59,6 +63,21 @@ public class BenchmarkManager {
     public Collection<Benchmark> getAllBenchmarks() {
         return benchmarkAccess.getAllBenchmarks();
     }
+
+    @Override
+    public Map<String, Collection<String>> getAllBenchmarkNamesWithPropertyNames() {
+        HashMap<String, Collection<String>> allBenchmarkNamesWithPropertyNames = new HashMap<>();
+
+        for (Benchmark benchmark : benchmarkAccess.getAllBenchmarks()) {
+            Collection<String> properties = new ArrayList<>();
+            benchmark.getProperties().forEach(x -> properties.add(x.getName()));
+
+            allBenchmarkNamesWithPropertyNames.put(benchmark.getOriginalName(), properties);
+        }
+        
+        return allBenchmarkNamesWithPropertyNames;
+    }
+
 
     /**
      * Gets all benchmarks of a group.

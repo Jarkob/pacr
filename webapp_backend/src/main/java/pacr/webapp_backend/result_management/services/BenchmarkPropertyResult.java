@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
+import pacr.webapp_backend.shared.IBenchmarkPropertyResult;
 import pacr.webapp_backend.shared.ResultInterpretation;
 
 import javax.persistence.Column;

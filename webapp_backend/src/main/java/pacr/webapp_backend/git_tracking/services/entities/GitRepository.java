@@ -4,14 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import pacr.webapp_backend.shared.IRepository;
 
+import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.ElementCollection;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Set;
@@ -32,7 +32,7 @@ import java.util.NoSuchElementException;
  */
 @Entity
 @Getter
-public class GitRepository implements IRepository {
+public class GitRepository extends IRepository {
 
     @Id
     // When a repository id is set, it is not 0 anymore, it is an integer greater than 0.
@@ -132,6 +132,14 @@ public class GitRepository implements IRepository {
         }
 
         return branchNames;
+    }
+
+    /**
+     * Returns the color in which the repository is displayed.
+     * @return color
+     */
+    public String getColor() {
+        return color;
     }
 
     /**
