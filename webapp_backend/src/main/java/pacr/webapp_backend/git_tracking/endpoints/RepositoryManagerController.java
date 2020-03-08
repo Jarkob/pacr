@@ -81,8 +81,8 @@ public class RepositoryManagerController {
 
     private TransferRepository createTransferRepository(final GitRepository gitRepository) {
         // convert selected branches to tracked branches
-        final Set<String> branchNames = invertSet(gitRepository.getSelectedBranches(),
-                gitTracking.getBranches(gitRepository.getPullURL()), gitRepository.isTrackAllBranches());
+        Set<String> branchNames = invertSet(gitRepository.getSelectedBranches(),
+                gitRepository.getTrackedBranchNames(), gitRepository.isTrackAllBranches());
 
         // sort branch order
         List<String> trackedBranches = new ArrayList<>(branchNames);
