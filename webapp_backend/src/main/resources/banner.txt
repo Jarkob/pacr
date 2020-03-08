@@ -6,3 +6,4 @@
 |_| /_/    \_\_____|_|  \_\     |____/ \__,_|\___|_|\_\___|_| |_|\__,_|
 
 loading application. . .
+type 'help' for all available commands
