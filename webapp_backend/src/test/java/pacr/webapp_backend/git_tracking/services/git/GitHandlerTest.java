@@ -154,7 +154,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
         for (final GitBranch branch : branches) {
             commit.addBranch(branch);
         }
-        gitTrackingAccess.addCommit(commit);
+        gitTrackingAccess.addCommits(new HashSet<>(Collections.singletonList(commit)));
         return commit;
     }
 

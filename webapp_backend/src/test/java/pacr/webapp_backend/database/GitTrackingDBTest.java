@@ -13,10 +13,7 @@ import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -142,7 +139,7 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
      * Adds a commit to the database and asserts that the values are being stored in the database.
      */
     @Test
-    public void addCommit() {
+    public void addCommits() {
         final GitRepository repository = new GitRepository(false, "git@github.com:leanprover/lean.git",
                 "testingrepo", "#000000", null);
         final String commitHash = "ceacfa7445953cbc8860ddabc55407430a9ca5c3";
@@ -153,7 +150,7 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
         GitCommit parent = new GitCommit(commitHash,
                 "commited", LocalDateTime.now(), LocalDateTime.now(), repository);
 
-        gitTrackingDB.addCommit(parent);
+        gitTrackingDB.addCommits(new HashSet<>(Collections.singletonList(parent)));
 
         final int amountCommits = 3;
         for (int i = 0; i < amountCommits - 1; i++) {
@@ -161,7 +158,7 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
                     repository);
             child.addParent(parent.getCommitHash());
 
-            gitTrackingDB.addCommit(child);
+            gitTrackingDB.addCommits(new HashSet<>(Collections.singletonList(child)));
 
             parent = child;
         }
@@ -180,7 +177,8 @@ public class GitTrackingDBTest extends SpringBootTestWithoutShell {
     @Test
     public void unableToAddCommitToDatabase() {
         commit.setRepository(new GitRepository());
-        assertThrows(RepositoryNotStoredException.class, () -> gitTrackingDB.addCommit(commit));
+        assertThrows(RepositoryNotStoredException.class,
+                () -> gitTrackingDB.addCommits(new HashSet<>(Collections.singletonList(commit))));
     }
 
     @AfterEach

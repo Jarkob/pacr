@@ -39,19 +39,15 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public void addCommit(@NotNull final GitCommit commit) {
-        Objects.requireNonNull(commit);
-
-        if (!commit.repositoryIsInDatabase()) {
-            throw new RepositoryNotStoredException("The repository of the commit must be stored in the database "
-                    + "before this commit is being stored in the database.");
-        }
-        commitDB.save(commit);
-    }
-
-    @Override
     public void addCommits(@NotNull final Set<GitCommit> commits) {
         Objects.requireNonNull(commits);
+
+        for (GitCommit commit : commits) {
+            if (!commit.repositoryIsInDatabase()) {
+                throw new RepositoryNotStoredException("The repository of the commit must be stored in the database "
+                        + "before this commit is being stored in the database.");
+            }
+        }
 
         commitDB.saveAll(commits);
     }

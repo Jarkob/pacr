@@ -54,16 +54,6 @@ public interface IGitTrackingAccess {
     void updateRepository(@NotNull GitRepository repository) throws NoSuchElementException;
 
     /**
-     * Stores a commit. The repository to which the commit
-     * belongs to must already be stored already in the database.
-     * @param commit is the commit being stored.
-     *
-     * @deprecated Using addCommits is now encouraged.
-     */
-    @Deprecated
-    void addCommit(@NotNull GitCommit commit);
-
-    /**
      * Stores commits. The repository to which the commits
      * belong to must already be stored already in the database.
      * @param commits are the commit being stored.
