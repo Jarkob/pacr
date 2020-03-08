@@ -4,4 +4,5 @@ export interface LegendItem {
     branch: string;
     datasetIndices: number[];
     color: string;
+    disabled: boolean;
 }

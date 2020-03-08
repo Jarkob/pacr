@@ -51,7 +51,8 @@ import { NgModule } from '@angular/core';
         MatSnackBarModule,
         MatPaginatorModule,
         MatProgressSpinnerModule,
-        MatDialogModule
+        MatDialogModule,
+        MatSnackBarModule
     ],
     exports: [
         MatToolbarModule,

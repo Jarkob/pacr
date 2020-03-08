@@ -19,7 +19,7 @@ import { BaseChartDirective } from 'ng2-charts';
 import { BenchmarkGroup } from '../classes/benchmark-group';
 import { LegendItem } from '../classes/legend-item';
 import * as moment from 'moment';
-import { MatDatepickerInputEvent, MatDialog } from '@angular/material';
+import { MatDatepickerInputEvent, MatDialog, MatSnackBar } from '@angular/material';
 import { DatePipe } from '@angular/common';
 import { ShortenStringPipe } from '../pipes/shorten-string-pipe';
 
@@ -43,9 +43,9 @@ export class DiagramComponent implements OnInit {
     private benchmarkService: BenchmarkService,
     private detailViewService: DetailViewService,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog,
     private datePipe: DatePipe,
-    private shortenString: ShortenStringPipe
+    private shortenString: ShortenStringPipe,
+    private snackBar: MatSnackBar
   ) {
   }
 
@@ -162,7 +162,6 @@ export class DiagramComponent implements OnInit {
       callbacks: {
         title: (items: any[], ) => {
           const commitHash = this.shortenString.transform(this.datasets[items[0].datasetIndex].code[items[0].index].commitHash, 7);
-          
           return this.datasets[items[0].datasetIndex].repositoryName + ': ' + commitHash;
         },
         label: (item, data) => {
@@ -238,7 +237,8 @@ export class DiagramComponent implements OnInit {
     repositoryName: '',
     borderColor: '',
     pointBackgroundColor: '',
-    hidden: true
+    hidden: true,
+    borderDash: null
   }];
   legendData: any;
 
@@ -341,7 +341,7 @@ export class DiagramComponent implements OnInit {
 
     this.loading = true;
     const repositoryIds = Array.from(this.repositories.keys());
-    this.getBenchmarkingResults(repositoryIds, 0, 0,  1);
+    this.getBenchmarkingResults(repositoryIds, 0, 0, 1);
 
     this.deleteLine();
   }
@@ -368,7 +368,6 @@ export class DiagramComponent implements OnInit {
       this.until
       ).subscribe(
       data => {
-        console.log('results for branch ' + branch, data);
         if (!this.repositoryResults.get(repositoryIds[index])) {
           this.repositoryResults.set(repositoryIds[index], new Map<string, any>());
         }
@@ -434,13 +433,9 @@ export class DiagramComponent implements OnInit {
     if (newestCommit) {
       this.dfs(repositoryId, branch, this.repositoryResults.get(repositoryId).get(branch)[newestCommit], empty);
     } else {
-      this.dialog.open(ErrorComponent, {
-        data: new HttpErrorResponse({
-          error: null,
-          headers: null,
-          status: null,
-          statusText: ('No commits found for repository ' + this.repositories.get(repositoryId).name + ' on branch ' + branch)
-        })
+      this.snackBar.open(
+        'No commits found for repository ' + this.repositories.get(repositoryId).name + ' on branch ' + branch + '.', 'Ok', {
+        duration: 2000,
       });
     }
     let index = 0;
@@ -456,8 +451,12 @@ export class DiagramComponent implements OnInit {
         branch,
         borderColor: this.repositories.get(repositoryId).color,
         pointBackgroundColor: this.repositories.get(repositoryId).color,
-        hidden: !this.repositories.get(repositoryId).checked.get(branch)
+        hidden: !this.repositories.get(repositoryId).checked.get(branch),
+        borderDash: null
       };
+      if (branch !== 'master') {
+        dataset.borderDash = [5, 5];
+      }
       for (const commit of list) {
         dataset.data.push({
           x: commit.commitDate,
@@ -543,7 +542,8 @@ export class DiagramComponent implements OnInit {
           repositoryName: dataset.repositoryName,
           branch: dataset.branch,
           datasetIndices: [index], // FIXME: highly likely to cause issues
-          color: dataset.borderColor
+          color: dataset.borderColor,
+          disabled: (dataset.length === 0)
         });
       }
       index++;
@@ -554,6 +554,9 @@ export class DiagramComponent implements OnInit {
   private getRepositories(): void {
     this.repositoryService.getAllRepositories().subscribe(
       data => {
+        if (data.length === 0) {
+          this.loading = false;
+        }
         data.forEach(repo => {
           repo.checked = new Map<string, boolean>();
           for (const el of repo.trackedBranches) {

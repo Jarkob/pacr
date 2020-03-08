@@ -10,4 +10,5 @@ export interface Dataset {
     borderColor: string;
     pointBackgroundColor: string;
     hidden: boolean;
+    borderDash: number[];
 }

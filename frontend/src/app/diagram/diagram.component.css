@@ -25,3 +25,10 @@ ul, li {
     top: 40%;
     left: 57%;
 }
+
+.legend {
+    height: 50%;
+    width: 100%;
+    overflow: hidden;
+    overflow-y: scroll;
+}

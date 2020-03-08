@@ -41,15 +41,17 @@
                   <mat-datepicker #pickerUntil></mat-datepicker>
                 </mat-form-field>
             </div>
-            <mat-chip-list *ngIf="this.legendData">
-                <mat-chip [ngStyle]="{'background-color': legendItem.color}" *ngFor="let legendItem of this.legendData" matTooltip="{{legendItem.repositoryName}}/{{legendItem.branch}}">
-                    <mat-checkbox (change)="toggleLines(legendItem)"
-                    [ngModel]="this.repositories.get(legendItem.repositoryId).checked.get(legendItem.branch)"
-                    (ngModelChange)="this.repositories.get(legendItem.repositoryId).checked.set(legendItem.branch, $event)">
-                        {{ legendItem.repositoryName }}/{{ legendItem.branch }}
-                    </mat-checkbox>
-                </mat-chip>
-            </mat-chip-list>
+            <div class='legend'>
+                <mat-chip-list *ngIf="this.legendData" class='legend' [style.overflow]="'auto'">
+                    <mat-chip [ngStyle]="{'background-color': legendItem.disabled ? '' : legendItem.color}" *ngFor="let legendItem of this.legendData" matTooltip="{{legendItem.repositoryName}}/{{legendItem.branch}}">
+                        <mat-checkbox (change)="toggleLines(legendItem)"
+                        [ngModel]="this.repositories.get(legendItem.repositoryId).checked.get(legendItem.branch)"
+                        (ngModelChange)="this.repositories.get(legendItem.repositoryId).checked.set(legendItem.branch, $event)">
+                            {{ legendItem.repositoryName }}/{{ legendItem.branch }}
+                        </mat-checkbox>
+                    </mat-chip>
+                </mat-chip-list>
+            </div>
         </div>
         <canvas fxFlex="85%" baseChart
             #mycanvas="base-chart"
