@@ -1,7 +1,9 @@
 package pacr.webapp_backend.scheduler.services;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -33,6 +35,22 @@ public class DynamicPriorityQueue<E> extends PriorityQueue<E> {
         super.addAll(Arrays.asList(elements));
 
         return super.peek();
+    }
+
+    /**
+     * Returns the element at the given index.
+     * @param index the index of the returned item.
+     * @return the item at the given index or null if the index is invalid.
+     */
+    public E get(int index) {
+        if (index >= 0 && index < this.size()) {
+            List<E> allElements = new ArrayList<>(this);
+            allElements.sort(this.comparator());
+
+            return allElements.get(index);
+        }
+
+        return null;
     }
 
 }

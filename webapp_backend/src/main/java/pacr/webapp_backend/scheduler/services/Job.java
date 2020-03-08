@@ -34,7 +34,6 @@ public class Job implements IJob {
     private int id;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     @EqualsAndHashCode.Exclude
     private boolean prioritized;
 

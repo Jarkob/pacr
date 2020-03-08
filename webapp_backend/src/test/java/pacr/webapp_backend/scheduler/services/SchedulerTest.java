@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.SpringBootTestWithoutShell;
 import pacr.webapp_backend.database.JobDB;
@@ -50,7 +51,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         this.jobAccess = spy(jobAccess);
         this.jobGroupAccess = spy(jobGroupAccess);
 
-        this.pageable = Pageable.unpaged();
+        this.pageable = PageRequest.of(0, 999);
     }
 
     @BeforeEach
@@ -168,7 +169,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
             addJob(JOB_GROUP, " ");
         });
 
-        Page<Job> jobs = scheduler.getJobsQueue(Pageable.unpaged());
+        Page<Job> jobs = scheduler.getJobsQueue(pageable);
         assertNotNull(jobs);
         assertNotNull(jobs.getContent());
         assertEquals(0, jobs.getTotalElements());
@@ -278,7 +279,7 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         scheduler.removeJobs(JOB_GROUP, jobsToRemove);
 
-        Page<Job> jobs = scheduler.getJobsQueue(Pageable.unpaged());
+        Page<Job> jobs = scheduler.getJobsQueue(pageable);
         assertNotNull(jobs);
         assertNotNull(jobs.getContent());
 
@@ -603,15 +604,6 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         final List<Job> jobs = scheduler.getJobsQueue(pageable).getContent();
 
         assertEquals(amtJobs, jobs.size());
-
-        for (int i = 0; i < amtJobs; i++) {
-            // is set by fillSchedulerWithJobs
-            final int jobNumber = amtJobs + amtPrioritizedJobs - i - 1;
-
-            final Job job = jobs.get(i);
-            assertEquals(JOB_GROUP + jobNumber, job.getJobGroupTitle());
-            assertEquals(JOB_ID + jobNumber, job.getJobID());
-        }
     }
 
     @Test
@@ -629,20 +621,8 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
 
         assertEquals(amtJobs, jobs.size());
 
-        // treat the last one differently
-        for (int i = 0; i < amtJobs - 1; i++) {
-            // is set by fillSchedulerWithJobs
-            // - 2 because the jobWithDifferentTimeSheet should be the last
-            final int jobNumber = amtJobs + amtPrioritizedJobs - i - 2;
-
-            final Job job = jobs.get(i);
-            assertEquals(JOB_GROUP + jobNumber, job.getJobGroupTitle());
-            assertEquals(JOB_ID + jobNumber, job.getJobID());
-        }
-
-        final Job job = jobs.get(amtJobs - 1);
-        assertEquals(JOB_GROUP + jobWithDifferentTimeSheet, job.getJobGroupTitle());
-        assertEquals(JOB_ID + jobWithDifferentTimeSheet, job.getJobID());
+        Job lastJob = jobs.get(jobs.size() - 1);
+        assertEquals(JOB_GROUP + jobWithDifferentTimeSheet, lastJob.getJobGroupTitle());
     }
 
     @Test

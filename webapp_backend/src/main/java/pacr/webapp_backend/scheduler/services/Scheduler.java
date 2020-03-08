@@ -13,6 +13,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -100,27 +101,41 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         if (!prioritized.isEmpty()) {
             job = prioritized.stream().findFirst().orElse(null);
         } else {
-            final AdvancedSchedulingAlgorithm advancedSchedulingAlgorithm = new AdvancedSchedulingAlgorithm();
-            while (job == null && groupQueue.size() > 0) {
-                final JobGroup group = groupQueue.peek();
+            Page<Job> jobsPage = getJobsQueue(PageRequest.of(0, 1));
+            List<Job> jobs = jobsPage.getContent();
 
-                final List<Job> jobs = new ArrayList<>(jobAccess.findAllJobs(group.getTitle()));
-
-                if (jobs.isEmpty()) {
-                    removeJobGroup(group.getTitle());
-                } else {
-                    jobs.sort(advancedSchedulingAlgorithm);
-
-                    job = jobs.stream().findFirst().orElse(null);
-                }
+            if (!jobs.isEmpty()) {
+                job = jobs.get(0);
             }
         }
 
         if (job != null) {
+            removeUnusedGroupsAfterPop(job.getJobGroupTitle());
             jobAccess.deleteJob(job);
+        } else {
+            removeUnusedGroupsAfterPop(null);
         }
 
         return job;
+    }
+
+    /**
+     * Removes all groups that come before the given jobGroupTitle in the groupQueue.
+     * If the jobGroupTitle is null all groups are removed from the groupQueue.
+     *
+     * @param jobGroupTitle the jobGroupTitle of the first group which isn't deleted.
+     */
+    private void removeUnusedGroupsAfterPop(String jobGroupTitle) {
+        if (jobGroupTitle != null) {
+            JobGroup group = groupQueue.peek();
+            while (group != null && !jobGroupTitle.equals(group.getTitle())) {
+                removeJobGroup(group.getTitle());
+            }
+        } else {
+            Collection<String> groupsToRemove = new ArrayList<>();
+            groupQueue.forEach(group -> groupsToRemove.add(group.getTitle()));
+            groupsToRemove.forEach(this::removeJobGroup);
+        }
     }
 
     @Override
@@ -269,12 +284,29 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @return a page of jobs.
      */
     public Page<Job> getJobsQueue(final Pageable pageable) {
-        final Page<Job> page = jobAccess.findJobs(pageable);
-        final List<Job> jobs = new ArrayList<>(page.getContent());
+        int groupIndex = 0;
+        List<Job> jobs = new ArrayList<>();
 
-        jobs.sort(new AdvancedSchedulingAlgorithm());
+        // cheap way to get the total amount of jobs
+        Page<Job> jobPage = jobAccess.findJobs(PageRequest.of(0, 1));
 
-        return new PageImpl<>(jobs, page.getPageable(), page.getTotalElements());
+        final int jobsToLoad = pageable.getPageSize() * (pageable.getPageNumber() + 1);
+        while (jobs.size() < jobsToLoad && groupIndex < groupQueue.size()) {
+            JobGroup group = groupQueue.get(groupIndex);
+
+            List<Job> jobsToAdd = new ArrayList<>(jobAccess.findAllJobs(group.getTitle()));
+            jobsToAdd.removeIf(Job::isPrioritized);
+            jobsToAdd.sort(new AdvancedSchedulingAlgorithm());
+
+            jobs.addAll(jobsToAdd);
+
+            groupIndex++;
+        }
+
+        final int lowerBound = Math.min(pageable.getPageSize() * pageable.getPageNumber(), jobs.size());
+        final int upperBound = Math.min(jobsToLoad, jobs.size());
+
+        return new PageImpl<>(jobs.subList(lowerBound, upperBound), pageable, jobPage.getTotalElements());
     }
 
     /**
