@@ -7,10 +7,13 @@ PACR analyzes commits in repositories.
 ### Database
 
 1. Install mysql-server
-2. Create user 'pacr' with password 'pacr'
-3. Create database 'pacr'
-4. Grant all privileges on database to 'pacr'
-5. Start mysql-server
+2. Create user 'pacr' with password 'pacr1'. 
+3. Create user 'pacr2' with password 'pacr2'
+4. Create database 'pacr'
+5. Create database 'pacrtest'
+6. Grant all privileges on database to 'pacr'
+7. Grant only privileges to scheam 'pacrtest' to 'pacr2'
+8. Start mysql-server
  
 ### Backend
 
@@ -45,11 +48,14 @@ Optional: (currently required for diagrams)
 
 ### Database
 
-TODO
+1. Follow steps 1-8 from setup database
 
 ### Backend
 
-TODO
+1. Follow steps 1-3 from setup backend
+2. Run 'mvn package'
+3. Deploy jar to desired location with application.properties (optional) and ssh.key (must contain public ssh key)
+4. Execute the jar file
 
 ### Frontend
 
@@ -57,3 +63,10 @@ TODO
 2. Run `ng build --prod --aot` in frontend directory
 3. Deploy contents of `frontend/dist` to desired location on webserver (for example copy files to /www directory of apache)
 4. Configure webserver to redirect missing pages to `index.html`
+
+### Benchmarker
+
+1. Follow steps 1-2 from setup benchmarker
+2. Run 'mvn package'
+3. Deploy jar to desired location with runner directory and ssh.key (must contain public ssh key)
+4. Execute the jar file (after starting backend)
