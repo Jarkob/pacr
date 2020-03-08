@@ -1,11 +1,9 @@
 package pacr.webapp_backend.git_tracking.services;
 
+import org.hamcrest.collection.IsCollectionWithSize;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.*;
 import pacr.webapp_backend.git_tracking.services.entities.GitCommit;
 import pacr.webapp_backend.git_tracking.services.entities.GitRepository;
 import pacr.webapp_backend.git_tracking.services.git.GitHandler;
@@ -14,10 +12,11 @@ import pacr.webapp_backend.shared.ICommitBenchmarkedChecker;
 import pacr.webapp_backend.shared.IJobScheduler;
 import pacr.webapp_backend.shared.IResultDeleter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -129,8 +128,6 @@ public class GitTrackingTest {
         gitTracking.pullFromRepository(42);
 
         verify(gitHandler).pullFromRepository(repository);
-
-        // TODO: verify that jobs were added
     }
 
     @Test
@@ -164,6 +161,71 @@ public class GitTrackingTest {
 
         verify(gitHandler).setBranchesToRepo(repository2);
         verifyNoMoreInteractions(gitTrackingAccess);
+    }
+
+    @Test
+    public void updateColor() {
+        GitRepository gitRepository = mock(GitRepository.class);
+
+        when(gitRepository.getColor()).thenReturn("#000000");
+
+        gitTracking.updateColorOfRepository(gitRepository, "#ffffff");
+
+        verify(colorPicker).setColorToUsed("#ffffff");
+        verify(colorPicker).setColorToUnused(gitRepository.getColor());
+        verify(gitRepository).setColor("#ffffff");
+    }
+
+    @Test
+    public void updateObserveFromDateNull() {
+        GitRepository gitRepository = mock(GitRepository.class);
+        when(gitRepository.getPullURL()).thenReturn("pullurl");
+        GitCommit commit1 = mock(GitCommit.class);
+        when(commit1.getCommitHash()).thenReturn("hash1");
+        when(commit1.getCommitMessage()).thenReturn("msg");
+        when(commit1.getCommitDate()).thenReturn(LocalDateTime.now());
+        GitCommit commit2 = mock(GitCommit.class);
+        when(commit2.getCommitHash()).thenReturn("hash2");
+        when(commit2.getCommitMessage()).thenReturn("msg");
+        when(commit2.getCommitDate()).thenReturn(LocalDateTime.now());
+
+        when(gitTrackingAccess.getAllCommits(anyInt())).thenReturn(Arrays.asList(commit1, commit2));
+        when(commitBenchmarkedChecker.isCommitBenchmarked(commit1.getCommitHash())).thenReturn(true);
+        when(commitBenchmarkedChecker.isCommitBenchmarked(commit2.getCommitHash())).thenReturn(false);
+
+        gitTracking.updateObserveFromDateOfRepository(gitRepository, null);
+
+        verify(jobScheduler).addJobs(eq(gitRepository.getPullURL()), argThat(strings -> strings.size() == 1));
+        // verify that no jobs were removed
+        verify(jobScheduler).removeJobs(eq(gitRepository.getPullURL()), argThat(strings -> strings.size() == 0));
+        verify(resultDeleter).deleteBenchmarkingResults(argThat(strings -> strings.size() == 0));
+    }
+
+    @Test
+    public void updateObserveFromDate() {
+        GitRepository gitRepository = mock(GitRepository.class);
+        when(gitRepository.getPullURL()).thenReturn("pullurl");
+        GitCommit commit1 = mock(GitCommit.class);
+        when(commit1.getCommitHash()).thenReturn("hash1");
+        when(commit1.getCommitMessage()).thenReturn("msg");
+        when(commit1.getCommitDate()).
+                thenReturn(LocalDateTime.of(2019, 1, 1, 0, 0, 0));
+        GitCommit commit2 = mock(GitCommit.class);
+        when(commit2.getCommitHash()).thenReturn("hash2");
+        when(commit2.getCommitMessage()).thenReturn("msg");
+        when(commit2.getCommitDate())
+                .thenReturn(LocalDateTime.of(2020, 1, 1, 0, 0, 0));
+
+        when(gitTrackingAccess.getAllCommits(anyInt())).thenReturn(Arrays.asList(commit1, commit2));
+        when(commitBenchmarkedChecker.isCommitBenchmarked(commit1.getCommitHash())).thenReturn(true);
+        when(commitBenchmarkedChecker.isCommitBenchmarked(commit2.getCommitHash())).thenReturn(false);
+
+        gitTracking.updateObserveFromDateOfRepository(gitRepository, LocalDate.of(2019, 6, 1));
+
+        verify(jobScheduler).addJobs(eq(gitRepository.getPullURL()), argThat(strings -> strings.size() == 1));
+        // verify that no jobs were removed
+        verify(jobScheduler).removeJobs(eq(gitRepository.getPullURL()), argThat(strings -> strings.size() == 0));
+        verify(resultDeleter).deleteBenchmarkingResults(argThat(strings -> strings.size() == 1));
     }
 
 
