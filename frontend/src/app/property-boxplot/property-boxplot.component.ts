@@ -9,6 +9,11 @@ import { Component, OnInit, ElementRef, NgZone, OnChanges, SimpleChanges } from 
 import { Chart, ChartData } from 'chart.js';
 import 'chartjs-chart-box-and-violin-plot';
 
+/**
+ * Was removed for the sake of the line diagram.
+ * For usage add chartjs-chart-box-and-violin-plot": "^2.2.0" to package.json
+ */
+
 @Component({
   selector: 'app-property-boxplot',
   templateUrl: './property-boxplot.component.html',

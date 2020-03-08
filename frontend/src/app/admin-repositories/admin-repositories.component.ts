@@ -232,6 +232,10 @@ export class AdminRepositoriesComponent implements OnInit {
    */
   public addRepository = (addRepositoryFormValue) => {
     if (this.addRepositoryForm.valid) {
+      const checked = new Map<string, boolean>();
+      for (const el of addRepositoryFormValue.trackedBranches) {
+        checked.set(el, true);
+      }
       this.repositoryService.addRepository({
         id: addRepositoryFormValue.id,
         trackAllBranches: addRepositoryFormValue.trackMode,
@@ -244,7 +248,7 @@ export class AdminRepositoriesComponent implements OnInit {
         observeFromDate: addRepositoryFormValue.observeAll ? null : this.adjustDateForTimezone(addRepositoryFormValue.observeFromDate),
         commitLinkPrefix: addRepositoryFormValue.commitLinkPrefix,
         commits: [],
-        checked: true
+        checked
       }).subscribe(
         data => {
           this.openSnackBar(this.strings.addSuccess);
@@ -263,6 +267,10 @@ export class AdminRepositoriesComponent implements OnInit {
    */
   public editRepository = (editRepositoryFormValue) => {
     if (this.editRepositoryForm.valid) {
+      const checked = new Map<string, boolean>();
+      for (const el of editRepositoryFormValue.trackedBranches) {
+        checked.set(el, true);
+      }
       this.repositoryService.updateRepository({
         id: this.selectedRepository.id,
         trackAllBranches: editRepositoryFormValue.trackMode,
@@ -275,7 +283,7 @@ export class AdminRepositoriesComponent implements OnInit {
         observeFromDate: editRepositoryFormValue.observeAll ? null : this.adjustDateForTimezone(editRepositoryFormValue.observeFromDate),
         commitLinkPrefix: this.selectedRepository.commitLinkPrefix,
         commits: [],
-        checked: true
+        checked
       }).subscribe(
         data => {
           this.openSnackBar(this.strings.editSuccess);
@@ -401,7 +409,7 @@ export class AdminRepositoriesComponent implements OnInit {
    */
   private adjustDateForTimezone(toAdjust: any): Date {
     let date: Date;
-    
+
     if (!isDate(toAdjust)) {
       const tmp = toAdjust;
 

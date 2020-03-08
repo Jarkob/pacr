@@ -43,7 +43,9 @@
             </div>
             <mat-chip-list *ngIf="this.legendData">
                 <mat-chip [ngStyle]="{'background-color': legendItem.color}" *ngFor="let legendItem of this.legendData" matTooltip="{{legendItem.repositoryName}}/{{legendItem.branch}}">
-                    <mat-checkbox [(ngModel)]="this.repositories.get(legendItem.repositoryId).checked" (change)="toggleLines(legendItem)">
+                    <mat-checkbox (change)="toggleLines(legendItem)"
+                    [ngModel]="this.repositories.get(legendItem.repositoryId).checked.get(legendItem.branch)"
+                    (ngModelChange)="this.repositories.get(legendItem.repositoryId).checked.set(legendItem.branch, $event)">
                         {{ legendItem.repositoryName }}/{{ legendItem.branch }}
                     </mat-checkbox>
                 </mat-chip>

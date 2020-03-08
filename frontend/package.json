@@ -32,7 +32,6 @@
     "@angular/router": "~8.2.9",
     "@types/chart.js": "^2.9.14",
     "chart.js": "^2.9.3",
-    "chartjs-chart-box-and-violin-plot": "^2.2.0",
     "chartjs-plugin-annotation": "^0.5.7",
     "chartjs-plugin-zoom": "^0.7.5",
     "express": "^4.17.1",

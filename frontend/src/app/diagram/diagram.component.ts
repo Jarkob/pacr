@@ -64,7 +64,7 @@ export class DiagramComponent implements OnInit {
   benchmarkGroups: BenchmarkGroup[];
   benchmarks: Map<string, Benchmark[]> = new Map<string, Benchmark[]>();
 
-  repositoryResults: Map<number, Map<string, any>> = new Map<number, Map<string, any>>();
+  repositoryResults: Map<number, Map<string, Map<string, any>>> = new Map<number, Map<string, Map<string, any>>>();
 
   selectedBenchmark: Benchmark;
   selectedBenchmarkProperty: BenchmarkProperty;
@@ -307,13 +307,13 @@ export class DiagramComponent implements OnInit {
   public changeFrom(event: MatDatepickerInputEvent<Date>) {
     this.from = moment(event.value).unix();
     this.loading = true;
-    this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, this.datasets.length);
+    this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, 0, this.datasets.length);
   }
 
   public changeUntil(event: MatDatepickerInputEvent<Date>) {
     this.until = moment(event.value).unix();
     this.loading = true;
-    this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, this.datasets.length);
+    this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, 0, this.datasets.length);
   }
 
   /**
@@ -322,8 +322,8 @@ export class DiagramComponent implements OnInit {
    */
   public toggleLines(legendItem: LegendItem) {
     for (const datasetIndex of legendItem.datasetIndices) {
-      this.chart.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked;
-      this.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked;
+      this.chart.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked.get(legendItem.branch);
+      this.datasets[datasetIndex].hidden = !this.repositories.get(legendItem.repositoryId).checked.get(legendItem.branch);
     }
     this.chart.update();
   }
@@ -341,13 +341,13 @@ export class DiagramComponent implements OnInit {
 
     this.loading = true;
     const repositoryIds = Array.from(this.repositories.keys());
-    this.getBenchmarkingResults(repositoryIds, 0,  1);
+    this.getBenchmarkingResults(repositoryIds, 0, 0,  1);
 
     this.deleteLine();
   }
 
-  private getBenchmarkingResults(repositoryIds: number[], index: number, prevLength: number) {
-    if (repositoryIds.length === index) {
+  private getBenchmarkingResults(repositoryIds: number[], index: number, branchIndex: number, prevLength: number) {
+    if (repositoryIds.length <= index) {
       // remove previous
       this.datasets = this.datasets.splice(prevLength);
       this.resetZoom();
@@ -355,16 +355,29 @@ export class DiagramComponent implements OnInit {
       this.loadProperty();
       return;
     }
-    // TODO add branches somewhere here
+    if (branchIndex >= this.repositories.get(repositoryIds[index]).trackedBranches.length) {
+      this.getBenchmarkingResults(repositoryIds, index + 1, 0, prevLength);
+      return;
+    }
+    const branch: string = this.repositories.get(repositoryIds[index]).trackedBranches[branchIndex];
     this.benchmarkingResultService.getBenchmarkingResults(
-      this.selectedBenchmark.id, repositoryIds[index], 'master', this.from, this.until).subscribe(
+      this.selectedBenchmark.id,
+      repositoryIds[index],
+      this.repositories.get(repositoryIds[index]).trackedBranches[branchIndex],
+      this.from,
+      this.until
+      ).subscribe(
       data => {
-        this.repositoryResults.set(repositoryIds[index], data);
-        const lines = this.calculateLines(repositoryIds[index]);
+        console.log('results for branch ' + branch, data);
+        if (!this.repositoryResults.get(repositoryIds[index])) {
+          this.repositoryResults.set(repositoryIds[index], new Map<string, any>());
+        }
+        this.repositoryResults.get(repositoryIds[index]).set(branch, data);
+        const lines = this.calculateLines(repositoryIds[index], branch);
         // both is important, otherwise event listening for change of legend gets messed up
         this.chart.datasets = this.chart.datasets.concat(lines);
         this.datasets = this.datasets.concat(lines);
-        this.getBenchmarkingResults(repositoryIds, index + 1, prevLength);
+        this.getBenchmarkingResults(repositoryIds, index, branchIndex + 1, prevLength);
       }
     );
   }
@@ -410,23 +423,23 @@ export class DiagramComponent implements OnInit {
     this.loading = false;
   }
 
-  private calculateLines(repositoryId: number): any[] {
+  private calculateLines(repositoryId: number, branch: string): any[] {
     const lines = [];
-    const newestCommit = this.getNewestCommit(this.repositoryResults.get(repositoryId));
+    const newestCommit = this.getNewestCommit(this.repositoryResults.get(repositoryId).get(branch));
     this.lists = [];
     const empty = [];
-    for (const [, commit] of Object.entries(this.repositoryResults.get(repositoryId))) {
+    for (const [, commit] of Object.entries(this.repositoryResults.get(repositoryId).get(branch))) {
       commit.marked = false;
     }
     if (newestCommit) {
-      this.dfs(repositoryId, this.repositoryResults.get(repositoryId)[newestCommit], empty);
+      this.dfs(repositoryId, branch, this.repositoryResults.get(repositoryId).get(branch)[newestCommit], empty);
     } else {
       this.dialog.open(ErrorComponent, {
         data: new HttpErrorResponse({
           error: null,
           headers: null,
           status: null,
-          statusText: ('No commits found for repository ' + this.repositories.get(repositoryId).name)
+          statusText: ('No commits found for repository ' + this.repositories.get(repositoryId).name + ' on branch ' + branch)
         })
       });
     }
@@ -440,10 +453,10 @@ export class DiagramComponent implements OnInit {
         lineTension: 0,
         repositoryId,
         repositoryName: this.repositories.get(repositoryId).name,
-        branch: 'master',
+        branch,
         borderColor: this.repositories.get(repositoryId).color,
         pointBackgroundColor: this.repositories.get(repositoryId).color,
-        hidden: !this.repositories.get(repositoryId).checked
+        hidden: !this.repositories.get(repositoryId).checked.get(branch)
       };
       for (const commit of list) {
         dataset.data.push({
@@ -457,13 +470,14 @@ export class DiagramComponent implements OnInit {
     return lines;
   }
 
-  private dfs(repositoryId: number, current: any, list: any[]) {
+  private dfs(repositoryId: number, branch: string, current: any, list: any[]) {
     if (!current) {
       this.lists.push(list);
       return;
     }
-    list.push(this.repositoryResults.get(repositoryId)[current.commitHash]);
-    if (current.parents.length === 0 || current.marked === true || !this.repositoryResults.get(repositoryId)[current.commitHash]) {
+    list.push(this.repositoryResults.get(repositoryId).get(branch)[current.commitHash]);
+    if (current.parents.length === 0
+      || current.marked === true || !this.repositoryResults.get(repositoryId).get(branch)[current.commitHash]) {
       current.marked = true;
       this.lists.push(list);
       return;
@@ -471,7 +485,7 @@ export class DiagramComponent implements OnInit {
     current.marked = true;
     for (const parent of current.parents) {
       const newList = JSON.parse(JSON.stringify(list));
-      this.dfs(repositoryId, this.repositoryResults.get(repositoryId)[parent], newList);
+      this.dfs(repositoryId, branch, this.repositoryResults.get(repositoryId).get(branch)[parent], newList);
     }
   }
 
@@ -541,7 +555,10 @@ export class DiagramComponent implements OnInit {
     this.repositoryService.getAllRepositories().subscribe(
       data => {
         data.forEach(repo => {
-          repo.checked = true;
+          repo.checked = new Map<string, boolean>();
+          for (const el of repo.trackedBranches) {
+            repo.checked.set(el, true);
+          }
           this.repositories.set(repo.id, repo);
         });
         this.getBenchmarkGroups();
