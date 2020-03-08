@@ -236,7 +236,7 @@ public class RepositoryManagerController {
         gitRepository.setTrackAllBranches(transferRepository.isTrackAllBranches());
         gitRepository.setPullURL(transferRepository.getPullURL());
         gitRepository.setName(transferRepository.getName());
-        gitRepository.setIsHookSet(transferRepository.getIsHookSet());
+        gitRepository.setHookSet(transferRepository.isHookSet());
         gitRepository.setObserveFromDate(transferRepository.getObserveFromDate());
 
         gitTracking.updateRepository(gitRepository);

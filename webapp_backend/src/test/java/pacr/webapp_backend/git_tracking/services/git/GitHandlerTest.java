@@ -296,7 +296,7 @@ public class GitHandlerTest extends SpringBootTestWithoutShell {
     @Test @Disabled // disabled because it takes very long
     public void leanTest() throws PullFromRepositoryException {
         gitRepository.setName("LEAN");
-        gitRepository.setIsHookSet(true); // PullIntervalScheduler should not interfere
+        gitRepository.setHookSet(true); // PullIntervalScheduler should not interfere
         gitRepository.setPullURL("git@github.com:leanprover/lean.git");
         gitRepository.setSelectedBranches(new HashSet<>(Arrays.asList(MASTER, "NewParserAttr", "test")));
 

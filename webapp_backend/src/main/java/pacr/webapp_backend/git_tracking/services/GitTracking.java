@@ -112,7 +112,7 @@ public class GitTracking implements IRepositoryImporter {
         repository.setSelectedBranches(branchNames);
         repository.setColor(colorPicker.getNextColor());
         repository.setTrackAllBranches(trackAllBranches);
-        repository.setIsHookSet(isHookSet);
+        repository.setHookSet(isHookSet);
 
         return gitTrackingAccess.addRepository(repository);
     }

@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
+import lombok.Getter;
+import lombok.Setter;
 import pacr.webapp_backend.shared.IRepository;
 
 import javax.persistence.Entity;
@@ -37,21 +39,30 @@ public class GitRepository implements IRepository {
     @Id
     // When a repository id is set, it is not 0 anymore, it is an integer greater than 0.
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Getter @Setter
     private int id;
 
-    private boolean trackAllBranches;
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private final Set<GitBranch> trackedBranches;
+    @Getter
+    private Set<GitBranch> trackedBranches;
 
     @ElementCollection(fetch = FetchType.EAGER)
+    @Getter
     private Set<String> selectedBranches;
 
+    @Getter
     private String pullURL;
+    @Getter @Setter
     private String name;
-    private boolean isHookSet;
+    @Getter @Setter
+    private boolean trackAllBranches;
+    @Getter @Setter
+    private boolean hookSet;
+    @Getter @Setter
     private String color;
+    @Getter @Setter
     private LocalDate observeFromDate;
+    @Getter
     private String commitLinkPrefix;
 
     /**
@@ -88,7 +99,7 @@ public class GitRepository implements IRepository {
         this.trackAllBranches = trackAllBranches;
         this.pullURL = pullURL;
         this.name = name;
-        this.isHookSet = false;
+        this.hookSet = false;
         this.color = color;
         this.observeFromDate = observeFromDate;
         setCommitLinkPrefix();
@@ -106,7 +117,7 @@ public class GitRepository implements IRepository {
      * Sets the repository ID.
      * @param id is the repository id.
      */
-    public void setId(final int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -159,14 +170,6 @@ public class GitRepository implements IRepository {
         }
     }
 
-    /**
-     * Returns the pull URL for the repository.
-     * @return pull URL
-     */
-    public String getPullURL() {
-        return pullURL;
-    }
-
     @Override
     public Set<String> getTrackedBranchNames() {
         Set<String> branchNames = new HashSet<>();
@@ -181,7 +184,7 @@ public class GitRepository implements IRepository {
      * Sets the name of the repository.
      * @param name is the name of the repository.
      */
-    public void setName(@NotNull final String name) {
+    public void setName(@NotNull String name) {
         Objects.requireNonNull(name);
         this.name = name;
     }
@@ -288,28 +291,28 @@ public class GitRepository implements IRepository {
     /**
      * @param trackAllBranches is the options whether all branches are tracked or only master branch.
      */
-    public void setTrackAllBranches(final boolean trackAllBranches) {
+    public void setTrackAllBranches(boolean trackAllBranches) {
         this.trackAllBranches = trackAllBranches;
     }
 
     /**
      * @param hookSet is whether a hook is set for the repository.
      */
-    public void setIsHookSet(final boolean hookSet) {
+    public void setIsHookSet(boolean hookSet) {
         this.isHookSet = hookSet;
     }
 
     /**
      * @param color is the new color of the repository.
      */
-    public void setColor(final String color) {
+    public void setColor(String color) {
         this.color = color;
     }
 
     /**
      * @param observeFromDate is the date from which on the commits are being tracked.
      */
-    public void setObserveFromDate(final LocalDate observeFromDate) {
+    public void setObserveFromDate(LocalDate observeFromDate) {
         this.observeFromDate = observeFromDate;
     }
 
