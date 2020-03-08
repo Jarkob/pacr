@@ -70,7 +70,6 @@ public class ResultController {
 
     /**
      * Gets the benchmarking results of all commits of a repository, but only for the specified benchmark.
-     * TODO is this used by the frontend?
      * @param repositoryId the id of the repository.
      * @param benchmarkId the id of the benchmark.
      * @return the benchmarking results of one benchmark.
