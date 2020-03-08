@@ -12,8 +12,9 @@ import pacr.benchmarker.services.git.GitHandler;
 
 import java.util.HashSet;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -44,7 +45,7 @@ public class JobExecutorTest {
     @Test
     public void executeJob() {
         when(gitHandler.setupRepositoryForBenchmark(REPOSITORY_URL, COMMIT_HASH)).thenReturn(PATH);
-        when(jobDispatcher.dispatchJob(PATH)).thenReturn(result);
+        when(jobDispatcher.dispatchJob(anyString())).thenReturn(result);
 
         jobExecutor.executeJob(REPOSITORY_URL, COMMIT_HASH);
         verify(gitHandler).setupRepositoryForBenchmark(REPOSITORY_URL, COMMIT_HASH);
@@ -57,6 +58,23 @@ public class JobExecutorTest {
         assertEquals(result, jobResult.getBenchmarkingResult());
         assertEquals(COMMIT_HASH, jobResult.getCommitHash());
         assertEquals(REPOSITORY_URL, jobResult.getRepository());
+    }
+
+    @Test
+    public void cloningError() {
+        when(gitHandler.setupRepositoryForBenchmark(REPOSITORY_URL, COMMIT_HASH)).thenReturn(null);
+        when(jobDispatcher.dispatchJob(PATH)).thenReturn(result);
+
+        jobExecutor.executeJob(REPOSITORY_URL, COMMIT_HASH);
+        verify(gitHandler).setupRepositoryForBenchmark(REPOSITORY_URL, COMMIT_HASH);
+
+        ArgumentCaptor<JobResult> resultArgumentCaptor = ArgumentCaptor.forClass(JobResult.class);
+
+        verify(resultSender).sendJobResults(resultArgumentCaptor.capture());
+
+        JobResult jobResult = resultArgumentCaptor.getValue();
+        assertNotNull(jobResult.getBenchmarkingResult().getGlobalError());
+        assertNotEquals("", jobResult.getBenchmarkingResult().getGlobalError());
     }
 
 }

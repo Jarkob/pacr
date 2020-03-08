@@ -1,5 +1,6 @@
 package pacr.benchmarker.services;
 
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import oshi.SystemInfo;
@@ -11,6 +12,7 @@ import java.net.UnknownHostException;
 /**
  * Represents the system environment of the benchmarker.
  */
+@Getter
 public class SystemEnvironment {
 
     private static final Logger LOGGER = LogManager.getLogger(SystemEnvironment.class);
@@ -58,47 +60,5 @@ public class SystemEnvironment {
         cores = hardwareAbstractionLayer.getProcessor().getLogicalProcessorCount();
         os = systemInfo.getOperatingSystem().getFamily();
         kernel = System.getProperty("os.arch");
-    }
-
-    /**
-     * @return the OS name.
-     */
-    public String getOs() {
-        return os;
-    }
-
-    /**
-     * @return the processor name.
-     */
-    public String getProcessor() {
-        return processor;
-    }
-
-    /**
-     * @return the kernel name.
-     */
-    public String getKernel() {
-        return kernel;
-    }
-
-    /**
-     * @return the amount of RAM in GiB.
-     */
-    public long getRam() {
-        return ram;
-    }
-
-    /**
-     * @return the logical core count.
-     */
-    public int getCores() {
-        return cores;
-    }
-
-    /**
-     * @return the computer name.
-     */
-    public String getComputerName() {
-        return computerName;
     }
 }

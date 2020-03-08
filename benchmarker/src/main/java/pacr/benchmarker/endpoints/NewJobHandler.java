@@ -45,7 +45,7 @@ public class NewJobHandler implements StompFrameHandler, IJobResultSender {
 
     @Override
     public void handleFrame(StompHeaders stompHeaders, Object o) {
-        JobMessage job = (JobMessage)o;
+        JobMessage job = (JobMessage) o;
 
         jobExecutor.executeJob(job.getRepository(), job.getCommitHash());
     }

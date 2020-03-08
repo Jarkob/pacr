@@ -14,8 +14,7 @@ import pacr.benchmarker.services.git.SSHTransportConfigCallback;
 import java.io.File;
 import java.io.IOException;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test cases for GitHandler.
@@ -66,6 +65,11 @@ public class GitHandlerTest {
 
         Git git = new Git(repo);
         assertEquals(COMMIT_HASH2, git.log().call().iterator().next().getName());
+    }
+
+    @Test
+    public void invalidRepositoryName() {
+        assertNull(gitHandler.setupRepositoryForBenchmark("inv", "hash"));
     }
 
     @AfterEach

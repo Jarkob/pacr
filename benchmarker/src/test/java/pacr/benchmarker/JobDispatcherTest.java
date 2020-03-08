@@ -8,8 +8,8 @@ import pacr.benchmarker.services.BenchmarkingResult;
 import pacr.benchmarker.services.JobDispatcher;
 import pacr.benchmarker.services.ResultInterpretation;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
@@ -26,6 +26,7 @@ public class JobDispatcherTest {
     private static String runnerScript = "test";
     private static String genericError = "generic-error";
     private static String globalError = "global-error";
+    private static String incorrectSyntax = "incorrect-syntax";
     private static String runnerScriptExtension;
 
     @BeforeAll
@@ -79,6 +80,34 @@ public class JobDispatcherTest {
         BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
 
         assertEquals("this is big error oh no", result.getGlobalError());
+
+        assertEquals(0, result.getBenchmarks().size());
+    }
+
+    @Test
+    public void incorrectJSONSyntax() {
+        String script = incorrectSyntax + runnerScriptExtension;
+
+        jobDispatcher = new JobDispatcher(script, RUNNER_DIR);
+
+        BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
+
+        assertNotNull(result.getGlobalError());
+        assertNotEquals("", result.getGlobalError());
+
+        assertEquals(0, result.getBenchmarks().size());
+    }
+
+    @Test
+    public void incorrectRunner() {
+        String script = "invalidRunner" + runnerScriptExtension;
+
+        jobDispatcher = new JobDispatcher(script, RUNNER_DIR);
+
+        BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
+
+        assertNotNull(result.getGlobalError());
+        assertNotEquals("", result.getGlobalError());
 
         assertEquals(0, result.getBenchmarks().size());
     }

@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
-import org.springframework.messaging.converter.StringMessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
@@ -20,6 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import static java.lang.System.exit;
 
 /**
  * Creates a connection between Benchmarker and Web-App.
@@ -91,7 +92,8 @@ public class BenchmarkingController {
 
             session.send("/app/register", SystemEnvironment.getInstance());
         } catch (Exception ex) {
-            LOGGER.error("Could not connect with PACR-Web-App.");
+            LOGGER.error("Could not connect with PACR-Web-App, exiting.");
+            exit(1);
         }
     }
 

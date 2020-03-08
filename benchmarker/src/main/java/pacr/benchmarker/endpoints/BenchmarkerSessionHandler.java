@@ -22,7 +22,8 @@ public class BenchmarkerSessionHandler extends StompSessionHandlerAdapter {
     }
 
     @Override
-    public void handleException(StompSession session, StompCommand command, StompHeaders headers, byte[] payload, Throwable exception) {
+    public void handleException(StompSession session, StompCommand command, StompHeaders headers,
+                                byte[] payload, Throwable exception) {
         LOGGER.error("Got an exception", exception);
     }
 

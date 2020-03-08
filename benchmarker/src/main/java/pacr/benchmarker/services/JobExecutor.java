@@ -59,8 +59,9 @@ public class JobExecutor {
 
             // fetch benchmarking result
             benchmarkingResult = jobDispatcher.dispatchJob(path);
-            result.setBenchmarkingResult(benchmarkingResult);
         }
+
+        result.setBenchmarkingResult(benchmarkingResult);
 
         Instant end = Instant.now();
 

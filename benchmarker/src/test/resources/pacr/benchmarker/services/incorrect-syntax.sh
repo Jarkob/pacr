@@ -1,0 +1,1 @@
+cat incorrect-syntax.txt

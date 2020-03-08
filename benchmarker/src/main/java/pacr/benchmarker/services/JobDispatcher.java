@@ -54,8 +54,8 @@ public class JobDispatcher {
                     .directory(new File(runnerDir))
                     .start();
         } catch (IOException e) {
-            e.printStackTrace();
             LOGGER.error("Could not start process.");
+            LOGGER.error(e);
             return createBenchmarkingResult(e.getMessage());
         }
 

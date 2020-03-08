@@ -1,5 +1,6 @@
 package pacr.benchmarker.endpoints;
 
+import lombok.AllArgsConstructor;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.stereotype.Component;
@@ -13,17 +14,10 @@ import java.lang.reflect.Type;
  * @author Pavel Zwerschke
  */
 @Component
+@AllArgsConstructor
 public class SSHKeyHandler implements StompFrameHandler {
 
     private SSHKeyUpdater sshKeyUpdater;
-
-    /**
-     * Creates an instance of SSHKeyHandler.
-     * @param sshKeyUpdater is needed for updating the SSH keys.
-     */
-    public SSHKeyHandler(SSHKeyUpdater sshKeyUpdater) {
-        this.sshKeyUpdater = sshKeyUpdater;
-    }
 
     @Override
     public Type getPayloadType(StompHeaders stompHeaders) {
