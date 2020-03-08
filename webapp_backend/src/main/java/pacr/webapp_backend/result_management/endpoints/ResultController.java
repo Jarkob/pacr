@@ -1,5 +1,12 @@
 package pacr.webapp_backend.result_management.endpoints;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -9,26 +16,18 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.result_management.services.CommitHistoryItem;
-import pacr.webapp_backend.result_management.services.OutputBenchmarkingResult;
 import pacr.webapp_backend.result_management.services.DiagramOutputResult;
+import pacr.webapp_backend.result_management.services.OutputBenchmarkingResult;
 import pacr.webapp_backend.result_management.services.ResultGetter;
 import pacr.webapp_backend.result_management.services.ResultManager;
 import pacr.webapp_backend.shared.IAuthenticator;
 
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * Provides endpoints for getting benchmarking results and deleting them.
@@ -105,7 +104,7 @@ public class ResultController {
      * @param endTimeStamp the end time of the results, as the number of seconds since 1970/01/01.
      * @return the benchmarking results of one benchmark.
      */
-    @GetMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{startTimeStamp}/{endTimeStamp}")
+    @PostMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{startTimeStamp}/{endTimeStamp}")
     public Map<String, DiagramOutputResult> getResultPageForBranchAndBenchmark(@PathVariable int benchmarkId,
                                                    @PathVariable int repositoryId,
                                                    @NotNull @RequestBody BranchInput branch,

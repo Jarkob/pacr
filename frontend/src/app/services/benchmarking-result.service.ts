@@ -1,9 +1,20 @@
-import { DiagramOutputResult } from './../classes/diagram-output-result';
 import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+
+interface Branch {
+  name: string;
+}
+
+interface Property {
+  name: string;
+}
+
+const httpOptions = {
+  headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+};
 
 @Injectable({
   providedIn: 'root'
@@ -29,9 +40,11 @@ export class BenchmarkingResultService {
    * @param repository the id of the repository
    * @param branch the branch
    */
-  public getBenchmarkingResults(benchmark: number, repositoryId: number, branch: string, from: number, until: number): Observable<any> {
-    return this.http.get<any>(this.globalService.url
-      + '/results/pageable/benchmark/' + benchmark + '/' + repositoryId + '/' + branch + '/' + from + '/' + until);
+  public getBenchmarkingResults(benchmark: number, repositoryId: number, branchName: string, from: number, until: number): Observable<any> {
+    const branch: Branch = {name: branchName};
+    
+    return this.http.post<any>(this.globalService.url
+      + '/results/pageable/benchmark/' + benchmark + '/' + repositoryId + '/' + from + '/' + until, branch, httpOptions);
   }
 
   /**
@@ -73,7 +86,9 @@ export class BenchmarkingResultService {
    * @param propertyName the name of the benchmark property
    */
   public getBenchmarkPropertyMeasurements(commitHash: string, benchmarkId: number, propertyName: string): Observable<any> {
-    return this.http.get<any>(this.globalService.url + '/results/commit/' + commitHash + '/' + benchmarkId + '/' + propertyName);
+    const property: Property = {name: propertyName};
+
+    return this.http.post<any>(this.globalService.url + '/results/commit/' + commitHash + '/' + benchmarkId, property, httpOptions);
   }
 
 }

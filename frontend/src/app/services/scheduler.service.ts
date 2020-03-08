@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { GlobalService } from './global.service';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Job } from '../classes/job';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
