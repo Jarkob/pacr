@@ -43,7 +43,7 @@ export class DiagramComponent implements OnInit {
     private benchmarkService: BenchmarkService,
     private detailViewService: DetailViewService,
     private formBuilder: FormBuilder,
-    private dialog: MatDialog
+    private dialog: MatDialog,
     private datePipe: DatePipe,
     private shortenString: ShortenStringPipe
   ) {
