@@ -310,7 +310,7 @@ public class GitTracking implements IRepositoryImporter {
     }
 
     private boolean isTracked(LocalDate commitDate, LocalDate observeFromDate) {
-        return observeFromDate.isBefore(commitDate) || observeFromDate.isEqual(commitDate);
+        return observeFromDate == null || observeFromDate.isBefore(commitDate) || observeFromDate.isEqual(commitDate);
     }
 
     /**
