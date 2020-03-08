@@ -3,7 +3,7 @@ import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/mat
 import { GlobalService } from './../services/global.service';
 import { MatSnackBar, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material';
 import { Subscription, interval } from 'rxjs';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { StringService } from './../services/strings.service';
 import { RepositoryService } from './../services/repository.service';
 import { Repository } from '../classes/repository';
@@ -37,7 +37,7 @@ export const MY_FORMATS = {
     {provide: MAT_DATE_FORMATS, useValue: MY_FORMATS},
   ],
 })
-export class AdminRepositoriesComponent implements OnInit, OnDestroy {
+export class AdminRepositoriesComponent implements OnInit {
 
   constructor(
     private stringService: StringService,
@@ -419,8 +419,4 @@ export class AdminRepositoriesComponent implements OnInit, OnDestroy {
     return date;
   }
 
-  public ngOnDestroy() {
-    this.nextExecutionTimeSubscription.unsubscribe();
-    this.repositorySubscription.unsubscribe();
-  }
 }

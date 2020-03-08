@@ -2,7 +2,7 @@ import { PageEvent } from '@angular/material';
 import { Subscription, interval } from 'rxjs';
 import { StringService } from './../services/strings.service';
 import { Event } from './../classes/event';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { EventService } from '../services/event.service';
 
 /**
@@ -14,7 +14,7 @@ import { EventService } from '../services/event.service';
   templateUrl: './events.component.html',
   styleUrls: ['./events.component.css']
 })
-export class EventsComponent implements OnInit, OnDestroy {
+export class EventsComponent implements OnInit {
 
   constructor(
     private eventService: EventService,
@@ -75,10 +75,6 @@ export class EventsComponent implements OnInit, OnDestroy {
    */
   public trackEvent(index: number, item: Event): number {
     return item.id;
-  }
-
-  public ngOnDestroy() {
-    this.eventSubscription.unsubscribe();
   }
 
 }

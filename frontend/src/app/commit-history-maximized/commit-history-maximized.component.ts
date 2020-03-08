@@ -1,7 +1,6 @@
 import { Subscription, interval } from 'rxjs';
 import { PageEvent } from '@angular/material';
 import { CommitHistoryItem } from './../classes/commit-history-item';
-import { CommitBenchmarkingResult } from './../classes/commit-benchmarking-result';
 import { EventService } from './../services/event.service';
 import { StringService } from './../services/strings.service';
 import { CommitHistoryMaximizedRef } from './../commit-history/commit-history-maximized-ref';
