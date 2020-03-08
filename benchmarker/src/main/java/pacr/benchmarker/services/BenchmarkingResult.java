@@ -16,6 +16,10 @@ public class BenchmarkingResult {
         this.globalError = "";
     }
 
+    /**
+     * Creates a new instance of BenchmarkingResult.
+     * @param adapter is the adapter supplying the necessary attributes.
+     */
     public BenchmarkingResult(BenchmarkingResultAdapter adapter) {
         this.benchmarks = adapter.getBenchmarks();
         this.globalError = adapter.getError();

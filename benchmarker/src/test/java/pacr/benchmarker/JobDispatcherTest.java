@@ -79,6 +79,7 @@ public class JobDispatcherTest {
 
         BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
 
+        // check that error message is correct
         assertEquals("this is big error oh no", result.getGlobalError());
 
         assertEquals(0, result.getBenchmarks().size());
