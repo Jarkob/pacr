@@ -53,7 +53,7 @@ Optional: (currently required for diagrams)
 ### Backend
 
 1. Follow steps 1-3 from setup backend
-2. Run 'mvn package'
+2. Run `mvn package`
 3. Deploy jar to desired location with application.properties (optional) and ssh.key (must contain public ssh key)
 4. Execute the jar file
 
@@ -67,6 +67,6 @@ Optional: (currently required for diagrams)
 ### Benchmarker
 
 1. Follow steps 1-2 from setup benchmarker
-2. Run 'mvn package'
+2. Run `mvn package`
 3. Deploy jar to desired location with runner directory and ssh.key (must contain public ssh key)
 4. Execute the jar file (after starting backend)
