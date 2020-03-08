@@ -1,5 +1,8 @@
 package pacr.webapp_backend.git_tracking.endpoints;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -8,6 +11,7 @@ import java.util.List;
  *
  * @author Pavel Zwerschke
  */
+@Getter @Setter
 public class TransferRepository {
 
     private static final String WEBHOOK_PREFIX = "/webhooks/";
@@ -48,139 +52,5 @@ public class TransferRepository {
         this.observeFromDate = observeFromDate;
         this.commitLinkPrefix = commitLinkPrefix;
         this.webHookURL = WEBHOOK_PREFIX + id;
-    }
-
-    /**
-     * @return whether all branches are being tracked.
-     */
-    public boolean isTrackAllBranches() {
-        return trackAllBranches;
-    }
-
-    /**
-     * @param trackAllBranches is the option whether all branches are being tracked.
-     */
-    public void setTrackAllBranches(final boolean trackAllBranches) {
-        this.trackAllBranches = trackAllBranches;
-    }
-
-    /**
-     * @return all tracked branches.
-     */
-    public List<String> getTrackedBranches() {
-        return trackedBranches;
-    }
-
-    /**
-     * @param branchNames are all tracked branches.
-     */
-    public void setTrackedBranches(List<String> branchNames) {
-        this.trackedBranches = branchNames;
-    }
-
-    /**
-     * @return the pull URL of the repository.
-     */
-    public String getPullURL() {
-        return pullURL;
-    }
-
-    /**
-     * @param pullURL is the pull URL of the repository.
-     */
-    public void setPullURL(final String pullURL) {
-        this.pullURL = pullURL;
-    }
-
-    /**
-     * @return the name of the repository.
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * @param name is the name of the repository.
-     */
-    public void setName(final String name) {
-        this.name = name;
-    }
-
-    /**
-     * @return whether a hook is set or not for this repository.
-     */
-    public boolean getIsHookSet() {
-        return isHookSet;
-    }
-
-    /**
-     * @param hookSet is whether a hook is set or not for this repository.
-     */
-    public void setHookSet(final boolean hookSet) {
-        isHookSet = hookSet;
-    }
-
-    /**
-     * @return the color of this repository.
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * @return the web hook URL.
-     */
-    public String getWebHookURL() {
-        return webHookURL;
-    }
-
-    /**
-     * @param color is the color of this repository.
-     */
-    public void setColor(final String color) {
-        this.color = color;
-    }
-
-    /**
-     * @return the date from which the commits are being observed.
-     */
-    public LocalDate getObserveFromDate() {
-        return observeFromDate;
-    }
-
-    /**
-     * @param observeFromDate is the date from which the commits are being observed.
-     */
-    public void setObserveFromDate(final LocalDate observeFromDate) {
-        this.observeFromDate = observeFromDate;
-    }
-
-    /**
-     * @return the commit link prefix.
-     */
-    public String getCommitLinkPrefix() {
-        return commitLinkPrefix;
-    }
-
-    /**
-     * @param commitLinkPrefix is the commit link prefix.
-     */
-    public void setCommitLinkPrefix(final String commitLinkPrefix) {
-        this.commitLinkPrefix = commitLinkPrefix;
-    }
-
-
-    /**
-     * @return the ID for this repository.
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @param id is the ID for this repository.
-     */
-    public void setId(final int id) {
-        this.id = id;
     }
 }

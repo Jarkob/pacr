@@ -18,8 +18,6 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Collection;
-import java.util.List;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
@@ -106,47 +104,6 @@ public class GitRepository implements IRepository {
     }
 
     /**
-     * Returns the repository ID.
-     * @return repository id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets the repository ID.
-     * @param id is the repository id.
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    /**
-     * Returns whether all branches or just the master branch are being tracked.
-     * @return true if all branches are being tracked, false if just the master branch.
-     */
-    public boolean isTrackAllBranches() {
-        return trackAllBranches;
-    }
-
-    /**
-     * Gets the commit link prefix of the repository.
-     * @return the prefix of the URL directing to the commit.
-     */
-    public String getCommitLinkPrefix() {
-        return commitLinkPrefix;
-    }
-
-    /**
-     * Returns all selected branches. These are all tracked branches if isTrackAllBranches returns true or
-     * all ignored branches if isTrackAllBranches returns false.
-     * @return selected Branches
-     */
-    public Collection<GitBranch> getTrackedBranches() {
-        return trackedBranches;
-    }
-
-    /**
      * Sets the pull URL for this repository.
      * @param pullURL is the pull URL.
      */
@@ -178,47 +135,6 @@ public class GitRepository implements IRepository {
         }
 
         return branchNames;
-    }
-
-    /**
-     * Sets the name of the repository.
-     * @param name is the name of the repository.
-     */
-    public void setName(@NotNull String name) {
-        Objects.requireNonNull(name);
-        this.name = name;
-    }
-
-    /**
-     * Returns the name of the repository.
-     * @return name
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Returns whether a WebHook is set for this repository or not.
-     * @return true if a WebHook is set, false if no WebHook is set.
-     */
-    public boolean isHookSet() {
-        return isHookSet;
-    }
-
-    /**
-     * Returns the color in which the repository is displayed.
-     * @return color
-     */
-    public String getColor() {
-        return color;
-    }
-
-    /**
-     * Returns the date from which on the repository is being observed. All commits before that date are ignored.
-     * @return date
-     */
-    public LocalDate getObserveFromDate() {
-        return observeFromDate;
     }
 
     /**
@@ -266,9 +182,9 @@ public class GitRepository implements IRepository {
             if (branch.getName().equals(branchName)) {
                 return branch;
             }
-    }
+        }
 
-    throw new NoSuchElementException("Branch " + branchName + " does not exist.");
+        throw new NoSuchElementException("Branch " + branchName + " does not exist.");
     }
 
     /**
@@ -286,41 +202,6 @@ public class GitRepository implements IRepository {
 
         final GitBranch newBranch = new GitBranch(branchName);
         trackedBranches.add(newBranch);
-    }
-
-    /**
-     * @param trackAllBranches is the options whether all branches are tracked or only master branch.
-     */
-    public void setTrackAllBranches(boolean trackAllBranches) {
-        this.trackAllBranches = trackAllBranches;
-    }
-
-    /**
-     * @param hookSet is whether a hook is set for the repository.
-     */
-    public void setIsHookSet(boolean hookSet) {
-        this.isHookSet = hookSet;
-    }
-
-    /**
-     * @param color is the new color of the repository.
-     */
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    /**
-     * @param observeFromDate is the date from which on the commits are being tracked.
-     */
-    public void setObserveFromDate(LocalDate observeFromDate) {
-        this.observeFromDate = observeFromDate;
-    }
-
-    /**
-     * @return returns the selected branches.
-     */
-    public Set<String> getSelectedBranches() {
-        return selectedBranches;
     }
 
     /**

@@ -5,8 +5,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pacr.webapp_backend.git_tracking.services.GitTracking;
 import pacr.webapp_backend.git_tracking.services.NextExecutionGetter;
 
-import java.time.LocalDateTime;
-
 /**
  * Gets the next pull execution time.
  *

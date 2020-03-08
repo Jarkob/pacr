@@ -161,7 +161,7 @@ public class RepositoryManagerController {
 
         return gitTracking.addRepository(transferRepository.getPullURL(), transferRepository.getObserveFromDate(),
                 transferRepository.getName(), selectedBranches,
-                transferRepository.isTrackAllBranches(), transferRepository.getIsHookSet());
+                transferRepository.isTrackAllBranches(), transferRepository.isHookSet());
     }
 
     /**
