@@ -71,9 +71,14 @@ public class ResultBenchmarkSaver extends ResultSaver {
             averageImprovementPercentage = (int) Math.round(totalImprovementPercentage / numberOfComparisons);
         }
 
+        String isComparedHash = null;
+        if (result.isCompared()) {
+            isComparedHash = comparisonCommitHash;
+        }
+
         final NewResultEvent benchmarkingEvent = new NewResultEvent(EventCategory.BENCHMARKING, commit.getCommitHash(),
                 commit.getRepositoryName(), result.getGlobalError(), averageImprovementPercentage,
-                comparisonCommitHash);
+                isComparedHash);
 
         LOGGER.info("creating event for new result for commit {}", commit.getCommitHash());
 
