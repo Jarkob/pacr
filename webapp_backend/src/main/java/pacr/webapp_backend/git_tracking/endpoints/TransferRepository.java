@@ -21,7 +21,7 @@ public class TransferRepository {
     private List<String> trackedBranches;
     private String pullURL;
     private String name;
-    private boolean isHookSet;
+    private boolean hookSet;
     private String color;
     private LocalDate observeFromDate;
     private String commitLinkPrefix;
@@ -47,7 +47,7 @@ public class TransferRepository {
         this.trackedBranches = trackedBranches;
         this.pullURL = pullURL;
         this.name = name;
-        this.isHookSet = isHookSet;
+        this.hookSet = isHookSet;
         this.color = color;
         this.observeFromDate = observeFromDate;
         this.commitLinkPrefix = commitLinkPrefix;
