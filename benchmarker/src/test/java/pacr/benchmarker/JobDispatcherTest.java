@@ -2,7 +2,6 @@ package pacr.benchmarker;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import pacr.benchmarker.services.BenchmarkProperty;
 import pacr.benchmarker.services.BenchmarkingResult;
@@ -44,7 +43,7 @@ public class JobDispatcherTest {
         jobDispatcher = new JobDispatcher(runnerScript + runnerScriptExtension, RUNNER_DIR);
     }
 
-    @Test @Disabled
+    @Test
     public void testRunner() {
         BenchmarkingResult result = jobDispatcher.dispatchJob(RELATIVE_TEST_REPO_PATH);
 

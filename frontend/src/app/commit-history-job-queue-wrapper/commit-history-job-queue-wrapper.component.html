@@ -6,7 +6,7 @@
     <mat-tab-group #tabGroup [selectedIndex]="defaultTabIndex" animationDuration="0ms">
 
         <mat-tab label="Latest">
-            <app-commit-history #commitHistory ></app-commit-history>
+            <app-commit-history #commitHistory [openDetailViewMaximized]="openDetailViewMaximized"></app-commit-history>
         </mat-tab>
         
         <mat-tab label="Queue">

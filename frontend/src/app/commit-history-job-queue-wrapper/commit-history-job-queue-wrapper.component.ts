@@ -10,6 +10,7 @@ export class CommitHistoryJobQueueWrapperComponent implements OnInit {
   constructor() { }
 
   @Input() defaultTabIndex = 0;
+  @Input() openDetailViewMaximized = false;
 
   ngOnInit() {
   }

@@ -12,7 +12,6 @@ import { Component, OnInit } from '@angular/core';
 export class DetailViewComparisonWrapperComponent implements OnInit {
 
   constructor(
-    private previewDialog: DetailViewMaximizerService,
     private detailViewService: DetailViewService
   ) { }
 
@@ -31,9 +30,7 @@ export class DetailViewComparisonWrapperComponent implements OnInit {
    * maximize the detail view
    */
   public maximizeDetailView() {
-    const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
-      commitHash: this.commitHash
-    });
+    this.detailViewService.openMaximizedDetailView(this.commitHash);
   }
 
 }

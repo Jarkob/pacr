@@ -5,7 +5,7 @@ import { Benchmarker } from './../classes/benchmarker';
 import { Subscription, interval } from 'rxjs';
 import { BenchmarkerCommunicationService } from './../services/benchmarker-communication.service';
 import { StringService } from './../services/strings.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 
 /**
  * shows a list of the currently registered benchmarkers
@@ -15,7 +15,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './benchmarker-list.component.html',
   styleUrls: ['./benchmarker-list.component.css']
 })
-export class BenchmarkerListComponent implements OnInit {
+export class BenchmarkerListComponent implements OnInit, OnDestroy {
 
   constructor(
     private stringService: StringService,
@@ -78,6 +78,10 @@ export class BenchmarkerListComponent implements OnInit {
     const dialogRef: DetailViewMaximizedRef = this.previewDialog.open({
       commitHash: selectedCommitHash
     });
+  }
+
+  public ngOnDestroy() {
+    this.benchmarkerSubscription.unsubscribe();
   }
 
 }

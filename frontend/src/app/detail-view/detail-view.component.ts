@@ -70,6 +70,7 @@ export class DetailViewComponent implements OnInit, OnDestroy {
       data => {
         this.benchmarkingResult = data;
 
+        console.log(this.benchmarkingResult);
         this.selected = true;
 
         this.selectedBenchmarkProperty = null;
@@ -85,6 +86,10 @@ export class DetailViewComponent implements OnInit, OnDestroy {
     );
   }
 
+  /**
+   * Globally selects the given commit hash for all detail views.
+   * @param commitHash the commit hash which is selected
+   */
   public updateSelectedCommit(commitHash: string) {
     this.detailViewService.selectCommit(commitHash);
   }

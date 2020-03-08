@@ -44,10 +44,9 @@ export class LoginComponent implements OnInit {
           () => {
             this.loading = false;
             this.router.navigateByUrl(this.returnUrl);
-            console.log('Login successful');
           },
           err => {
-            console.error('Error: ', err);
+            err.message = "Login Unsuccessful";
             this.dialog.open(ErrorComponent, {data: err});
             this.loading = false;
           }

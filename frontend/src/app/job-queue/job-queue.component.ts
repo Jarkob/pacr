@@ -1,6 +1,6 @@
 import { AuthenticationService } from './../services/authentication.service';
 import { SchedulerService } from './../services/scheduler.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Job } from '../classes/job';
 import { Subscription, interval } from 'rxjs';
 import { PageEvent } from '@angular/material';
@@ -13,7 +13,7 @@ import { PageEvent } from '@angular/material';
   templateUrl: './job-queue.component.html',
   styleUrls: ['./job-queue.component.css']
 })
-export class JobQueueComponent implements OnInit {
+export class JobQueueComponent implements OnInit, OnDestroy {
 
   constructor(
     private schedulerService: SchedulerService,
@@ -100,6 +100,10 @@ export class JobQueueComponent implements OnInit {
         this.getQueue();
       }
     );
+  }
+
+  public ngOnDestroy() {
+    this.queueSubscription.unsubscribe();
   }
 
 }

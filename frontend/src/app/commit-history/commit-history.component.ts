@@ -7,7 +7,7 @@ import { StringService } from './../services/strings.service';
 import { CommitHistoryMaximizerService } from './commit-history-maximizer.service';
 import { CommitHistoryMaximizedRef } from './commit-history-maximized-ref';
 import { EventService } from './../services/event.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 /**
  * shows the commit history
@@ -27,6 +27,8 @@ export class CommitHistoryComponent implements OnInit {
     private cookieService: CookieService
   ) { }
 
+  @Input() openDetailViewMaximized = false;
+
   commitsPage: any;
   commits: CommitHistoryItem[];
   commitsPageEvent: PageEvent = new PageEvent();
@@ -35,7 +37,7 @@ export class CommitHistoryComponent implements OnInit {
 
   strings: any;
 
-  commitHistoryInterval = 5; // in seconds
+  commitHistoryInterval = 20; // in seconds
   commitHistorySubscription: Subscription;
 
   lastVisit: Date = null;
@@ -45,7 +47,11 @@ export class CommitHistoryComponent implements OnInit {
    * @param commitHash the hash of the commit to be selected
    */
   public selectCommit(commitHash: string) {
-    this.detailViewService.selectCommit(commitHash);
+    if (this.openDetailViewMaximized) {
+      this.detailViewService.openMaximizedDetailView(commitHash);
+    } else {
+      this.detailViewService.selectCommit(commitHash);
+    }    
   }
 
   ngOnInit() {
