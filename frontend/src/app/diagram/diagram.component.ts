@@ -1,3 +1,4 @@
+import { CookieService } from 'ngx-cookie-service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorComponent } from './../error/error.component';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
@@ -45,8 +46,19 @@ export class DiagramComponent implements OnInit {
     private formBuilder: FormBuilder,
     private datePipe: DatePipe,
     private shortenString: ShortenStringPipe,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cookieService: CookieService
   ) {
+    if (this.cookieService.check('last-until')) {
+      this.until = this.cookieService.get('last-until') as unknown as number;
+    } else {
+      this.until = moment().unix();
+    }
+    if (this.cookieService.check('last-from')) {
+      this.from = this.cookieService.get('last-from') as unknown as number;
+    } else {
+      this.from = moment().subtract(1, 'month').unix();
+    }
   }
 
   @Input() inSelectedBenchmark: Benchmark;
@@ -71,8 +83,8 @@ export class DiagramComponent implements OnInit {
 
   currentDate = new Date();
 
-  until = moment().unix();
-  from = moment().subtract(1, 'month').unix();
+  until: number;
+  from: number;
 
   groupFrom: FormGroup;
   groupUntil: FormGroup;
@@ -306,12 +318,14 @@ export class DiagramComponent implements OnInit {
 
   public changeFrom(event: MatDatepickerInputEvent<Date>) {
     this.from = moment(event.value).unix();
+    this.cookieService.set('last-from', '' + this.from);
     this.loading = true;
     this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, 0, this.datasets.length);
   }
 
   public changeUntil(event: MatDatepickerInputEvent<Date>) {
     this.until = moment(event.value).unix();
+    this.cookieService.set('last-until', '' + this.until);
     this.loading = true;
     this.getBenchmarkingResults(Array.from(this.repositories.keys()), 0, 0, this.datasets.length);
   }

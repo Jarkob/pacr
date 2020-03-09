@@ -51,7 +51,7 @@ export class CommitHistoryComponent implements OnInit {
       this.detailViewService.openMaximizedDetailView(commitHash);
     } else {
       this.detailViewService.selectCommit(commitHash);
-    }    
+    }
   }
 
   ngOnInit() {
@@ -90,7 +90,6 @@ export class CommitHistoryComponent implements OnInit {
     if (!this.lastVisit || !commit) {
       return true;
     }
-    
     return this.lastVisit < new Date(commit.entryDate);
   }
 
