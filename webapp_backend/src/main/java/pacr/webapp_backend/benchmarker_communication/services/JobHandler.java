@@ -65,6 +65,8 @@ public class JobHandler implements INewRegistrationListener, IObserver, IJobRegi
             benchmarkerPool.freeBenchmarker(address);
 
             if (result != null) {
+                jobProvider.addToGroupTimeSheet(result.getRepository(), result.getExecutionTime());
+
                 resultSaver.saveBenchmarkingResults(result);
 
                 LOGGER.info("Received job results for '{}' | '{}' from benchmarker '{}'.",

@@ -5,6 +5,7 @@ import { EventService } from './../services/event.service';
 import { StringService } from './../services/strings.service';
 import { CommitHistoryMaximizedRef } from './../commit-history/commit-history-maximized-ref';
 import { Component, OnInit, HostListener } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
 const ESCAPE_KEY = 27;
 
@@ -18,7 +19,8 @@ export class CommitHistoryMaximizedComponent implements OnInit {
   constructor(
     public dialogRef: CommitHistoryMaximizedRef,
     private stringService: StringService,
-    private eventService: EventService
+    private eventService: EventService,
+    private cookieService: CookieService
   ) { }
 
   strings: any;
@@ -32,12 +34,18 @@ export class CommitHistoryMaximizedComponent implements OnInit {
   commitHistoryInterval = 20; // in seconds
   commitHistorySubscription: Subscription;
 
+  lastVisit: Date = null;
+
   ngOnInit() {
     this.stringService.getCommitHistoryStrings().subscribe(
       data => {
         this.strings = data;
       }
     );
+
+    this.commitsPageEvent.pageIndex = 0;
+
+    this.updateLastVisit();
 
     this.getCommitHistory(this.commitsPageEvent);
     this.commitHistorySubscription = interval(this.commitHistoryInterval * 1000).subscribe(
@@ -62,6 +70,23 @@ export class CommitHistoryMaximizedComponent implements OnInit {
   public selectCommit(commitHash: string) {
     this.dialogRef.selectCommit(commitHash);
     this.close();
+  }
+
+  private updateLastVisit() {
+    const cookieKey = 'last-visit';
+
+    const lastVisit = this.cookieService.get(cookieKey);
+    if (!isNaN(Date.parse(lastVisit))) {
+      this.lastVisit = new Date(lastVisit);
+    }
+  }
+
+  public isNewCommit(commit: CommitHistoryItem): boolean {
+    if (!this.lastVisit || !commit) {
+      return true;
+    }
+    
+    return this.lastVisit < new Date(commit.entryDate);
   }
 
   /**

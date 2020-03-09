@@ -112,8 +112,6 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         if (job != null) {
             removeUnusedGroupsAfterPop(job.getJobGroupTitle());
             jobAccess.deleteJob(job);
-        } else {
-            removeUnusedGroupsAfterPop(null);
         }
 
         return job;
@@ -130,11 +128,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
             JobGroup group = groupQueue.peek();
             while (group != null && !jobGroupTitle.equals(group.getTitle())) {
                 removeJobGroup(group.getTitle());
+                group = groupQueue.peek();
             }
-        } else {
-            Collection<String> groupsToRemove = new ArrayList<>();
-            groupQueue.forEach(group -> groupsToRemove.add(group.getTitle()));
-            groupsToRemove.forEach(this::removeJobGroup);
         }
     }
 
