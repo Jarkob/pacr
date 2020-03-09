@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -41,6 +42,7 @@ public class BenchmarkProperty implements IBenchmarkProperty {
         return results;
     }
 
+    @Nullable
     @Override
     public String getError() {
         if (!StringUtils.hasText(error)) {

@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import pacr.webapp_backend.shared.ISystemEnvironment;
 
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ import java.util.Objects;
  */
 @Entity
 @Getter
+@NoArgsConstructor
 public class SystemEnvironment implements ISystemEnvironment {
     @Id
     @GeneratedValue
@@ -25,12 +27,6 @@ public class SystemEnvironment implements ISystemEnvironment {
     private String kernel;
     private int cores;
     private long memory;
-
-    /**
-     * Creates empty system environment. Needed for jpa.
-     */
-    public SystemEnvironment() {
-    }
 
     /**
      * Creates a system environment. Copies all data from the given system environment.

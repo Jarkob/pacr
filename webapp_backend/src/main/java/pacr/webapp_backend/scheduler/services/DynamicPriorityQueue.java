@@ -1,5 +1,7 @@
 package pacr.webapp_backend.scheduler.services;
 
+import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -22,6 +24,7 @@ public class DynamicPriorityQueue<E> extends PriorityQueue<E> {
         super(comparator);
     }
 
+    @Nullable
     @Override
     public E peek() {
         if (isEmpty()) {
@@ -42,9 +45,10 @@ public class DynamicPriorityQueue<E> extends PriorityQueue<E> {
      * @param index the index of the returned item.
      * @return the item at the given index or null if the index is invalid.
      */
-    public E get(int index) {
+    @Nullable
+    public E get(final int index) {
         if (index >= 0 && index < this.size()) {
-            List<E> allElements = new ArrayList<>(this);
+            final List<E> allElements = new ArrayList<>(this);
             allElements.sort(this.comparator());
 
             return allElements.get(index);

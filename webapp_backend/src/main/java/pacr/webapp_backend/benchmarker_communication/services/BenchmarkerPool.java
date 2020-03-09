@@ -11,6 +11,7 @@ import java.util.Queue;
 import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -105,6 +106,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
         return !freeBenchmarkers.isEmpty();
     }
 
+    @Nullable
     @Override
     public String getFreeBenchmarker() {
         if (hasFreeBenchmarkers()) {
@@ -141,7 +143,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
     }
 
     @Override
-    public void addListener(INewRegistrationListener registrationListener) {
+    public void addListener(final INewRegistrationListener registrationListener) {
         if (registrationListener != null && !newRegistrationListeners.contains(registrationListener)) {
             newRegistrationListeners.add(registrationListener);
         }
@@ -153,7 +155,7 @@ public class BenchmarkerPool implements IBenchmarkerHandler, IBenchmarkerPool {
         }
     }
 
-    private void verifyAddress(String address) {
+    private static void verifyAddress(final String address) {
         if (!StringUtils.hasText(address)) {
             throw new IllegalArgumentException("The address is not valid.");
         }

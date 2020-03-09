@@ -58,7 +58,7 @@ public class EventContainer {
      * @param pageable information about the requested page.
      * @return a sorted list of all events in this event manager.
      */
-    Page<Event> getEvents(Pageable pageable) {
+    Page<Event> getEvents(final Pageable pageable) {
         Page<Event> page = eventAccess.findByCategory(pageable, category);
 
         if (page == null) {

@@ -1,5 +1,6 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
+import lombok.NoArgsConstructor;
 import pacr.webapp_backend.shared.ICommit;
 
 import javax.persistence.Entity;
@@ -28,6 +29,7 @@ import java.util.Set;
  * @author Pavel Zwerschke
  */
 @Entity
+@NoArgsConstructor
 public class GitCommit implements ICommit {
 
     private static final int MAX_STRING_LENGTH = 2000;
@@ -53,11 +55,6 @@ public class GitCommit implements ICommit {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<GitBranch> branches;
 
-    /**
-     * Creates an empty commit. Necessary to be an Entity.
-     */
-    public GitCommit() {
-    }
 
     /**
      * Creates a commit.
@@ -67,8 +64,9 @@ public class GitCommit implements ICommit {
      * @param authorDate is the author date.
      * @param repository is the repository this commit belongs to.
      */
-    public GitCommit(@NotNull final String commitHash, @NotNull final String commitMessage, @NotNull final LocalDateTime commitDate,
-                     @NotNull final LocalDateTime authorDate, @NotNull final GitRepository repository) {
+    public GitCommit(@NotNull final String commitHash, @NotNull final String commitMessage,
+                     @NotNull final LocalDateTime commitDate, @NotNull final LocalDateTime authorDate,
+                     @NotNull final GitRepository repository) {
         Objects.requireNonNull(commitHash);
         Objects.requireNonNull(commitMessage);
         Objects.requireNonNull(commitDate);
@@ -224,7 +222,7 @@ public class GitCommit implements ICommit {
         parentHashes.add(commitHash);
     }
 
-    public boolean isOnBranch(String branchName) {
+    public boolean isOnBranch(final String branchName) {
         return getBranchNames().contains(branchName);
     }
 

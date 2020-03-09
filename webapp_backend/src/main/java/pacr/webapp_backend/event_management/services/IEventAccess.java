@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import pacr.webapp_backend.shared.EventCategory;
 
 /**
- * Interace to store and retrieve events.
+ * Interface to store and retrieve events.
  */
 public interface IEventAccess {
 

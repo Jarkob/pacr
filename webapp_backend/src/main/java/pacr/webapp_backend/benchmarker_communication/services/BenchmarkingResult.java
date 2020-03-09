@@ -3,6 +3,7 @@ package pacr.webapp_backend.benchmarker_communication.services;
 import java.util.Map;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmark;
 
@@ -27,6 +28,7 @@ public class BenchmarkingResult {
     /**
      * @return an error message if there was a general error. Null is returned if there was no error.
      */
+    @Nullable
     public String getGlobalError() {
         if (!StringUtils.hasText(globalError)) {
             return null;

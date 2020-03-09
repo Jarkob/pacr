@@ -34,6 +34,8 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.jetbrains.annotations.NonNls;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.git_tracking.services.IGitTrackingAccess;
@@ -55,10 +57,10 @@ public class GitHandler {
     private static final Logger LOGGER = LogManager.getLogger(GitHandler.class);
 
     private static final int FIRST_CATCH_GROUP = 1;
-    private Pattern pattern;
+    private final Pattern pattern;
 
-    private String pathToWorkingDir;
-    private String ignoreTag;
+    private final String pathToWorkingDir;
+    private final String ignoreTag;
 
     private final IGitTrackingAccess gitTrackingAccess;
     private final TransportConfigCallback transportConfigCallback;
@@ -77,13 +79,13 @@ public class GitHandler {
      * @param labelTag is the label tag.
      * @throws IOException when the working directory cannot be created.
      */
-    public GitHandler(@NotNull @Value("${gitRepositoriesPath}") String pathToRepositories,
-                      @NotNull TransportConfigCallback transportConfigCallback,
-                      @NotNull IGitTrackingAccess gitTrackingAccess,
-                      @NotNull ICleanUpCommits cleanUpCommits,
-                      @NotNull IResultDeleter resultDeleter,
-                      @NotNull @Value("${ignoreTag}") String ignoreTag,
-                      @NotNull @Value("${labelTag}") String labelTag) throws IOException {
+    public GitHandler(@NotNull @Value("${gitRepositoriesPath}") final String pathToRepositories,
+                      @NotNull final TransportConfigCallback transportConfigCallback,
+                      @NotNull final IGitTrackingAccess gitTrackingAccess,
+                      @NotNull final ICleanUpCommits cleanUpCommits,
+                      @NotNull final IResultDeleter resultDeleter,
+                      @NotNull @Value("${ignoreTag}") final String ignoreTag,
+                      @NonNls @NotNull @Value("${labelTag}") final String labelTag) throws IOException {
         Objects.requireNonNull(pathToRepositories);
         Objects.requireNonNull(transportConfigCallback);
         Objects.requireNonNull(gitTrackingAccess);
@@ -99,10 +101,10 @@ public class GitHandler {
         this.resultDeleter = resultDeleter;
         this.ignoreTag = ignoreTag;
 
-        String labelTagRegex = ".*" + labelTag + "\\((.*)\\).*";
+        final String labelTagRegex = ".*" + labelTag + "\\((.*)\\).*";
         this.pattern = Pattern.compile(labelTagRegex);
 
-        File repositoryWorkingDir = new File(pathToWorkingDir);
+        final File repositoryWorkingDir = new File(pathToWorkingDir);
 
         if (!repositoryWorkingDir.exists() && !repositoryWorkingDir.mkdirs()) {
             throw new IOException("Could not create repository working directory.");
@@ -116,10 +118,10 @@ public class GitHandler {
      * @return new commits that need to be added.
      * @throws PullFromRepositoryException if something went wrong.
      */
-    public Set<String> pullFromRepository(@NotNull GitRepository gitRepository) throws PullFromRepositoryException {
+    public Set<String> pullFromRepository(@NotNull final GitRepository gitRepository) throws PullFromRepositoryException {
         Objects.requireNonNull(gitRepository);
 
-        Git git = initialize(gitRepository);
+        final Git git = initialize(gitRepository);
         if (git == null) {
             throw new PullFromRepositoryException("Could not initialize Git.");
         }
@@ -135,7 +137,7 @@ public class GitHandler {
             throw new PullFromRepositoryException("Could not get branches.");
         }
 
-        Set<String> commitsToBenchmark = getCommitsToBenchmark(git, gitRepository, branches);
+        final Set<String> commitsToBenchmark = getCommitsToBenchmark(git, gitRepository, branches);
 
         searchForGitTags(git);
 
@@ -145,30 +147,30 @@ public class GitHandler {
         return commitsToBenchmark;
     }
 
-    private Set<String> getCommitsToBenchmark(Git git, GitRepository gitRepository, List<Ref> branches)
+    private Set<String> getCommitsToBenchmark(final Git git, final GitRepository gitRepository, final List<Ref> branches)
             throws PullFromRepositoryException {
-        Set<String> commitsToBenchmark = new HashSet<>();
+        final Set<String> commitsToBenchmark = new HashSet<>();
 
-        Set<Ref> branchesWithForcePush = new HashSet<>();
+        final Set<Ref> branchesWithForcePush = new HashSet<>();
 
-        Set<String> activeBranches = getBranchesOfRepository(gitRepository.getPullURL());
+        final Set<String> activeBranches = getBranchesOfRepository(gitRepository.getPullURL());
 
-        for (Ref branch : branches) {
-            String name = getNameOfRef(branch);
+        for (final Ref branch : branches) {
+            final String name = getNameOfRef(branch);
             if (activeBranches.contains(name) && gitRepository.isBranchSelected(name)) {
                 try {
                     commitsToBenchmark.addAll(collectCommitsToBenchmark(branch, git, gitRepository));
-                } catch (ForcePushException e) {
+                } catch (final ForcePushException e) {
                     handleForcePush(git, gitRepository, branch);
                     branchesWithForcePush.add(branch);
                 }
             }
         }
 
-        for (Ref branch : branchesWithForcePush) {
+        for (final Ref branch : branchesWithForcePush) {
             try {
                 commitsToBenchmark.addAll(collectCommitsToBenchmark(branch, git, gitRepository));
-            } catch (ForcePushException e) {
+            } catch (final ForcePushException e) {
                 throw new PullFromRepositoryException("Couldn't resolve force push.");
             }
         }
@@ -178,27 +180,28 @@ public class GitHandler {
         return commitsToBenchmark;
     }
 
-    private Set<String> collectCommitsToBenchmark(Ref branch, Git git, GitRepository gitRepository)
+    private Set<String> collectCommitsToBenchmark(final Ref branch, final Git git, final GitRepository gitRepository)
             throws ForcePushException {
-        Set<String> commitsFromBranch = checkBranch(branch, git, gitRepository);
+        final Set<String> commitsFromBranch = checkBranch(branch, git, gitRepository);
         updateBranchHead(branch, gitRepository);
 
         return commitsFromBranch;
     }
 
-    private void updateBranchHead(Ref branch, GitRepository gitRepository) {
-        GitBranch gitBranch = gitRepository.getTrackedBranch(getNameOfRef(branch));
+    private void updateBranchHead(final Ref branch, final GitRepository gitRepository) {
+        final GitBranch gitBranch = gitRepository.getTrackedBranch(getNameOfRef(branch));
         setBranchHead(branch, gitBranch);
     }
 
-    private Git initialize(GitRepository gitRepository) {
+    @Nullable
+    private Git initialize(final GitRepository gitRepository) {
         // clone repository if it wasn't cloned already
-        File repositoryFolder = cloneRepositoryIfNotExists(gitRepository);
+        final File repositoryFolder = cloneRepositoryIfNotExists(gitRepository);
         if (repositoryFolder == null) {
             return null;
         }
 
-        Git git = initializeGit(repositoryFolder);
+        final Git git = initializeGit(repositoryFolder);
         if (git == null) {
             return null;
         }
@@ -207,15 +210,15 @@ public class GitHandler {
         LOGGER.info("Fetching repository {} ({}).", gitRepository.getName(), gitRepository.getId());
         try {
             fetchRepository(git);
-        } catch (GitAPIException e) {
+        } catch (final GitAPIException e) {
             LOGGER.error("Could not fetch repository {} ({}).", gitRepository.getName(), gitRepository.getId());
         }
 
         return git;
     }
 
-    private void handleForcePush(Git git, GitRepository gitRepository, Ref branch) {
-        Set<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
+    private void handleForcePush(final Git git, final GitRepository gitRepository, final Ref branch) {
+        final Set<String> toDelete = cleanUpCommits.cleanUp(git, gitRepository, gitTrackingAccess);
 
         resultDeleter.deleteBenchmarkingResults(toDelete);
         gitTrackingAccess.removeCommits(toDelete);
@@ -223,10 +226,10 @@ public class GitHandler {
         gitTrackingAccess.updateRepository(gitRepository);
     }
 
-    private void searchForGitTags(Git git) {
+    private void searchForGitTags(final Git git) {
         LOGGER.info("Searching for Git-Tags.");
 
-        List<Ref> tags;
+        final List<Ref> tags;
         try {
             tags = git.tagList().call();
         } catch (final GitAPIException e) {
@@ -254,13 +257,13 @@ public class GitHandler {
     private void deleteBranches(final Git git, final GitRepository gitRepository) {
         // garbage collection for trackedBranches
         Map<String, Boolean> branchNotDeleted = new HashMap<>();
-        Set<String> branchesOfRepository = getBranchesOfRepository(gitRepository.getPullURL());
+        final Set<String> branchesOfRepository = getBranchesOfRepository(gitRepository.getPullURL());
 
         for (final GitBranch branch : gitRepository.getTrackedBranches()) {
             branchNotDeleted.put(branch.getName(), Boolean.FALSE);
         }
 
-        for (String branchName : branchesOfRepository) {
+        for (final String branchName : branchesOfRepository) {
             if (branchNotDeleted.containsKey(branchName)) {
                 branchNotDeleted.put(branchName, Boolean.TRUE);
             }
@@ -282,7 +285,7 @@ public class GitHandler {
             branchNotDeleted.put(branch, Boolean.FALSE);
         }
 
-        for (String branchName : branchesOfRepository) {
+        for (final String branchName : branchesOfRepository) {
             if (branchNotDeleted.containsKey(branchName)) {
                 branchNotDeleted.put(branchName, Boolean.TRUE);
             }
@@ -296,6 +299,7 @@ public class GitHandler {
 
     }
 
+    @Nullable
     private File cloneRepositoryIfNotExists(final GitRepository gitRepository) {
         final File repositoryFolder = getRepositoryWorkingDir(gitRepository);
 
@@ -303,7 +307,7 @@ public class GitHandler {
             repositoryFolder.mkdirs();
             try {
                 cloneRepository(gitRepository);
-            } catch (GitAPIException e) {
+            } catch (final GitAPIException e) {
                 LOGGER.error("Could not clone repository {} ({}).", gitRepository.getName(), gitRepository.getId());
                 return null;
             }
@@ -311,11 +315,12 @@ public class GitHandler {
         return repositoryFolder;
     }
 
+    @Nullable
     private Git initializeGit(final File repositoryDir) {
         final Repository repository;
         try {
             repository = getRepository(repositoryDir.getAbsolutePath());
-        } catch (IOException e) {
+        } catch (final IOException e) {
             LOGGER.error(e);
             return null;
         }
@@ -333,27 +338,27 @@ public class GitHandler {
         List<Ref> branches = null;
         try {
             branches = git.branchList().setListMode(ListBranchCommand.ListMode.REMOTE).call();
-        } catch (GitAPIException e) {
+        } catch (final GitAPIException e) {
             LOGGER.error(e);
         }
         return branches;
     }
 
-    private Set<String> checkBranch(Ref branch, Git git, GitRepository gitRepository) throws ForcePushException {
-        Set<String> newCommits = new HashSet<>();
+    private Set<String> checkBranch(final Ref branch, final Git git, final GitRepository gitRepository) throws ForcePushException {
+        final Set<String> newCommits = new HashSet<>();
 
         LOGGER.info("Searching for new commits in branch {}.", getNameOfRef(branch));
 
-        Set<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository, branch);
+        final Set<GitCommit> commitsFromBranch = searchForNewCommitsInBranch(git, gitRepository, branch);
 
         LOGGER.info("Adding {} commits to database for branch {}.",
                 commitsFromBranch.size(), getNameOfRef(branch));
 
         gitTrackingAccess.addCommits(commitsFromBranch);
 
-        LocalDate observeFromDate = gitRepository.getObserveFromDate();
-        for (GitCommit commit : commitsFromBranch) {
-            LocalDate commitDate = commit.getCommitDate().toLocalDate();
+        final LocalDate observeFromDate = gitRepository.getObserveFromDate();
+        for (final GitCommit commit : commitsFromBranch) {
+            final LocalDate commitDate = commit.getCommitDate().toLocalDate();
 
             // only add commits that are after observeFromDate
             if (observeFromDate == null || isTracked(commitDate, observeFromDate)) {
@@ -366,11 +371,11 @@ public class GitHandler {
         return newCommits;
     }
 
-    private boolean isTracked(LocalDate commitDate, LocalDate observeFromDate) {
+    private boolean isTracked(final LocalDate commitDate, final LocalDate observeFromDate) {
         return observeFromDate.isBefore(commitDate) || observeFromDate.isEqual(commitDate);
     }
 
-    private void setBranchHead(Ref branch, GitBranch gitBranch) {
+    private void setBranchHead(final Ref branch, final GitBranch gitBranch) {
 
         final String headHash = branch.getObjectId().getName();
 
@@ -400,7 +405,8 @@ public class GitHandler {
         return gitCommit;
     }
 
-    private Set<GitCommit> searchForNewCommitsInBranch(final Git git, final GitRepository gitRepository, final Ref branch)
+    private Set<GitCommit> searchForNewCommitsInBranch(final Git git, final GitRepository gitRepository,
+                                                       final Ref branch)
             throws ForcePushException {
 
         assert git != null;
@@ -421,13 +427,13 @@ public class GitHandler {
         final GitBranch gitBranch = gitRepository.getTrackedBranch(branchName);
 
         // add all new commits to commits ordered by their commit history
-        List<RevCommit> commits = getNewCommits(commitsIterable, gitBranch);
-        List<GitCommit> commitsToAdd = new ArrayList<>();
+        final List<RevCommit> commits = getNewCommits(commitsIterable, gitBranch);
+        final List<GitCommit> commitsToAdd = new ArrayList<>();
 
-        for (RevCommit revCommit : commits) {
-            GitCommit commit = createCommit(gitRepository, revCommit);
+        for (final RevCommit revCommit : commits) {
+            final GitCommit commit = createCommit(gitRepository, revCommit);
 
-            Matcher m = pattern.matcher(revCommit.getFullMessage());
+            final Matcher m = pattern.matcher(revCommit.getFullMessage());
             if (m.matches()) {
                 commit.addLabel(m.group(FIRST_CATCH_GROUP));
             }
@@ -451,9 +457,9 @@ public class GitHandler {
      */
     private List<RevCommit> getNewCommits(final Iterable<RevCommit> commitsIterable, final GitBranch branch)
             throws ForcePushException {
-        List<RevCommit> commits;
+        final List<RevCommit> commits;
 
-        Set<String> hashesToUpdate = new HashSet<>();
+        final Set<String> hashesToUpdate = new HashSet<>();
 
         if (branch.getHeadHash() == null) { // branch not initialized
             commits = getNewCommitsForUnbornBranch(commitsIterable, branch, hashesToUpdate);
@@ -466,26 +472,26 @@ public class GitHandler {
         return commits;
     }
 
-    private void updateCommits(Set<String> hashesToUpdate, GitBranch branch) {
-        Set<GitCommit> commitsToUpdate = gitTrackingAccess.getCommits(hashesToUpdate);
+    private void updateCommits(final Set<String> hashesToUpdate, final GitBranch branch) {
+        final Set<GitCommit> commitsToUpdate = gitTrackingAccess.getCommits(hashesToUpdate);
 
-        for (GitCommit commit : commitsToUpdate) {
+        for (final GitCommit commit : commitsToUpdate) {
             commit.addBranch(branch);
         }
 
         gitTrackingAccess.updateCommits(commitsToUpdate);
     }
 
-    private List<RevCommit> getNewCommitsForExistingBranch(Iterable<RevCommit> commitsIterable, GitBranch branch,
-                                                           Set<String> hashesToUpdate) throws ForcePushException {
-        List<RevCommit> commits = new ArrayList<>();
-        String headHash = branch.getHeadHash();
+    private List<RevCommit> getNewCommitsForExistingBranch(final Iterable<RevCommit> commitsIterable, final GitBranch branch,
+                                                           final Set<? super String> hashesToUpdate) throws ForcePushException {
+        final List<RevCommit> commits = new ArrayList<>();
+        final String headHash = branch.getHeadHash();
 
-        for (RevCommit commit : commitsIterable) {
+        for (final RevCommit commit : commitsIterable) {
 
             if (gitTrackingAccess.containsCommit(commit.getName())) {
 
-                GitCommit alreadyContained = gitTrackingAccess.getCommit(commit.getName());
+                final GitCommit alreadyContained = gitTrackingAccess.getCommit(commit.getName());
 
                 if (!alreadyContained.isOnBranch(branch.getName())) {
                     alreadyContained.addBranch(branch);
@@ -506,14 +512,14 @@ public class GitHandler {
         return commits;
     }
 
-    private List<RevCommit> getNewCommitsForUnbornBranch(Iterable<RevCommit> commitIterable, GitBranch branch,
-                                                         Set<String> hashesToUpdate) {
-        List<RevCommit> commits = new ArrayList<>();
+    private List<RevCommit> getNewCommitsForUnbornBranch(final Iterable<RevCommit> commitIterable, final GitBranch branch,
+                                                         final Set<? super String> hashesToUpdate) {
+        final List<RevCommit> commits = new ArrayList<>();
 
-        Iterator<RevCommit> iterator = commitIterable.iterator();
+        final Iterator<RevCommit> iterator = commitIterable.iterator();
 
         while (iterator.hasNext()) {
-            RevCommit commit = iterator.next();
+            final RevCommit commit = iterator.next();
             if (!gitTrackingAccess.containsCommit(commit.getName())) {
                 commits.add(commit);
             } else {

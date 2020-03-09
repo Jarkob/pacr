@@ -25,7 +25,7 @@ public class EventManagementController {
 
     private final EventHandler eventHandler;
 
-    final EventRSSFeedView benchmarkingRSSFeed;
+    private final EventRSSFeedView benchmarkingRSSFeed;
 
     /**
      * Creates a new EventManagementController.
@@ -44,8 +44,7 @@ public class EventManagementController {
      * @return a list of all benchmarking events.
      */
     @RequestMapping("/events/benchmark")
-    public Page<Event> getBenchmarkingEvents(@PageableDefault(size = DEFAULT_PAGE_SIZE) @SortDefault.SortDefaults({
-            @SortDefault(sort = "created", direction = Sort.Direction.DESC)}) final Pageable pageable) {
+    public Page<Event> getBenchmarkingEvents(@PageableDefault(size = DEFAULT_PAGE_SIZE) @SortDefault.SortDefaults(@SortDefault(sort = "created", direction = Sort.Direction.DESC)) final Pageable pageable) {
         return eventHandler.getEvents(pageable, EventCategory.BENCHMARKING);
     }
 

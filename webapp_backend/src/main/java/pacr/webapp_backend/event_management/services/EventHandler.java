@@ -46,18 +46,18 @@ public class EventHandler implements IEventHandler {
 
         initializeEventContainer(category);
 
-        EventContainer eventContainer = eventContainers.get(category);
+        final EventContainer eventContainer = eventContainers.get(category);
         eventContainer.addEvent(eventTemplate.getTitle(), eventTemplate.getDescription());
     }
 
     @PostConstruct
     private void initialize() {
-        for (EventCategory category : EventCategory.values()) {
+        for (final EventCategory category : EventCategory.values()) {
             eventContainers.put(category, new EventContainer(category, eventAccess));
         }
     }
 
-    private void initializeEventContainer(EventCategory category) {
+    private void initializeEventContainer(final EventCategory category) {
         if (!eventContainers.containsKey(category)) {
             final EventContainer eventContainer = new EventContainer(category, eventAccess);
             eventContainers.put(category, eventContainer);

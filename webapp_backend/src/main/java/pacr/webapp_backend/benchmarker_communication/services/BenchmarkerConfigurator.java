@@ -26,7 +26,7 @@ public class BenchmarkerConfigurator implements IBenchmarkerConfigurator {
         configurationSender.sendSSHKey(sshKey);
     }
 
-    private void verifySSHKey(final String sshKey) {
+    private static void verifySSHKey(final String sshKey) {
         if (sshKey == null || sshKey.isEmpty() || sshKey.isBlank()) {
             throw new IllegalArgumentException("The sshKey is not valid.");
         }

@@ -33,7 +33,7 @@ public class PasswordCheckerTest {
      */
     @Test
     void checkPassword_match_shouldReturnTrue() {
-        final String adminHash = hashGenerator.hashPassword(PASSWORD);
+        final String adminHash = HashGenerator.hashPassword(PASSWORD);
         when(authenticationAccessMock.getAdminPasswordHash()).thenReturn(adminHash);
 
         assertTrue(passwordChecker.checkPassword(PASSWORD));
@@ -44,7 +44,7 @@ public class PasswordCheckerTest {
      */
     @Test
     void checkPassword_noMatch_shouldReturnFalse() {
-        final String adminHash = hashGenerator.hashPassword(PASSWORD);
+        final String adminHash = HashGenerator.hashPassword(PASSWORD);
         when(authenticationAccessMock.getAdminPasswordHash()).thenReturn(adminHash);
 
         assertFalse(passwordChecker.checkPassword(PASSWORD_TWO));

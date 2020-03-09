@@ -10,7 +10,7 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
  * This class assigns a name to each new client that is registered.
  * If the client is already registered it gets its old name reassigned.
  */
-public class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
+class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
 
     private static final String ATTR_PRINCIPAL = "__principal__";
 
@@ -28,7 +28,8 @@ public class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
      * @return a principal object that carries the name of the client.
      */
     @Override
-    protected Principal determineUser(final ServerHttpRequest request, final WebSocketHandler wsHandler, final Map<String, Object> attributes) {
+    protected Principal determineUser(final ServerHttpRequest request, final WebSocketHandler wsHandler,
+                                      final Map<String, Object> attributes) {
         final String name;
 
         if (attributes.containsKey(ATTR_PRINCIPAL)) {
@@ -47,7 +48,7 @@ public class AssignPrincipalHandshakeHandler extends DefaultHandshakeHandler {
      *
      * @return a unique name.
      */
-    private String generateUsername() {
+    private static synchronized String generateUsername() {
         return CLIENT_PREFIX + clientID++;
     }
 }

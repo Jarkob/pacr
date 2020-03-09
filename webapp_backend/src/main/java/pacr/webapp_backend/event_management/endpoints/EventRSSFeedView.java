@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 /**
  * RSS Feed View for one event category.
  */
-public class EventRSSFeedView extends AbstractRssFeedView {
+class EventRSSFeedView extends AbstractRssFeedView {
 
     private final EventCategory category;
     private final EventHandler eventHandler;
@@ -43,7 +43,8 @@ public class EventRSSFeedView extends AbstractRssFeedView {
     }
 
     @Override
-    protected void buildFeedMetadata(final Map<String, Object> model, final Channel feed, final HttpServletRequest request) {
+    protected void buildFeedMetadata(final Map<String, Object> model, final Channel feed,
+                                     final HttpServletRequest request) {
         final String title = "PACR RSS Feed";
         final String description = "Here you can find all events that occurred in the system.";
         final String link = "http://localhost:8080/rss";

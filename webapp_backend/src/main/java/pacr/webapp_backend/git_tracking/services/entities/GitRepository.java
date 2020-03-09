@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Collection;
 import java.util.NoSuchElementException;
 
 /**
@@ -32,35 +31,33 @@ import java.util.NoSuchElementException;
  * @author Pavel Zwerschke
  */
 @Entity
+@Getter
 public class GitRepository implements IRepository {
 
     @Id
     // When a repository id is set, it is not 0 anymore, it is an integer greater than 0.
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Getter @Setter
+    @Setter
     private int id;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @Getter
-    private Set<GitBranch> trackedBranches;
+    private final Set<GitBranch> trackedBranches;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Getter
     private Set<String> selectedBranches;
 
-    @Getter
     private String pullURL;
-    @Getter @Setter
+    @Setter
     private String name;
-    @Getter @Setter
+    @Setter
     private boolean trackAllBranches;
-    @Getter @Setter
+    @Setter
     private boolean hookSet;
-    @Getter @Setter
+    @Setter
     private String color;
-    @Getter @Setter
+    @Setter
     private LocalDate observeFromDate;
-    @Getter
     private String commitLinkPrefix;
 
     /**
@@ -116,12 +113,12 @@ public class GitRepository implements IRepository {
     }
 
     private void setCommitLinkPrefix() {
-        int startIndex = pullURL.indexOf(':') + 1; // ':' is the separator for host and repository path
-        int endIndex = pullURL.indexOf(".git");
+        final int startIndex = pullURL.indexOf(':') + 1; // ':' is the separator for host and repository path
+        final int endIndex = pullURL.indexOf(".git");
         if (startIndex >= 1 && startIndex < endIndex && pullURL.length() > endIndex) {
-            String gitHttpsPrefix = "https://" + pullURL.substring(4, startIndex - 1) + "/";
-            String repositoryInfix = pullURL.substring(startIndex, endIndex);
-            String commitSuffix = "/commit/";
+            final String gitHttpsPrefix = "https://" + pullURL.substring(4, startIndex - 1) + "/";
+            final String repositoryInfix = pullURL.substring(startIndex, endIndex);
+            final String commitSuffix = "/commit/";
 
             this.commitLinkPrefix = gitHttpsPrefix + repositoryInfix + commitSuffix;
         }
@@ -129,8 +126,8 @@ public class GitRepository implements IRepository {
 
     @Override
     public Set<String> getTrackedBranchNames() {
-        Set<String> branchNames = new HashSet<>();
-        for (GitBranch branch : trackedBranches) {
+        final Set<String> branchNames = new HashSet<>();
+        for (final GitBranch branch : trackedBranches) {
             branchNames.add(branch.getName());
         }
 
@@ -191,7 +188,7 @@ public class GitRepository implements IRepository {
      * Creates a branch if it doesn't exist yet.
      * @param branchName is the branch name.
      */
-    public void createBranchIfNotExists(@NotNull String branchName) {
+    public void createBranchIfNotExists(@NotNull final String branchName) {
         Objects.requireNonNull(branchName);
 
         for (final GitBranch branch : trackedBranches) {
@@ -207,7 +204,7 @@ public class GitRepository implements IRepository {
     /**
      * @param selectedBranches are the new selected branches.
      */
-    public void setSelectedBranches(Set<String> selectedBranches) {
+    public void setSelectedBranches(final Set<String> selectedBranches) {
         this.selectedBranches = selectedBranches;
 
         trackedBranches.removeIf(branch -> !isBranchSelected(branch.getName()));

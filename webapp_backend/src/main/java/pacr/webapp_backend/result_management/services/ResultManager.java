@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
 import pacr.webapp_backend.shared.ICommit;
@@ -38,7 +39,8 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
      * @param resultImportSaver Component for saving imported benchmarking results.
      * @param resultBenchmarkSaver Component for saving generated benchmarking results.
      */
-    ResultManager(final IResultAccess resultAccess, final IGetCommitAccess commitAccess, final ResultImportSaver resultImportSaver,
+    ResultManager(final IResultAccess resultAccess, final IGetCommitAccess commitAccess,
+                  final ResultImportSaver resultImportSaver,
                   final ResultBenchmarkSaver resultBenchmarkSaver) {
         this.resultAccess = resultAccess;
         this.commitAccess = commitAccess;
@@ -75,8 +77,9 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
             resultsWithCommits.put(result, commit);
         }
 
-        for (final IBenchmarkingResult result : resultsWithCommits.keySet()) {
-            final ICommit commit = resultsWithCommits.get(result);
+        for (final Map.Entry<IBenchmarkingResult, ICommit> entry : resultsWithCommits.entrySet()) {
+            final IBenchmarkingResult result = entry.getKey();
+            final ICommit commit = entry.getValue();
             resultImportSaver.saveResult(result, commit, getComparisonCommitHash(commit));
             updateComparisonsForChildren(result.getCommitHash());
         }
@@ -99,6 +102,7 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         updateComparisonsForChildren(benchmarkingResult.getCommitHash());
     }
 
+    @Nullable
     private String getComparisonCommitHash(final ICommit commit) {
         if (commit == null) {
             return null;
@@ -145,18 +149,18 @@ public class ResultManager implements IResultDeleter, IResultImporter, IResultSa
         for (final CommitResult resultToUpdate : resultsToUpdate) {
             if (!resultToUpdate.isCompared()) {
                 resultToUpdate.setCompared(true);
-                Map<String, BenchmarkResult> comparisonBenchmarkResults = comparisonResult.getBenchmarks();
+                final Map<String, BenchmarkResult> comparisonBenchmarkResults = comparisonResult.getBenchmarks();
 
-                for (BenchmarkResult benchmarkResult : resultToUpdate.getBenchmarkResults()) {
-                    BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResults
+                for (final BenchmarkResult benchmarkResult : resultToUpdate.getBenchmarkResults()) {
+                    final BenchmarkResult comparisonBenchmarkResult = comparisonBenchmarkResults
                             .get(benchmarkResult.getName());
 
                     if (comparisonBenchmarkResult != null) {
-                        Map<String, BenchmarkPropertyResult> comparisonPropertyResults = comparisonBenchmarkResult
+                        final Map<String, BenchmarkPropertyResult> comparisonPropertyResults = comparisonBenchmarkResult
                                 .getBenchmarkProperties();
 
-                        for (BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
-                            BenchmarkPropertyResult comparisonPropertyResult = comparisonPropertyResults
+                        for (final BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
+                            final BenchmarkPropertyResult comparisonPropertyResult = comparisonPropertyResults
                                     .get(propertyResult.getName());
                             StatisticalCalculator.compare(propertyResult, comparisonPropertyResult);
                         }

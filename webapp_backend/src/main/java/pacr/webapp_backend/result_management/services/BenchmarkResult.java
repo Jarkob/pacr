@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management.services;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import pacr.webapp_backend.shared.IBenchmark;
 
 import javax.persistence.CascadeType;
@@ -25,6 +26,7 @@ import java.util.Set;
 @Entity
 @Table(name = "benchmark_result")
 @Getter
+@NoArgsConstructor
 public class BenchmarkResult implements IBenchmark {
 
     @Id
@@ -37,12 +39,6 @@ public class BenchmarkResult implements IBenchmark {
     @ManyToOne
     @JoinColumn(name = "benchmark_id")
     private Benchmark benchmark;
-
-    /**
-     * Creates empty benchmark result. Needed for jpa.
-     */
-    public BenchmarkResult() {
-    }
 
     /**
      * Creates a BenchmarkResult from a benchmark.

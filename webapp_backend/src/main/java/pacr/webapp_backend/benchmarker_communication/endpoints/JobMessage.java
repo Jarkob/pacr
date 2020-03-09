@@ -20,7 +20,7 @@ public class JobMessage {
      * @param repository the repository pull-url.
      * @param commitHash the commit hash.
      */
-    JobMessage(String repository, String commitHash) {
+    JobMessage(final String repository, final String commitHash) {
         this.repository = repository;
         this.commitHash = commitHash;
     }

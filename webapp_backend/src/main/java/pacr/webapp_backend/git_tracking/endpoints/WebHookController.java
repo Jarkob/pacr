@@ -33,7 +33,7 @@ public class WebHookController {
      * @param repositoryID is the ID of the repository.
      * @return OK (200) when the repository got pulled. NOT_FOUND (404) when the repository was not found.
      */
-    @RequestMapping(value = "/webhooks/{id}")
+    @RequestMapping("/webhooks/{id}")
     public ResponseEntity<Object> pullFromRepository(@PathVariable("id") final int repositoryID) {
         try {
             gitTracking.pullFromRepository(repositoryID);

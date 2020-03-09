@@ -1,6 +1,7 @@
 package pacr.webapp_backend.result_management.endpoints;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
@@ -9,17 +10,13 @@ import javax.validation.constraints.NotNull;
  * Metadata of a benchmark that was edited in the front end.
  */
 @Getter
+@NoArgsConstructor
 public class BenchmarkInput {
     private int id;
     private String customName;
     private String description;
     private int groupId;
 
-    /**
-     * Empty constructor for spring.
-     */
-    public BenchmarkInput() {
-    }
 
     /**
      * Creates a new BenchmarkInput.

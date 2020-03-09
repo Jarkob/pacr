@@ -19,7 +19,7 @@ import java.util.Objects;
 @Component
 public class ResultBenchmarkSaver extends ResultSaver {
 
-    private static final double ONE_IN_PERCENT = 100d;
+    private static final double ONE_IN_PERCENT = 100.0d;
 
     private static final Logger LOGGER = LogManager.getLogger(ResultBenchmarkSaver.class);
 
@@ -33,8 +33,8 @@ public class ResultBenchmarkSaver extends ResultSaver {
      * @param resultGetter the result getter that is the subject for observers that need to be updated.
      * @param eventHandler the event handler that events can be added to.
      */
-    ResultBenchmarkSaver(final IResultAccess resultAccess, final BenchmarkManager benchmarkManager, final ResultGetter resultGetter,
-                         final IEventHandler eventHandler) {
+    ResultBenchmarkSaver(final IResultAccess resultAccess, final BenchmarkManager benchmarkManager,
+                         final ResultGetter resultGetter, final IEventHandler eventHandler) {
         super(resultAccess, benchmarkManager);
         this.subjectForObservers = resultGetter;
         this.eventHandler = eventHandler;
@@ -60,7 +60,7 @@ public class ResultBenchmarkSaver extends ResultSaver {
         for (final BenchmarkResult benchmarkResult : result.getBenchmarkResults()) {
             for (final BenchmarkPropertyResult propertyResult : benchmarkResult.getPropertyResults()) {
                 if (propertyResult.isCompared()) {
-                    totalImprovementPercentage += (propertyResult.getRatio() - 1d) * ONE_IN_PERCENT;
+                    totalImprovementPercentage += (propertyResult.getRatio() - 1.0d) * ONE_IN_PERCENT;
                     ++numberOfComparisons;
                 }
             }

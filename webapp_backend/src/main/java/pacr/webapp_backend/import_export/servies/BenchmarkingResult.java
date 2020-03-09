@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmark;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
@@ -34,13 +35,13 @@ public class BenchmarkingResult implements IBenchmarkingResult {
 
         this.benchmarks = new HashMap<>();
         final Map<String, ? extends IBenchmark> resultBenchmarks = result.getBenchmarks();
-        for (final String benchmarkName : resultBenchmarks.keySet()) {
-            this.benchmarks.put(benchmarkName, new Benchmark(resultBenchmarks.get(benchmarkName)));
+        for (final Map.Entry<String, ? extends IBenchmark> entry : resultBenchmarks.entrySet()) {
+            this.benchmarks.put(entry.getKey(), new Benchmark(entry.getValue()));
         }
     }
 
     @Override
-    public int getRepositoryID() {
+    public final int getRepositoryID() {
         return -1;
     }
 
@@ -59,6 +60,7 @@ public class BenchmarkingResult implements IBenchmarkingResult {
     /**
      * @return an error message if there was a general error. {@code null} is returned if there was no error.
      */
+    @Nullable
     public String getGlobalError() {
         if (!StringUtils.hasText(globalError)) {
             return null;

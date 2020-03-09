@@ -63,7 +63,7 @@ public class CleanUpCommits implements ICleanUpCommits {
                 try {
                     commits = git.log().add(branch.getObjectId()).call();
                 } catch (final MissingObjectException | IncorrectObjectTypeException e) {
-                    // should not happen because branch is retrieved from branchlist
+                    // should not happen because branch is retrieved from branch list
                     LOGGER.error("branch was wrong object type or not available in git.");
                     break;
                 } catch (final NoHeadException e) {

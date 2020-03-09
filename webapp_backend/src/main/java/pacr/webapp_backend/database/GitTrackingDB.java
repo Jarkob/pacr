@@ -42,7 +42,7 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     public void addCommits(@NotNull final Set<GitCommit> commits) {
         Objects.requireNonNull(commits);
 
-        for (GitCommit commit : commits) {
+        for (final GitCommit commit : commits) {
             if (!commit.repositoryIsInDatabase()) {
                 throw new RepositoryNotStoredException("The repository of the commit must be stored in the database "
                         + "before this commit is being stored in the database.");
@@ -96,12 +96,12 @@ public class GitTrackingDB extends CommitRepositoryDB implements IGitTrackingAcc
     }
 
     @Override
-    public Set<GitCommit> getCommits(@NotNull Set<String> commitHashes) {
+    public Set<GitCommit> getCommits(@NotNull final Set<String> commitHashes) {
         return commitDB.findGitCommitsByCommitHashIn(commitHashes);
     }
 
     @Override
-    public GitCommit getCommit(@NotNull String commitHash) {
+    public GitCommit getCommit(@NotNull final String commitHash) {
         Objects.requireNonNull(commitHash);
 
         return commitDB.findById(commitHash).orElse(null);

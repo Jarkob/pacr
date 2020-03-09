@@ -20,7 +20,7 @@ public class HashGeneratorTest {
      */
     @Test
     void hashPassword_shouldReturnHash() {
-        final String hash = hashGenerator.hashPassword(PASSWORD);
+        final String hash = HashGenerator.hashPassword(PASSWORD);
 
         assertEquals(EXPECTED_HASH, hash);
     }

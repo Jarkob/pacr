@@ -39,14 +39,14 @@ public class PasswordCreator {
     public synchronized String newPassword() {
         final String password = generatePassword();
         
-        final String passwordHash = hashGenerator.hashPassword(password);
+        final String passwordHash = HashGenerator.hashPassword(password);
 
         authenticationAccess.setAdminPasswordHash(passwordHash);
 
         return password;
     }
 
-    private String generatePassword() {
+    private static String generatePassword() {
         final List<CharacterRule> rules = Arrays.asList(
                 new CharacterRule(EnglishCharacterData.UpperCase, MIN_NUM_OF_CHARS),
                 new CharacterRule(EnglishCharacterData.LowerCase, MIN_NUM_OF_CHARS),

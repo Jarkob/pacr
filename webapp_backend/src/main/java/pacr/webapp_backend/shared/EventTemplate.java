@@ -18,7 +18,7 @@ public abstract class EventTemplate {
      *
      * @param category the category of the created events.
      */
-    public EventTemplate(final EventCategory category) {
+    protected EventTemplate(final EventCategory category) {
         Objects.requireNonNull(category, "The category cannot be null.");
 
         this.category = category;

@@ -51,7 +51,7 @@ public interface CommitDB extends PagingAndSortingRepository<GitCommit, String> 
     /**
      * @param repositoryID The id of a repository.
      * @param pageable The requested page.
-     * @return The requested page of commits in the specified repoistories.
+     * @return The requested page of commits in the specified repositories.
      */
     Page<GitCommit> findAllByRepository_Id(int repositoryID, Pageable pageable);
 }

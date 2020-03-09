@@ -30,19 +30,19 @@ public class BenchmarkerJob {
         this.commitHash = commitHash;
     }
 
-    private void verifyAddress(final String address) {
+    private static void verifyAddress(final String address) {
         if (address == null || address.isEmpty() || address.isBlank()) {
             throw new IllegalArgumentException("The address is not valid.");
         }
     }
 
-    private void verifyRepository(final String repository) {
+    private static void verifyRepository(final String repository) {
         if (repository == null || repository.isEmpty() || repository.isBlank()) {
             throw new IllegalArgumentException("The repository pull-url is not valid.");
         }
     }
 
-    private void verifyCommitHash(final String commitHash) {
+    private static void verifyCommitHash(final String commitHash) {
         if (commitHash == null || commitHash.isEmpty() || commitHash.isBlank()) {
             throw new IllegalArgumentException("The commit hash is not valid.");
         }

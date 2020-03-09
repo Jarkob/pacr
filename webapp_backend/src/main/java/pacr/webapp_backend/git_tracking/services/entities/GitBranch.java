@@ -1,5 +1,7 @@
 package pacr.webapp_backend.git_tracking.services.entities;
 
+import lombok.NoArgsConstructor;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.GeneratedValue;
@@ -13,6 +15,7 @@ import java.util.Objects;
  * @author Pavel Zwerschke
  */
 @Entity
+@NoArgsConstructor
 public class GitBranch {
 
     private static final String MASTER_BRANCH_NAME = "master";
@@ -23,12 +26,6 @@ public class GitBranch {
 
     private String name;
     private String headHash;
-
-    /**
-     * Creates an empty branch. Necessary to be an Entity.
-     */
-    public GitBranch() {
-    }
 
     /**
      * Creates a new branch.

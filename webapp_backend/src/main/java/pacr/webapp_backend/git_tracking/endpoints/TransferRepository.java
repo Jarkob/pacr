@@ -39,9 +39,9 @@ public class TransferRepository {
      * @param observeFromDate is the date from which on the repository is observed.
      * @param commitLinkPrefix is the commit link prefix.
      */
-    public TransferRepository(int id, boolean trackAllBranches, List<String> trackedBranches, String pullURL,
-                              String name, boolean isHookSet, String color, LocalDate observeFromDate,
-                              String commitLinkPrefix) {
+    public TransferRepository(final int id, final boolean trackAllBranches, final List<String> trackedBranches, final String pullURL,
+                              final String name, final boolean isHookSet, final String color, final LocalDate observeFromDate,
+                              final String commitLinkPrefix) {
         this.id = id;
         this.trackAllBranches = trackAllBranches;
         this.trackedBranches = trackedBranches;

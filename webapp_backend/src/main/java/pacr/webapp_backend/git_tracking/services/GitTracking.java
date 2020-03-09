@@ -36,13 +36,13 @@ public class GitTracking implements IRepositoryImporter {
 
     private static final Logger LOGGER = LogManager.getLogger(GitTracking.class);
 
-    private IGitTrackingAccess gitTrackingAccess;
-    private IResultDeleter resultDeleter;
-    private IJobScheduler jobScheduler;
-    private IColorPicker colorPicker;
-    private GitHandler gitHandler;
-    private ICommitBenchmarkedChecker commitBenchmarkedChecker;
-    private String ignoreTag;
+    private final IGitTrackingAccess gitTrackingAccess;
+    private final IResultDeleter resultDeleter;
+    private final IJobScheduler jobScheduler;
+    private final IColorPicker colorPicker;
+    private final GitHandler gitHandler;
+    private final ICommitBenchmarkedChecker commitBenchmarkedChecker;
+    private final String ignoreTag;
 
     private boolean pullingFromAllRepositories;
 
@@ -56,10 +56,10 @@ public class GitTracking implements IRepositoryImporter {
      * @param commitBenchmarkedChecker checks whether a commit is already benchmarked or not.
      * @param ignoreTag is the pacr ignore tag.
      */
-    public GitTracking(@NotNull IGitTrackingAccess gitTrackingAccess, @NotNull GitHandler gitHandler,
-                       @NotNull IResultDeleter resultDeleter, @NotNull IJobScheduler jobScheduler,
-                       @NotNull IColorPicker colorPicker, @NotNull ICommitBenchmarkedChecker commitBenchmarkedChecker,
-                       @NotNull @Value("${ignoreTag}") String ignoreTag) {
+    public GitTracking(@NotNull final IGitTrackingAccess gitTrackingAccess, @NotNull final GitHandler gitHandler,
+                       @NotNull final IResultDeleter resultDeleter, @NotNull final IJobScheduler jobScheduler,
+                       @NotNull final IColorPicker colorPicker, @NotNull final ICommitBenchmarkedChecker commitBenchmarkedChecker,
+                       @NotNull @Value("${ignoreTag}") final String ignoreTag) {
         Objects.requireNonNull(gitTrackingAccess);
         Objects.requireNonNull(gitHandler);
         Objects.requireNonNull(resultDeleter);
@@ -100,12 +100,13 @@ public class GitTracking implements IRepositoryImporter {
      * @param isHookSet whether a hook is set.
      * @return the ID of the repository.
      */
-    public int addRepository(@NotNull final String repositoryURL, final LocalDate observeFromDate, @NotNull final String name,
-                             @NotNull final Set<String> branchNames, final boolean trackAllBranches, final boolean isHookSet) {
+    public int addRepository(@NotNull final String repositoryURL, final LocalDate observeFromDate,
+                             @NotNull final String name, @NotNull final Set<String> branchNames,
+                             final boolean trackAllBranches, final boolean isHookSet) {
         Objects.requireNonNull(repositoryURL);
         Objects.requireNonNull(name);
 
-        GitRepository repository = new GitRepository();
+        final GitRepository repository = new GitRepository();
         repository.setPullURL(repositoryURL);
         repository.setName(name);
         repository.setObserveFromDate(observeFromDate);
@@ -118,9 +119,10 @@ public class GitTracking implements IRepositoryImporter {
     }
 
     @Override
-    public int importRepository(@NotNull final String repositoryURL, final LocalDate observeFromDate, @NotNull final String name,
-                                @NotNull final Set<String> branchNames) {
-        final int id = addRepository(repositoryURL, observeFromDate, name, branchNames, false, false);
+    public int importRepository(@NotNull final String repositoryURL, final LocalDate observeFromDate,
+                                @NotNull final String name, @NotNull final Set<String> branchNames) {
+        final int id = addRepository(repositoryURL, observeFromDate, name, branchNames, false,
+                false);
         pullFromRepository(id);
 
         return id;
@@ -194,10 +196,10 @@ public class GitTracking implements IRepositoryImporter {
 
         gitRepository = gitTrackingAccess.getRepository(repositoryID);
 
-        Collection<String> untrackedCommitHashes;
+        final Collection<String> untrackedCommitHashes;
         try {
             untrackedCommitHashes = gitHandler.pullFromRepository(gitRepository);
-        } catch (PullFromRepositoryException e) {
+        } catch (final PullFromRepositoryException e) {
             return;
         }
 
@@ -220,7 +222,7 @@ public class GitTracking implements IRepositoryImporter {
     public void pullFromAllRepositories() {
         this.pullingFromAllRepositories = true;
 
-        for (GitRepository repository : gitTrackingAccess.getAllRepositories()) {
+        for (final GitRepository repository : gitTrackingAccess.getAllRepositories()) {
             LOGGER.info("Checking if hook is set for {} ({}).", repository.getName(), repository.getId());
             if (!repository.isHookSet()) {
                 LOGGER.info("Trying to pull from repository {} ({}).", repository.getName(), repository.getId());
@@ -266,22 +268,22 @@ public class GitTracking implements IRepositoryImporter {
      * @param gitRepository is the repository.
      * @param newObserveFromDate is the new observeFromDate.
      */
-    public void updateObserveFromDateOfRepository(GitRepository gitRepository, LocalDate newObserveFromDate) {
-        LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
+    public void updateObserveFromDateOfRepository(final GitRepository gitRepository, final LocalDate newObserveFromDate) {
+        final LocalDate oldObserveFromDate = gitRepository.getObserveFromDate();
 
         final Collection<GitCommit> commits = gitTrackingAccess.getAllCommits(gitRepository.getId());
 
-        Set<String> commitsToBenchmark = new HashSet<>();
-        Set<String> commitsToRemove = new HashSet<>();
-        Set<String> jobsToRemove = new HashSet<>();
+        final Set<String> commitsToBenchmark = new HashSet<>();
+        final Set<String> commitsToRemove = new HashSet<>();
+        final Set<String> jobsToRemove = new HashSet<>();
 
-        for (GitCommit commit : commits) {
+        for (final GitCommit commit : commits) {
             if (commit.getCommitMessage().contains(ignoreTag)) {
                 continue;
             }
 
-            String commitHash = commit.getCommitHash();
-            LocalDate commitDate = commit.getCommitDate().toLocalDate();
+            final String commitHash = commit.getCommitHash();
+            final LocalDate commitDate = commit.getCommitDate().toLocalDate();
 
             if (isTracked(commitDate, newObserveFromDate)) {
                 if (!commitBenchmarkedChecker.isCommitBenchmarked(commitHash)) {
@@ -309,7 +311,7 @@ public class GitTracking implements IRepositoryImporter {
         gitTrackingAccess.updateRepository(gitRepository);
     }
 
-    private boolean isTracked(LocalDate commitDate, LocalDate observeFromDate) {
+    private boolean isTracked(final LocalDate commitDate, final LocalDate observeFromDate) {
         return observeFromDate == null || observeFromDate.isBefore(commitDate) || observeFromDate.isEqual(commitDate);
     }
 

@@ -14,7 +14,7 @@ public class HashGenerator {
     /**
      * The identifier of the desired hashing algorithm.
      */
-    static final String ALGORITHM = "SHA-512";
+    private static final String ALGORITHM = "SHA-512";
 
     private static final String FORMAT_TWO_DIGIT_HEX = "%02x";
 
@@ -23,7 +23,7 @@ public class HashGenerator {
      * @param password the password.
      * @return the hash of the password.
      */
-    String hashPassword(final String password) {
+    static String hashPassword(final String password) {
         final MessageDigest messageDigest;
 
         try {

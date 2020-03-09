@@ -30,7 +30,7 @@ public interface JobDB extends PagingAndSortingRepository<Job, Integer>, IJobAcc
     }
 
     @Override
-    default void deleteJobs(final Collection<Job> jobs) {
+    default void deleteJobs(final Collection<? extends Job> jobs) {
         this.deleteAll(jobs);
     }
 

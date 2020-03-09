@@ -48,7 +48,8 @@ public class ResultController {
      * @param resultGetter access to results.
      * @param resultManager access to deleting results.
      */
-    public ResultController(final IAuthenticator authenticator, final ResultGetter resultGetter, final ResultManager resultManager) {
+    public ResultController(final IAuthenticator authenticator, final ResultGetter resultGetter,
+                            final ResultManager resultManager) {
         this.authenticator = authenticator;
         this.resultGetter = resultGetter;
         this.resultManager = resultManager;
@@ -75,8 +76,8 @@ public class ResultController {
      * @return the benchmarking results of one benchmark.
      */
     @GetMapping("/results/benchmark/{benchmarkId}/{repositoryId}")
-    public Map<String, DiagramOutputResult> getResultsForRepositoryAndBenchmark(@PathVariable final int benchmarkId,
-                                                                                    @PathVariable final int repositoryId) {
+    public Map<String, DiagramOutputResult>
+        getResultsForRepositoryAndBenchmark(@PathVariable final int benchmarkId, @PathVariable final int repositoryId) {
         return resultGetter.getBenchmarkResults(repositoryId, benchmarkId);
     }
 
@@ -104,16 +105,16 @@ public class ResultController {
      * @return the benchmarking results of one benchmark.
      */
     @PostMapping("/results/pageable/benchmark/{benchmarkId}/{repositoryId}/{startTimeStamp}/{endTimeStamp}")
-    public Map<String, DiagramOutputResult> getResultPageForBranchAndBenchmark(@PathVariable int benchmarkId,
-                                                   @PathVariable int repositoryId,
-                                                   @NotNull @RequestBody BranchInput branch,
-                                                   @PathVariable long startTimeStamp, @PathVariable long endTimeStamp) {
+    public Map<String, DiagramOutputResult> getResultPageForBranchAndBenchmark(@PathVariable final int benchmarkId,
+                                                                               @PathVariable final int repositoryId,
+                                                                               @NotNull @RequestBody final BranchInput branch,
+                                                                               @PathVariable final long startTimeStamp, @PathVariable final long endTimeStamp) {
         Objects.requireNonNull(branch);
         Objects.requireNonNull(branch.getName());
 
-        ZoneOffset currentOffset = ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
-        LocalDateTime start = LocalDateTime.ofEpochSecond(startTimeStamp, 0, currentOffset);
-        LocalDateTime end = LocalDateTime.ofEpochSecond(endTimeStamp, 0, currentOffset);
+        final ZoneOffset currentOffset = ZoneOffset.systemDefault().getRules().getOffset(Instant.now());
+        final LocalDateTime start = LocalDateTime.ofEpochSecond(startTimeStamp, 0, currentOffset);
+        final LocalDateTime end = LocalDateTime.ofEpochSecond(endTimeStamp, 0, currentOffset);
 
         return resultGetter.getBenchmarkResultsSubset(benchmarkId, repositoryId, branch.getName(), start, end);
     }

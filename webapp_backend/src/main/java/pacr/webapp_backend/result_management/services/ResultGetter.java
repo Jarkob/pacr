@@ -125,15 +125,15 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
      * @return the benchmarking results (containing only the requested benchmark, all other benchmark data is being
      *         omitted).
      */
-    public Map<String, DiagramOutputResult> getBenchmarkResultsSubset(int benchmarkId, int repositoryId,
-                                                                          @NotNull String branch,
-                                                                          @NotNull LocalDateTime commitDateStart,
-                                                                          @NotNull LocalDateTime commitDateEnd) {
+    public Map<String, DiagramOutputResult> getBenchmarkResultsSubset(final int benchmarkId, final int repositoryId,
+                                                                      @NotNull final String branch,
+                                                                      @NotNull final LocalDateTime commitDateStart,
+                                                                      @NotNull final LocalDateTime commitDateEnd) {
         Objects.requireNonNull(branch);
         Objects.requireNonNull(commitDateStart);
         Objects.requireNonNull(commitDateEnd);
 
-        List<? extends ICommit> branchCommitsInTimeFrame =
+        final List<? extends ICommit> branchCommitsInTimeFrame =
                 commitAccess.getCommitsFromBranchTimeFrame(repositoryId, branch, commitDateStart, commitDateEnd);
 
         if (branchCommitsInTimeFrame == null) {
@@ -159,10 +159,10 @@ public class ResultGetter implements ICommitBenchmarkedChecker, INewestResult, I
     private List<CommitHistoryItem> resultsToHistoryItems(final List<CommitResult> results) {
         final List<CommitHistoryItem> history = new LinkedList<>();
 
-        for (CommitResult result : results) {
-            ICommit commit = commitAccess.getCommit(result.getCommitHash());
+        for (final CommitResult result : results) {
+            final ICommit commit = commitAccess.getCommit(result.getCommitHash());
             if (commit != null) {
-                CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
+                final CommitHistoryItem historyItem = new CommitHistoryItem(result, commit);
                 history.add(historyItem);
             }
         }

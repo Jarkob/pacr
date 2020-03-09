@@ -35,8 +35,10 @@ public class GetCommitDB extends CommitRepositoryDB implements IGetCommitAccess 
         return commitDB.findGitCommitsByRepository_Id(id);
     }
 
+    @Nullable
     @Override
-    public List<GitCommit> getCommitsFromBranchTimeFrame(int repositoryId, String branchName, LocalDateTime commitDateStart, LocalDateTime commitDateEnd) {
+    public List<GitCommit> getCommitsFromBranchTimeFrame(final int repositoryId, final String branchName,
+                                                         final LocalDateTime commitDateStart, final LocalDateTime commitDateEnd) {
         Objects.requireNonNull(branchName);
         Objects.requireNonNull(commitDateStart);
         Objects.requireNonNull(commitDateEnd);

@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -135,8 +136,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @param groupTitle the job group of the job.
      * @param jobID      the id of the job.
      */
-    private void addJob(@NotNull String groupTitle, @NotNull String jobID) {
-        Collection<String> jobIDs = List.of(jobID);
+    private void addJob(@NotNull final String groupTitle, @NotNull final String jobID) {
+        final Collection<String> jobIDs = List.of(jobID);
 
         addJobs(groupTitle, jobIDs);
     }
@@ -199,14 +200,14 @@ public class Scheduler implements IJobProvider, IJobScheduler {
     }
 
     @Override
-    public void removeJobs(@NotNull String groupTitle, @NotNull Set<String> jobIDs) {
+    public void removeJobs(@NotNull final String groupTitle, @NotNull final Set<String> jobIDs) {
         if (!StringUtils.hasText(groupTitle)) {
             throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
         }
         Objects.requireNonNull(jobIDs, "The jobIDs cannot be null.");
 
         if (containsGroup(groupTitle)) {
-            Collection<Job> toRemove = new ArrayList<>(jobAccess.findAllJobs(groupTitle));
+            final Collection<Job> toRemove = new ArrayList<>(jobAccess.findAllJobs(groupTitle));
             toRemove.removeIf(job -> !jobIDs.contains(job.getJobID()));
 
             jobAccess.deleteJobs(toRemove);
@@ -229,15 +230,15 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         }
 
         if (containsGroup(groupTitle)) {
-            Job toPrioritize = findJobToPrioritize(groupTitle, jobID);
+            final Job toPrioritize = findJobToPrioritize(groupTitle, jobID);
 
             if (toPrioritize == null) {
                 return false;
             }
 
-            JobGroup group = groups.get(toPrioritize.getJobGroupTitle());
+            final JobGroup group = groups.get(toPrioritize.getJobGroupTitle());
 
-            Job prioritizedJob = new Job(jobID, group);
+            final Job prioritizedJob = new Job(jobID, group);
             prioritizedJob.setPrioritized(true);
 
             jobAccess.deleteJob(toPrioritize);
@@ -252,8 +253,9 @@ public class Scheduler implements IJobProvider, IJobScheduler {
         return false;
     }
 
-    private Job findJobToPrioritize(String groupTitle, String jobID) {
-        for (Job job : jobAccess.findJobs()) {
+    @Nullable
+    private Job findJobToPrioritize(final String groupTitle, final String jobID) {
+        for (final Job job : jobAccess.findJobs()) {
             if (job.getJobGroupTitle().equals(groupTitle) && job.getJobID().equals(jobID)) {
                 return job;
             }

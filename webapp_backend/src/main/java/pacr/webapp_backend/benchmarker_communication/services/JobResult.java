@@ -28,7 +28,7 @@ public class JobResult implements IBenchmarkingResult {
     private BenchmarkingResult benchmarkingResult;
 
     @Override
-    public int getRepositoryID() {
+    public final int getRepositoryID() {
         // the repository id is unknown at this point.
         return -1;
     }

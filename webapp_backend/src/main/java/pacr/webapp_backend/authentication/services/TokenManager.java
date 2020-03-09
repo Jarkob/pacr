@@ -101,7 +101,7 @@ public class TokenManager implements IAuthenticator {
         return claims.getAudience().equals(AUDIENCE_ADMIN) && claims.getIssuer().equals(ISSUER_PACR);
     }
 
-    private byte[] generateSecret() {
+    private static byte[] generateSecret() {
         final byte[] secretBytes = new byte[SECRET_LENGTH];
         final SecureRandom secureRandom = new SecureRandom();
 

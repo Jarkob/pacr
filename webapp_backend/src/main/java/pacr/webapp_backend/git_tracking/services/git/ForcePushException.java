@@ -5,5 +5,5 @@ package pacr.webapp_backend.git_tracking.services.git;
  *
  * @author Pavel Zwerschke
  */
-public class ForcePushException extends Exception {
+class ForcePushException extends Exception {
 }

@@ -53,7 +53,8 @@ public class OutputBuilder {
      * @param benchmarkId the id of the benchmark.
      * @return a {@link DiagramOutputResult} copied from the commit and result.
      */
-    DiagramOutputResult buildDiagramOutput(@NotNull final ICommit commit, @NotNull final CommitResult result, final int benchmarkId) {
+    DiagramOutputResult buildDiagramOutput(@NotNull final ICommit commit, @NotNull final CommitResult result,
+                                           final int benchmarkId) {
         Objects.requireNonNull(commit);
         Objects.requireNonNull(result);
 

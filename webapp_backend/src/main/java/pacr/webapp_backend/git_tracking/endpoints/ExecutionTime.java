@@ -11,7 +11,7 @@ import lombok.Getter;
 @AllArgsConstructor @Getter
 public class ExecutionTime {
 
-    private boolean pulling;
-    private String nextExecutionTime;
+    private final boolean pulling;
+    private final String nextExecutionTime;
 
 }

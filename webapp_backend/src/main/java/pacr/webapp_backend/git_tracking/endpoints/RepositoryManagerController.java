@@ -55,7 +55,8 @@ public class RepositoryManagerController {
      * @param gitTracking is the GitTracking component needed to manage the repositories.
      * @param authenticator is the authenticator for checking the token.
      */
-    public RepositoryManagerController(@NotNull final GitTracking gitTracking, @NotNull final IAuthenticator authenticator) {
+    public RepositoryManagerController(@NotNull final GitTracking gitTracking,
+                                       @NotNull final IAuthenticator authenticator) {
         Objects.requireNonNull(gitTracking);
         Objects.requireNonNull(authenticator);
         this.gitTracking = gitTracking;
@@ -71,8 +72,8 @@ public class RepositoryManagerController {
     public List<TransferRepository> getAllRepositories() {
         final List<GitRepository> repositories = gitTracking.getAllRepositories();
 
-        List<TransferRepository> transferRepositories = new ArrayList<>();
-        for (GitRepository repository : repositories) {
+        final List<TransferRepository> transferRepositories = new ArrayList<>();
+        for (final GitRepository repository : repositories) {
             transferRepositories.add(createTransferRepository(repository));
         }
 
@@ -81,10 +82,10 @@ public class RepositoryManagerController {
 
     private TransferRepository createTransferRepository(final GitRepository gitRepository) {
         // convert selected branches to tracked branches
-        Set<String> branchNames = gitRepository.getTrackedBranchNames();
+        final Set<String> branchNames = gitRepository.getTrackedBranchNames();
 
         // sort branch order
-        List<String> trackedBranches = new ArrayList<>(branchNames);
+        final List<String> trackedBranches = new ArrayList<>(branchNames);
         sortIgnoreCase(trackedBranches);
 
         return new TransferRepository(gitRepository.getId(),
@@ -141,7 +142,7 @@ public class RepositoryManagerController {
      * @return id of the repository.
      * @param token is the authentication token.
      */
-    @PostMapping(value = "/add-repository")
+    @PostMapping("/add-repository")
     public int addRepository(@NotNull @RequestBody final TransferRepository transferRepository,
                              @NotNull @RequestHeader(name = "jwt") final String token) {
         Objects.requireNonNull(transferRepository);
@@ -155,8 +156,8 @@ public class RepositoryManagerController {
                 transferRepository.getPullURL());
 
         // convert tracked branches to selected branches
-        Set<String> trackedBranches = new HashSet<>(transferRepository.getTrackedBranches());
-        Set<String> selectedBranches = invertSet(trackedBranches,
+        final Set<String> trackedBranches = new HashSet<>(transferRepository.getTrackedBranches());
+        final Set<String> selectedBranches = invertSet(trackedBranches,
                 gitTracking.getBranches(transferRepository.getPullURL()), transferRepository.isTrackAllBranches());
 
         return gitTracking.addRepository(transferRepository.getPullURL(), transferRepository.getObserveFromDate(),
@@ -172,7 +173,7 @@ public class RepositoryManagerController {
      *         NOT_FOUND (404) if the repository was not found,
      *         UNAUTHORIZED (401) if the access is unauthorized.
      */
-    @DeleteMapping(value = "/delete-repository/{id}")
+    @DeleteMapping("/delete-repository/{id}")
     public ResponseEntity<Object> deleteRepository(@PathVariable("id") final int repositoryID,
                                                    @NotNull @RequestHeader(name = "jwt") final String token) {
         Objects.requireNonNull(token);
@@ -193,7 +194,7 @@ public class RepositoryManagerController {
      * @param transferRepository contains the new values for the repository.
      * @param token is the authentication token.
      */
-    @PostMapping(value = "/update-repository")
+    @PostMapping("/update-repository")
     public void updateRepository(@NotNull @RequestBody final TransferRepository transferRepository,
                                  @NotNull @RequestHeader(name = "jwt") final String token) {
         Objects.requireNonNull(transferRepository);
@@ -227,8 +228,8 @@ public class RepositoryManagerController {
         }
 
         // convert tracked branches to selected branches
-        Set<String> trackedBranches = new HashSet<>(transferRepository.getTrackedBranches());
-        Set<String> selectedBranches = invertSet(trackedBranches,
+        final Set<String> trackedBranches = new HashSet<>(transferRepository.getTrackedBranches());
+        final Set<String> selectedBranches = invertSet(trackedBranches,
                 gitTracking.getBranches(transferRepository.getPullURL()), transferRepository.isTrackAllBranches());
 
         gitRepository.setSelectedBranches(selectedBranches);
@@ -245,17 +246,17 @@ public class RepositoryManagerController {
      * @param pullURL is the pull url of the repository.
      * @return all branches of the repository.
      */
-    @PostMapping(value = "/branches")
-    public List<String> getBranchesFromRepository(@RequestBody String pullURL) {
+    @PostMapping("/branches")
+    public List<String> getBranchesFromRepository(@RequestBody final String pullURL) {
         LOGGER.info("Getting branches from repository with pull url {}.", pullURL);
 
-        List<String> branches = new ArrayList<>(gitTracking.getBranches(pullURL));
+        final List<String> branches = new ArrayList<>(gitTracking.getBranches(pullURL));
         sortIgnoreCase(branches);
 
         return branches;
     }
 
-    private void sortIgnoreCase(List<String> list) {
+    private void sortIgnoreCase(final List<String> list) {
         list.sort(Comparator.comparing(String::toLowerCase));
     }
 

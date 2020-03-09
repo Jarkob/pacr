@@ -14,7 +14,7 @@ import pacr.webapp_backend.shared.IRepository;
 public interface RepositoryDB extends CrudRepository<GitRepository, Integer>, IExportRepositoryAccess {
 
     @Override
-    default IRepository findGitRepositoryById(int id) {
+    default IRepository findGitRepositoryById(final int id) {
         return this.findById(id).orElse(null);
     }
 

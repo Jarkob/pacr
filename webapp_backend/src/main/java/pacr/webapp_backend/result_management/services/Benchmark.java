@@ -2,6 +2,7 @@ package pacr.webapp_backend.result_management.services;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.util.StringUtils;
@@ -24,6 +25,7 @@ import java.util.Set;
 @Entity
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 public class Benchmark {
 
     @Id
@@ -49,12 +51,6 @@ public class Benchmark {
 
     @ManyToOne
     private BenchmarkGroup group;
-
-    /**
-     * Creates an empty benchmark. Necessary for jpa database entities.
-     */
-    public Benchmark() {
-    }
 
     /**
      * Creates a benchmark with a name. This name is used both as the original name and the custom name.

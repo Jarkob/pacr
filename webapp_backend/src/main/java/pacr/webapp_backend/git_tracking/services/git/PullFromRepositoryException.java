@@ -5,7 +5,7 @@ package pacr.webapp_backend.git_tracking.services.git;
  */
 public class PullFromRepositoryException extends Exception {
 
-    public PullFromRepositoryException(String message) {
+    public PullFromRepositoryException(final String message) {
         super(message);
     }
 

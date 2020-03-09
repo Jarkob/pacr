@@ -30,9 +30,9 @@ public class PullIntervalScheduler implements SchedulingConfigurer, NextExecutio
 
     private static final Logger LOGGER = LogManager.getLogger(PullIntervalScheduler.class);
 
-    private GitTracking gitTracking;
-    private TaskScheduler poolScheduler;
-    private IPullIntervalAccess pullIntervalAccess;
+    private final GitTracking gitTracking;
+    private final TaskScheduler poolScheduler;
+    private final IPullIntervalAccess pullIntervalAccess;
 
     private ScheduledFuture<?> currentTask;
 
@@ -46,9 +46,9 @@ public class PullIntervalScheduler implements SchedulingConfigurer, NextExecutio
      * @param pullIntervalAccess is needed for the next execution time.
      * @param pullIntervalDefault is the default value for the pull interval.
      */
-    public PullIntervalScheduler(@NotNull GitTracking gitTracking, @NotNull TaskScheduler poolScheduler,
-                                 @NotNull IPullIntervalAccess pullIntervalAccess,
-                                 @Value("${gitRepositoryPullIntervalDefault}") int pullIntervalDefault) {
+    public PullIntervalScheduler(@NotNull final GitTracking gitTracking, @NotNull final TaskScheduler poolScheduler,
+                                 @NotNull final IPullIntervalAccess pullIntervalAccess,
+                                 @Value("${gitRepositoryPullIntervalDefault}") final int pullIntervalDefault) {
         Objects.requireNonNull(gitTracking);
         Objects.requireNonNull(poolScheduler);
         Objects.requireNonNull(pullIntervalAccess);
@@ -59,7 +59,7 @@ public class PullIntervalScheduler implements SchedulingConfigurer, NextExecutio
 
         try {
             pullIntervalAccess.getPullInterval();
-        } catch (NoSuchElementException e) {
+        } catch (final NoSuchElementException e) {
             pullIntervalAccess.setPullInterval(pullIntervalDefault);
         }
 
@@ -76,8 +76,8 @@ public class PullIntervalScheduler implements SchedulingConfigurer, NextExecutio
 
     private void scheduleNextTask() {
         final int pullInterval = pullIntervalAccess.getPullInterval();
-        LocalDateTime nextExecution = LocalDateTime.now().plusSeconds(pullInterval);
-        Date nextExecutionDate = Date.from(nextExecution.atZone(ZoneId.systemDefault()).toInstant());
+        final LocalDateTime nextExecution = LocalDateTime.now().plusSeconds(pullInterval);
+        final Date nextExecutionDate = Date.from(nextExecution.atZone(ZoneId.systemDefault()).toInstant());
 
         currentTask = poolScheduler.scheduleWithFixedDelay(this::pullFromRepositories,
                 nextExecutionDate, pullInterval * 1000);
@@ -85,11 +85,11 @@ public class PullIntervalScheduler implements SchedulingConfigurer, NextExecutio
         logNextExecution(nextExecution);
     }
 
-    private void logNextExecution(LocalDateTime nextExecution) {
+    private void logNextExecution(final LocalDateTime nextExecution) {
         this.nextExecutionTime = nextExecution;
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String formatDateTime = nextExecution.format(formatter);
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        final String formatDateTime = nextExecution.format(formatter);
         LOGGER.info("Next execution time: {}", formatDateTime);
     }
 

@@ -40,7 +40,7 @@ public class PasswordChecker {
             throw new IllegalStateException("no password has been set yet");
         }
 
-        final String passwordHash = hashGenerator.hashPassword(enteredPassword);
+        final String passwordHash = HashGenerator.hashPassword(enteredPassword);
 
         return adminPasswordHash.equals(passwordHash);
     }

@@ -14,8 +14,8 @@ public class CommitRepositoryDB {
     /**
      * Protected so subclasses can use these jpa repositories.
      */
-    protected CommitDB commitDB;
-    protected RepositoryDB repositoryDB;
+    final CommitDB commitDB;
+    final RepositoryDB repositoryDB;
 
     /**
      * Creates a new instance of CommitRepositoryDB.

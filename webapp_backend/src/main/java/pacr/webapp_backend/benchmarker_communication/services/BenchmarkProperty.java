@@ -4,6 +4,7 @@ import java.util.Collection;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
 import pacr.webapp_backend.shared.ResultInterpretation;
@@ -26,6 +27,7 @@ public class BenchmarkProperty implements IBenchmarkProperty {
 
     private String error;
 
+    @Nullable
     @Override
     public String getError() {
         if (!StringUtils.hasText(error)) {

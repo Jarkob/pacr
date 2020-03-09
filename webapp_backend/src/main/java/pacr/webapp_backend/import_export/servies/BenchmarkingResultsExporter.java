@@ -26,7 +26,8 @@ public class BenchmarkingResultsExporter {
      * @param resultExporter the resultExporter used to get the results which are exported.
      * @param repositoryAccess the repositoryAccess used to fetch metadata from repositories.
      */
-    public BenchmarkingResultsExporter(final IResultExporter resultExporter, final IExportRepositoryAccess repositoryAccess) {
+    public BenchmarkingResultsExporter(final IResultExporter resultExporter,
+                                       final IExportRepositoryAccess repositoryAccess) {
         Objects.requireNonNull(resultExporter, "The resultExporter cannot be null.");
         Objects.requireNonNull(repositoryAccess, "The repositoryAccess cannot be null.");
 
@@ -53,11 +54,11 @@ public class BenchmarkingResultsExporter {
 
         final List<OutputBenchmarkingResult> outputResults = new ArrayList<>();
 
-        for (final int repositoryID : exportedResults.keySet()) {
-            final IRepository repository = repositoryAccess.findGitRepositoryById(repositoryID);
+        for (final Map.Entry<Integer, List<IBenchmarkingResult>> entry : exportedResults.entrySet()) {
+            final IRepository repository = repositoryAccess.findGitRepositoryById(entry.getKey());
 
             if (repository != null) {
-                OutputBenchmarkingResult outputResult = new OutputBenchmarkingResult(exportedResults.get(repositoryID),
+                final OutputBenchmarkingResult outputResult = new OutputBenchmarkingResult(entry.getValue(),
                         repository.getPullURL(), repository.getName(), repository.getTrackedBranchNames());
 
                 outputResults.add(outputResult);

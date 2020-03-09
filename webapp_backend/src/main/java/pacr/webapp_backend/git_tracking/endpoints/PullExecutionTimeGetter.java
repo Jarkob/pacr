@@ -13,15 +13,15 @@ import pacr.webapp_backend.git_tracking.services.NextExecutionGetter;
 @RestController
 public class PullExecutionTimeGetter {
 
-    private NextExecutionGetter nextExecutionGetter;
-    private GitTracking gitTracking;
+    private final NextExecutionGetter nextExecutionGetter;
+    private final GitTracking gitTracking;
 
     /**
      * Creates an instance of PullExecutionTimeGetter.
      * @param nextExecutionGetter is needed for getting the next execution time.
      * @param gitTracking is needed for checking if there is a pull happening or not.
      */
-    public PullExecutionTimeGetter(NextExecutionGetter nextExecutionGetter, GitTracking gitTracking) {
+    public PullExecutionTimeGetter(final NextExecutionGetter nextExecutionGetter, final GitTracking gitTracking) {
         this.gitTracking = gitTracking;
         this.nextExecutionGetter = nextExecutionGetter;
     }

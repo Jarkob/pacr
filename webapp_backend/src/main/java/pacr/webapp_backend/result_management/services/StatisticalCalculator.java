@@ -17,7 +17,9 @@ public final class StatisticalCalculator {
      */
     public static final int ERROR_CODE = -1;
 
-    private static final double SIGNIFICANCE_FACTOR = 3d;
+    private static final double SIGNIFICANCE_FACTOR = 3.0d;
+
+    private static final double DELTA = 1.0e-8;
 
     /**
      * No instance of this class can be created because all methods are static.
@@ -42,7 +44,7 @@ public final class StatisticalCalculator {
 
         final double index = values.size() * p;
 
-        if (index == Math.ceil(index)) {
+        if (Math.abs(index - Math.ceil(index)) < DELTA) {
             return (resultsList.get((int) index - 1) + resultsList.get((int) index)) / 2;
         } else {
             return resultsList.get((int) Math.floor(index));
@@ -89,7 +91,8 @@ public final class StatisticalCalculator {
      * @param comparisonResult the result that is used for comparison. This object is not altered. No comparison is done
      *                         if this is null.
      */
-    static void compare(@NotNull final BenchmarkPropertyResult result, @Nullable final BenchmarkPropertyResult comparisonResult) {
+    static void compare(@NotNull final BenchmarkPropertyResult result,
+                        @Nullable final BenchmarkPropertyResult comparisonResult) {
         Objects.requireNonNull(result);
 
         if (comparisonResult != null && !result.isError() && !comparisonResult.isError()) {
@@ -110,9 +113,10 @@ public final class StatisticalCalculator {
      * previous result.
      * @param result The first result.
      * @param comparison The result to compare the first one to.
-     * @result Whether the change in result was found to be significant.
+     * @return Whether the change in result was found to be significant.
      */
-    private static boolean significantChange(final BenchmarkPropertyResult result, final BenchmarkPropertyResult comparison) {
+    private static boolean significantChange(final BenchmarkPropertyResult result,
+                                             final BenchmarkPropertyResult comparison) {
         double standardDeviation = result.getStandardDeviation();
         if (comparison.getStandardDeviation() > standardDeviation) {
             standardDeviation = comparison.getStandardDeviation();

@@ -27,7 +27,7 @@ public class ShellConfigurator {
      * @return a message describing, whether the output is on or off after execution.
      */
     @ShellMethod("toggles whether logs are displayed on the console.")
-    public String toggleLogOutput() {
+    public synchronized String toggleLogOutput() {
         final LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         final Configuration config = ctx.getConfiguration();
 

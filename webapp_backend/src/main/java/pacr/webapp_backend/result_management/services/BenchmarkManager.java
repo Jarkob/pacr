@@ -121,7 +121,8 @@ public class BenchmarkManager {
      * @param description The new description. Throws IllegalArgumentException if it is null.
      * @param groupID the id of the new group.
      */
-    public void updateBenchmark(final int benchmarkID, @NotNull final String name, @NotNull final String description, final int groupID) {
+    public void updateBenchmark(final int benchmarkID, @NotNull final String name, @NotNull final String description,
+                                final int groupID) {
         Objects.requireNonNull(description);
         if (!StringUtils.hasText(name)) {
             throw new IllegalArgumentException("name cannot be null, empty or blank");

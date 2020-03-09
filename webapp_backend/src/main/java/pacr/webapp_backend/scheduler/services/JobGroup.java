@@ -3,6 +3,7 @@ package pacr.webapp_backend.scheduler.services;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.Entity;
@@ -16,6 +17,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @EqualsAndHashCode
+@NoArgsConstructor
 public class JobGroup {
 
     @Id
@@ -28,13 +30,6 @@ public class JobGroup {
 
     @EqualsAndHashCode.Exclude
     private long timeSheet;
-
-    /**
-     * Creates an empty JobGroup.
-     * Needed for JPA.
-     */
-    public JobGroup() {
-    }
 
     /**
      * Creates a new job group.

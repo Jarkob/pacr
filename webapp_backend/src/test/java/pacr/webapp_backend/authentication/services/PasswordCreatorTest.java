@@ -31,7 +31,7 @@ public class PasswordCreatorTest {
     void newPassword_shouldBeLongAndSaved() {
         final String password = passwordCreator.newPassword();
 
-        final String hash = hashGenerator.hashPassword(password);
+        final String hash = HashGenerator.hashPassword(password);
         verify(authenticationAccessMock).setAdminPasswordHash(hash);
 
         assertEquals(LENGTH_PASSWORD, password.length());

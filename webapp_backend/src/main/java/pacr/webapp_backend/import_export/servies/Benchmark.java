@@ -23,8 +23,8 @@ public class Benchmark implements IBenchmark {
         this.benchmarkProperties = new HashMap<>();
         final Map<String, ? extends IBenchmarkProperty> properties = benchmark.getBenchmarkProperties();
 
-        for (final String propertyName : properties.keySet()) {
-            this.benchmarkProperties.put(propertyName, new BenchmarkProperty(properties.get(propertyName)));
+        for (final Map.Entry<String, ? extends IBenchmarkProperty> entry : properties.entrySet()) {
+            this.benchmarkProperties.put(entry.getKey(), new BenchmarkProperty(entry.getValue()));
         }
     }
 

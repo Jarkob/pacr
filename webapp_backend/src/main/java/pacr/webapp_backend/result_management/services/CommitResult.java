@@ -5,6 +5,7 @@ import java.util.Objects;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkingResult;
@@ -29,6 +30,7 @@ import java.util.Set;
 @Entity(name = "CommitResult")
 @Table(name = "commit_result")
 @Getter
+@NoArgsConstructor
 public class CommitResult implements IBenchmarkingResult {
 
     private static final int MAX_STRING_LENGTH = 2000;
@@ -62,12 +64,6 @@ public class CommitResult implements IBenchmarkingResult {
     private boolean significant;
 
     /**
-     * Creates empty result. Needed for jpa.
-     */
-    public CommitResult() {
-    }
-
-    /**
      * Creates a CommitResult from an IBenchmarkingResult and measurements for benchmarks. Copies error message,
      * commitHash, system environment and the repository from the IBenchmarkingResult.
      * Throws IllegalArgumentException if any parameter is null.
@@ -77,8 +73,8 @@ public class CommitResult implements IBenchmarkingResult {
      * @param comparisonCommitHash the hash of the commit this result was compared to. May be null (in this case it is
      *                             implied that no comparison has taken place).
      */
-    public CommitResult(@NotNull final IBenchmarkingResult result, final int repositoryID, @NotNull final LocalDateTime commitDate,
-                        @Nullable final String comparisonCommitHash) {
+    public CommitResult(@NotNull final IBenchmarkingResult result, final int repositoryID,
+                        @NotNull final LocalDateTime commitDate, @Nullable final String comparisonCommitHash) {
         Objects.requireNonNull(result);
         Objects.requireNonNull(commitDate);
 
@@ -113,6 +109,7 @@ public class CommitResult implements IBenchmarkingResult {
         return benchmarks;
     }
 
+    @org.jetbrains.annotations.Nullable
     @Override
     public String getGlobalError() {
         if (hasGlobalError()) {

@@ -3,6 +3,7 @@ package pacr.webapp_backend.result_management.services;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
@@ -23,6 +24,7 @@ import java.util.Objects;
 @Getter(AccessLevel.PUBLIC)
 @Setter(AccessLevel.PACKAGE)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 public class BenchmarkProperty {
 
     @Id
@@ -35,11 +37,6 @@ public class BenchmarkProperty {
     private String unit;
     private ResultInterpretation interpretation;
 
-    /**
-     * Creates empty property. Needed for jpa.
-     */
-    public BenchmarkProperty() {
-    }
 
     /**
      * Creates a BenchmarkProperty with a name, a unit and an interpretation.

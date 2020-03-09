@@ -3,6 +3,7 @@ package pacr.webapp_backend.result_management.services;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 import pacr.webapp_backend.shared.IBenchmarkProperty;
@@ -28,6 +29,7 @@ import java.util.Objects;
  */
 @Entity
 @Getter
+@NoArgsConstructor
 public class BenchmarkPropertyResult implements IBenchmarkProperty {
     private static final int DEFAULT_RATIO = 1;
     private static final int MAX_STRING_LENGTH = 2000;
@@ -69,12 +71,6 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
     @ManyToOne
     @JoinColumn
     private BenchmarkProperty property;
-
-    /**
-     * Creates empty property result. Needed for jpa.
-     */
-    public BenchmarkPropertyResult() {
-    }
 
     /**
      * Creates a BenchmarkPropertyResult from an IBenchmarkProperty and its corresponding BenchmarkProperty object.
@@ -140,6 +136,7 @@ public class BenchmarkPropertyResult implements IBenchmarkProperty {
         return measurements;
     }
 
+    @org.jetbrains.annotations.Nullable
     @Override
     public String getError() {
         if (isError()) {

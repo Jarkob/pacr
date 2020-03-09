@@ -4,7 +4,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -40,7 +40,8 @@ public class BenchmarkerController
      * @param jobRegistry provides information about all currently dispatched jobs.
      * @param template a messaging template to send messages to clients.
      */
-    public BenchmarkerController(final IBenchmarkerHandler benchmarkerHandler, @Lazy final IJobRegistry jobRegistry, final SimpMessagingTemplate template) {
+    public BenchmarkerController(final IBenchmarkerHandler benchmarkerHandler, @Lazy final IJobRegistry jobRegistry,
+                                 final SimpMessagingTemplate template) {
         this.benchmarkerHandler = benchmarkerHandler;
         this.jobRegistry = jobRegistry;
         this.template = template;

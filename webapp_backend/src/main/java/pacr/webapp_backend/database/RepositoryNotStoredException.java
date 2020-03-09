@@ -7,7 +7,7 @@ package pacr.webapp_backend.database;
  */
 public class RepositoryNotStoredException extends RuntimeException {
 
-    public RepositoryNotStoredException(String message) {
+    public RepositoryNotStoredException(final String message) {
         super(message);
     }
 

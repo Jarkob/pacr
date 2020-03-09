@@ -49,9 +49,9 @@ public class NewResultEvent extends EventTemplate {
      *                             characters. May be null (in this case it is assumed no comparison has taken place and
      *                             averageImprovementPercentage is ignored).
      */
-    NewResultEvent(@NotNull final EventCategory category, @NotNull final String commitHash, @NotNull final String repositoryName,
-                   @Nullable final String globalError, final int averageImprovementPercentage,
-                   @Nullable final String comparisonCommitHash) {
+    NewResultEvent(@NotNull final EventCategory category, @NotNull final String commitHash,
+                   @NotNull final String repositoryName, @Nullable final String globalError,
+                   final int averageImprovementPercentage, @Nullable final String comparisonCommitHash) {
         super(category);
 
         Objects.requireNonNull(category);
@@ -105,7 +105,7 @@ public class NewResultEvent extends EventTemplate {
         return descriptionBuilder.toString();
     }
 
-    private String shortenHash(final String commitHash) {
+    private static String shortenHash(final String commitHash) {
         if (commitHash != null && commitHash.length() > HASH_LENGTH) {
             return commitHash.substring(0, HASH_LENGTH);
         }

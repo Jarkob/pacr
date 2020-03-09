@@ -31,7 +31,8 @@ public class DiagramOutputResult {
      * @param commit the commit. Cannot be null.
      * @param benchmarkId the id of the benchmark that is supposed to be included in this DiagramOutputResult.
      */
-    DiagramOutputResult(@NotNull final CommitResult commitResult, @NotNull final ICommit commit, final int benchmarkId) {
+    DiagramOutputResult(@NotNull final CommitResult commitResult, @NotNull final ICommit commit,
+                        final int benchmarkId) {
         Objects.requireNonNull(commitResult);
         Objects.requireNonNull(commit);
 

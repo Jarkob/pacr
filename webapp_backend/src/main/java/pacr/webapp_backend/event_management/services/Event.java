@@ -54,7 +54,8 @@ public class Event implements Comparable<Event> {
      * @param title the title of the event.
      * @param description a description of the event.
      */
-    public Event(@NotNull final EventCategory category, @NotNull final String title, @NotNull final String description) {
+    public Event(@NotNull final EventCategory category, @NotNull final String title,
+                 @NotNull final String description) {
         Objects.requireNonNull(category, "The category cannot be null.");
 
         if (!StringUtils.hasText(title)) {
@@ -72,7 +73,7 @@ public class Event implements Comparable<Event> {
     }
 
     @Override
-    public int compareTo(Event event) {
+    public int compareTo(final Event event) {
         return created.compareTo(event.created);
     }
 

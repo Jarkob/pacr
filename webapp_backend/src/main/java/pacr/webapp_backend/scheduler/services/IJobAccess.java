@@ -67,6 +67,6 @@ public interface IJobAccess {
      *
      * @param jobs the list of jobs to be removed.
      */
-    void deleteJobs(Collection<Job> jobs);
+    void deleteJobs(Collection<? extends Job> jobs);
 
 }
