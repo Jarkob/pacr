@@ -36,6 +36,8 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     private static final String CRON_DAILY = "0 0 0 * * *";
 
+    private static final Object groupLock = new Object();
+
     private final DynamicPriorityQueue<JobGroup> groupQueue;
 
     private final Map<String, JobGroup> groups;
@@ -94,47 +96,27 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     @Override
     public IJob popJob() {
-        Job job = null;
+        synchronized (groupLock) {
+            Job job = null;
 
-        final Collection<Job> prioritized = jobAccess.findPrioritized();
+            final Collection<Job> prioritized = jobAccess.findPrioritized();
+            final Page<Job> jobsPage = getJobsQueue(PageRequest.of(0, 1));
 
-        if (prioritized.isEmpty()) {
-            Page<Job> jobsPage = getJobsQueue(PageRequest.of(0, 1));
-            List<Job> jobs = jobsPage.getContent();
+            if (prioritized.isEmpty()) {
+                List<Job> jobs = jobsPage.getContent();
 
-            if (!jobs.isEmpty()) {
-                job = jobs.get(0);
+                if (!jobs.isEmpty()) {
+                    job = jobs.get(0);
+                }
+            } else {
+                job = prioritized.stream().findFirst().orElse(null);
             }
-        } else {
-            job = prioritized.stream().findFirst().orElse(null);
-        }
 
-        if (job != null) {
-            removeUnusedGroupsAfterPop(job.getJobGroupTitle());
-            jobAccess.deleteJob(job);
-        } else {
-            JobGroup toRemove = groupQueue.peek();
-            if (toRemove != null) {
-                removeJobGroup(toRemove.getTitle());
+            if (job != null) {
+                jobAccess.deleteJob(job);
             }
-        }
 
-        return job;
-    }
-
-    /**
-     * Removes all groups that come before the given jobGroupTitle in the groupQueue.
-     * If the jobGroupTitle is null all groups are removed from the groupQueue.
-     *
-     * @param jobGroupTitle the jobGroupTitle of the first group which isn't deleted.
-     */
-    private void removeUnusedGroupsAfterPop(String jobGroupTitle) {
-        if (jobGroupTitle != null) {
-            JobGroup group = groupQueue.peek();
-            while (group != null && !jobGroupTitle.equals(group.getTitle())) {
-                removeJobGroup(group.getTitle());
-                group = groupQueue.peek();
-            }
+            return job;
         }
     }
 
@@ -171,32 +153,34 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
     @Override
     public void addJobs(@NotNull String groupTitle, @NotNull Collection<String> jobIDs) {
-        if (!StringUtils.hasText(groupTitle)) {
-            throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
-        }
-        Objects.requireNonNull(jobIDs, "The jobIds cannot be null.");
-
-        Set<String> currentJobs = jobAccess.findAllJobs(groupTitle).stream()
-                                                                    .map(Job::getJobID)
-                                                                    .collect(Collectors.toSet());
-
-        Set<Job> jobsToAdd = new HashSet<>();
-        JobGroup group = addGroup(groupTitle);
-
-        for (String jobID : jobIDs) {
-            if (StringUtils.hasText(jobID) && !currentJobs.contains(jobID)) {
-                jobsToAdd.add(new Job(jobID, group));
+        synchronized (groupLock) {
+            if (!StringUtils.hasText(groupTitle)) {
+                throw new IllegalArgumentException("The groupTitle cannot be null or empty.");
             }
+            Objects.requireNonNull(jobIDs, "The jobIds cannot be null.");
+
+            Set<String> currentJobs = jobAccess.findAllJobs(groupTitle).stream()
+                    .map(Job::getJobID)
+                    .collect(Collectors.toSet());
+
+            Set<Job> jobsToAdd = new HashSet<>();
+            JobGroup group = addGroup(groupTitle);
+
+            for (String jobID : jobIDs) {
+                if (StringUtils.hasText(jobID) && !currentJobs.contains(jobID)) {
+                    jobsToAdd.add(new Job(jobID, group));
+                }
+            }
+
+            jobAccess.saveJobs(jobsToAdd);
+
+            int amtDuplicates = jobIDs.size() - jobsToAdd.size();
+            LOGGER.info("Added {} {} to the queue. Skipping {} {}.",
+                    jobsToAdd.size(), jobsToAdd.size() == 1 ? "job" : "jobs",
+                    amtDuplicates, amtDuplicates == 1 ? "duplicate" : "duplicates");
+
+            updateAll();
         }
-
-        jobAccess.saveJobs(jobsToAdd);
-
-        int amtDuplicates = jobIDs.size() - jobsToAdd.size();
-        LOGGER.info("Added {} {} to the queue. Skipping {} {}.",
-                jobsToAdd.size(), jobsToAdd.size() == 1 ? "job" : "jobs",
-                amtDuplicates, amtDuplicates == 1 ? "duplicate" : "duplicates");
-
-        updateAll();
     }
 
     @Override
@@ -284,29 +268,31 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      * @return a page of jobs.
      */
     public Page<Job> getJobsQueue(final Pageable pageable) {
-        int groupIndex = 0;
-        List<Job> jobs = new ArrayList<>();
+        synchronized (groupLock) {
+            int groupIndex = 0;
+            List<Job> jobs = new ArrayList<>();
 
-        // cheap way to get the total amount of jobs
-        Page<Job> jobPage = jobAccess.findJobs(PageRequest.of(0, 1));
+            // cheap way to get the total amount of jobs
+            Page<Job> jobPage = jobAccess.findJobs(PageRequest.of(0, 1));
 
-        final int jobsToLoad = pageable.getPageSize() * (pageable.getPageNumber() + 1);
-        while (jobs.size() < jobsToLoad && groupIndex < groupQueue.size()) {
-            JobGroup group = groupQueue.get(groupIndex);
+            final int jobsToLoad = pageable.getPageSize() * (pageable.getPageNumber() + 1);
+            while (jobs.size() < jobsToLoad && groupIndex < groupQueue.size()) {
+                JobGroup group = groupQueue.get(groupIndex);
 
-            List<Job> jobsToAdd = new ArrayList<>(jobAccess.findAllJobs(group.getTitle()));
-            jobsToAdd.removeIf(Job::isPrioritized);
-            jobsToAdd.sort(new AdvancedSchedulingAlgorithm());
+                List<Job> jobsToAdd = new ArrayList<>(jobAccess.findAllJobs(group.getTitle()));
+                jobsToAdd.removeIf(Job::isPrioritized);
+                jobsToAdd.sort(new AdvancedSchedulingAlgorithm());
 
-            jobs.addAll(jobsToAdd);
+                jobs.addAll(jobsToAdd);
 
-            groupIndex++;
+                groupIndex++;
+            }
+
+            final int lowerBound = Math.min(pageable.getPageSize() * pageable.getPageNumber(), jobs.size());
+            final int upperBound = Math.min(jobsToLoad, jobs.size());
+
+            return new PageImpl<>(jobs.subList(lowerBound, upperBound), pageable, jobPage.getTotalElements());
         }
-
-        final int lowerBound = Math.min(pageable.getPageSize() * pageable.getPageNumber(), jobs.size());
-        final int upperBound = Math.min(jobsToLoad, jobs.size());
-
-        return new PageImpl<>(jobs.subList(lowerBound, upperBound), pageable, jobPage.getTotalElements());
     }
 
     /**
@@ -344,11 +330,43 @@ public class Scheduler implements IJobProvider, IJobScheduler {
      */
     @Scheduled(cron = CRON_DAILY)
     void resetJobGroupTimeSheets() {
+        removeUnusedGroups();
+
         for (final JobGroup group : groups.values()) {
             group.resetTimeSheet();
             jobGroupAccess.saveJobGroup(group);
         }
 
         LOGGER.info("Daily job group reset finished.");
+    }
+
+    /**
+     * Removes all groups that come before the given jobGroupTitle in the groupQueue.
+     * If the jobGroupTitle is null all groups are removed from the groupQueue.
+     */
+    private void removeUnusedGroups() {
+        synchronized (groupLock) {
+            final Collection<Job> prioritized = jobAccess.findPrioritized();
+
+            Set<String> usedGroups = new HashSet<>();
+
+            for (Job job : prioritized) {
+                usedGroups.add(job.getJobGroupTitle());
+            }
+
+            for (JobGroup group : groupQueue) {
+                Collection<Job> groupJobs = jobAccess.findAllJobs(group.getTitle());
+
+                if (!groupJobs.isEmpty()) {
+                    usedGroups.add(group.getTitle());
+                }
+            }
+
+            for (JobGroup group : groupQueue) {
+                if (!usedGroups.contains(group.getTitle())) {
+                    removeJobGroup(group.getTitle());
+                }
+            }
+        }
     }
 }
