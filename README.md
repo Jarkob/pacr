@@ -12,7 +12,7 @@ PACR analyzes commits in repositories.
 4. Create database 'pacr'
 5. Create database 'pacrtest'
 6. Grant all privileges on database to 'pacr'
-7. Grant only privileges to scheam 'pacrtest' to 'pacr2'
+7. Grant only privileges to schema 'pacrtest' to 'pacr2'
 8. Start mysql-server
  
 ### Backend
