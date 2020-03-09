@@ -98,20 +98,25 @@ public class Scheduler implements IJobProvider, IJobScheduler {
 
         final Collection<Job> prioritized = jobAccess.findPrioritized();
 
-        if (!prioritized.isEmpty()) {
-            job = prioritized.stream().findFirst().orElse(null);
-        } else {
+        if (prioritized.isEmpty()) {
             Page<Job> jobsPage = getJobsQueue(PageRequest.of(0, 1));
             List<Job> jobs = jobsPage.getContent();
 
             if (!jobs.isEmpty()) {
                 job = jobs.get(0);
             }
+        } else {
+            job = prioritized.stream().findFirst().orElse(null);
         }
 
         if (job != null) {
             removeUnusedGroupsAfterPop(job.getJobGroupTitle());
             jobAccess.deleteJob(job);
+        } else {
+            JobGroup toRemove = groupQueue.peek();
+            if (toRemove != null) {
+                removeJobGroup(toRemove.getTitle());
+            }
         }
 
         return job;
