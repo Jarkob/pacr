@@ -516,7 +516,6 @@ public class SchedulerTest extends SpringBootTestWithoutShell {
         job = scheduler.popJob();
 
         assertNull(job);
-        verify(scheduler).removeJobGroup(JOB_GROUP);
     }
 
     @Test
