@@ -26,7 +26,7 @@ interface DiagramMaximizedConfig {
   repositories?: Map<number, Repository>;
   groups?: BenchmarkGroup[];
   benchmarks?: Map<string, Benchmark[]>;
-  results?: Map<number, Map<string, any>>;
+  results?: Map<number, Map<string, Map<string, any>>>;
 }
 
 const DEFAULT_CONFIG: DiagramMaximizedConfig = {

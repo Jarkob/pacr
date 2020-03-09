@@ -11,4 +11,4 @@ export const SELECTED_DATASETS = new InjectionToken<Dataset[]>('SELECTED_DATASET
 export const REPOSITORIES = new InjectionToken<Map<number, Repository>>('REPOSITORIES');
 export const GROUPS = new InjectionToken<BenchmarkGroup[]>('GROUPS');
 export const BENCHMARKS = new InjectionToken<Map<string, Benchmark[]>>('BENCHMARKS');
-export const RESULTS = new InjectionToken<Map<number, Map<string, any>>>('RESULTS');
+export const RESULTS = new InjectionToken<Map<number, Map<string, Map<string, any>>>>('RESULTS');

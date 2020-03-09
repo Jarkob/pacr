@@ -31,7 +31,7 @@ export class DiagramMaximizedComponent implements OnInit {
     @Inject(REPOSITORIES) public repositories: Map<number, Repository>,
     @Inject(GROUPS) public groups: BenchmarkGroup[],
     @Inject(BENCHMARKS) public benchmarks: Map<string, Benchmark[]>,
-    @Inject(RESULTS) public results: Map<number, Map<string, any>>,
+    @Inject(RESULTS) public results: Map<number, Map<string, Map<string, any>>>,
   ) { }
 
   ngOnInit() {
