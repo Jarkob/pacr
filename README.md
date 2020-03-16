@@ -2,8 +2,8 @@
 
 PACR analyzes commits in repositories.
 
-![Alt text](https://github.com/Jarkob/pacr/screenshots/dashboard_overview.png "Dashboard")
-![Alt text](https://github.com/Jarkob/pacr/screenshots/admin_overview.png "Admin-Inter")
+![Alt text](https://github.com/Jarkob/pacr/blob/master/screenshots/dashboard_overview.png "Dashboard")
+![Alt text](https://github.com/Jarkob/pacr/blob/master/screenshots/admin_overview.png "Admin-Inter")
 
 ## Setup
 
